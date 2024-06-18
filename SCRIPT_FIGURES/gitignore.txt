@@ -1,0 +1,3 @@
+# script-generated files
+*.pdf
+*.png
