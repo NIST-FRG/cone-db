@@ -9,7 +9,7 @@ clear all
 
 %% Read in your data
 % ----------------- Specify where all your data is saved ----------------- 
-Data_dir=[pwd,'/../DATA'];
+Data_dir=[pwd,'/../DATA/FAA'];
 Script_Figs_dir=[pwd,'/../SCRIPT_FIGURES/'];
 
 % ----------------- Convert .xls files to .txt files, to help MATLAB ----------------- 
