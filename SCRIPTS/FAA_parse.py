@@ -13,26 +13,27 @@ def parse_file(input_file_path):
     # a. metadata
     # b. actual data (starts with "Scan")
 
+    print(f"Parsing {input_file_path}")
+
     with open(input_file_path, "r") as f:
         f = f.read()
 
     # find index of "Scan" to find where data starts
     split = f.split("\n\n\n")
-    file = ("".join(split[0:2]), split[2], "".join(split[3:]))
+    print(split[0])
+    file = ("".join(split[0:2]), split[2], "".join(split[len(split) - 1]))
 
     # Parse the actual data
-    df = pd.read_csv(StringIO(file[2]),sep="\t", header=[0, 1], on_bad_lines='warn')
+    df = pd.read_csv(StringIO(file[2]),sep="\t", header=[0, 1], on_bad_lines='skip')
 
     # combine columns & remove parentheses from headers
 
     df.columns = [" ".join([h[0].strip(), f"({h[1].strip().replace("(", "").replace(")", "")})"]) for h in df.columns]
 
-    print(df.columns)
-
     # remove scan (index) column
     # shifts all columns left by 1
     temp = df.columns[1:]
-    df = df.drop(df.columns[23], axis=1)
+    df = df.drop(df.columns[len(df.columns) - 1], axis=1)
     df.columns = temp
 
     df = df[["HRR (kW/m2)", "O2 (%)", "CO2 (%)", "CO (%)", "Time (secs)", "Mass (gm)"]]
@@ -61,7 +62,9 @@ def parse_dir(input_dir):
 
     # for each file, parse it
     for file in files:
-        print(file)
-        parse_file(file)
+        try:
+            parse_file(file)
+        except:
+            continue
 
 parse_dir(INPUT_DIR)
