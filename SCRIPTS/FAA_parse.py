@@ -36,7 +36,9 @@ def parse_file(input_file_path):
     df = df.drop(df.columns[len(df.columns) - 1], axis=1)
     df.columns = temp
 
-    df = df[["HRR (kW/m2)", "O2 (%)", "CO2 (%)", "CO (%)", "Time (secs)", "Mass (gm)"]]
+    # df = df[["HRR (kW/m2)", "O2 (%)", "CO2 (%)", "CO (%)", "Time (secs)", "Mass (gm)"]]
+    df = df[["Time (secs)", "HRR (kW/m2)", "Mass (gm)" , "O2 (%)", "CO2 (%)", "CO (%)",]]
+
 
     df = df.rename(
         columns={
