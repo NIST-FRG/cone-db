@@ -53,17 +53,18 @@ def parse_file(file_path):
     print(f"\tData complete ({df.shape[0]}x{df.shape[1]})")
 
 def parse_metadata(raw_metadata):
-    # first split the raw string by blank lines
-    raw_metadata = raw_metadata.split("\n\n")
+    # remove any leading/trailing whitespace on each line + random special characters
+    raw_metadata_lines = re.split(r"\n+", raw_metadata)
+    raw_metadata_lines = [x.strip() for x in raw_metadata_lines]
+    
+    raw_metadata = "\n".join(raw_metadata_lines)
 
-    # remove any leading/trailing whitespace + random special characters
-    raw_metadata = [x.strip() for x in raw_metadata]
-    raw_metadata = [x.encode('ascii', errors='ignore').decode() for x in raw_metadata]
-    raw_metadata = [x.replace("\x00", "") for x in raw_metadata]
+
+    raw_metadata = raw_metadata.encode('ascii', errors='ignore').decode()
+    raw_metadata = raw_metadata.replace("\x00", "")
 
     # discard any chunks without a colon (since the metadata is in key:value format)
     # also discard the first chunk (since it's just the file header)
-    raw_metadata = [x for x in raw_metadata if ":" in x][1:]
 
     metadata = {}
 
@@ -77,26 +78,30 @@ def parse_metadata(raw_metadata):
 
     # if multiline is true, the value will span multiple lines (specifically: for the sample material descrip.)
     # and ends when a blank line is encountered
-    def extract_string(key, input_str, multiline = False):
-        if not multiline:
-            match = re.search(key + r"\s*:\s*(\S+)", input_str)
+
+    # by default, the function will stop looking when it finds a newline (\n)
+    # if end is specified, it will stop looking when it finds that string instead
+    def extract_string(key, input_str, end=""):
+        if end == "":
+            match = re.search(key + r"\s*:\s*(.+)\n", input_str)
         else:
-            match = re.search(key + r"\s*:\s*(.+)\n?", input_str, flags=re.DOTALL)
+            match = re.search(key + r"\s*:\s*(.+)\n+\s*" + end, input_str, flags=re.DOTALL)
         if match:
-            return match.group(1)
+            return match.group(1).strip()
         else:
             return None
 
     # use regular expressions to extract the date & time
-    date = re.search(r"\d\d-\w{3}-\d\d", raw_metadata[0]).group()
-    time = re.search(r"\d{1,2}:\d\d((p|a)\.?m\.?)?", raw_metadata[0]).group()
+    # TODO: rewrite this using the extract_string helper function? (might be tricky b/c all three (date, time, operator) are in the same line)
+    date = re.search(r"\d\d-\w{3}-\d\d", raw_metadata).group()
+    time = re.search(r"\d{1,2}:\d\d((p|a)\.?m\.?)?", raw_metadata).group()
 
     # rather than messing around with regex stuff again, just use the dateutil parser
     date = parser.parse(f"{date} {time}", dayfirst=True)
 
     # get the operator name, also using regex 
     # (note that the entire string is always group 1 - hence .group(1) rather than .group(0))
-    operator = extract_string("Operator", raw_metadata[0])
+    operator = extract_string("Operator", raw_metadata)
 
     # turn date into ISO8601 format
     metadata["test_date"] = date.isoformat()
@@ -107,34 +112,33 @@ def parse_metadata(raw_metadata):
     # and searching those chunks for the relevant info
 
     # second chunk: test parameters
-    metadata["eot_time_s"] =  extract_num("Test Length", raw_metadata[1])
+    metadata["eot_time_s"] =  extract_num("Test Length", raw_metadata)
     # the original data is in m^2 but we want cm^2, so multiply by 10,000 to convert
-    surface_area = extract_num("Sample Surface Area", raw_metadata[1])
+    surface_area = extract_num("Sample Surface Area", raw_metadata)
     # if surface area is None, leave it as None, otherwise multiply by 10,000
     metadata["surface_area_cm^2"] = 10_000 * surface_area if surface_area else None
-    metadata["heat_flux_kw/m^2"] = extract_num("Radiant Heat Flux", raw_metadata[1])
-    metadata["sample_orientation"] = extract_string("Sample Orientation", raw_metadata[1])
+    metadata["heat_flux_kw/m^2"] = extract_num("Radiant Heat Flux", raw_metadata)
+    metadata["sample_orientation"] = extract_string("Sample Orientation", raw_metadata)
 
     # third chunk: sample info
-    metadata["sample_description"] = extract_string("Sample Material", raw_metadata[2], multiline=True)
+    metadata["sample_description"] = extract_string("Sample Material", raw_metadata, end="Test Notes")
 
     # fourth chunk: pretest comments
-    metadata["pretest_comments"] = extract_string("Pre-test Comments", raw_metadata[3], multiline=True)
+    metadata["pretest_comments"] = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
 
     # fifth chunk: posttest comments
     # annoyingly, "Reduction Parameters" always ends up in chunk 5 for some reason, so just remove that line
     # theoretically ... this could be bad if posttest comments included "Reduction Parameters" verbatim though
-    raw_metadata[4] = raw_metadata[4].replace("Reduction Parameters", "")
-    metadata["posttest_comments"] = extract_string("Post-test Comments", raw_metadata[4], multiline=True)
+    metadata["posttest_comments"] = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
 
     # sixth chunk: reduction paramters:
-    metadata["c_factor"] = extract_num("C-Factor", raw_metadata[5])
-    metadata["e_mj/kg"] = extract_num("Conversion Factor", raw_metadata[5])
+    metadata["c_factor"] = extract_num("C-Factor", raw_metadata)
+    metadata["e_mj/kg"] = extract_num("Conversion Factor", raw_metadata)
 
     # seventh chunk: various test results:
-    metadata["time_to_ignition_s"] = extract_num("Time to Sustained Ignition", raw_metadata[6])
-    metadata["initial_mass_g"] = extract_num("Entered Initial Specimen Mass", raw_metadata[6])
-    metadata["final_mass_g"] = extract_num("Measured Final Specimen Mass", raw_metadata[6])
+    metadata["time_to_ignition_s"] = extract_num("Time to Sustained Ignition", raw_metadata)
+    metadata["initial_mass_g"] = extract_num("Entered Initial Specimen Mass", raw_metadata)
+    metadata["final_mass_g"] = extract_num("Measured Final Specimen Mass", raw_metadata)
 
     return metadata
 
@@ -169,4 +173,3 @@ def parse_data(raw_data):
     
 
 parse_dir(INPUT_DIR)
-# parse_file("./DATA/FAA/021204A6.txt")
