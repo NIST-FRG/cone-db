@@ -104,7 +104,7 @@ def parse_metadata(raw_metadata):
     operator = extract_string("Operator", raw_metadata)
 
     # turn date into ISO8601 format
-    metadata["test_date"] = date.isoformat()
+    metadata["date"] = date.isoformat()
     # remove all non-alphanumeric characters from the operator name
     metadata["operator"] = operator
 
@@ -127,7 +127,6 @@ def parse_metadata(raw_metadata):
     metadata["pretest_comments"] = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
 
     # fifth chunk: posttest comments
-    # annoyingly, "Reduction Parameters" always ends up in chunk 5 for some reason, so just remove that line
     # theoretically ... this could be bad if posttest comments included "Reduction Parameters" verbatim though
     metadata["posttest_comments"] = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
 
