@@ -57,9 +57,10 @@ def parse_file(file_path):
         c_factor,
         e,
         area,
-        o2_delay=93,
-        co2_delay=100,
-        co_delay=100,
+        # change o2, co2, co delays to real numbers!
+        o2_delay=12,
+        co2_delay=12,
+        co_delay=12,
         rel_humidity=rel_humidity,
         T_a=T_a,
         P_a=P_a,
@@ -244,10 +245,10 @@ def process_data(
 
     def get_HRR(row):
         X_O2 = row["O2 (%)"] / 100
-        X_O2_initial = data["O2 (%)"][:15].mean() / 100
+        X_O2_initial = data["O2 (%)"][:1].mean() / 100
 
         X_CO2 = row["CO2 (%)"] / 100
-        X_CO2_initial = data["CO2 (%)"][:15].mean() / 100
+        X_CO2_initial = data["CO2 (%)"][:1].mean() / 100
 
         X_CO = row["CO (%)"] / 100
         # X_CO_initial = data["CO (%)"][:30].mean()
@@ -288,9 +289,9 @@ def process_data(
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
 
     # plot HRR
-    fig, ax = plt.subplots()
-    ax.plot(data["HRR (kW/m2)"])
-    fig.set_size_inches(8, 4)
+    plt.figure(figsize=(8, 4))
+    plt.plot(data["HRR (kW/m2)"])
+    plt.plot(data["HRR (kW/m2)"].rolling(10, center=True).mean())
     plt.tight_layout()
     plt.show()
 
@@ -298,4 +299,4 @@ def process_data(
 
 
 # parse_dir(INPUT_DIR)
-parse_file("./DATA/FTT/19010002.csv")
+parse_file("./DATA/FTT/19020031.csv")
