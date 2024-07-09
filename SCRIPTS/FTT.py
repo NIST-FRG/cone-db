@@ -244,10 +244,10 @@ def process_data(
 
     def get_HRR(row):
         X_O2 = row["O2 (%)"] / 100
-        X_O2_initial = data["O2 (%)"][:30].mean() / 100
+        X_O2_initial = data["O2 (%)"][:15].mean() / 100
 
         X_CO2 = row["CO2 (%)"] / 100
-        X_CO2_initial = data["CO2 (%)"][:30].mean() / 100
+        X_CO2_initial = data["CO2 (%)"][:15].mean() / 100
 
         X_CO = row["CO (%)"] / 100
         # X_CO_initial = data["CO (%)"][:30].mean()
@@ -255,24 +255,10 @@ def process_data(
         delta_P = row["DPT (Pa)"]
         T_e = row["Stack TC (K)"]
 
-        # return calculate_HRR(
-        #     X_O2,
-        #     X_CO2,
-        #     X_CO,
-        #     X_O2_initial,
-        #     X_CO2_initial,
-        #     delta_P,
-        #     T_e,
-        #     c_factor,
-        #     e,
-        #     area,
-        #     rel_humidity,
-        #     T_a,
-        #     P_a,
-        # )
-
-        return calculate_HRR_O2_only(
+        return calculate_HRR(
             X_O2,
+            X_CO2,
+            X_CO,
             X_O2_initial,
             X_CO2_initial,
             delta_P,
@@ -284,6 +270,20 @@ def process_data(
             T_a,
             P_a,
         )
+
+        # return calculate_HRR_O2_only(
+        #     X_O2,
+        #     X_O2_initial,
+        #     X_CO2_initial,
+        #     delta_P,
+        #     T_e,
+        #     c_factor,
+        #     e,
+        #     area,
+        #     rel_humidity,
+        #     T_a,
+        #     P_a,
+        # )
 
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
 
@@ -298,4 +298,4 @@ def process_data(
 
 
 # parse_dir(INPUT_DIR)
-parse_file("./DATA/FTT/19020024.csv")
+parse_file("./DATA/FTT/19010002.csv")
