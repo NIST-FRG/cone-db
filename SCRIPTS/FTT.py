@@ -2,12 +2,16 @@ import pandas as pd
 from pathlib import Path
 import json
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 # remove later
 from pprint import pp
 
+from processing import calculate_HRR, calculate_HRR_O2_only
+
 INPUT_DIR = "./DATA/FTT"
 OUTPUT_DIR = "./OUTPUT/FTT"
+DEBUG = True
 
 
 def parse_dir(input_dir):
@@ -39,6 +43,37 @@ def parse_file(file_path):
         json.dump(metadata, f, indent=4)
 
     data = parse_data(df)
+
+    c_factor = metadata["c_factor"]
+    e = metadata["e_mj/kg"]
+    area = metadata["surface_area_cm^2"] / (100**2)
+    rel_humidity = metadata["relative_humidity_%"]
+    T_a = metadata["ambient_temp"]
+    P_a = metadata["barometric_pressure_pa"]
+
+    # calculate HRR
+    data = process_data(
+        data,
+        c_factor,
+        e,
+        area,
+        o2_delay=93,
+        co2_delay=100,
+        co_delay=100,
+        rel_humidity=rel_humidity,
+        T_a=T_a,
+        P_a=P_a,
+    )
+
+    if not DEBUG:
+        data = data[
+            "Time(s)",
+            "Mass (g)",
+            "O2 (%)",
+            "CO2 (%)",
+            "CO (%)",
+        ]
+
     data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     data.to_csv(data_output_path, index=False)
 
@@ -128,6 +163,7 @@ def parse_metadata(df):
 
     metadata["orientation"] = raw_metadata["Orientation"]
 
+    metadata["c_factor"] = get_number("C-factor (SI units)")
     metadata["duct_diameter_m"] = raw_metadata["Duct diameter (m)"]
 
     metadata["o2_delay_time_s"] = raw_metadata["O2 delay time (s)"]
@@ -174,7 +210,8 @@ def parse_data(df):
     data.columns = [process_name(c) for c in data.columns]
 
     # we only care about certain columns, so only get that subset
-    data = data[["time_s", "mass_g", "o2_%", "co2_%", "co_%"]]
+
+    data = data[["time_s", "mass_g", "o2_%", "co2_%", "co_%", "dpt_pa", "stack_tc_k"]]
     data = data.rename(
         columns={
             "time_s": "Time (s)",
@@ -182,10 +219,83 @@ def parse_data(df):
             "o2_%": "O2 (%)",
             "co2_%": "CO2 (%)",
             "co_%": "CO (%)",
+            "dpt_pa": "DPT (Pa)",
+            "stack_tc_k": "Stack TC (K)",
         }
     )
 
     return data
 
 
-parse_dir(INPUT_DIR)
+def process_data(
+    data, c_factor, e, area, o2_delay, co2_delay, co_delay, rel_humidity, T_a, P_a
+):  # e is in mj/kg
+
+    # shift columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
+    data["O2 (%)"] = data["O2 (%)"].shift(-o2_delay)
+
+    data["CO2 (%)"] = data["CO2 (%)"].shift(-co2_delay)
+
+    data["CO (%)"] = data["CO (%)"].shift(-co_delay)
+
+    data.drop(data.tail(max(o2_delay, co2_delay, co_delay)).index, inplace=True)
+
+    # Calculate HRR by row
+
+    def get_HRR(row):
+        X_O2 = row["O2 (%)"] / 100
+        X_O2_initial = data["O2 (%)"][:30].mean() / 100
+
+        X_CO2 = row["CO2 (%)"] / 100
+        X_CO2_initial = data["CO2 (%)"][:30].mean() / 100
+
+        X_CO = row["CO (%)"] / 100
+        # X_CO_initial = data["CO (%)"][:30].mean()
+
+        delta_P = row["DPT (Pa)"]
+        T_e = row["Stack TC (K)"]
+
+        # return calculate_HRR(
+        #     X_O2,
+        #     X_CO2,
+        #     X_CO,
+        #     X_O2_initial,
+        #     X_CO2_initial,
+        #     delta_P,
+        #     T_e,
+        #     c_factor,
+        #     e,
+        #     area,
+        #     rel_humidity,
+        #     T_a,
+        #     P_a,
+        # )
+
+        return calculate_HRR_O2_only(
+            X_O2,
+            X_O2_initial,
+            X_CO2_initial,
+            delta_P,
+            T_e,
+            c_factor,
+            e,
+            area,
+            rel_humidity,
+            T_a,
+            P_a,
+        )
+
+    data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
+
+    # plot HRR
+    fig, ax = plt.subplots()
+    ax.plot(data["HRR (kW/m2)"])
+    fig.set_size_inches(8, 4)
+    plt.tight_layout()
+    plt.show()
+
+    return data
+
+
+# parse_dir(INPUT_DIR)
+parse_file("./DATA/FTT/19020024.csv")
