@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 from datetime import datetime
 import matplotlib.pyplot as plt
+from graph import compare_FTT
 
 # remove later
 from pprint import pp
@@ -21,12 +22,16 @@ def parse_dir(input_dir):
     # ignore the reduced data files (can be recalculated later from raw data)
     paths = filter(lambda x: not x.stem.endswith("red"), list(paths))
 
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+
     # for each file, parse it
     for path in paths:
         try:
             parse_file(path)
         except Exception as e:
             print(f"Error parsing {path}: {e}")
+
+    compare_FTT()
 
 
 def parse_file(file_path):
@@ -51,9 +56,9 @@ def parse_file(file_path):
         e=metadata["e_mj/kg"],
         area=metadata["surface_area_cm^2"],
         # change o2, co2, co delays to real numbers!
-        o2_delay=12,
-        co2_delay=12,
-        co_delay=12,
+        o2_delay=metadata["o2_delay_time_s"],
+        co2_delay=metadata["co2_delay_time_s"],
+        co_delay=metadata["co_delay_time_s"],
         # rel_humidity=metadata["relative_humidity_%"],
         # T_a=metadata["ambient_temp"],
         # P_a=metadata["barometric_pressure_pa"],

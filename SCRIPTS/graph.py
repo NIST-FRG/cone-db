@@ -1,16 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-from FTT import parse_data
 
 
-def compare():
+def compare_FTT():
     # get all CSV files in input folder that end with _red.csv
     # (reduced data files)
     paths = list(Path("./DATA/FTT").glob("*_red.csv"))
 
     count = len(paths)
-    print(count)
 
     idx = 0
 
@@ -33,16 +31,16 @@ def compare():
         axs[idx].plot(orig_df["HRR (kW/m²)"], label="FTT")
         axs[idx].plot(processed_df["HRR (kW/m2)"], label="Script")
         axs[idx].legend(loc="upper left")
-        axs[idx].set_title(f"{path.stem}")
+        axs[idx].set_title(f"Test: {path.stem.replace("_red", "")}")
         idx += 1
 
     plt.show()
 
 
-def plot_all():
+def plot_all(folder_name):
     # get all CSV files in input folder that end with _red.csv
     # (reduced data files)
-    paths = list(Path("./OUTPUT/FTT").glob("*.csv"))
+    paths = list(Path(f"./OUTPUT/{folder_name}").glob("*.csv"))
 
     # count = len(paths)
 
@@ -78,5 +76,5 @@ def plot_all():
     
 
 
-# plot_all()
-compare()
+# plot_all("FTT")
+# compare_FTT()
