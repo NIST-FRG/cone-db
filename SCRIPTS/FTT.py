@@ -44,26 +44,19 @@ def parse_file(file_path):
 
     data = parse_data(df)
 
-    c_factor = metadata["c_factor"]
-    e = metadata["e_mj/kg"]
-    area = metadata["surface_area_cm^2"] / (100**2)
-    rel_humidity = metadata["relative_humidity_%"]
-    T_a = metadata["ambient_temp"]
-    P_a = metadata["barometric_pressure_pa"]
-
     # calculate HRR
     data = process_data(
         data,
-        c_factor,
-        e,
-        area,
+        c_factor=metadata["c_factor"],
+        e=metadata["e_mj/kg"],
+        area=metadata["surface_area_cm^2"],
         # change o2, co2, co delays to real numbers!
         o2_delay=12,
         co2_delay=12,
         co_delay=12,
-        rel_humidity=rel_humidity,
-        T_a=T_a,
-        P_a=P_a,
+        # rel_humidity=metadata["relative_humidity_%"],
+        # T_a=metadata["ambient_temp"],
+        # P_a=metadata["barometric_pressure_pa"],
     )
 
     if not DEBUG:
@@ -77,6 +70,13 @@ def parse_file(file_path):
 
     data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     data.to_csv(data_output_path, index=False)
+
+    # plot HRR
+    # plt.figure(figsize=(8, 4))
+    # plt.plot(data["HRR (kW/m2)"])
+    # plt.plot(data["HRR (kW/m2)"].rolling(10, center=True).mean())
+    # plt.tight_layout()
+    # plt.show()
 
 
 def parse_metadata(df):
@@ -167,9 +167,9 @@ def parse_metadata(df):
     metadata["c_factor"] = get_number("C-factor (SI units)")
     metadata["duct_diameter_m"] = raw_metadata["Duct diameter (m)"]
 
-    metadata["o2_delay_time_s"] = raw_metadata["O2 delay time (s)"]
-    metadata["co2_delay_time_s"] = raw_metadata["CO2 delay time (s)"]
-    metadata["co_delay_time_s"] = raw_metadata["CO delay time (s)"]
+    metadata["o2_delay_time_s"] = get_number("O2 delay time (s)")
+    metadata["co2_delay_time_s"] = get_number("CO2 delay time (s)")
+    metadata["co_delay_time_s"] = get_number("CO delay time (s)")
 
     metadata["ambient_temp"] = get_number("Ambient temperature (°C)")
     metadata["barometric_pressure_pa"] = get_number("Barometric pressure (Pa)")
@@ -229,7 +229,7 @@ def parse_data(df):
 
 
 def process_data(
-    data, c_factor, e, area, o2_delay, co2_delay, co_delay, rel_humidity, T_a, P_a
+    data, c_factor, e, area, o2_delay, co2_delay, co_delay
 ):  # e is in mj/kg
 
     # shift columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
@@ -241,17 +241,20 @@ def process_data(
 
     data.drop(data.tail(max(o2_delay, co2_delay, co_delay)).index, inplace=True)
 
+    # convert area from cm^2 to m^2
+    area = area / (100**2)
+
     # Calculate HRR by row
 
     def get_HRR(row):
         X_O2 = row["O2 (%)"] / 100
-        X_O2_initial = data["O2 (%)"][:1].mean() / 100
+        X_O2_initial = data["O2 (%)"][:30].mean() / 100
 
         X_CO2 = row["CO2 (%)"] / 100
-        X_CO2_initial = data["CO2 (%)"][:1].mean() / 100
+        X_CO2_initial = data["CO2 (%)"][:30].mean() / 100
 
         X_CO = row["CO (%)"] / 100
-        # X_CO_initial = data["CO (%)"][:30].mean()
+        X_CO_initial = data["CO (%)"][:30].mean() / 100
 
         delta_P = row["DPT (Pa)"]
         T_e = row["Stack TC (K)"]
@@ -267,36 +270,23 @@ def process_data(
             c_factor,
             e,
             area,
-            rel_humidity,
-            T_a,
-            P_a,
         )
 
         # return calculate_HRR_O2_only(
         #     X_O2,
         #     X_O2_initial,
-        #     X_CO2_initial,
         #     delta_P,
         #     T_e,
         #     c_factor,
         #     e,
         #     area,
-        #     rel_humidity,
-        #     T_a,
-        #     P_a,
         # )
 
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
 
-    # plot HRR
-    plt.figure(figsize=(8, 4))
-    plt.plot(data["HRR (kW/m2)"])
-    plt.plot(data["HRR (kW/m2)"].rolling(10, center=True).mean())
-    plt.tight_layout()
-    plt.show()
-
     return data
 
 
-# parse_dir(INPUT_DIR)
-parse_file("./DATA/FTT/19020031.csv")
+if __name__ == "__main__":
+    parse_dir(INPUT_DIR)
+    # parse_file("./DATA/FTT/19020031.csv")
