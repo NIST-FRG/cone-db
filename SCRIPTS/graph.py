@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
+import matplotlib.ticker as ticker
 
 
 def compare_FTT():
@@ -32,6 +33,9 @@ def compare_FTT():
         axs[idx].plot(processed_df["HRR (kW/m2)"], label="Script")
         axs[idx].legend(loc="upper left")
         axs[idx].set_title(f"Test: {path.stem.replace("_red", "")}")
+        axs[idx].xaxis.set_major_locator(ticker.MultipleLocator(50))
+
+        
         idx += 1
 
     plt.show()

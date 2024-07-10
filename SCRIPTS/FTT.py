@@ -31,7 +31,7 @@ def parse_dir(input_dir):
         except Exception as e:
             print(f"Error parsing {path}: {e}")
 
-    compare_FTT()
+    # compare_FTT()
 
 
 def parse_file(file_path):
@@ -47,18 +47,21 @@ def parse_file(file_path):
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
 
+    start_time = metadata["test_start_time_s"]
+
     data = parse_data(df)
 
     # calculate HRR
     data = process_data(
         data,
-        c_factor=metadata["c_factor"],
-        e=metadata["e_mj/kg"],
-        area=metadata["surface_area_cm^2"],
+        metadata["c_factor"],
+        metadata["e_mj/kg"],
+        metadata["surface_area_cm^2"],
+        start_time,
         # change o2, co2, co delays to real numbers!
-        o2_delay=metadata["o2_delay_time_s"],
-        co2_delay=metadata["co2_delay_time_s"],
-        co_delay=metadata["co_delay_time_s"],
+        metadata["o2_delay_time_s"],
+        metadata["co2_delay_time_s"],
+        metadata["co_delay_time_s"],
         # rel_humidity=metadata["relative_humidity_%"],
         # T_a=metadata["ambient_temp"],
         # P_a=metadata["barometric_pressure_pa"],
@@ -233,18 +236,29 @@ def parse_data(df):
     return data
 
 
-def process_data(
-    data, c_factor, e, area, o2_delay, co2_delay, co_delay
-):  # e is in mj/kg
+def process_data(data, c_factor, e, area, start_time, o2_delay, co2_delay, co_delay):
 
-    # shift columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
+    start_time = int(start_time)
+
+    # calculate baseline values by using the data up to test start time
+    X_O2_initial = data["O2 (%)"][:start_time].mean() / 100
+    X_CO2_initial = data["CO2 (%)"][:start_time].mean() / 100
+    X_CO_initial = data["CO (%)"][:start_time].mean() / 100
+
+    # shift entire dataframe up to start time
+    data = data.shift(-start_time)
+
+    data.drop(data.tail(start_time).index, inplace=True)
+
     data["O2 (%)"] = data["O2 (%)"].shift(-o2_delay)
 
     data["CO2 (%)"] = data["CO2 (%)"].shift(-co2_delay)
 
     data["CO (%)"] = data["CO (%)"].shift(-co_delay)
 
-    data.drop(data.tail(max(o2_delay, co2_delay, co_delay)).index, inplace=True)
+    data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
+
+    # shift columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
 
     # convert area from cm^2 to m^2
     area = area / (100**2)
@@ -253,13 +267,8 @@ def process_data(
 
     def get_HRR(row):
         X_O2 = row["O2 (%)"] / 100
-        X_O2_initial = data["O2 (%)"][:30].mean() / 100
-
         X_CO2 = row["CO2 (%)"] / 100
-        X_CO2_initial = data["CO2 (%)"][:30].mean() / 100
-
         X_CO = row["CO (%)"] / 100
-        X_CO_initial = data["CO (%)"][:30].mean() / 100
 
         delta_P = row["DPT (Pa)"]
         T_e = row["Stack TC (K)"]
@@ -276,16 +285,6 @@ def process_data(
             e,
             area,
         )
-
-        # return calculate_HRR_O2_only(
-        #     X_O2,
-        #     X_O2_initial,
-        #     delta_P,
-        #     T_e,
-        #     c_factor,
-        #     e,
-        #     area,
-        # )
 
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
 
