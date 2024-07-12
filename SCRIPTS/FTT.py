@@ -7,10 +7,7 @@ from graph import compare_FTT
 import scipy.signal as signal
 import numpy as np
 
-# remove later
-from pprint import pp
-
-from processing import calculate_HRR, calculate_HRR_O2_only
+from processing import calculate_HRR, calculate_MFR
 
 INPUT_DIR = "./DATA/FTT"
 OUTPUT_DIR = "./OUTPUT/FTT"
@@ -19,7 +16,7 @@ DEBUG = True
 
 def parse_dir(input_dir):
     # read all CSV files in directory
-    paths = Path(input_dir).glob("*.csv")
+    paths = Path(input_dir).glob("**/*.csv")
 
     # ignore the reduced data files (can be recalculated later from raw data)
     paths = filter(lambda x: not x.stem.endswith("red"), list(paths))
@@ -60,22 +57,19 @@ def parse_file(file_path):
         metadata["e_mj/kg"],
         metadata["surface_area_cm^2"],
         start_time,
-        # change o2, co2, co delays to real numbers!
         metadata["o2_delay_time_s"],
         metadata["co2_delay_time_s"],
         metadata["co_delay_time_s"],
-        # rel_humidity=metadata["relative_humidity_%"],
-        # T_a=metadata["ambient_temp"],
-        # P_a=metadata["barometric_pressure_pa"],
     )
 
     if not DEBUG:
         data = data[
-            "Time(s)",
+            "Time (s)",
             "Mass (g)",
             "O2 (%)",
             "CO2 (%)",
             "CO (%)",
+            "HRR (kW/m2)",
         ]
 
     data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
@@ -247,7 +241,7 @@ def process_data(data, c_factor, e, area, start_time, o2_delay, co2_delay, co_de
     mlr = (data["Mass (g)"].diff() / data["Time (s)"].diff()).fillna(0)
     # mlr = np.gradient(data["Mass (g)"], data["Time (s)"])
     # data["MLR (g/s)"] = signal.savgol_filter(mlr, 5, 3)
-    data["MLR (g/s)"] = mlr
+    data["MLR (g/s)"] = -mlr
 
     start_time = int(start_time)
 
@@ -297,6 +291,16 @@ def process_data(data, c_factor, e, area, start_time, o2_delay, co2_delay, co_de
         )
 
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
+
+    # Calculate MFR by row
+
+    def get_MFR(row):
+        delta_P = row["DPT (Pa)"]
+        T_e = row["Stack TC (K)"]
+
+        return calculate_MFR(c_factor, delta_P, T_e)
+
+    data["MFR (kg/s)"] = data.apply(get_MFR, axis=1)
 
     return data
 

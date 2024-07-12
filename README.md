@@ -16,7 +16,8 @@ Empty / undefined values are `null` in the metadata file.
 | `report_name`              | String                                                                                          |                                |
 | `pretest_comments`         | String                                                                                          |                                |
 | `posttest_comments`        | String                                                                                          |                                |
-| `grid`                     | String                                                                                          |                                |
+| `comments`        | String                                                                                          |                                |
+| `grid`                     | Boolean                                                                                          |                                |
 | `mounting_system`          | String                                                                                          | "Edge frame", "CBUF", etc.     |
 | `heat_flux_kw/m^2`         | Number                                                                                          |                                |
 | `separation_mm`            | Number                                                                                          |                                |

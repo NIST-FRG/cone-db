@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 import matplotlib.ticker as ticker
+import scipy.signal as signal
+import json
+import numpy as np
 
 
 def compare_FTT():
@@ -56,6 +59,39 @@ def plot_all(folder_name):
 
     # fig, axs = plt.subplots(height, width, constrained_layout=True)
 
+    def plot(df, metadata):
+        fig, ax = plt.subplots()
+        fig.set_size_inches(12, 5)
+        # fig.tight_layout()
+        mlr = processed_df["MLR (g/s)"]
+
+        ax2 = ax.twinx()
+        o2 = processed_df["O2 (%)"]
+        o2 = signal.savgol_filter(o2, 31, 3)
+        do2 = np.gradient(o2)
+        ax2.plot(do2, color="r", label="Derivative of O2 (%)")
+        ax2.axhline(y=0, color="black", linewidth = 1)
+
+        ax.plot(o2, label="O2 (%)")
+        ax.set_xlim(0, 200)
+        
+        # ax.set_ylim(-0.5, 0.5)
+        # ax.set_xlim(0, 100)
+
+        # ax.axhline(y=0, color='b', linestyle='--', linewidth=3)
+        ax.axvline(x=metadata["time_to_ignition_s"], color='y', linestyle='--', linewidth=3)
+
+        # ax.plot(mlr, label="Original")
+
+        # ax.plot(signal.savgol_filter(mlr, 31, 3), label="Savitzky-Golay (9 frames, order 5)")
+        
+        ax.set_title(f"{path.stem}")
+        lines, labels = ax.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax2.legend(lines + lines2, labels + labels2, loc=0)
+
+        plt.savefig(f"./GRAPHS/{path.stem.replace("_data", "")}.png")
+        plt.close()
 
     # for each file, read it in as a pandas dataframe
     for path in paths:
@@ -63,22 +99,16 @@ def plot_all(folder_name):
         processed_df = pd.read_csv(path)
         print(f"Plotting: {path.stem}")
 
-        # if y_idx >= height:
-        #     y_idx = 0
-        #     x_idx += 1
+        metadata = json.load(open(f"./OUTPUT/{folder_name}/{path.stem.replace("_data", "_metadata")}.json"))
 
-        fig, ax = plt.subplots()
-        fig.set_size_inches(10, 5)
-        ax.plot(processed_df["HRR (kW/m2)"])
-        ax.plot(processed_df["HRR (kW/m2)"].rolling(10, center=True).mean())
-        ax.set_title(f"{path.stem}")
-        plt.savefig(f"./GRAPHS/{path.stem.replace("_data", "")}.png")
-        plt.close()
-
-        # y_idx += 1
+        try:
+            plot(processed_df, metadata)
+        except:
+            print(f"Error plotting {path.stem}")
+            continue
 
     
 
-
-# plot_all("FTT")
-# compare_FTT()
+if __name__ == "__main__":
+    plot_all("FTT")
+    # compare_FTT()

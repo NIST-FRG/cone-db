@@ -1,8 +1,7 @@
 from math import sqrt, exp
 
-def calculate_HRR_O2_only(
-    X_O2, X_O2_initial, delta_P, T_e, c, e, area
-):
+
+def calculate_HRR_O2_only(X_O2, X_O2_initial, delta_P, T_e, c, e, area):
 
     hrr = (
         e
@@ -15,6 +14,10 @@ def calculate_HRR_O2_only(
 
     # hrr per unit area (kW/m^2)
     return hrr / area
+
+
+def calculate_MFR(c, delta_P, T_e):
+    return c * sqrt(delta_P / T_e)
 
 
 def calculate_HRR(
@@ -35,7 +38,7 @@ def calculate_HRR(
         X_O2_initial * (1 - X_CO2 - X_CO - X_O2)
     )
 
-    duct_mass_flow_rate = c * sqrt(delta_P / T_e)
+    duct_mass_flow_rate = calculate_MFR(c, delta_P, T_e)
 
     hrr = (
         1.10

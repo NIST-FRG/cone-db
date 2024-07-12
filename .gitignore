@@ -2,7 +2,6 @@
 *.pdf
 *.png
 OUTPUT/
-DATA/
 GRAPHS/
 SCRIPT_FIGURES/
 

@@ -10,7 +10,7 @@ OUTPUT_DIR = "./OUTPUT/FAA"
 
 def parse_dir(input_dir):
     # read all files in the directory
-    paths = Path(input_dir).glob("*.txt")
+    paths = Path(input_dir).glob("**/*.txt")
 
     # create output folder
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
