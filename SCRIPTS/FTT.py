@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 import matplotlib.pyplot as plt
 from graph import compare_FTT
+import scipy.signal as signal
+import numpy as np
 
 # remove later
 from pprint import pp
@@ -78,6 +80,8 @@ def parse_file(file_path):
 
     data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     data.to_csv(data_output_path, index=False)
+
+    # calculate mass loss rate
 
     # plot HRR
     # plt.figure(figsize=(8, 4))
@@ -238,6 +242,13 @@ def parse_data(df):
 
 def process_data(data, c_factor, e, area, start_time, o2_delay, co2_delay, co_delay):
 
+    # calculate mass loss rate
+
+    mlr = (data["Mass (g)"].diff() / data["Time (s)"].diff()).fillna(0)
+    # mlr = np.gradient(data["Mass (g)"], data["Time (s)"])
+    # data["MLR (g/s)"] = signal.savgol_filter(mlr, 5, 3)
+    data["MLR (g/s)"] = mlr
+
     start_time = int(start_time)
 
     # calculate baseline values by using the data up to test start time
@@ -247,18 +258,17 @@ def process_data(data, c_factor, e, area, start_time, o2_delay, co2_delay, co_de
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
-
     data.drop(data.tail(start_time).index, inplace=True)
 
+    data["Time (s)"] = data["Time (s)"] - start_time
+
+    # shift certain columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
+
     data["O2 (%)"] = data["O2 (%)"].shift(-o2_delay)
-
     data["CO2 (%)"] = data["CO2 (%)"].shift(-co2_delay)
-
     data["CO (%)"] = data["CO (%)"].shift(-co_delay)
 
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
-
-    # shift columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
 
     # convert area from cm^2 to m^2
     area = area / (100**2)
