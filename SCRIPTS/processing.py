@@ -19,6 +19,7 @@ def calculate_HRR_O2_only(X_O2, X_O2_initial, delta_P, T_e, c, e, area):
 def calculate_MFR(c, delta_P, T_e):
     return c * sqrt(delta_P / T_e)
 
+def calculate_k(I_0, )
 
 def calculate_HRR(
     X_O2,

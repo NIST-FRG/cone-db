@@ -71,14 +71,15 @@ def plot_all(folder_name):
         do2 = np.gradient(o2)
         ax2.plot(do2, color="r", label="Derivative of O2 (%)")
         ax2.axhline(y=0, color="black", linewidth = 1)
+        
 
         ax.plot(o2, label="O2 (%)")
         ax.set_xlim(0, 200)
         
-        # ax.set_ylim(-0.5, 0.5)
-        # ax.set_xlim(0, 100)
+        ax.set_ylim(19, 21)
 
-        # ax.axhline(y=0, color='b', linestyle='--', linewidth=3)
+
+        ax.axhline(y=0, color='b', linestyle='--', linewidth=3)
         ax.axvline(x=metadata["time_to_ignition_s"], color='y', linestyle='--', linewidth=3)
 
         # ax.plot(mlr, label="Original")
