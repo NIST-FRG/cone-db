@@ -3,13 +3,17 @@ from pathlib import Path
 import json
 import matplotlib.pyplot as plt
 from dateutil import parser
+import re
+from dateutil import parser
 
-from processing import calculate_HRR, calculate_MFR
+from utils import calculate_HRR, calculate_MFR, calculate_k, colorize
 
 
-INPUT_DIR = "./DATA/MIDAS"
-OUTPUT_DIR = "./OUTPUT/MIDAS"
-DEUBG = True
+INPUT_DIR = Path(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter")
+OUTPUT_DIR = Path(r"./OUTPUT/MIDAS")
+
+files_parsed = 0
+files_parsed_successfully = 0
 
 
 def parse_dir(input_dir):
@@ -18,10 +22,23 @@ def parse_dir(input_dir):
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
     for path in paths:
-        # try:
-        parse_file(path)
-        # except Exception as e:
-        #     print(f"Error parsing {path}: {e}")
+        global files_parsed_successfully
+        global files_parsed
+
+        # Every 20 files, print out file success rate:
+        if files_parsed % 20 == 0 and files_parsed != 0:
+            print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "blue"))
+
+        try:
+            files_parsed += 1
+            parse_file(path)
+        except Exception as e:
+            print(colorize(f" - Error parsing {path}: {e}", "red"))
+            continue
+        
+        print(colorize("Parsed successfully", "green"))
+
+        files_parsed_successfully += 1
 
 
 def parse_file(file_path):
@@ -32,25 +49,32 @@ def parse_file(file_path):
 
     metadata = parse_metadata(file_path)
 
-    metadata_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem.replace("-scaled.csv", "_metadata.json")}_metadata.json"
+    data = parse_data(df, metadata)
+
+    test_year = parser.parse(metadata["date"]).year
+
+    # Determine output path
+    Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
+
+
+
+    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled.csv", "_metadata.json")}_metadata.json"
+    data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem}_data.csv"
 
     # write metadata to json file
     with open(metadata_output_path, "w") as f:
         json.dump(metadata, f, indent=4)
 
-    data = parse_data(df, metadata)
-
-    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
+    # write data to csv file
     data.to_csv(data_output_path, index=False)
-
-
-
 
 def parse_metadata(file_path):
     # get the -Output .xls file for the metadata
     file_path = str(file_path).replace("-scaled.csv", "-Output.xls")
 
-    events = pd.read_excel(file_path, sheet_name="User Events")
+    if Path(file_path).is_file() == False:
+        raise Exception(f"Missing -Output metadata file")
+
     params = pd.read_excel(file_path, "Parameters")
     info = pd.read_excel(file_path, "Info", header=None)
 
@@ -65,10 +89,13 @@ def parse_metadata(file_path):
             return None
 
     def get_bool(key, params):
-        string = params[key].lower()
-        if string == "no" or string == "false":
+        value = params.get(key, None)
+        if value is None:
+            return None
+        value = value.lower()
+        if value == "no" or value == "false":
             return False
-        elif string == "yes" or string == "true":
+        elif value == "yes" or value == "true":
             return True
         return None
 
@@ -76,12 +103,12 @@ def parse_metadata(file_path):
 
     # Get test parameters
     metadata["c_factor"] = get_number("Cf", params)
-    metadata["e_mj/kg"] = get_number("Ef", params) / 1000
+    metadata["e_mj/kg"] = get_number("Ef", params) or 13.1
     metadata["heat_flux_kw/m2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
-    metadata["orientation"] = params["ORIENTATION"]
+    metadata["orientation"] = params.get("ORIENTATION")
 
     # Get test info
 
@@ -102,11 +129,19 @@ def parse_metadata(file_path):
     date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=True)
 
     metadata["date"] = date.isoformat()
-    metadata["operator"] = info["Qualified Operator"]
-    metadata["comments"] = info["Test Series information"]
-    metadata["specimen_number"] = info["Sample ID"]
+    metadata["operator"] = info.get("Qualified Operator")
+    metadata["comments"] = info.get("Test Series information")
+    metadata["specimen_number"] = info.get("Sample ID")
 
     # events
+
+    # if there are no events, just return the metadata now
+    try:
+        events = pd.read_excel(file_path, sheet_name="User Events")
+    except Exception as e:
+        print(f" - Missing user events: {e}")
+        return metadata
+    
     def parse_event(row):
         return {
             "time": row["Time (s)"],
@@ -131,24 +166,30 @@ def parse_metadata(file_path):
 
 def parse_data(df, metadata):
 
+    # get rid of the numbers in the column names using regex
+    df.columns = [re.sub(r"\d+:\s*", "", x) for x in df.columns]
+
     # Convert Te into K
-    df["25: Te (°C)"] += 273.15
+    df["Te (°C)"] += 273.15
 
     data = df.rename(
         columns={
             "Test Time (s)": "Time (s)",
-            "0: O2 (Vol fr)": "O2 (Vol fr)",
-            "1: CO2 (Vol fr)": "CO2 (Vol fr)",
-            "2: CO (Vol fr)": "CO (Vol fr)",
-            "25: Te (°C)": "Te (K)",
-            "5: Pe (Pa)": "Pe (Pa)",
+            "O2 (Vol fr)": "O2 (Vol fr)",
+            "CO2 (Vol fr)": "CO2 (Vol fr)",
+            "CO (Vol fr)": "CO (Vol fr)",
+            "Te (°C)": "Te (K)",
+            "Pe (Pa)": "Pe (Pa)",
+            "Io (%)": "I_o (%)",
+            "I (%)": "I (%)",
+            "RHRA (kW/m2)": "original HRR (kW/m2)",
+            "SampMass (g)": "Mass (g)",
         }
     )
 
     data = process_data(data, metadata)
 
-    
-    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)"]]
+    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)", "original HRR (kW/m2)", "Mass (g)"]]
 
     return data
 
@@ -165,7 +206,11 @@ def process_data(data, metadata):
     # convert area to m^2
     area = area / (100**2)
 
-        # calculate baseline values by using the data up to test start time
+    # if start-time is not defined, just use the first 30 secs for baseline
+    if start_time == 0:
+        start_time = 30
+
+    # calculate baseline values by using the data up to test start time
     X_O2_initial = data["O2 (Vol fr)"][:start_time].mean() / 100
     X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean() / 100
     X_CO_initial = data["CO (Vol fr)"][:start_time].mean() / 100
@@ -182,6 +227,10 @@ def process_data(data, metadata):
     data["CO (Vol fr)"] = data["CO (Vol fr)"].shift(-co_delay)
 
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
+
+    # take absolute value of delta P
+    # TODO: figure out why delta P is negative in the first place
+    data["Pe (Pa)"] = data["Pe (Pa)"].abs()
 
     # Calculate HRR by row
 
@@ -218,9 +267,31 @@ def process_data(data, metadata):
 
     data["MFR (kg/s)"] = data.apply(get_MFR, axis=1)
 
+    # Calculate K_smoke by row
+    def get_k(row):
+        # print(row)
+        I_o = row["I_o (%)"]
+        I = row["I (%)"]
+        # TODO: figure out what path length should be (not in any of the metadata files)
+        L = metadata.get("path_length_m", 1)
+
+        return calculate_k(I_o, I, L)
+    
+    # check if I_o or I even exists
+    if "I_o (%)" not in data.columns or "I (%)" not in data.columns:
+        data["k_smoke (1/m)"] = None
+        return data
+    # if I_o or I is negative, the smoke data is probably not useful, just return early
+    elif data["I_o (%)"].min() < 0 or data["I (%)"].min() < 0:
+        data["k_smoke (1/m)"] = None
+        return data
+
+    data["k_smoke (1/m)"] = data.apply(get_k, axis=1)
+
     return data
 
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
+    #parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2011\April\checkout\4-21-2011-NIST_224_A350-Checkout-scaled.csv")
 
     

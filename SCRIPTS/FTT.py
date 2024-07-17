@@ -7,10 +7,10 @@ from graph import compare_FTT
 import scipy.signal as signal
 import numpy as np
 
-from processing import calculate_HRR, calculate_MFR
+from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = "./DATA/FTT"
-OUTPUT_DIR = "./OUTPUT/FTT"
+INPUT_DIR = r"\\nfrl.el.nist.gov\NFRL_DATA"
+OUTPUT_DIR = "./OUTPUT/MIDAS/FTT_format"
 DEBUG = True
 
 
@@ -20,15 +20,42 @@ def parse_dir(input_dir):
 
     # ignore the reduced data files (can be recalculated later from raw data)
     paths = filter(lambda x: not x.stem.endswith("red"), list(paths))
+    # also remove scaled, stdev, or Output, etc. files since those are MIDAS format most likely
+    paths = list(
+        filter(
+            lambda x: not x.stem.endswith(
+                ("scaled", "stdev", "Output", "raw", "Post", "PrelimReport")
+            ),
+            list(paths),
+        )
+    )
+
+    total_files = len(paths)
+
+    print(colorize(f"Found {len(paths)} files to parse", "purple"))
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
+    files_parsed = 0
+    files_parsed_successfully = 0
+
     # for each file, parse it
     for path in paths:
+        if files_parsed % 20 == 0 and files_parsed != 0:
+            print(
+                colorize(
+                    f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%), total files: {total_files}",
+                    "blue",
+                )
+            )
+
+        files_parsed += 1
         try:
             parse_file(path)
         except Exception as e:
-            print(f"Error parsing {path}: {e}")
+            print(colorize(f" - Error parsing {path}: {e}", "red"))
+            continue
+        print(colorize(" - Parsed successfully", "green"))
 
     # compare_FTT()
 
@@ -41,14 +68,15 @@ def parse_file(file_path):
     df = pd.read_csv(file_path, encoding="cp1252")
 
     metadata = parse_metadata(df)
+
+    data = parse_data(df, metadata)
+
+    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     metadata_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_metadata.json"
 
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
 
-    data = parse_data(df, metadata)
-
-    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     data.to_csv(data_output_path, index=False)
 
 

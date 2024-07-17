@@ -1,4 +1,4 @@
-from math import sqrt, exp
+from math import sqrt, exp, log
 
 
 def calculate_HRR_O2_only(X_O2, X_O2_initial, delta_P, T_e, c, e, area):
@@ -19,7 +19,10 @@ def calculate_HRR_O2_only(X_O2, X_O2_initial, delta_P, T_e, c, e, area):
 def calculate_MFR(c, delta_P, T_e):
     return c * sqrt(delta_P / T_e)
 
-def calculate_k(I_0, )
+
+def calculate_k(I_0, I, L):
+    return log(I_0 / I) / L
+
 
 def calculate_HRR(
     X_O2,
@@ -52,3 +55,26 @@ def calculate_HRR(
 
     # hrr per unit area (kW/m^2)
     return hrr / area
+
+
+def colorize(text, color):
+    if color == "red":
+        color = 196
+    elif color == "green":
+        color = 46
+    elif color == "blue":
+        color = 45
+    elif color == "yellow":
+        color = 226
+    elif color == "purple":
+        color = 99
+    elif color == "cyan":
+        color = 123
+    elif color == "white":
+        color = 15
+    elif color == "black":
+        color = 0
+    else:
+        color = 15
+
+    return f"\x1b[38;5;{color}m{text}\x1b[0m"
