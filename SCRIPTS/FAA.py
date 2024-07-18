@@ -112,7 +112,7 @@ def parse_metadata(raw_metadata):
     # and searching those chunks for the relevant info
 
     # second chunk: test parameters
-    metadata["eot_time_s"] =  extract_num("Test Length", raw_metadata)
+    metadata["test_end_time_s"] =  extract_num("Test Length", raw_metadata)
     # the original data is in m^2 but we want cm^2, so multiply by 10,000 to convert
     surface_area = extract_num("Sample Surface Area", raw_metadata)
     # if surface area is None, leave it as None, otherwise multiply by 10,000

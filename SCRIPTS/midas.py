@@ -201,6 +201,10 @@ def parse_data(df, metadata):
         }
     )
 
+    # If the Time (s) column has increments besides 1, raise an error
+    if not data["Time (s)"].diff().eq(1).all():
+        raise Exception("Time increments are not 1 second")
+
     data = process_data(data, metadata)
 
     # set which columns to include in the final output
