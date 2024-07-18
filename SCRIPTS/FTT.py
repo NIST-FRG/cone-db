@@ -9,7 +9,7 @@ import numpy as np
 
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = r"\\nfrl.el.nist.gov\NFRL_DATA"
+INPUT_DIR = r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter"
 OUTPUT_DIR = "./OUTPUT/MIDAS/FTT_format"
 DEBUG = True
 
@@ -272,9 +272,9 @@ def process_data(data, metadata):
     start_time = int(metadata["test_start_time_s"])
 
     # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean() / 100
-    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean() / 100
-    X_CO_initial = data["CO (Vol fr)"][:start_time].mean() / 100
+    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean()# / 100
+    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()# / 100
+    X_CO_initial = data["CO (Vol fr)"][:start_time].mean()# / 100
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
@@ -293,9 +293,9 @@ def process_data(data, metadata):
     # Calculate HRR by row
 
     def get_HRR(row):
-        X_O2 = row["O2 (Vol fr)"] / 100
-        X_CO2 = row["CO2 (Vol fr)"] / 100
-        X_CO = row["CO (Vol fr)"] / 100
+        X_O2 = row["O2 (Vol fr)"]# / 100
+        X_CO2 = row["CO2 (Vol fr)"]# / 100
+        X_CO = row["CO (Vol fr)"]# / 100
 
         delta_P = row["DPT (Pa)"]
         T_e = row["Te (K)"]

@@ -103,16 +103,30 @@ def parse_metadata(file_path):
 
     # Get test parameters
     metadata["c_factor"] = get_number("Cf", params)
-    metadata["e_mj/kg"] = get_number("Ef", params) or 13.1
+    e = get_number("Ef", params)
+    if e is None:
+        e = 13100
+        print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
+    e /= 1000
+    metadata["e_mj/kg"] = e
     metadata["heat_flux_kw/m2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
     metadata["orientation"] = params.get("ORIENTATION")
 
+    area = get_number("As", params)
+    if area is None:
+        raise Exception("Area not defined in metadata")
+    # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
+    if area < 0.01:
+        metadata["surface_area_cm^2"] = area  * 100**2
+    else:
+        metadata["surface_area_cm^2"] = area
+
     # Get test info
 
-    # get the tranpose of the dataframe (swaps rows & columns)
+    # get the transpose of the dataframe (swaps rows & columns)
     info = info.T
     
     new_header = info.iloc[0]
@@ -189,6 +203,7 @@ def parse_data(df, metadata):
 
     data = process_data(data, metadata)
 
+    # set which columns to include in the final output
     data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)", "original HRR (kW/m2)", "Mass (g)"]]
 
     return data
@@ -196,10 +211,22 @@ def parse_data(df, metadata):
 def process_data(data, metadata):
 
     start_time = metadata.get("test_start_time_s", 0)
+
     o2_delay = metadata.get("o2_delay_time_s", 0)
     co2_delay = metadata.get("co2_delay_time_s", 0)
     co_delay = metadata.get("co_delay_time_s", 0)
-    area = metadata.get("surface_area_cm^2", 100)
+    area = metadata.get("surface_area_cm^2", 0)
+
+    # if o2_delay is None:
+    #     o2_delay = 0
+    #     print(colorize(" - O2 delay not defined in metadata, defaulting to 0", "yellow"))
+    # if co2_delay is None:
+    #     co2_delay = 0
+    #     print(colorize(" - CO2 delay not defined in metadata, defaulting to 0", "yellow"))
+    # if co_delay is None:
+    #     co_delay = 0
+    #     print(colorize(" - CO delay not defined in metadata, defaulting to 0", "yellow"))
+    
     c_factor = metadata.get("c_factor")
     e = metadata.get("e_mj/kg", 13.1)
 
@@ -207,13 +234,12 @@ def process_data(data, metadata):
     area = area / (100**2)
 
     # if start-time is not defined, just use the first 30 secs for baseline
-    if start_time == 0:
-        start_time = 30
+    baseline_end = int(start_time if start_time > 0 else 30)
 
     # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean() / 100
-    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean() / 100
-    X_CO_initial = data["CO (Vol fr)"][:start_time].mean() / 100
+    X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() / 100
+    X_CO2_initial = data["CO2 (Vol fr)"].iloc[:baseline_end].mean() / 100
+    X_CO_initial = data["CO (Vol fr)"].iloc[:baseline_end].mean() / 100
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
@@ -279,10 +305,12 @@ def process_data(data, metadata):
     
     # check if I_o or I even exists
     if "I_o (%)" not in data.columns or "I (%)" not in data.columns:
+        print(colorize(" - I_o or I not found in data, skipping k_smoke calculation", "yellow"))
         data["k_smoke (1/m)"] = None
         return data
     # if I_o or I is negative, the smoke data is probably not useful, just return early
     elif data["I_o (%)"].min() < 0 or data["I (%)"].min() < 0:
+        print(colorize(" - I_o or I is negative, skipping k_smoke calculation", "yellow"))
         data["k_smoke (1/m)"] = None
         return data
 
@@ -292,6 +320,6 @@ def process_data(data, metadata):
 
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
-    #parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2011\April\checkout\4-21-2011-NIST_224_A350-Checkout-scaled.csv")
+    # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2011\April\checkout\4-21-2011-NIST_224_A350-Checkout-scaled.csv")
 
     
