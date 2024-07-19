@@ -15,6 +15,9 @@ OUTPUT_DIR = Path(r"./OUTPUT/MIDAS")
 files_parsed = 0
 files_parsed_successfully = 0
 
+negative_pe_tests = 0
+bad_i_tests = 0
+
 
 def parse_dir(input_dir):
     paths = Path(input_dir).glob("**/*scaled.csv")
@@ -24,6 +27,8 @@ def parse_dir(input_dir):
     for path in paths:
         global files_parsed_successfully
         global files_parsed
+        global negative_pe_tests
+        global bad_i_tests
 
         # Every 20 files, print out file success rate:
         if files_parsed % 20 == 0 and files_parsed != 0:
@@ -34,12 +39,19 @@ def parse_dir(input_dir):
             parse_file(path)
         except Exception as e:
             print(colorize(f" - Error parsing {path}: {e}", "red"))
+
+            print()
+
             continue
         
-        print(colorize("Parsed successfully", "green"))
+        print(colorize("Parsed successfully\n", "green"))
 
         files_parsed_successfully += 1
-
+    
+    print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "purple"))
+    print(colorize(f"Tests with bad light intensity data (no Ksmoke): {bad_i_tests}", "purple"))
+    print(colorize(f"Skipped due to negative delta_P: {negative_pe_tests}", "purple"))
+    print(colorize(f"Files with bad I data: {bad_i_tests}", "purple"))
 
 def parse_file(file_path):
     print(f"Parsing {file_path}")
@@ -56,10 +68,8 @@ def parse_file(file_path):
     # Determine output path
     Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
 
-
-
-    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled.csv", "_metadata.json")}_metadata.json"
-    data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem}_data.csv"
+    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.json"
+    data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.csv"
 
     # write metadata to json file
     with open(metadata_output_path, "w") as f:
@@ -109,7 +119,7 @@ def parse_metadata(file_path):
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
     e /= 1000
     metadata["e_mj/kg"] = e
-    metadata["heat_flux_kw/m2"] = get_number("CONEHEATFLUX", params)
+    metadata["heat_flux_kw/m^2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
@@ -144,6 +154,7 @@ def parse_metadata(file_path):
 
     metadata["date"] = date.isoformat()
     metadata["operator"] = info.get("Qualified Operator")
+    metadata["director"] = info.get("Test Director")
     metadata["comments"] = info.get("Test Series information")
     metadata["specimen_number"] = info.get("Sample ID")
 
@@ -202,7 +213,7 @@ def parse_data(df, metadata):
     )
 
     # If the Time (s) column has increments besides 1, raise an error
-    if not data["Time (s)"].diff().eq(1).all():
+    if data["Time (s)"].diff().max() > 1:
         raise Exception("Time increments are not 1 second")
 
     data = process_data(data, metadata)
@@ -258,9 +269,12 @@ def process_data(data, metadata):
 
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
 
-    # take absolute value of delta P
-    # TODO: figure out why delta P is negative in the first place
-    data["Pe (Pa)"] = data["Pe (Pa)"].abs()
+    global negative_pe_tests
+
+    # If delta_P is negative, the data is probably not useful, just throw an error
+    if data["Pe (Pa)"].min() < 0:
+        negative_pe_tests += 1
+        raise Exception("Negative delta_P found")
 
     # Calculate HRR by row
 
@@ -307,14 +321,18 @@ def process_data(data, metadata):
 
         return calculate_k(I_o, I, L)
     
+    global bad_i_tests
+
     # check if I_o or I even exists
     if "I_o (%)" not in data.columns or "I (%)" not in data.columns:
         print(colorize(" - I_o or I not found in data, skipping k_smoke calculation", "yellow"))
+        bad_i_tests += 1
         data["k_smoke (1/m)"] = None
         return data
     # if I_o or I is negative, the smoke data is probably not useful, just return early
     elif data["I_o (%)"].min() < 0 or data["I (%)"].min() < 0:
         print(colorize(" - I_o or I is negative, skipping k_smoke calculation", "yellow"))
+        bad_i_tests += 1
         data["k_smoke (1/m)"] = None
         return data
 

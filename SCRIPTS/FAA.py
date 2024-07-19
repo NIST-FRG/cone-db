@@ -124,11 +124,13 @@ def parse_metadata(raw_metadata):
     metadata["sample_description"] = extract_string("Sample Material", raw_metadata, end="Test Notes")
 
     # fourth chunk: pretest comments
-    metadata["pretest_comments"] = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
+    pre_test_comments = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
 
     # fifth chunk: posttest comments
     # theoretically ... this could be bad if posttest comments included "Reduction Parameters" verbatim though
-    metadata["posttest_comments"] = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
+    post_test_comments = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
+
+    metadata["comments"] = f"Pre-test:\n{pre_test_comments}\nPost-test:\n{post_test_comments}"
 
     # sixth chunk: reduction paramters:
     metadata["c_factor"] = extract_num("C-Factor", raw_metadata)

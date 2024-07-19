@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 from graph import compare_FTT
 import scipy.signal as signal
 import numpy as np
+from dateutil import parser
 
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = r"./DATA/FTT"
-OUTPUT_DIR = r"./OUTPUT/FTT"
+INPUT_DIR = Path(r"./DATA/FTT")
+OUTPUT_DIR = Path(r"./OUTPUT/FTT")
 DEBUG = True
 
 
@@ -33,8 +34,6 @@ def parse_dir(input_dir):
     total_files = len(paths)
 
     print(colorize(f"Found {len(paths)} files to parse", "purple"))
-
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
     files_parsed = 0
     files_parsed_successfully = 0
@@ -81,8 +80,13 @@ def parse_file(file_path):
 
     data = parse_data(df, metadata)
 
-    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
-    metadata_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_metadata.json"
+    test_year = parser.parse(metadata["date"]).year
+
+    # Determine output path
+    Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
+
+    data_output_path = Path(OUTPUT_DIR) / str(test_year) /f"{Path(file_path).stem}.csv"
+    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem}.json"
 
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
@@ -138,8 +142,9 @@ def parse_metadata(df):
     metadata["operator"] = raw_metadata["Operator"]
     metadata["report_name"] = raw_metadata["Report name"]
 
-    metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
-    metadata["posttest_comments"] = raw_metadata["After-test comments"]
+    # metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
+    # metadata["posttest_comments"] = raw_metadata["After-test comments"]
+    metadata["comments"] = f"Pre-test:\n{raw_metadata['Pre-test comments'] or ""}\nPost-test:\n{raw_metadata["After-test comments"] or ""}"
 
     metadata["grid"] = get_bool("Grid?")
     metadata["mounting_type"] = "Edge frame" if get_bool("Edge frame?") else None
