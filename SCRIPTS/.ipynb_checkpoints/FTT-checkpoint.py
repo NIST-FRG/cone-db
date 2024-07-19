@@ -7,10 +7,10 @@ from graph import compare_FTT
 import scipy.signal as signal
 import numpy as np
 
-from utils import calculate_HRR, calculate_MFR, colorize
+from processing import calculate_HRR, calculate_MFR
 
-INPUT_DIR = r"./DATA/FTT"
-OUTPUT_DIR = r"./OUTPUT/FTT"
+INPUT_DIR = "./DATA/FTT"
+OUTPUT_DIR = "./OUTPUT/FTT"
 DEBUG = True
 
 
@@ -20,50 +20,17 @@ def parse_dir(input_dir):
 
     # ignore the reduced data files (can be recalculated later from raw data)
     paths = filter(lambda x: not x.stem.endswith("red"), list(paths))
-    # also remove scaled, stdev, or Output, etc. files since those are MIDAS format most likely
-    paths = list(
-        filter(
-            lambda x: not x.stem.endswith(
-                ("scaled", "stdev", "Output", "raw", "Post", "PrelimReport")
-            ),
-            list(paths),
-        )
-    )
-
-    total_files = len(paths)
-
-    print(colorize(f"Found {len(paths)} files to parse", "purple"))
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
-    files_parsed = 0
-    files_parsed_successfully = 0
-
     # for each file, parse it
     for path in paths:
-        if files_parsed % 20 == 0 and files_parsed != 0:
-            print(
-                colorize(
-                    f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%), total files: {total_files}",
-                    "blue",
-                )
-            )
-
         try:
-            files_parsed += 1
             parse_file(path)
         except Exception as e:
-            print(colorize(f" - Error parsing {path}: {e}", "red"))
-            continue
-        print(colorize(" - Parsed successfully", "green"))
-        files_parsed_successfully += 1
+            print(f"Error parsing {path}: {e}")
 
-    print(
-        colorize(
-            f"COMPLETE: Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%), total files: {total_files}",
-            "blue",
-        )
-    )
+    # compare_FTT()
 
 
 def parse_file(file_path):
@@ -73,20 +40,15 @@ def parse_file(file_path):
     # note the csv files are encoded in cp1252 NOT utf-8...
     df = pd.read_csv(file_path, encoding="cp1252")
 
-    # if the second row is blank, drop it
-    if df.iloc[1].isnull().all():
-        df = df.drop(1)
-
     metadata = parse_metadata(df)
-
-    data = parse_data(df, metadata)
-
-    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     metadata_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_metadata.json"
 
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
 
+    data = parse_data(df, metadata)
+
+    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
     data.to_csv(data_output_path, index=False)
 
 
@@ -160,7 +122,7 @@ def parse_metadata(df):
     metadata["time_to_ignition_s"] = get_number("Time to ignition (s)")
     metadata["time_to_flameout_s"] = get_number("Time to flameout (s)")
     metadata["test_start_time_s"] = get_number("Test start time (s)")
-    metadata["test_end_time_s"] = get_number("User EOT time (s)")
+    metadata["eot_time_s"] = get_number("User EOT time (s)")
 
     metadata["mlr_eot_mass_g/m^2"] = get_number("MLR EOT mass (g/m²)")
     metadata["eot_criterion"] = get_number("End of test criterion")
@@ -223,9 +185,9 @@ def parse_data(df, metadata):
     data.columns = [process_name(c) for c in data.columns]
 
     # convert O2, CO2, and CO into vol fr
-    data.loc[:, "o2_%"] /= 100
-    data.loc[:, "co2_%"] /= 100
-    data.loc[:, "co_%"] /= 100
+    data["o2_%"] /= 100
+    data["co2_%"] /= 100
+    data["co_%"] /= 100
 
     # we only care about certain columns, so only get that subset
     data = data.rename(
@@ -233,16 +195,12 @@ def parse_data(df, metadata):
             "time_s": "Time (s)",
             "mass_g": "Mass (g)",
             "o2_%": "O2 (Vol fr)",
-            "co2_%": "CO2 (Vol fr)",
+            "co2_%": "O2 (Vol fr)",
             "co_%": "CO (Vol fr)",
             "dpt_pa": "DPT (Pa)",
             "stack_tc_k": "Te (K)",
         }
     )
-
-    # If the Time (s) column has increments besides 1, raise an error
-    if data["Time (s)"].diff().max() > 1:
-        raise Exception("Time increments are not 1 second")
 
     # get metadata required for HRR calculations
 
@@ -266,10 +224,10 @@ def parse_data(df, metadata):
 
 def process_data(data, metadata):
 
-    start_time = int(metadata.get("test_start_time_s", 0))
-    o2_delay = int(metadata["o2_delay_time_s"] or 0)
-    co2_delay = int(metadata["co2_delay_time_s"] or 0)
-    co_delay = int(metadata["co_delay_time_s"] or 0)
+    start_time = metadata["test_start_time_s"]
+    o2_delay = metadata["o2_delay_time_s"] or 0
+    co2_delay = metadata["co2_delay_time_s"] or 0
+    co_delay = metadata["co_delay_time_s"] or 0
     area = metadata["surface_area_cm^2"] or 100  # cm^2
     c_factor = metadata["c_factor"]
     e = metadata["e_mj/kg"]
@@ -277,13 +235,18 @@ def process_data(data, metadata):
     # convert area from cm^2 to m^2
     area = area / (100**2)
 
-    # if start-time is not defined, just use the first 30 secs for baseline
-    baseline_end = int(start_time if start_time > 0 else 30)
+    # calculate mass loss rate
+    mlr = (data["mass_g"].diff() / data["time_s"].diff()).fillna(0)
+    # mlr = np.gradient(data["Mass (g)"], data["Time (s)"])
+    # data["MLR (g/s)"] = signal.savgol_filter(mlr, 5, 3)
+    data["MLR (g/s)"] = -mlr
+
+    start_time = int(metadata["test_start_time_s"])
 
     # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"][:baseline_end].mean()  # / 100
-    X_CO2_initial = data["CO2 (Vol fr)"][:baseline_end].mean()  # / 100
-    X_CO_initial = data["CO (Vol fr)"][:baseline_end].mean()  # / 100
+    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean() / 100
+    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean() / 100
+    X_CO_initial = data["CO (Vol fr)"][:start_time].mean() / 100
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
@@ -302,9 +265,9 @@ def process_data(data, metadata):
     # Calculate HRR by row
 
     def get_HRR(row):
-        X_O2 = row["O2 (Vol fr)"]  # / 100
-        X_CO2 = row["CO2 (Vol fr)"]  # / 100
-        X_CO = row["CO (Vol fr)"]  # / 100
+        X_O2 = row["O2 (Vol fr)"] / 100
+        X_CO2 = row["CO2 (Vol fr)"] / 100
+        X_CO = row["CO (Vol fr)"] / 100
 
         delta_P = row["DPT (Pa)"]
         T_e = row["Te (K)"]
@@ -339,4 +302,4 @@ def process_data(data, metadata):
 
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
-    # parse_file("./DATA/FTT/24030001.csv")
+    # parse_file("./DATA/FTT/19020031.csv")

@@ -1,0 +1,114 @@
+2:09:35.268 PM          Opening Excel Workbook ... ->Success
+2:09:35.655 PM          Loading Parameters ... ->Success
+2:09:35.676 PM          Getting "Channels" Worksheet ... ->Success
+2:09:35.682 PM          Loading Channels List ... ->Success
+2:09:35.720 PM                    Creating ch0 "O2" ... ->Success
+2:09:35.722 PM                    Creating ch1 "CO2" ... ->Success
+2:09:35.728 PM                    Creating ch2 "CO" ... ->Success
+2:09:35.736 PM                    Creating ch3 "Io" ... ->Success
+2:09:35.743 PM                    Creating ch4 "I" ... ->Success
+2:09:35.751 PM                    Creating ch5 "Pe" ... ->Success
+2:09:35.757 PM                    Creating ch6 "CJC0" ... ->Success
+2:09:35.764 PM                    Creating ch7 "TCraw1" ... ->Success
+2:09:35.772 PM                    Creating ch8 "TCraw2" ... ->Success
+2:09:35.780 PM                    Creating ch9 "SampMass" ... ->Success
+2:09:35.788 PM                    Creating ch10 "BurnerFlow" ... ->Success
+2:09:35.798 PM                    Creating ch11 "BurnerFlowSet" ... ->Success
+2:09:35.807 PM                    Creating ch12 "TCraw3" ... ->Success
+2:09:35.818 PM                    Creating ch13 "TCraw4" ... ->Success
+2:09:35.828 PM                    Creating ch14 "TCraw5" ... ->Success
+2:09:35.841 PM                    Creating ch15 "Hfspare" ... ->Success
+2:09:35.852 PM                    Creating ch16 "TCraw7" ... ->Success
+2:09:35.865 PM                    Creating ch17 "HeatFlux" ... ->Success
+2:09:35.878 PM                    Creating ch18 "CanopyFlow" ... ->Success
+2:09:35.893 PM                    Creating ch19 "MarkSig" ... ->Success
+2:09:35.907 PM                    Creating ch20 "Pamb" ... ->Success
+2:09:35.923 PM                    Creating ch21 "Tamb" ... ->Success
+2:09:35.938 PM                    Creating ch22 "RHamb" ... ->Success
+2:09:35.955 PM                    Creating ch23 "Tsmk" ... ->Success
+2:09:35.971 PM                    Creating ch24 "Tcone" ... ->Success
+2:09:35.989 PM                    Creating ch25 "Te" ... ->Success
+2:09:36.006 PM                    Creating ch26 "H2Oa" ... ->Success
+2:09:36.026 PM                    Creating ch27 "Rhoe" ... ->Success
+2:09:36.049 PM                    Creating ch28 "MFRe" ... ->Success
+2:09:36.071 PM                    Creating ch29 "VFRe" ... ->Success
+2:09:36.094 PM                    Creating ch30 "Ksm" ... ->Success
+2:09:36.116 PM                    Creating ch31 "HRRmethane" ... ->Success
+2:09:36.138 PM                    Creating ch32 "Phi" ... ->Success
+2:09:36.160 PM                    Creating ch33 "RHR" ... ->Success
+2:09:36.183 PM                    Creating ch34 "RHRA" ... ->Success
+2:09:36.205 PM                    Creating ch35 "newCf" ... ->Success
+2:09:36.227 PM                    Creating ch36 "EvMark" ... ->Success
+2:09:36.251 PM          Loading Setup File ... ->Success
+2:09:36.542 PM                    Updating ch 0 "Oxygen Volume Fraction (Dry) " ... ->Success
+2:09:36.601 PM                    Updating ch 1 "Carbon Dioxide Volume Fraction (Dry)" ... ->Success
+2:09:36.648 PM                    Updating ch 2 "Carbon Monoxide Volume Fraction (Dry)" ... ->Success
+2:09:36.705 PM                    Updating ch 3 "Smoke Detector 1 -compensation" ... ->Success
+2:09:36.756 PM                    Updating ch 4 "Smoke Detector 2 - main" ... ->Success
+2:09:36.802 PM                    Updating ch 5 "Duct Flow Oriface Plate Differential Pressure" ... ->Success
+2:09:36.855 PM                    Updating ch 6 "CJC Connector 0" ... ->Success
+2:09:36.904 PM                    Updating ch 7 "TC1 Duct Inlet - near smokemeter" ... ->Success
+2:09:36.960 PM                    Updating ch 8 "TC2 Duct Outlet - near oriface plate" ... ->Success
+2:09:37.017 PM                    Updating ch 9 "Load Cell for Sample Mass" ... ->Success
+2:09:37.071 PM                    Updating ch 10 "Burner Methane Mass Flow Rate" ... ->Success
+2:09:37.125 PM                    Updating ch 11 "Burner Mass Flow Rate setpoint" ... ->Success
+2:09:37.179 PM                    Updating ch 12 "TC1 Cone Heater" ... ->Success
+2:09:37.228 PM                    Updating ch 13 "TC2 Cone Heater" ... ->Success
+2:09:37.285 PM                    Updating ch 14 "TC3 Cone Heater" ... ->Success
+2:09:37.333 PM                    Updating ch 15 "Spare heat Flux Gauge" ... ->Success
+2:09:37.388 PM                    Updating ch 16 "TC spare" ... ->Success
+2:09:37.436 PM                    Updating ch 17 "Radiometer Heat Flux" ... ->Success
+2:09:37.486 PM                    Updating ch 18 "Canopy Hood Flow Alarm" ... ->Success
+2:09:37.543 PM                    Updating ch 19 "mark signal" ... ->Success
+2:09:37.604 PM                    Updating ch 20 "Ambient Pressure" ... ->Success
+2:09:37.660 PM                    Updating ch 21 "Ambient Temperature" ... ->Success
+2:09:37.716 PM                    Updating ch 22 "Ambient Relative Humidity" ... ->Success
+2:09:37.771 PM                    Updating ch 23 "Gas Temperature near smoke meter" ... ->Success
+2:09:37.820 PM                    Updating ch 24 "Cone Heater Temperature" ... ->Success
+2:09:37.870 PM                    Updating ch 25 "Exhaust Gas Temperature" ... ->Success
+2:09:37.919 PM                    Updating ch 26 "Ambient Water Volume Fraction" ... ->Success
+2:09:37.969 PM                    Updating ch 27 "Exhaust Gas Density" ... ->Success
+2:09:38.018 PM                    Updating ch 28 "Duct Mass Flow Rate" ... ->Success
+2:09:38.069 PM                    Updating ch 29 "Duct Volume Flow Rate" ... ->Success
+2:09:38.129 PM                    Updating ch 30 "Smoke Extinction Coefficient" ... ->Success
+2:09:38.187 PM                    Updating ch 31 "Methane Burner HRR" ... ->Success
+2:09:38.248 PM                    Updating ch 32 "Oxygen Depletion Factor " ... ->Success
+2:09:38.304 PM                    Updating ch 33 "Rate of Heat Release" ... ->Success
+2:09:38.361 PM                    Updating ch 34 "Rate of Heat Release per Unit Area" ... ->Success
+2:09:38.417 PM                    Updating ch 35 "New Calibration Factor" ... ->Success
+2:09:38.466 PM                    Updating ch 36 "EventDriver" ... ->Success
+2:09:40.394 PM          Creating Excel Output File ... ->Success
+2:09:40.796 PM                Adding Channels with Comments ... ->Success
+2:09:43.280 PM                Creating Info Worksheet ... ->Success
+2:09:43.419 PM                Creating Parameters Worksheet ... ->Success
+2:09:43.477 PM                Saving Excel Output File ... ->Success
+2:09:43.678 PM          Creating DAQmx Task(s) ... ->Success
+2:09:43.724 PM                      Adding Ch"O2" to Task"DAQ Task_1" ... ->Success
+2:09:43.753 PM                      Adding Ch"CO2" to Task"DAQ Task_1" ... ->Success
+2:09:43.796 PM                      Adding Ch"CO" to Task"DAQ Task_1" ... ->Success
+2:09:43.839 PM                      Adding Ch"Io" to Task"DAQ Task_1" ... ->Success
+2:09:43.881 PM                      Adding Ch"I" to Task"DAQ Task_1" ... ->Success
+2:09:43.926 PM                      Adding Ch"Pe" to Task"DAQ Task_1" ... ->Success
+2:09:43.972 PM                      Adding Ch"CJC0" to Task"DAQ Task_1" ... ->Success
+2:09:44.022 PM                      Adding Ch"TCraw1" to Task"DAQ Task_1" ... ->Success
+2:09:44.064 PM                      Adding Ch"TCraw2" to Task"DAQ Task_1" ... ->Success
+2:09:44.105 PM                      Adding Ch"SampMass" to Task"DAQ Task_1" ... ->Success
+2:09:44.148 PM                      Adding Ch"BurnerFlow" to Task"DAQ Task_1" ... ->Success
+2:09:44.189 PM                      Adding Ch"BurnerFlowSet" to Task"DAQ Task_1" ... ->Success
+2:09:44.231 PM                      Adding Ch"TCraw3" to Task"DAQ Task_1" ... ->Success
+2:09:44.298 PM                      Adding Ch"TCraw4" to Task"DAQ Task_1" ... ->Success
+2:09:44.331 PM                      Adding Ch"TCraw5" to Task"DAQ Task_1" ... ->Success
+2:09:44.367 PM                      Adding Ch"Hfspare" to Task"DAQ Task_1" ... ->Success
+2:09:44.403 PM                      Adding Ch"TCraw7" to Task"DAQ Task_1" ... ->Success
+2:09:44.441 PM                      Adding Ch"HeatFlux" to Task"DAQ Task_1" ... ->Success
+2:09:44.478 PM                      Adding Ch"CanopyFlow" to Task"DAQ Task_1" ... ->Success
+2:09:44.516 PM                      Adding Ch"MarkSig" to Task"DAQ Task_1" ... ->Success
+2:09:44.627 PM          Setting clocks and getting timing information ... ->Success
+2:09:44.650 PM          DAQ Task_1 - Verify ... ->Success
+2:09:44.682 PM          DAQ Task_1 - Reserve ... ->Success
+2:09:44.722 PM          DAQ Task_1 - Commit ... ->Success
+2:09:44.753 PM          Setting Trigger ... ->Success
+2:09:44.778 PM          Waiting on Trigger ... ->Success
+2:09:44.802 PM          Starting DAQmx acquisition ... ->Success
+____________________________________________________
+2:09:44.827 PM          Total: 9.559 seconds

@@ -1,6 +1,8 @@
 # script-generated files
 *.pdf
 *.png
-OUTPUT
-DATA
+DATA/*
+OUTPUT/*
+GRAPHS/
+SCRIPT_FIGURES/
 
