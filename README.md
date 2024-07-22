@@ -16,7 +16,8 @@ Empty / undefined values are `null` in the metadata file.
 | `report_name`              | String                                                                                          |                                |
 | `pretest_comments`         | String                                                                                          |                                |
 | `posttest_comments`        | String                                                                                          |                                |
-| `grid`                     | String                                                                                          |                                |
+| `comments`                 | String                                                                                          |                                |
+| `grid`                     | Boolean                                                                                         |                                |
 | `mounting_system`          | String                                                                                          | "Edge frame", "CBUF", etc.     |
 | `heat_flux_kw/m^2`         | Number                                                                                          |                                |
 | `separation_mm`            | Number                                                                                          |                                |
@@ -31,7 +32,7 @@ Empty / undefined values are `null` in the metadata file.
 | `time_to_ignition_s`       | Number                                                                                          |                                |
 | `time_to_flameout_s`       | Number                                                                                          |                                |
 | `test_start_time_s`        | Number                                                                                          |                                |
-| `user_eot_time_s`          | Number                                                                                          |                                |
+| `test_end_time_s`          | Number                                                                                          |                                |
 | `mlr_eot_mass_g/m^2`       | Number                                                                                          |                                |
 | `eot_criterion`            | String                                                                                          |                                |
 | `c_factor`                 | Number                                                                                          | SI units                       |
@@ -57,9 +58,21 @@ Empty / undefined values are `null` in the metadata file.
 | `soot_mass_data_collected` | Boolean                                                                                         |                                |
 | `soot_mass_g`              | Number                                                                                          |                                |
 | `soot_mass_ratio`          | Number                                                                                          | 1:x                            |
+| `events`                   | Array                                                                                           | See below                      |
 
 ### Events
 
+<<<<<<< HEAD
 TBD
 # ryan edit
 
+=======
+Events are stored as a list of JSON objects, each with the following properties:
+
+| Name    | Data type | Notes                                               |
+| ------- |:---------:| --------------------------------------------------- |
+| `time`  | Number    | Time of the event                                   |
+| `event` | String    | Name of the event (e.g. "Ignition" or "Start Test") |
+
+*Note that data is shifted to remove the start time - for example, if the start time is 50 seconds, then the first 50 seconds are used to calculate the baseline, then removed so that t=50 is now t=0.*
+>>>>>>> upstream/main
