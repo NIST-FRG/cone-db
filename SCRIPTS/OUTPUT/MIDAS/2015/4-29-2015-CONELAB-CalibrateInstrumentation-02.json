@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.038,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2015-04-29T16:28:18",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "CalibrateInstrumentation",
+    "specimen_number": NaN
+}

@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0415,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 30.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 1.0,
+    "date": "2018-12-11T14:49:27",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Run cameras to see where the data is saved",
+    "specimen_number": NaN
+}

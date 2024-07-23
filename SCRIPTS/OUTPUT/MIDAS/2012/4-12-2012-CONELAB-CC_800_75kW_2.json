@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.03597,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-04-12T11:21:15",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CC_800_75kW_2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 276,
+            "event": "start"
+        },
+        {
+            "time": 292,
+            "event": "ignition - flashing before ignition"
+        },
+        {
+            "time": 845,
+            "event": "flame out"
+        }
+    ]
+}

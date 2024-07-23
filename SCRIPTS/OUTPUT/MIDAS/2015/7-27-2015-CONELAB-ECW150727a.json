@@ -1,0 +1,43 @@
+{
+    "c_factor": 0.0391,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 164.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 1.0,
+    "date": "2015-07-27T14:08:28",
+    "operator": "Shields",
+    "director": "Bryner",
+    "comments": "Wood crib fires\nSource of ignition =                     12 ml acetone",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 592,
+            "event": "Start Test"
+        },
+        {
+            "time": 696,
+            "event": "Ignition"
+        },
+        {
+            "time": 824,
+            "event": "accelerant out"
+        },
+        {
+            "time": 1010,
+            "event": "Flame out "
+        },
+        {
+            "time": 1116,
+            "event": "End Test"
+        },
+        {
+            "time": 1133,
+            "event": "The Start Event Mark was approx. 10 sec. late."
+        }
+    ],
+    "test_start_time_s": 1133,
+    "time_to_ignition_s": 696
+}

@@ -80,6 +80,11 @@ def parse_file(file_path):
 
     data = parse_data(df, metadata)
 
+    # If there's less than 20 data points, just skip the file
+    if len(data) < 20:
+        print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
+        return
+
     test_year = parser.parse(metadata["date"]).year
 
     # Determine output path
@@ -144,12 +149,18 @@ def parse_metadata(df):
 
     # metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
     # metadata["posttest_comments"] = raw_metadata["After-test comments"]
-    metadata["comments"] = f"Pre-test:\n{raw_metadata['Pre-test comments'] or ""}\nPost-test:\n{raw_metadata["After-test comments"] or ""}"
+    comments = ""
+    if raw_metadata['Pre-test comments'] == raw_metadata["Pre-test comments"]:
+        comments += f"Pre-test: {raw_metadata['Pre-test comments']}\n"
+    if raw_metadata["After-test comments"] == raw_metadata["After-test comments"]:
+        comments += f"Post-test: {raw_metadata["After-test comments"]}\n"
+    
+    metadata["comments"] = comments
 
     metadata["grid"] = get_bool("Grid?")
     metadata["mounting_type"] = "Edge frame" if get_bool("Edge frame?") else None
 
-    metadata["heat_flux_kw/m^2"] = get_number("Heat flux (kW/m²)")
+    metadata["heat_flux_kW/m^2"] = get_number("Heat flux (kW/m²)")
     metadata["separation_mm"] = get_number("Separation (mm)")
 
     metadata["manufacturer"] = raw_metadata["Manufacturer"]

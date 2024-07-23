@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.03713,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 25.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 67.65,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 50.0,
+    "date": "2013-02-20T16:16:08",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Measuring the heat flux decay and chamber temperatures (T_spare) while cooling down",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 188,
+            "event": "Cone Heater and sample gas pump switched off"
+        },
+        {
+            "time": 2781,
+            "event": "Air supplt switched off and door opened and right side panel opened End of data recording"
+        }
+    ]
+}

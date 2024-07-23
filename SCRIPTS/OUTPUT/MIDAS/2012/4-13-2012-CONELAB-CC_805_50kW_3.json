@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.03665,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-04-13T10:30:12",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CC_805_50kW_3",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 248,
+            "event": "start"
+        },
+        {
+            "time": 485,
+            "event": "ignition"
+        },
+        {
+            "time": 1003,
+            "event": "flame out"
+        }
+    ]
+}

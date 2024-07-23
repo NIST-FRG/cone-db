@@ -1,0 +1,35 @@
+{
+    "c_factor": 0.0406,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 51.9,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-10-19T13:13:12",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test\nSetFlux50kW_m2\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 625,
+            "event": "Start Test"
+        },
+        {
+            "time": 650,
+            "event": "Ignition"
+        },
+        {
+            "time": 819,
+            "event": "no flame/igniter replaced"
+        },
+        {
+            "time": 1443,
+            "event": "End Test"
+        }
+    ],
+    "test_start_time_s": 625,
+    "time_to_ignition_s": 650
+}

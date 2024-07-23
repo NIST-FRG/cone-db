@@ -1,0 +1,30 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2011-07-15T14:46:47",
+    "operator": "Shields",
+    "director": "Bundy",
+    "comments": "collect data to determine delay times",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 743,
+            "event": "Ignition"
+        },
+        {
+            "time": 1268,
+            "event": "Ignition"
+        },
+        {
+            "time": 1560,
+            "event": "Ignition"
+        }
+    ],
+    "time_to_ignition_s": 1560
+}

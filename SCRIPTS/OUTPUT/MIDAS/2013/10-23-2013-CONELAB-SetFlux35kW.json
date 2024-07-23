@@ -1,0 +1,30 @@
+{
+    "c_factor": 0.036,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-10-23T13:28:56",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "Set flux  to 35kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 90,
+            "event": "Cone radiator on"
+        },
+        {
+            "time": 104,
+            "event": "Ignition"
+        },
+        {
+            "time": 114,
+            "event": "Cone radiator on"
+        }
+    ],
+    "time_to_ignition_s": 104
+}

@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0407,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 263.2,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2019-12-17T14:52:49",
+    "operator": "Shields",
+    "director": "Leventon",
+    "comments": "NRC Cables\n50 kW/m2\n7 pcs 15mm dia x 100mm\nEdge Frame used\nAl foil pan\n2\" thick ceramic blanket\n(8lbs/cu.ft.)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 973,
+            "event": "Start Test"
+        },
+        {
+            "time": 998,
+            "event": "Ignition"
+        },
+        {
+            "time": 2485,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 973,
+    "time_to_ignition_s": 998,
+    "time_to_flameout_s": 2485
+}

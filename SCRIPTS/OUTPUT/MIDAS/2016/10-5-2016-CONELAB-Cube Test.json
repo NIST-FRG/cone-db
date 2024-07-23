@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0376,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 35.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-10-05T10:39:22",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "50 kW/m2\nPU foam 4x4x4\"\nDouble Edge Frame\nWire tie\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1151,
+            "event": "Start Test"
+        },
+        {
+            "time": 1174,
+            "event": "Ignition"
+        },
+        {
+            "time": 2454,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1151,
+    "time_to_ignition_s": 1174,
+    "time_to_flameout_s": 2454
+}

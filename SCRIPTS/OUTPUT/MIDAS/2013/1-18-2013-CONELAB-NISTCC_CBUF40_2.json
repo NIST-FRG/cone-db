@@ -1,0 +1,26 @@
+{
+    "c_factor": 0.03756,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 8.76,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-01-18T16:42:13",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "NORFAB fabric over custom wire frame w/catch plate",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 558,
+            "event": "Start Test"
+        },
+        {
+            "time": 754,
+            "event": "Stop test"
+        }
+    ],
+    "test_start_time_s": 558
+}

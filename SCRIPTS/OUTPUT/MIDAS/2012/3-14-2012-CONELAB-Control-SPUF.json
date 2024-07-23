@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-03-14T10:13:29",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Control-SPUF",
+    "specimen_number": NaN
+}

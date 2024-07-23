@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03594,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 19.538,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-08-14T10:14:30",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "DuPont carpet #6 composite 20 oz; \nedge frame w/grid + wire; conditioned at ~ 42% RH",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 474,
+            "event": "Start Test"
+        },
+        {
+            "time": 542,
+            "event": "Ignition"
+        },
+        {
+            "time": 844,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 474,
+    "time_to_ignition_s": 542,
+    "time_to_flameout_s": 844
+}

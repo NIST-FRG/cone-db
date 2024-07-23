@@ -1,0 +1,30 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2015-04-14T15:02:11",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "ConePT2-Flux 25kW_m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 870,
+            "event": "Sync to portable daq"
+        },
+        {
+            "time": 998,
+            "event": "Start Test - plate TC exposed to cone radiator"
+        },
+        {
+            "time": 2232,
+            "event": "end test"
+        }
+    ],
+    "test_start_time_s": 998
+}

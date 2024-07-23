@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0388,
+    "e_mj/kg": 13.4,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 50.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 72.4,
+    "date": "2016-04-26T13:36:08",
+    "operator": "Shields",
+    "director": "Hamins",
+    "comments": "Methanol pool fire\nAs = 0.00724 m2\n13400 MJ/g O2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 596,
+            "event": "Start Test"
+        },
+        {
+            "time": 614,
+            "event": "Ignition"
+        },
+        {
+            "time": 2647,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 596,
+    "time_to_ignition_s": 614,
+    "time_to_flameout_s": 2647
+}

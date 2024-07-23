@@ -31,6 +31,11 @@ def next_file():
     st.session_state.index += 1
 
 
+def prev_file():
+    if st.session_state.index > 0:
+        st.session_state.index -= 1
+
+
 path = get_paths()[st.session_state.index]
 st.title(path.stem)
 
@@ -107,7 +112,14 @@ def fix_types(key, value):
 new_metadata = dict(map(lambda kv: fix_types(kv[0], kv[1]), new_metadata.items()))
 
 st.sidebar.header("File controls")
+# st.sidebar.selectbox(
+#     "Select file",
+#     [x.stem for x in get_paths()],
+#     index=st.session_state.index,
+#     on_change=set_file,
+# )
 st.sidebar.button("Next file", on_click=next_file, use_container_width=True)
+st.sidebar.button("Previous file", on_click=prev_file, use_container_width=True)
 
 st.subheader("Associate with report")
 
@@ -131,7 +143,7 @@ existing_mat, new_mat = st.tabs(
 
 with existing_mat:
     # Filter existing material metadata files
-    existing_mat_files = list(Path("../../OUTPUT/materials").rglob("*.json"))
+    existing_mat_files = list(Path("../../materials").rglob("*.json"))
 
     all_materials = []
 
@@ -183,7 +195,7 @@ with new_mat:
 
     def make_new_mat_file():
         if material_id.lower() in [
-            x.stem.lower() for x in list(Path("../../OUTPUT/materials").rglob("*.json"))
+            x.stem.lower() for x in list(Path("../../materials").rglob("*.json"))
         ]:
             st.error("Material ID already exists, file was not written.")
             return
@@ -202,9 +214,9 @@ with new_mat:
         # turn into a string
         json_str = json.dumps(material_metadata, indent=4)
 
-        Path("../OUTPUT/materials").mkdir(parents=True, exist_ok=True)
+        Path("../../materials").mkdir(parents=True, exist_ok=True)
 
-        with open(f"../../OUTPUT/materials/{material_id}.json", "w") as f:
+        with open(f"../../materials/{material_id}.json", "w") as f:
             f.write(json_str)
 
         st.markdown(f"*Saved following JSON to `{material_id}.json`*")

@@ -1,0 +1,115 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2014-04-30T23:59:58",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "run program w/new computer,win 7, and HC",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 3758,
+            "event": "Start Test"
+        },
+        {
+            "time": 4816,
+            "event": "Ignition"
+        },
+        {
+            "time": 6483,
+            "event": "Start Test"
+        },
+        {
+            "time": 6499,
+            "event": "Start Test"
+        },
+        {
+            "time": 7263,
+            "event": "Start Test"
+        },
+        {
+            "time": 7850,
+            "event": "Start Test"
+        },
+        {
+            "time": 9004,
+            "event": "Start Test"
+        },
+        {
+            "time": 9666,
+            "event": "Start Test"
+        },
+        {
+            "time": 9954,
+            "event": "Start Test"
+        },
+        {
+            "time": 10026,
+            "event": "Start Test"
+        },
+        {
+            "time": 10682,
+            "event": "Start Test"
+        },
+        {
+            "time": 10891,
+            "event": "Start Test"
+        },
+        {
+            "time": 10995,
+            "event": "Start Test"
+        },
+        {
+            "time": 11403,
+            "event": "Start Test"
+        },
+        {
+            "time": 11662,
+            "event": "Start Test"
+        },
+        {
+            "time": 13158,
+            "event": "Start Test"
+        },
+        {
+            "time": 13793,
+            "event": "Start Test"
+        },
+        {
+            "time": 14116,
+            "event": "Start Test"
+        },
+        {
+            "time": 26995,
+            "event": "Start Test"
+        },
+        {
+            "time": 27075,
+            "event": "Start Test"
+        },
+        {
+            "time": 27129,
+            "event": "Start Test"
+        },
+        {
+            "time": 27484,
+            "event": "Start Test"
+        },
+        {
+            "time": 27918,
+            "event": "Start Test"
+        },
+        {
+            "time": 28410,
+            "event": "Start Test"
+        }
+    ],
+    "test_start_time_s": 28410,
+    "time_to_ignition_s": 4816
+}

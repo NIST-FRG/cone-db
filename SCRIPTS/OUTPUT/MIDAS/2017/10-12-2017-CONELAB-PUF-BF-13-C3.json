@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.04059,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 47.7,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-10-12T13:22:42",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test\nSetFlux50kW_m2\nPUF-BF-\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 642,
+            "event": "Start Test"
+        },
+        {
+            "time": 650,
+            "event": "Ignition"
+        },
+        {
+            "time": 1444,
+            "event": "no flame"
+        },
+        {
+            "time": 1590,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 642,
+    "time_to_ignition_s": 650,
+    "time_to_flameout_s": 1590
+}

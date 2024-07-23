@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03346,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2011-12-29T15:54:03",
+    "operator": "Shields",
+    "director": "Marsh",
+    "comments": "Test - fabric/foam -  ",
+    "specimen_number": NaN
+}

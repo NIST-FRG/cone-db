@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 16.69,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-03-20T16:00:34",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "CheckOutSteadyTimer  ",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 135,
+            "event": "Start steady timer - 2"
+        }
+    ],
+    "test_start_time_s": 135
+}

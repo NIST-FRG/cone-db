@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.036,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 6.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-08-30T08:29:21",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "set flux to 6kW/m^2",
+    "specimen_number": NaN
+}

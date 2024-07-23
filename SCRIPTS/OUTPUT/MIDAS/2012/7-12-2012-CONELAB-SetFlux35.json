@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.0367,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-07-12T12:47:17",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Set cone flux to 35 kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 2573,
+            "event": "Set controller to 610 deg. C, initial setting was 611 deg. C"
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-03-21T12:58:33",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "cc_809_50kW_1",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 321,
+            "event": "start"
+        },
+        {
+            "time": 342,
+            "event": "ignition"
+        },
+        {
+            "time": 375,
+            "event": "sample out --- replace igniter"
+        },
+        {
+            "time": 451,
+            "event": "ignition"
+        },
+        {
+            "time": 1057,
+            "event": "burning at base of holder out at ~ 1050 s"
+        },
+        {
+            "time": 1464,
+            "event": "sample  removed"
+        }
+    ]
+}

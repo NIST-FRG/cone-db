@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0396,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-03-02T13:42:56",
+    "operator": "Shields",
+    "director": "Wang",
+    "comments": "\n\nSetFlux35kW_m2\nedge frame used;\nsample = 100x100x4.5mm\n",
+    "specimen_number": NaN
+}

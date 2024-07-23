@@ -51,7 +51,6 @@ def parse_dir(input_dir):
     print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "purple"))
     print(colorize(f"Tests with bad light intensity data (no Ksmoke): {bad_i_tests}", "purple"))
     print(colorize(f"Skipped due to negative delta_P: {negative_pe_tests}", "purple"))
-    print(colorize(f"Files with bad I data: {bad_i_tests}", "purple"))
 
 def parse_file(file_path):
     print(f"Parsing {file_path}")
@@ -62,6 +61,11 @@ def parse_file(file_path):
     metadata = parse_metadata(file_path)
 
     data = parse_data(df, metadata)
+
+    # If there's less than 20 data points, just skip the file
+    if len(data) < 20:
+        print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
+        return
 
     test_year = parser.parse(metadata["date"]).year
 
@@ -119,7 +123,7 @@ def parse_metadata(file_path):
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
     e /= 1000
     metadata["e_mj/kg"] = e
-    metadata["heat_flux_kw/m^2"] = get_number("CONEHEATFLUX", params)
+    metadata["heat_flux_kW/m^2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
@@ -129,7 +133,7 @@ def parse_metadata(file_path):
     if area is None:
         raise Exception("Area not defined in metadata")
     # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
-    if area < 0.01:
+    elif area <= 0.01:
         metadata["surface_area_cm^2"] = area  * 100**2
     else:
         metadata["surface_area_cm^2"] = area
@@ -150,7 +154,7 @@ def parse_metadata(file_path):
     info = {k.replace(":", ""): v for k, v in info.items()}
 
     # parse dates
-    date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=True)
+    date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=False)
 
     metadata["date"] = date.isoformat()
     metadata["operator"] = info.get("Qualified Operator")
@@ -248,8 +252,8 @@ def process_data(data, metadata):
     # convert area to m^2
     area = area / (100**2)
 
-    # if start-time is not defined, just use the first 30 secs for baseline
-    baseline_end = int(start_time if start_time > 0 else 30)
+    # if start-time is not defined, just use the first 15 secs for baseline
+    baseline_end = int(start_time if start_time > 0 else 15)
 
     # calculate baseline values by using the data up to test start time
     X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() / 100
@@ -279,9 +283,9 @@ def process_data(data, metadata):
     # Calculate HRR by row
 
     def get_HRR(row):
-        X_O2 = row["O2 (Vol fr)"] / 100
-        X_CO2 = row["CO2 (Vol fr)"] / 100
-        X_CO = row["CO (Vol fr)"] / 100
+        X_O2 = row["O2 (Vol fr)"]
+        X_CO2 = row["CO2 (Vol fr)"]
+        X_CO = row["CO (Vol fr)"]
 
         delta_P = row["Pe (Pa)"]
         T_e = row["Te (K)"]
@@ -342,6 +346,6 @@ def process_data(data, metadata):
 
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
-    # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2011\April\checkout\4-21-2011-NIST_224_A350-Checkout-scaled.csv")
+    # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2019\08_Aug\PVC_and_Wood_Fence\8-5-2019-CONELAB-PVC-Fen-1-scaled.csv")
 
     

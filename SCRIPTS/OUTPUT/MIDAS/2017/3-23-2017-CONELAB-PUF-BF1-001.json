@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.04044,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 20.4,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-03-23T14:39:25",
+    "operator": "Knowlton",
+    "director": "Nazare",
+    "comments": "SetFlux35kW_m2\n50 mm high AL foil pan\n\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 137,
+            "event": "Start Test"
+        },
+        {
+            "time": 145,
+            "event": "Ignition"
+        },
+        {
+            "time": 596,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 137,
+    "time_to_ignition_s": 145,
+    "time_to_flameout_s": 596
+}

@@ -1,0 +1,37 @@
+{
+    "c_factor": 0.035,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-03-26T11:37:25",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "cc_803_75kW_1",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 272,
+            "event": "start"
+        },
+        {
+            "time": 300,
+            "event": "ignition"
+        },
+        {
+            "time": 376,
+            "event": "sample out (igniter in)"
+        },
+        {
+            "time": 742,
+            "event": "ignition (flashing before ignition) igniter out"
+        },
+        {
+            "time": 2047,
+            "event": "remove sample (a few flamelets remain)"
+        }
+    ]
+}

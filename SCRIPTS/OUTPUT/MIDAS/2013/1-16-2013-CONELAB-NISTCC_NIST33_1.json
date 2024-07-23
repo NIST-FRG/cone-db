@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0375,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-01-16T15:13:38",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "American Foam (PU foam)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 2183,
+            "event": "Start Test"
+        },
+        {
+            "time": 2187,
+            "event": "Ignition"
+        },
+        {
+            "time": 2305,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 2183,
+    "time_to_ignition_s": 2187,
+    "time_to_flameout_s": 2305
+}

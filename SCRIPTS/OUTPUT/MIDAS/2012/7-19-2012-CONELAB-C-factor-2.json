@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0364,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-07-19T11:40:42",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "determine calibration constant using methane",
+    "specimen_number": NaN
+}

@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0415,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 46.7,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2018-11-27T11:31:34",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "No METHANE Cal. use 0.0415\nCalibrate Cone instrumentation; \ndetermine calibration constant using\n methane at 24 l/sec duct flow.\n Methane flow @ 8.405 SLPM = 5.0kW fire\n",
+    "specimen_number": NaN
+}

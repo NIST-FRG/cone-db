@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0364,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 175.1,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.0103,
+    "date": "2012-05-09T11:44:28",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Epoxy Carpet Composite; ECIP.1; \n1% clay coated",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 193,
+            "event": "Start Test"
+        },
+        {
+            "time": 258,
+            "event": "Ignition"
+        },
+        {
+            "time": 1608,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 193,
+    "time_to_ignition_s": 258,
+    "time_to_flameout_s": 1608
+}

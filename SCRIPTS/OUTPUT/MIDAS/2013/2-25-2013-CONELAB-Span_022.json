@@ -1,0 +1,72 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 104.05,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-02-25T13:27:51",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "16mm Particleboard; 50kW_m^2; ambiant air; 24L/sec.",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 120,
+            "event": "Air supply from previous test switched off"
+        },
+        {
+            "time": 246,
+            "event": "Air supply switched on"
+        },
+        {
+            "time": 262,
+            "event": "Chamber closed"
+        },
+        {
+            "time": 516,
+            "event": "Start baseline"
+        },
+        {
+            "time": 607,
+            "event": "Start baseline 2 because of troubles before"
+        },
+        {
+            "time": 731,
+            "event": "chamber open"
+        },
+        {
+            "time": 745,
+            "event": "chamber closed"
+        },
+        {
+            "time": 839,
+            "event": "Start Test"
+        },
+        {
+            "time": 870,
+            "event": "Ignition"
+        },
+        {
+            "time": 1818,
+            "event": "flames extinguished"
+        },
+        {
+            "time": 2100,
+            "event": "Flame Out"
+        },
+        {
+            "time": 2168,
+            "event": "Chamber opened and sample removed"
+        },
+        {
+            "time": 2189,
+            "event": "Chamber closed"
+        }
+    ],
+    "test_start_time_s": 839,
+    "time_to_ignition_s": 870,
+    "time_to_flameout_s": 2100
+}

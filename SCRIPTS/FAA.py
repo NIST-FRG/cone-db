@@ -117,7 +117,7 @@ def parse_metadata(raw_metadata):
     surface_area = extract_num("Sample Surface Area", raw_metadata)
     # if surface area is None, leave it as None, otherwise multiply by 10,000
     metadata["surface_area_cm^2"] = 10_000 * surface_area if surface_area else None
-    metadata["heat_flux_kw/m^2"] = extract_num("Radiant Heat Flux", raw_metadata)
+    metadata["heat_flux_kW/m^2"] = extract_num("Radiant Heat Flux", raw_metadata)
     metadata["sample_orientation"] = extract_string("Sample Orientation", raw_metadata)
 
     # third chunk: sample info

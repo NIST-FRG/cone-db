@@ -1,0 +1,27 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.9,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2015-07-10T16:04:05",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Fire Barrier",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 141,
+            "event": "Start Test"
+        },
+        {
+            "time": 264,
+            "event": "No Ignition"
+        }
+    ],
+    "test_start_time_s": 141,
+    "time_to_ignition_s": 264
+}

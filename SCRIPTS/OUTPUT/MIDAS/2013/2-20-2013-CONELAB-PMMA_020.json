@@ -1,0 +1,60 @@
+{
+    "c_factor": 0.03713,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 25.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 68.21,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 50.0,
+    "date": "2013-02-20T10:56:27",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "12mm Black PMMA; cardboard sides; 12L/s duct flow; 0.005m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 185,
+            "event": "chamber closed"
+        },
+        {
+            "time": 422,
+            "event": "Start baseline"
+        },
+        {
+            "time": 536,
+            "event": "chamber open"
+        },
+        {
+            "time": 550,
+            "event": "chamber closed"
+        },
+        {
+            "time": 646,
+            "event": "Start Test"
+        },
+        {
+            "time": 751,
+            "event": "Ignition"
+        },
+        {
+            "time": 1542,
+            "event": "flames extinguished"
+        },
+        {
+            "time": 1668,
+            "event": "Flame Out"
+        },
+        {
+            "time": 1744,
+            "event": "Chamber opened and sample removed"
+        },
+        {
+            "time": 1753,
+            "event": "Chamber closed"
+        }
+    ],
+    "test_start_time_s": 646,
+    "time_to_ignition_s": 751,
+    "time_to_flameout_s": 1668
+}

@@ -1,0 +1,37 @@
+{
+    "c_factor": 0.03468,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 56.2,
+    "date": "2012-02-29T14:45:42",
+    "operator": "Shields",
+    "director": "TK",
+    "comments": "PLA/ecoflex (50/50)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 296,
+            "event": "start"
+        },
+        {
+            "time": 383,
+            "event": "ignition"
+        },
+        {
+            "time": 429,
+            "event": "sample flow over ( one corner)"
+        },
+        {
+            "time": 536,
+            "event": "flame over"
+        },
+        {
+            "time": 651,
+            "event": "sample out"
+        }
+    ]
+}

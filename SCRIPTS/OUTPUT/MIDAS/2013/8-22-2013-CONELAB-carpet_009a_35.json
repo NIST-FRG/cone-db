@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03566,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 10.54,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-08-22T14:11:03",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "DuPont carpet 009; \n edge frame w/grid + wire; \nconditioned at 50 to 55% RH\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 154,
+            "event": "Start Test"
+        },
+        {
+            "time": 185,
+            "event": "Ignition"
+        },
+        {
+            "time": 341,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 154,
+    "time_to_ignition_s": 185,
+    "time_to_flameout_s": 341
+}

@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03666,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 11.68,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-04-04T13:03:14",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PU foam_MMT_LbL -  w/thermocouple at bottom/center of pan; TC junction is 6mm above bottom of pan",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 298,
+            "event": "Start Test"
+        },
+        {
+            "time": 301,
+            "event": "Ignition"
+        },
+        {
+            "time": 713,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 298,
+    "time_to_ignition_s": 301,
+    "time_to_flameout_s": 713
+}

@@ -47,7 +47,7 @@ df = df[
         "comments",
         "material name",
         "specimen description",
-        "heat flux kw/m^2",
+        "heat flux kW/m2",
         "initial mass g",
         "orientation",
     ]
