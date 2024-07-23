@@ -6,6 +6,8 @@ import streamlit as st
 
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 
 from const import INPUT_DATA_PATH
 
@@ -76,3 +78,16 @@ columns_to_graph = st.multiselect(
     options=test_data.columns,
     max_selections=2,
 )
+
+fig = make_subplots(specs=[[{"secondary_y": True}]])
+if len(columns_to_graph) >= 1:
+    fig.add_trace(
+        go.Scatter(y=test_data[columns_to_graph[0]], name=columns_to_graph[0])
+    )
+    if len(columns_to_graph) == 2:
+        fig.add_trace(
+            go.Scatter(y=test_data[columns_to_graph[1]], name=columns_to_graph[0]),
+            secondary_y=True,
+        )
+
+st.plotly_chart(fig)
