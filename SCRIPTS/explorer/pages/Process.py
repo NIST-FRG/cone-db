@@ -200,7 +200,10 @@ def make_metadata_df():
 # now, convert the strings back into the correct types
 def fix_types(key, value):
 
-    original_type = type(get_metadata()[key])
+    try:
+        original_type = type(test_metadata[key])
+    except:
+        original_type = type(get_metadata()[key])
     try:
         if value in [""]:
             return (key, None)
@@ -216,6 +219,8 @@ def fix_types(key, value):
             return (key, None)
         elif original_type is str:
             return (key, str(value))
+        else:
+            return (key, None)
     except Exception as e:
         st.error(f"Type conversion was not successful for {key}: {e}")
         return (key, None)
@@ -237,9 +242,9 @@ edited_metadata = dict(map(lambda kv: fix_types(kv[0], kv[1]), edited_metadata.i
 
 set_metadata(edited_metadata)
 
-md_w_report = get_metadata()
-md_w_report["report_citation_key"] = st.text_input("Report citation key (BibTeX)")
-set_metadata(md_w_report)
+r = get_metadata()
+r["report_citation_key"] = st.text_input("Report citation key (BibTeX)")
+set_metadata(r)
 
 st.markdown("#### :red[Danger zone]")
 
