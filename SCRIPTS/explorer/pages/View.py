@@ -9,6 +9,8 @@ import plotly.graph_objects as go
 
 from const import INPUT_DATA_PATH
 
+st.set_page_config(page_title="Cone Data Viewer", page_icon="📈")
+
 st.title("Cone Data Viewer")
 
 # Get the paths to all the test files
@@ -52,7 +54,7 @@ if len(test_selection) != 0:
                     y=test_data[i][column],
                     name=test_selection[i],
                 )
-            )
+            ).update_layout(yaxis_title=column, xaxis_title="Time (s)")
 
         st.markdown(f"#### {column}")
         st.plotly_chart(fig)

@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pandas as pd
 
@@ -8,18 +9,17 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH
 
-from const import INPUT_DATA_PATH
+st.set_page_config(page_title="Cone Data Processor", page_icon="📊")
 
 st.title("Cone Data Processor")
 
 # Get the paths to all the test files
-all_test_paths = list(INPUT_DATA_PATH.rglob("*.csv"))
-test_name_map = {p.stem: p for p in all_test_paths}
+test_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
 
 # Get the paths to all the metadata files
-all_metadata_paths = list(INPUT_DATA_PATH.rglob("*.json"))
-metadata_name_map = {p.stem: p for p in all_metadata_paths}
+metadata_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 
 
 # Initialize some session state variables
@@ -51,7 +51,9 @@ def prev_file():
 
 
 def set_file():
-    st.session_state.index = all_test_paths.index(test_name_map[file_selection])
+    st.session_state.index = list(test_name_map.values()).index(
+        test_name_map[file_selection]
+    )
 
 
 col1, col2 = st.columns(2)
@@ -68,11 +70,45 @@ col4.button("Go", on_click=set_file, use_container_width=True)
 
 test_data = pd.read_csv(
     test_name_map[list(test_name_map.keys())[st.session_state.index]]
+).set_index("Time (s)")
+
+test_metadata = json.load(
+    open(metadata_name_map[list(test_name_map.keys())[st.session_state.index]])
 )
+
+
+def save_data():
+    test_data.to_csv(
+        OUTPUT_DATA_PATH
+        / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(".csv")
+    )
+
+
+def save_metadata():
+    json.dump(
+        test_metadata,
+        open(
+            OUTPUT_DATA_PATH
+            / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
+                ".json"
+            ),
+            "w",
+        ),
+        indent=4,
+    )
+
+
+def save_test():
+    save_data()
+    save_metadata()
+
+
+save_test()
+st.info("Tests are saved automatically!")
 
 st.divider()
 
-st.markdown("#### Graph data")
+st.markdown("#### View data")
 columns_to_graph = st.multiselect(
     "Select column(s) from test to graph",
     options=test_data.columns,
@@ -84,10 +120,159 @@ if len(columns_to_graph) >= 1:
     fig.add_trace(
         go.Scatter(y=test_data[columns_to_graph[0]], name=columns_to_graph[0])
     )
+    fig.update_yaxes(title_text=columns_to_graph[0], secondary_y=False)
     if len(columns_to_graph) == 2:
         fig.add_trace(
-            go.Scatter(y=test_data[columns_to_graph[1]], name=columns_to_graph[0]),
+            go.Scatter(
+                y=test_data[columns_to_graph[1]], name=columns_to_graph[1] + " (sec.)"
+            ),
             secondary_y=True,
         )
+        fig.update_yaxes(title_text=columns_to_graph[1], secondary_y=True)
 
 st.plotly_chart(fig)
+
+with st.expander("**View data in table format**"):
+    st.dataframe(test_data, use_container_width=True)
+
+st.divider()
+
+st.markdown("#### Edit metadata")
+
+
+def make_metadata_df():
+    # since streamlit's data editor requires all rows in a column to have the same type, we'll convert everything to strings.
+    converted_metadata = {k: str(v or "") for k, v in test_metadata.items()}
+    converted_metadata = pd.DataFrame(
+        converted_metadata.items(), columns=["property", "value"]
+    ).set_index("property")
+    return converted_metadata
+
+
+# now, convert the strings back into the correct types
+def fix_types(key, value):
+    original_type = type(test_metadata[key])
+    try:
+        if value in [""]:
+            return (key, None)
+        if original_type is int:
+            return (key, int(value))
+        elif original_type is float:
+            return (key, float(value))
+        elif original_type is bool:
+            if value.lower() == "true":
+                return (key, True)
+            elif value.lower() == "false":
+                return (key, False)
+            return (key, None)
+        elif original_type is str:
+            return (key, str(value))
+    except Exception as e:
+        st.error(f"Type conversion was not successful for {key}: {e}")
+        return (key, None)
+
+
+st.markdown(
+    "Metadata file is updated automatically. Leave the cell empty for `None` and use `True` and `False` for their respective Boolean equivalents."
+)
+
+metadata_df = make_metadata_df()
+edited_metadata = st.data_editor(metadata_df, use_container_width=True).to_dict()[
+    "value"
+]
+
+edited_metadata = dict(map(lambda kv: fix_types(kv[0], kv[1]), edited_metadata.items()))
+
+test_metadata = edited_metadata
+
+save_test()
+
+st.markdown("#### :red[Danger zone]")
+
+st.markdown(
+    "*Note: Because changes are applied only to the copy saved to the output folder, the original remains unmodified, meaning that any changes made in this section will **not** be reflected in other sections of the app.*"
+)
+
+tab1, tab2, tab3 = st.tabs(
+    ["Replace columns with null values", "Delete columns", "Delete test"]
+)
+
+with tab1:
+    columns_to_delete = st.multiselect(
+        "Select column(s) to replace with null values",
+        options=test_data.columns,
+    )
+
+    # replaces columns with null values
+    def null_columns():
+        for column in columns_to_delete:
+            test_data[column] = None
+        print(test_data)
+        save_test()
+        st.success("Columns replaced with null values")
+
+    st.button("Replace columns", on_click=null_columns)
+
+with tab2:
+    columns_to_delete = st.multiselect(
+        "Select column(s) to delete",
+        options=test_data.columns,
+    )
+
+    def delete_columns():
+        for column in columns_to_delete:
+            del test_data[column]
+        save_test()
+        st.success("Columns deleted")
+
+    st.button("Delete columns", on_click=delete_columns)
+
+with tab3:
+
+    def delete_test():
+        # # if the test file exists, delete it
+        # if test_name_map[list(test_name_map.keys())[st.session_state.index]].exists():
+        #     test_name_map[list(test_name_map.keys())[st.session_state.index]].unlink()
+        # # if the metadata file exists, delete it
+        # if metadata_name_map[
+        #     list(test_name_map.keys())[st.session_state.index]
+        # ].exists():
+        #     metadata_name_map[
+        #         list(test_name_map.keys())[st.session_state.index]
+        #     ].unlink()
+
+        # if either of the output files exist, delete them
+        if (
+            OUTPUT_DATA_PATH
+            / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
+                ".csv"
+            )
+        ).exists():
+            (
+                OUTPUT_DATA_PATH
+                / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
+                    ".csv"
+                )
+            ).unlink()
+        if (
+            OUTPUT_DATA_PATH
+            / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
+                ".json"
+            )
+        ).exists():
+            (
+                OUTPUT_DATA_PATH
+                / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
+                    ".json"
+                )
+            ).unlink()
+
+        st.error("Test deleted")
+        next_file()
+
+    st.markdown(
+        "**Note: the original (input) file is not deleted, only the output file generated by this app.**"
+    )
+    st.button(
+        "Delete output & continue to next test", on_click=delete_test, type="primary"
+    )

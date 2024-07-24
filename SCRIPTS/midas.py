@@ -58,6 +58,9 @@ def parse_file(file_path):
     # read in scaled CSV file as pd dataframe
     df = pd.read_csv(file_path, encoding="cp1252")
 
+    # drop rows with all NaN/null/etc. values
+    df = df.dropna(how="all")
+
     metadata = parse_metadata(file_path)
 
     data = parse_data(df, metadata)

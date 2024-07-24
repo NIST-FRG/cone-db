@@ -11,6 +11,8 @@ import plotly.graph_objects as go
 
 from const import INPUT_DATA_PATH
 
+st.set_page_config(page_title="Cone Metadata Search", page_icon="🔎")
+
 st.title("Cone Metadata Search")
 
 # Get the paths to all the test metadata files

@@ -90,22 +90,7 @@ converted_metadata = st.data_editor(converted_metadata, use_container_width=True
 new_metadata = converted_metadata.to_dict()["value"]
 
 
-def fix_types(key, value):
-    original_type = type(metadata[key])
-    if value in ["", "none", "nan"]:
-        return (key, None)
-    if original_type is int:
-        return (key, int(value))
-    elif original_type is float:
-        return (key, float(value))
-    elif original_type is bool:
-        if value.lower() == "true":
-            return (key, True)
-        elif value.lower() == "false":
-            return (key, False)
-        return (key, None)
-    elif original_type is str:
-        return (key, str(value))
+
 
 
 # update metadata to have the correct types
