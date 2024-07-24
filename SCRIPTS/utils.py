@@ -12,7 +12,7 @@ def calculate_HRR_O2_only(X_O2, X_O2_initial, delta_P, T_e, c, e, area):
         * ((X_O2_initial - X_O2) / (1.105 - (1.5 * X_O2)))
     )
 
-    # hrr per unit area (kW/m^2)
+    # hrr per unit area (kW/m2)
     return hrr / area
 
 
@@ -53,7 +53,7 @@ def calculate_HRR(
         * ((odf - 0.172 * (1 - odf) * (X_CO / X_O2)) / (1 - odf + 1.105 * odf))
     )
 
-    # hrr per unit area (kW/m^2)
+    # hrr per unit area (kW/m2)
     return hrr / area
 
 

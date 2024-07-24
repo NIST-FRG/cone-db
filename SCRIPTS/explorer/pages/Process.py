@@ -28,6 +28,10 @@ if "columns" not in st.session_state:
 if "index" not in st.session_state:
     st.session_state.index = 0
 
+if "current_test_edited" not in st.session_state:
+    st.session_state.current_test_edited = False
+
+
 st.subheader(list(test_name_map.keys())[st.session_state.index])
 
 # Progress bar
@@ -43,17 +47,23 @@ def next_file():
         return
     st.session_state.index += 1
 
+    st.session_state.current_test_edited = False
+
 
 def prev_file():
     if st.session_state.index - 1 < 0:
         return
     st.session_state.index -= 1
 
+    st.session_state.current_test_edited = False
+
 
 def set_file():
     st.session_state.index = list(test_name_map.values()).index(
         test_name_map[file_selection]
     )
+
+    st.session_state.current_test_edited = False
 
 
 col1, col2 = st.columns(2)
@@ -76,9 +86,35 @@ test_metadata = json.load(
     open(metadata_name_map[list(test_name_map.keys())[st.session_state.index]])
 )
 
+if not st.session_state.current_test_edited:
+    st.session_state.current_data = pd.read_csv(
+        test_name_map[list(test_name_map.keys())[st.session_state.index]]
+    ).set_index("Time (s)")
+    st.session_state.current_metadata = json.load(
+        open(metadata_name_map[list(test_name_map.keys())[st.session_state.index]])
+    )
+
+
+def get_metadata():
+    return st.session_state.current_metadata
+
+
+def set_metadata(metadata):
+    st.session_state.current_metadata = metadata
+    st.session_state.current_test_edited = True
+
+
+def get_data():
+    return st.session_state.current_data
+
+
+def set_data(data):
+    st.session_state.current_data = data
+    st.session_state.current_test_edited = True
+
 
 def save_data():
-    test_data.to_csv(
+    get_data().to_csv(
         OUTPUT_DATA_PATH
         / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(".csv")
     )
@@ -86,7 +122,7 @@ def save_data():
 
 def save_metadata():
     json.dump(
-        test_metadata,
+        get_metadata(),
         open(
             OUTPUT_DATA_PATH
             / Path(list(test_name_map.keys())[st.session_state.index]).with_suffix(
@@ -101,10 +137,24 @@ def save_metadata():
 def save_test():
     save_data()
     save_metadata()
+    next_file()
 
 
-save_test()
-st.info("Tests are saved automatically!")
+col5, col6 = st.columns([0.7, 0.3])
+
+col5.button(
+    "Save test and continue",
+    on_click=save_test,
+    use_container_width=True,
+    type="primary",
+)
+
+
+def reload():
+    st.session_state.current_test_edited = False
+
+
+col6.button("Reload", on_click=lambda: reload(), use_container_width=True)
 
 st.divider()
 
@@ -137,12 +187,10 @@ with st.expander("**View data in table format**"):
 
 st.divider()
 
-st.markdown("#### Edit metadata")
-
 
 def make_metadata_df():
     # since streamlit's data editor requires all rows in a column to have the same type, we'll convert everything to strings.
-    converted_metadata = {k: str(v or "") for k, v in test_metadata.items()}
+    converted_metadata = {k: str(v or "") for k, v in get_metadata().items()}
     converted_metadata = pd.DataFrame(
         converted_metadata.items(), columns=["property", "value"]
     ).set_index("property")
@@ -151,7 +199,8 @@ def make_metadata_df():
 
 # now, convert the strings back into the correct types
 def fix_types(key, value):
-    original_type = type(test_metadata[key])
+
+    original_type = type(get_metadata()[key])
     try:
         if value in [""]:
             return (key, None)
@@ -172,22 +221,25 @@ def fix_types(key, value):
         return (key, None)
 
 
+st.markdown("#### Edit metadata")
+
 st.markdown(
     "Metadata file is updated automatically. Leave the cell empty for `None` and use `True` and `False` for their respective Boolean equivalents."
 )
 
 metadata_df = make_metadata_df()
-edited_metadata = st.data_editor(metadata_df, use_container_width=True).to_dict()[
-    "value"
-]
+edited_metadata = st.data_editor(
+    metadata_df,
+    use_container_width=True,
+).to_dict()["value"]
 
 edited_metadata = dict(map(lambda kv: fix_types(kv[0], kv[1]), edited_metadata.items()))
 
-edited_metadata["report_citation_key"] = st.text_input("Report citation key (BibTeX)")
+set_metadata(edited_metadata)
 
-test_metadata = edited_metadata
-
-save_test()
+md_w_report = get_metadata()
+md_w_report["report_citation_key"] = st.text_input("Report citation key (BibTeX)")
+set_metadata(md_w_report)
 
 st.markdown("#### :red[Danger zone]")
 
@@ -209,9 +261,9 @@ with tab1:
     def null_columns():
         for column in columns_to_delete:
             test_data[column] = None
-        print(test_data)
-        save_test()
+            set_data(test_data)
         st.success("Columns replaced with null values")
+        save_test()
 
     st.button("Replace columns", on_click=null_columns)
 
@@ -224,7 +276,7 @@ with tab2:
     def delete_columns():
         for column in columns_to_delete:
             del test_data[column]
-        save_test()
+        set_data(test_data)
         st.success("Columns deleted")
 
     st.button("Delete columns", on_click=delete_columns)

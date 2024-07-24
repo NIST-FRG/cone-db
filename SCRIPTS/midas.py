@@ -126,7 +126,7 @@ def parse_metadata(file_path):
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
     e /= 1000
     metadata["e_mj/kg"] = e
-    metadata["heat_flux_kW/m^2"] = get_number("CONEHEATFLUX", params)
+    metadata["heat_flux_kW/m2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
@@ -137,9 +137,9 @@ def parse_metadata(file_path):
         raise Exception("Area not defined in metadata")
     # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
     elif area <= 0.01:
-        metadata["surface_area_cm^2"] = area  * 100**2
+        metadata["surface_area_cm2"] = area  * 100**2
     else:
-        metadata["surface_area_cm^2"] = area
+        metadata["surface_area_cm2"] = area
 
     # Get test info
 
@@ -237,7 +237,7 @@ def process_data(data, metadata):
     o2_delay = metadata.get("o2_delay_time_s", 0)
     co2_delay = metadata.get("co2_delay_time_s", 0)
     co_delay = metadata.get("co_delay_time_s", 0)
-    area = metadata.get("surface_area_cm^2", 0)
+    area = metadata.get("surface_area_cm2", 0)
 
     # if o2_delay is None:
     #     o2_delay = 0
@@ -252,7 +252,7 @@ def process_data(data, metadata):
     c_factor = metadata.get("c_factor")
     e = metadata.get("e_mj/kg", 13.1)
 
-    # convert area to m^2
+    # convert area to m2
     area = area / (100**2)
 
     # if start-time is not defined, just use the first 15 secs for baseline
