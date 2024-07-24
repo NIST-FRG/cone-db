@@ -237,31 +237,21 @@ def process_data(data, metadata):
     o2_delay = metadata.get("o2_delay_time_s", 0)
     co2_delay = metadata.get("co2_delay_time_s", 0)
     co_delay = metadata.get("co_delay_time_s", 0)
-    area = metadata.get("surface_area_cm2", 0)
+    area = metadata.get("surface_area_cm2", 100)
 
-    # if o2_delay is None:
-    #     o2_delay = 0
-    #     print(colorize(" - O2 delay not defined in metadata, defaulting to 0", "yellow"))
-    # if co2_delay is None:
-    #     co2_delay = 0
-    #     print(colorize(" - CO2 delay not defined in metadata, defaulting to 0", "yellow"))
-    # if co_delay is None:
-    #     co_delay = 0
-    #     print(colorize(" - CO delay not defined in metadata, defaulting to 0", "yellow"))
-    
     c_factor = metadata.get("c_factor")
     e = metadata.get("e_mj/kg", 13.1)
 
     # convert area to m2
     area = area / (100**2)
 
-    # if start-time is not defined, just use the first 15 secs for baseline
-    baseline_end = int(start_time if start_time > 0 else 15)
+    # if start-time is not defined, just use the first 30 secs for baseline
+    baseline_end = int(start_time if start_time > 0 else 30)
 
     # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() / 100
-    X_CO2_initial = data["CO2 (Vol fr)"].iloc[:baseline_end].mean() / 100
-    X_CO_initial = data["CO (Vol fr)"].iloc[:baseline_end].mean() / 100
+    X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() # / 100
+    X_CO2_initial = data["CO2 (Vol fr)"].iloc[:baseline_end].mean() # / 100
+    X_CO_initial = data["CO (Vol fr)"].iloc[:baseline_end].mean() # / 100
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
