@@ -183,6 +183,8 @@ edited_metadata = st.data_editor(metadata_df, use_container_width=True).to_dict(
 
 edited_metadata = dict(map(lambda kv: fix_types(kv[0], kv[1]), edited_metadata.items()))
 
+edited_metadata["report_citation_key"] = st.text_input("Report citation key (BibTeX)")
+
 test_metadata = edited_metadata
 
 save_test()
