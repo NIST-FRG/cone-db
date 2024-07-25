@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.03346,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2011-12-21T16:30:28",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PMMA_system cal check, 1\" thick black w/cardboard sides - Inititial wt. 297.3g",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 405,
+            "event": "ignition"
+        },
+        {
+            "time": 760,
+            "event": "end test (polycarboate window max temp approximately 110 C and rising)"
+        }
+    ]
+}

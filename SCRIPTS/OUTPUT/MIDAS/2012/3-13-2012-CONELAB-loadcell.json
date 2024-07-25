@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 15.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01032,
+    "date": "2012-03-13T17:34:55",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "loadcell",
+    "specimen_number": NaN
+}

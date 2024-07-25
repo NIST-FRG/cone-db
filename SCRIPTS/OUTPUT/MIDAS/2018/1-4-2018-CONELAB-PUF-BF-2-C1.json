@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.0402,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 43.5,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2018-01-04T14:12:37",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test - 50kW/m2\nPUF/\nInsulator=Ceramic Felt + Mica Sheet\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 613,
+            "event": "Start Test"
+        },
+        {
+            "time": 616,
+            "event": "Ignition"
+        },
+        {
+            "time": 1677,
+            "event": "no flame"
+        }
+    ],
+    "test_start_time_s": 613,
+    "time_to_ignition_s": 616
+}

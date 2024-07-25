@@ -1,0 +1,30 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2015-04-17T09:27:29",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "ConePT8-Flux 10 kW_m2-02",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 329,
+            "event": "Sync with portable computer"
+        },
+        {
+            "time": 418,
+            "event": "Start Test"
+        },
+        {
+            "time": 1783,
+            "event": "end test"
+        }
+    ],
+    "test_start_time_s": 418
+}

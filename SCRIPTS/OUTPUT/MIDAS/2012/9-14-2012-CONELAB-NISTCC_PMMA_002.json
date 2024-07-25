@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0369,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 214.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-09-14T13:03:39",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "FTT PMMA Batch 2009; 50 kW/m^2 Al foil pan",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 980,
+            "event": "Start Test"
+        },
+        {
+            "time": 1006,
+            "event": "Ignition"
+        },
+        {
+            "time": 1795,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 980,
+    "time_to_ignition_s": 1006,
+    "time_to_flameout_s": 1795
+}

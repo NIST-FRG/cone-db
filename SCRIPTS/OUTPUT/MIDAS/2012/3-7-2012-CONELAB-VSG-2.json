@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-03-07T11:39:19",
+    "operator": "Shields",
+    "director": "Shonali",
+    "comments": "VSG-2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 194,
+            "event": "start = -4 sec."
+        },
+        {
+            "time": 247,
+            "event": "flame out"
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "c_factor": 0.0408,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 46.66,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-12-29T10:52:23",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test - 50kW/m2\nPUF/California Velvet\nNew Insulator-Ceramic Board\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 403,
+            "event": "Start Test"
+        },
+        {
+            "time": 409,
+            "event": "Ignition"
+        },
+        {
+            "time": 698,
+            "event": "1st melt drop in pan"
+        },
+        {
+            "time": 780,
+            "event": "Flames on bottom of sample"
+        },
+        {
+            "time": 1098,
+            "event": "No Flame"
+        }
+    ],
+    "test_start_time_s": 403,
+    "time_to_ignition_s": 409
+}

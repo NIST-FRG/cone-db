@@ -1,0 +1,49 @@
+{
+    "c_factor": 0.0365,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-07-24T09:09:04",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "set cone heat flux to  50 kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 280,
+            "event": "Cone heater power on (controller set to 689 deg. C)"
+        },
+        {
+            "time": 1604,
+            "event": "remove cone."
+        },
+        {
+            "time": 1713,
+            "event": "replace sample pan (hot pan)"
+        },
+        {
+            "time": 2311,
+            "event": "replace hot pan with cold sample pan"
+        },
+        {
+            "time": 2631,
+            "event": "sample pan removed (set controller to 901 deg.)"
+        },
+        {
+            "time": 2782,
+            "event": "set controller to 693 deg."
+        },
+        {
+            "time": 3109,
+            "event": "cold pan in"
+        },
+        {
+            "time": 3208,
+            "event": "remove pan;no pan on load cell."
+        }
+    ]
+}

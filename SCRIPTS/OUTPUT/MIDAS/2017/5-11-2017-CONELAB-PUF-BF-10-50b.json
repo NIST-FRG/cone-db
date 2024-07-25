@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0402,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 21.2,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-05-11T10:34:40",
+    "operator": "Knowlton",
+    "director": "Nazare",
+    "comments": "SetFlux50kW_m2\nNo edge frame used\nCeramic Blanket\n50 mm high AL foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 507,
+            "event": "Start Test"
+        },
+        {
+            "time": 515,
+            "event": "Ignition"
+        },
+        {
+            "time": 756,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 507,
+    "time_to_ignition_s": 515,
+    "time_to_flameout_s": 756
+}

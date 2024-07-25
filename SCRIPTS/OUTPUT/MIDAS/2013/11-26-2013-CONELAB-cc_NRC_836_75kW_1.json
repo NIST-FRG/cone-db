@@ -1,0 +1,35 @@
+{
+    "c_factor": 0.03595,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 276.7,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-11-26T08:57:14",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "cc_NRC_836_75kW_1\nedge frame w/grid; Al foil pan\nAs = 0.00884\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 751,
+            "event": "Start Test"
+        },
+        {
+            "time": 772,
+            "event": "Ignition"
+        },
+        {
+            "time": 889,
+            "event": "flame out - igniter on"
+        },
+        {
+            "time": 973,
+            "event": "igniter off"
+        }
+    ],
+    "test_start_time_s": 751,
+    "time_to_ignition_s": 772
+}

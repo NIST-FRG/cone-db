@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0386,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 24.89,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 44.2,
+    "date": "2016-05-19T15:33:29",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "Epoxy Lignin\n75 mm diameter\nAl foil pan\nEpoxy 10% SEL, Top\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 278,
+            "event": "Start Test"
+        },
+        {
+            "time": 377,
+            "event": "Ignition"
+        },
+        {
+            "time": 577,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 278,
+    "time_to_ignition_s": 377,
+    "time_to_flameout_s": 577
+}

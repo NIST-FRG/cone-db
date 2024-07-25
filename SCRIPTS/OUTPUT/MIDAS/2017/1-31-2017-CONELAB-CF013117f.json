@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0395,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 11.76,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-01-31T16:39:31",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "PUF\nSetFlux35kW_m2\nCoated Foam 2.0 in.",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 169,
+            "event": "Start Test"
+        },
+        {
+            "time": 173,
+            "event": "Ignition"
+        },
+        {
+            "time": 279,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 169,
+    "time_to_ignition_s": 173,
+    "time_to_flameout_s": 279
+}

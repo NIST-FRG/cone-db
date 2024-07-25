@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 0.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2018-06-29T17:04:03",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Flux Measuremert- 50kW/m2;\nFlux at center Base position with no Sample Holder (121 mm below base of cone assembly)\nInsulator= low Density Ceramic Board (6mm thick). \n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 242,
+            "event": "Flux at 121 mm"
+        }
+    ]
+}

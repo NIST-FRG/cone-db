@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0384,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 113.98,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-12-05T14:51:13",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "16mm thick particle board (control); edge frame used;\nsample = 10x10x1.6cm\nAs = 0.00884",
+    "specimen_number": NaN
+}

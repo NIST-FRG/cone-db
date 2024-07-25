@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.03692,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 418.1,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-05-02T15:46:36",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "System check C-factor w/leak in sample line",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 481,
+            "event": "small upstream leak at swagelok plug"
+        }
+    ]
+}

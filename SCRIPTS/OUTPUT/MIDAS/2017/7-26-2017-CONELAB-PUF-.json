@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0399,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-07-26T13:51:09",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "SetFlux50kW_m2\nNo edge frame used\nCeramic Blanket\n50 mm high AL foil pan\n",
+    "specimen_number": NaN
+}

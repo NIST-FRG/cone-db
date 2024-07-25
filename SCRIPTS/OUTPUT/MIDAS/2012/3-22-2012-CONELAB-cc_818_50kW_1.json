@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-03-22T14:17:26",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "cc_818_50kW_1",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 655,
+            "event": "start"
+        },
+        {
+            "time": 735,
+            "event": "ignitiion (flashing before ignition)"
+        },
+        {
+            "time": 1171,
+            "event": "flame out"
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0387,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 39.4,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-05-13T16:49:53",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Foam_Fabric Composite\nFTT edge frame used\n18 mm high AL foil pan",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 309,
+            "event": "Start Test"
+        },
+        {
+            "time": 325,
+            "event": "Ignition"
+        },
+        {
+            "time": 1493,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 309,
+    "time_to_ignition_s": 325,
+    "time_to_flameout_s": 1493
+}

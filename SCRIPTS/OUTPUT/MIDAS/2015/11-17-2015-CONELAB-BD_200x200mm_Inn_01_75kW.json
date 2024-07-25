@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0396,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 35.04,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2015-11-17T16:27:30",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Blue Denim / 50 mm thick\nFabric 200x200mm\n Innocore Foam\nSet Flux to 75kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 856,
+            "event": "Start Test"
+        },
+        {
+            "time": 864,
+            "event": "Ignition"
+        },
+        {
+            "time": 1150,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 856,
+    "time_to_ignition_s": 864,
+    "time_to_flameout_s": 1150
+}

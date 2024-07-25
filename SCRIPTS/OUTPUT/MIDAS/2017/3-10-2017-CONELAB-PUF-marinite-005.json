@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0398,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 15.2,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-03-10T16:23:05",
+    "operator": "Knowlton",
+    "director": "Nazare",
+    "comments": "PUF contol\nFTT Marinite used\nNo Edge Frame",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 187,
+            "event": "Start Test"
+        },
+        {
+            "time": 190,
+            "event": "Ignition"
+        },
+        {
+            "time": 396,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 187,
+    "time_to_ignition_s": 190,
+    "time_to_flameout_s": 396
+}

@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03934,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 37.4,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-06-28T15:12:13",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test\nPU foam Control\n100x100x100 mm\nSetFlux50kW_m2\n",
+    "specimen_number": NaN
+}

@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0401,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 15.4,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-03-09T13:10:19",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "SetFlux35kW_m2",
+    "specimen_number": NaN
+}

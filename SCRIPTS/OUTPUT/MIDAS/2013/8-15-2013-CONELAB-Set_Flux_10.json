@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0363,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 20.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-08-15T13:45:36",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "\n10 kW/m2\nTC data from spare TC 3 to 7",
+    "specimen_number": NaN
+}

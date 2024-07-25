@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03618,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 12.098,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2013-04-17T14:39:32",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PU foam LbL; 50mm (2\") thick; 35kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 143,
+            "event": "Start Test"
+        },
+        {
+            "time": 146,
+            "event": "Ignition"
+        },
+        {
+            "time": 275,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 143,
+    "time_to_ignition_s": 146,
+    "time_to_flameout_s": 275
+}

@@ -15,6 +15,9 @@ OUTPUT_DIR = Path(r"./OUTPUT/MIDAS")
 files_parsed = 0
 files_parsed_successfully = 0
 
+negative_pe_tests = 0
+bad_i_tests = 0
+
 
 def parse_dir(input_dir):
     paths = Path(input_dir).glob("**/*scaled.csv")
@@ -24,6 +27,8 @@ def parse_dir(input_dir):
     for path in paths:
         global files_parsed_successfully
         global files_parsed
+        global negative_pe_tests
+        global bad_i_tests
 
         # Every 20 files, print out file success rate:
         if files_parsed % 20 == 0 and files_parsed != 0:
@@ -34,12 +39,18 @@ def parse_dir(input_dir):
             parse_file(path)
         except Exception as e:
             print(colorize(f" - Error parsing {path}: {e}", "red"))
+
+            print()
+
             continue
         
-        print(colorize("Parsed successfully", "green"))
+        print(colorize("Parsed successfully\n", "green"))
 
         files_parsed_successfully += 1
-
+    
+    print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "purple"))
+    print(colorize(f"Tests with bad light intensity data (no Ksmoke): {bad_i_tests}", "purple"))
+    print(colorize(f"Skipped due to negative delta_P: {negative_pe_tests}", "purple"))
 
 def parse_file(file_path):
     print(f"Parsing {file_path}")
@@ -47,19 +58,25 @@ def parse_file(file_path):
     # read in scaled CSV file as pd dataframe
     df = pd.read_csv(file_path, encoding="cp1252")
 
+    # drop rows with all NaN/null/etc. values
+    df = df.dropna(how="all")
+
     metadata = parse_metadata(file_path)
 
     data = parse_data(df, metadata)
+
+    # If there's less than 20 data points, just skip the file
+    if len(data) < 20:
+        print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
+        return
 
     test_year = parser.parse(metadata["date"]).year
 
     # Determine output path
     Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
 
-
-
-    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled.csv", "_metadata.json")}_metadata.json"
-    data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem}_data.csv"
+    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.json"
+    data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.csv"
 
     # write metadata to json file
     with open(metadata_output_path, "w") as f:
@@ -109,7 +126,7 @@ def parse_metadata(file_path):
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
     e /= 1000
     metadata["e_mj/kg"] = e
-    metadata["heat_flux_kw/m2"] = get_number("CONEHEATFLUX", params)
+    metadata["heat_flux_kW/m2"] = get_number("CONEHEATFLUX", params)
     metadata["grid"] = get_bool("Grid", params)
     metadata["separation_mm"] = get_number("Separation", params)
     metadata["initial_mass_g"] = get_number("ISMass", params)
@@ -119,10 +136,10 @@ def parse_metadata(file_path):
     if area is None:
         raise Exception("Area not defined in metadata")
     # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
-    if area < 0.01:
-        metadata["surface_area_cm^2"] = area  * 100**2
+    elif area <= 0.01:
+        metadata["surface_area_cm2"] = area  * 100**2
     else:
-        metadata["surface_area_cm^2"] = area
+        metadata["surface_area_cm2"] = area
 
     # Get test info
 
@@ -140,10 +157,11 @@ def parse_metadata(file_path):
     info = {k.replace(":", ""): v for k, v in info.items()}
 
     # parse dates
-    date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=True)
+    date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=False)
 
     metadata["date"] = date.isoformat()
     metadata["operator"] = info.get("Qualified Operator")
+    metadata["director"] = info.get("Test Director")
     metadata["comments"] = info.get("Test Series information")
     metadata["specimen_number"] = info.get("Sample ID")
 
@@ -196,19 +214,19 @@ def parse_data(df, metadata):
             "Pe (Pa)": "Pe (Pa)",
             "Io (%)": "I_o (%)",
             "I (%)": "I (%)",
-            "RHRA (kW/m2)": "original HRR (kW/m2)",
+            # "RHRA (kW/m2)": "original HRR (kW/m2)",
             "SampMass (g)": "Mass (g)",
         }
     )
 
     # If the Time (s) column has increments besides 1, raise an error
-    if not data["Time (s)"].diff().eq(1).all():
+    if data["Time (s)"].diff().max() > 1:
         raise Exception("Time increments are not 1 second")
 
     data = process_data(data, metadata)
 
     # set which columns to include in the final output
-    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)", "original HRR (kW/m2)", "Mass (g)"]]
+    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)","Mass (g)"]]
 
     return data
 
@@ -219,31 +237,21 @@ def process_data(data, metadata):
     o2_delay = metadata.get("o2_delay_time_s", 0)
     co2_delay = metadata.get("co2_delay_time_s", 0)
     co_delay = metadata.get("co_delay_time_s", 0)
-    area = metadata.get("surface_area_cm^2", 0)
+    area = metadata.get("surface_area_cm2", 100)
 
-    # if o2_delay is None:
-    #     o2_delay = 0
-    #     print(colorize(" - O2 delay not defined in metadata, defaulting to 0", "yellow"))
-    # if co2_delay is None:
-    #     co2_delay = 0
-    #     print(colorize(" - CO2 delay not defined in metadata, defaulting to 0", "yellow"))
-    # if co_delay is None:
-    #     co_delay = 0
-    #     print(colorize(" - CO delay not defined in metadata, defaulting to 0", "yellow"))
-    
     c_factor = metadata.get("c_factor")
     e = metadata.get("e_mj/kg", 13.1)
 
-    # convert area to m^2
+    # convert area to m2
     area = area / (100**2)
 
     # if start-time is not defined, just use the first 30 secs for baseline
     baseline_end = int(start_time if start_time > 0 else 30)
 
     # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() / 100
-    X_CO2_initial = data["CO2 (Vol fr)"].iloc[:baseline_end].mean() / 100
-    X_CO_initial = data["CO (Vol fr)"].iloc[:baseline_end].mean() / 100
+    X_O2_initial = data["O2 (Vol fr)"].iloc[:baseline_end].mean() # / 100
+    X_CO2_initial = data["CO2 (Vol fr)"].iloc[:baseline_end].mean() # / 100
+    X_CO_initial = data["CO (Vol fr)"].iloc[:baseline_end].mean() # / 100
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
@@ -258,16 +266,19 @@ def process_data(data, metadata):
 
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
 
-    # take absolute value of delta P
-    # TODO: figure out why delta P is negative in the first place
-    data["Pe (Pa)"] = data["Pe (Pa)"].abs()
+    global negative_pe_tests
+
+    # If delta_P is negative, the data is probably not useful, just throw an error
+    if data["Pe (Pa)"].min() < 0:
+        negative_pe_tests += 1
+        raise Exception("Negative delta_P found")
 
     # Calculate HRR by row
 
     def get_HRR(row):
-        X_O2 = row["O2 (Vol fr)"] / 100
-        X_CO2 = row["CO2 (Vol fr)"] / 100
-        X_CO = row["CO (Vol fr)"] / 100
+        X_O2 = row["O2 (Vol fr)"]
+        X_CO2 = row["CO2 (Vol fr)"]
+        X_CO = row["CO (Vol fr)"]
 
         delta_P = row["Pe (Pa)"]
         T_e = row["Te (K)"]
@@ -307,14 +318,18 @@ def process_data(data, metadata):
 
         return calculate_k(I_o, I, L)
     
+    global bad_i_tests
+
     # check if I_o or I even exists
     if "I_o (%)" not in data.columns or "I (%)" not in data.columns:
         print(colorize(" - I_o or I not found in data, skipping k_smoke calculation", "yellow"))
+        bad_i_tests += 1
         data["k_smoke (1/m)"] = None
         return data
     # if I_o or I is negative, the smoke data is probably not useful, just return early
     elif data["I_o (%)"].min() < 0 or data["I (%)"].min() < 0:
         print(colorize(" - I_o or I is negative, skipping k_smoke calculation", "yellow"))
+        bad_i_tests += 1
         data["k_smoke (1/m)"] = None
         return data
 
@@ -324,6 +339,6 @@ def process_data(data, metadata):
 
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
-    # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2011\April\checkout\4-21-2011-NIST_224_A350-Checkout-scaled.csv")
+    # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2019\08_Aug\PVC_and_Wood_Fence\8-5-2019-CONELAB-PVC-Fen-1-scaled.csv")
 
     

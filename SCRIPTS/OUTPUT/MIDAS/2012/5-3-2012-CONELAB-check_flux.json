@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 18.37,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-05-03T09:53:53",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Set flux - 35kW/m2",
+    "specimen_number": NaN
+}

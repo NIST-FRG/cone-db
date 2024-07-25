@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03621,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-02-07T12:54:32",
+    "operator": "Shields",
+    "director": "Marsh",
+    "comments": "12 L/s Methane Calibration C-factor   Use new C-factor 0.03621",
+    "specimen_number": NaN
+}

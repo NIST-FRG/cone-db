@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.03716,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2011-08-05T12:07:51",
+    "operator": "Shields",
+    "director": "Bundy",
+    "comments": "calibrate HRR w/5 kW",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 253,
+            "event": "Ignition"
+        }
+    ],
+    "time_to_ignition_s": 253
+}

@@ -1,0 +1,27 @@
+{
+    "c_factor": 0.03954,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 48.75,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-06-30T15:42:58",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test\nPolyester Cover Fabric/PU foam\ndish catch pan",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 469,
+            "event": "Start Test"
+        },
+        {
+            "time": 476,
+            "event": "Ignition"
+        }
+    ],
+    "test_start_time_s": 469,
+    "time_to_ignition_s": 476
+}

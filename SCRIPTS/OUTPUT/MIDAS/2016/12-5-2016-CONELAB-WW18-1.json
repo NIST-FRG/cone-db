@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0384,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 116.25,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-12-05T15:59:08",
+    "operator": "Shields",
+    "director": "Wang",
+    "comments": "16mm thick Particle Board (Coated Veneer on Particle Board) ; edge frame used;\nsample = 10x10x1.6cm\nAs = 0.00884",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 482,
+            "event": "Start Test"
+        },
+        {
+            "time": 510,
+            "event": "Ignition"
+        },
+        {
+            "time": 580,
+            "event": "no flame igniter replaced at approximately 580s"
+        },
+        {
+            "time": 1721,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 482,
+    "time_to_ignition_s": 510,
+    "time_to_flameout_s": 1721
+}

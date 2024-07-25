@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0394,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 41.97,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-02-09T15:16:31",
+    "operator": "Shields",
+    "director": "Wang",
+    "comments": "silicone/three GF/Veneer\nSetFlux35kW_m2\nedge frame used;\nsample = 100x100x4.5mm\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 194,
+            "event": "Start Test"
+        },
+        {
+            "time": 256,
+            "event": "Ignition"
+        },
+        {
+            "time": 698,
+            "event": "no flame"
+        },
+        {
+            "time": 1011,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 194,
+    "time_to_ignition_s": 256,
+    "time_to_flameout_s": 1011
+}

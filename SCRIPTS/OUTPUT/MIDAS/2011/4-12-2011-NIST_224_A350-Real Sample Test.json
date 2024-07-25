@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.04011,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2011-04-12T15:50:20",
+    "operator": "Chernovsky",
+    "director": "A.Chernovsky",
+    "comments": "Real Sample Test, using Cone Software as primary",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1944,
+            "event": "Ignition"
+        }
+    ],
+    "time_to_ignition_s": 1944
+}

@@ -1,0 +1,26 @@
+{
+    "c_factor": 0.041,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 1.0,
+    "date": "2019-09-11T10:39:54",
+    "operator": "Shields",
+    "director": "Lenenton",
+    "comments": "Set_Flux_Gauge SN-211651.\n75 kW/m2.\nTop of cube @ 25 mm down from the base of the Cone Radiator Assembly.\nGauge location Z=6.75\nUsing Barrier Fabric 4 (light glass)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 112,
+            "event": "Start Test"
+        },
+        {
+            "time": 148,
+            "event": "Shortly after exposure to the heater, a small post it note that was sitting next to the gauge ('check heat lfux has water' warning sign) ignited"
+        }
+    ],
+    "test_start_time_s": 112
+}

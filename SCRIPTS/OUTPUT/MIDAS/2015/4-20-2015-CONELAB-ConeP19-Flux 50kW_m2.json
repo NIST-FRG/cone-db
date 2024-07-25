@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 5.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2015-04-20T14:09:24",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "Plate TCs\nFlux 50kW_m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1120,
+            "event": "Sync with portable daq"
+        },
+        {
+            "time": 2498,
+            "event": "Remove Sample"
+        },
+        {
+            "time": 2619,
+            "event": "Check Flux"
+        }
+    ]
+}

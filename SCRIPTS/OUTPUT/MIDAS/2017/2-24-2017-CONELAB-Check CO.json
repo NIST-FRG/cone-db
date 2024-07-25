@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0394,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 31.9,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2017-02-24T16:17:23",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Check CO\nRe-zero",
+    "specimen_number": NaN
+}

@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0383,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 14.9,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-05-27T11:11:15",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Check O2 spike",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 260,
+            "event": "Start Test"
+        },
+        {
+            "time": 264,
+            "event": "Ignition"
+        },
+        {
+            "time": 277,
+            "event": "Flame Out"
+        },
+        {
+            "time": 283,
+            "event": "The Spark Igniter is the problem"
+        }
+    ],
+    "test_start_time_s": 260,
+    "time_to_ignition_s": 264,
+    "time_to_flameout_s": 277
+}

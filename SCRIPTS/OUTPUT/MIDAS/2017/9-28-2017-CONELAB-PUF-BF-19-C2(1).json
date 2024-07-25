@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03991,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 45.4,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-09-28T11:06:47",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test\nSetFlux50kW_m2\n106 mm thick foam\n",
+    "specimen_number": NaN
+}

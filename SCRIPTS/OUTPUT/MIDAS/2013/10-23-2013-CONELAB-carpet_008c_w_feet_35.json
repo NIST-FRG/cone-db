@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03611,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 7.94,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-10-23T17:03:15",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "DuPont carpet #6 single backing   20 oz; edge frame w/grid + 5 wire stand- offs; conditioned at 50 to 55% RH; room RH ~ 26%\n\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 511,
+            "event": "Start Test"
+        },
+        {
+            "time": 554,
+            "event": "Ignition"
+        },
+        {
+            "time": 763,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 511,
+    "time_to_ignition_s": 554,
+    "time_to_flameout_s": 763
+}

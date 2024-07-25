@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 from graph import compare_FTT
 import scipy.signal as signal
 import numpy as np
+from dateutil import parser
 
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = r"./DATA/FTT"
-OUTPUT_DIR = r"./OUTPUT/FTT"
+INPUT_DIR = Path(r"./DATA/FTT")
+OUTPUT_DIR = Path(r"./OUTPUT/FTT")
 DEBUG = True
 
 
@@ -33,8 +34,6 @@ def parse_dir(input_dir):
     total_files = len(paths)
 
     print(colorize(f"Found {len(paths)} files to parse", "purple"))
-
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
     files_parsed = 0
     files_parsed_successfully = 0
@@ -77,12 +76,24 @@ def parse_file(file_path):
     if df.iloc[1].isnull().all():
         df = df.drop(1)
 
+    df = df.dropna(how="all")
+
     metadata = parse_metadata(df)
 
     data = parse_data(df, metadata)
 
-    data_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_data.csv"
-    metadata_output_path = Path(OUTPUT_DIR) / f"{Path(file_path).stem}_metadata.json"
+    # If there's less than 20 data points, just skip the file
+    if len(data) < 20:
+        print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
+        return
+
+    test_year = parser.parse(metadata["date"]).year
+
+    # Determine output path
+    Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
+
+    data_output_path = Path(OUTPUT_DIR) / str(test_year) /f"{Path(file_path).stem}.csv"
+    metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem}.json"
 
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
@@ -138,13 +149,20 @@ def parse_metadata(df):
     metadata["operator"] = raw_metadata["Operator"]
     metadata["report_name"] = raw_metadata["Report name"]
 
-    metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
-    metadata["posttest_comments"] = raw_metadata["After-test comments"]
+    # metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
+    # metadata["posttest_comments"] = raw_metadata["After-test comments"]
+    comments = ""
+    if raw_metadata['Pre-test comments'] == raw_metadata["Pre-test comments"]:
+        comments += f"Pre-test: {raw_metadata['Pre-test comments']}\n"
+    if raw_metadata["After-test comments"] == raw_metadata["After-test comments"]:
+        comments += f"Post-test: {raw_metadata["After-test comments"]}\n"
+    
+    metadata["comments"] = comments
 
     metadata["grid"] = get_bool("Grid?")
     metadata["mounting_type"] = "Edge frame" if get_bool("Edge frame?") else None
 
-    metadata["heat_flux_kw/m^2"] = get_number("Heat flux (kW/m²)")
+    metadata["heat_flux_kW/m2"] = get_number("Heat flux (kW/m²)")
     metadata["separation_mm"] = get_number("Separation (mm)")
 
     metadata["manufacturer"] = raw_metadata["Manufacturer"]
@@ -155,14 +173,14 @@ def parse_metadata(df):
     metadata["sponsor"] = raw_metadata["Sponsor"]
 
     metadata["thickness_mm"] = get_number("Thickness (mm)")
-    metadata["surface_area_cm^2"] = get_number("Surface area (cm²)")
+    metadata["surface_area_cm2"] = get_number("Surface area (cm²)")
 
     metadata["time_to_ignition_s"] = get_number("Time to ignition (s)")
     metadata["time_to_flameout_s"] = get_number("Time to flameout (s)")
     metadata["test_start_time_s"] = get_number("Test start time (s)")
     metadata["test_end_time_s"] = get_number("User EOT time (s)")
 
-    metadata["mlr_eot_mass_g/m^2"] = get_number("MLR EOT mass (g/m²)")
+    metadata["mlr_eot_mass_g/m2"] = get_number("MLR EOT mass (g/m²)")
     metadata["eot_criterion"] = get_number("End of test criterion")
 
     metadata["e_mj/kg"] = get_number("E (MJ/kg)")
@@ -189,10 +207,10 @@ def parse_metadata(df):
     metadata["co_co2_data_collected"] = get_bool("CO/CO2 data collected?")
     metadata["mass_data_collected"] = get_bool("Mass data collected?")
     metadata["smoke_data_collected"] = get_bool("Smoke data collected?")
-    metadata["soot_mass_data_collected"] = get_bool("Soot mass data collected?")
+    # metadata["soot_mass_data_collected"] = get_bool("Soot mass data collected?")
 
-    metadata["soot_mass_g"] = get_number("Soot mass (g)")
-    metadata["soot_mass_ratio"] = get_number("Soot mass ratio (1:x)")
+    # metadata["soot_mass_g"] = get_number("Soot mass (g)")
+    # metadata["soot_mass_ratio"] = get_number("Soot mass ratio (1:x)")
 
     metadata["e_mj/kg"] = get_number("E (MJ/kg)")
 
@@ -270,11 +288,11 @@ def process_data(data, metadata):
     o2_delay = int(metadata["o2_delay_time_s"] or 0)
     co2_delay = int(metadata["co2_delay_time_s"] or 0)
     co_delay = int(metadata["co_delay_time_s"] or 0)
-    area = metadata["surface_area_cm^2"] or 100  # cm^2
+    area = metadata["surface_area_cm2"] or 100  # cm2
     c_factor = metadata["c_factor"]
     e = metadata["e_mj/kg"]
 
-    # convert area from cm^2 to m^2
+    # convert area from cm2 to m2
     area = area / (100**2)
 
     # if start-time is not defined, just use the first 30 secs for baseline

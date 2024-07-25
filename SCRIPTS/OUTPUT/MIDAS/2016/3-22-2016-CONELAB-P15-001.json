@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0389,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 7.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2016-03-22T13:51:02",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "P15-001\nFlux35kW_m2\nedge frame used",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 394,
+            "event": "Start Test"
+        },
+        {
+            "time": 407,
+            "event": "Ignition"
+        },
+        {
+            "time": 464,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 394,
+    "time_to_ignition_s": 407,
+    "time_to_flameout_s": 464
+}

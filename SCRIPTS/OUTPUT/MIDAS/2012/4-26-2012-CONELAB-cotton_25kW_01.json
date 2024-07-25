@@ -1,0 +1,35 @@
+{
+    "c_factor": 0.03627,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-04-26T16:12:56",
+    "operator": "Shields",
+    "director": "Bryant",
+    "comments": "cotton_25kW_01",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1642,
+            "event": "Start Test"
+        },
+        {
+            "time": 1698,
+            "event": "Ignition"
+        },
+        {
+            "time": 1738,
+            "event": "sample curled up toward cone "
+        },
+        {
+            "time": 1796,
+            "event": "flame out"
+        }
+    ],
+    "test_start_time_s": 1642,
+    "time_to_ignition_s": 1698
+}

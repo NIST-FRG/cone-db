@@ -1,0 +1,49 @@
+{
+    "c_factor": 0.039,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 1.0,
+    "date": "2016-05-02T10:27:00",
+    "operator": "Shields",
+    "director": "Hamins",
+    "comments": "Calibrate Cone instrumentation; \ndetermine calibration constant using\n methane at 24 l/sec duct flow.\n Methane flow @ 8.405 SLPM = 5.0kW fire\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1263,
+            "event": "Set to 1.0 SLPM on LV = 0.910 @1500 s"
+        },
+        {
+            "time": 1706,
+            "event": "Bios Set to 1.00 SLPM; Burner Flow Set =1.083"
+        },
+        {
+            "time": 2194,
+            "event": "Bios flow Set @ 2.00 SLPM; Burner Flow set = 2.048"
+        },
+        {
+            "time": 2562,
+            "event": "Bios set @ 4.00 SLPM; burner flow set = 4.03"
+        },
+        {
+            "time": 2819,
+            "event": "Low cal at 4.00 SLPM on Bios"
+        },
+        {
+            "time": 3045,
+            "event": "Bios 6.00 SLPM; Burner flow set = 6.00"
+        },
+        {
+            "time": 3465,
+            "event": "Bios 8.00 SLPM; Burner Flow Set = 8.00 SLPM"
+        },
+        {
+            "time": 3822,
+            "event": "Bios 9.00 SLPM; Burner Flow Set = 8.99 SLPM"
+        }
+    ]
+}

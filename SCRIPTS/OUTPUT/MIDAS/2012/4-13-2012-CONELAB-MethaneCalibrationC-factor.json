@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03597,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-04-13T08:49:23",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "MethaneCalibrationC-factor",
+    "specimen_number": NaN
+}

@@ -1,0 +1,37 @@
+{
+    "c_factor": 0.03625,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2012-04-06T12:23:26",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CC_802_50kW_2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 250,
+            "event": "start"
+        },
+        {
+            "time": 295,
+            "event": "ignition"
+        },
+        {
+            "time": 372,
+            "event": "flame out - igniter in"
+        },
+        {
+            "time": 880,
+            "event": "ignition - flashing before ignition"
+        },
+        {
+            "time": 2223,
+            "event": "flame out"
+        }
+    ]
+}

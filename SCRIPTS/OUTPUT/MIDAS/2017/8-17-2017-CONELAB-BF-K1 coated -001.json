@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.03964,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 44.03,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2017-08-17T14:19:08",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test\nBFK? - Coated\nSetFlux50kW_m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 550,
+            "event": "Start Test"
+        },
+        {
+            "time": 572,
+            "event": "Ignition"
+        },
+        {
+            "time": 618,
+            "event": "no flame/igniter replaced"
+        }
+    ],
+    "test_start_time_s": 550,
+    "time_to_ignition_s": 572
+}

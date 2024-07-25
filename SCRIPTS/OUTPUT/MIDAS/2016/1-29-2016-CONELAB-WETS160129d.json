@@ -1,0 +1,40 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 1.0,
+    "date": "2016-01-29T16:29:35",
+    "operator": "Shields",
+    "director": "Bryner",
+    "comments": "PVC, Wood, Gypsum and Grass\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1025,
+            "event": "Start Test"
+        },
+        {
+            "time": 1089,
+            "event": "Ignition"
+        },
+        {
+            "time": 1986,
+            "event": "gas to bypass"
+        },
+        {
+            "time": 1999,
+            "event": "Flame Out"
+        },
+        {
+            "time": 2289,
+            "event": "data off"
+        }
+    ],
+    "test_start_time_s": 1025,
+    "time_to_ignition_s": 1089,
+    "time_to_flameout_s": 1999
+}

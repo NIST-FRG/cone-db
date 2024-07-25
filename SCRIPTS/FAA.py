@@ -113,22 +113,24 @@ def parse_metadata(raw_metadata):
 
     # second chunk: test parameters
     metadata["test_end_time_s"] =  extract_num("Test Length", raw_metadata)
-    # the original data is in m^2 but we want cm^2, so multiply by 10,000 to convert
+    # the original data is in m2 but we want cm2, so multiply by 10,000 to convert
     surface_area = extract_num("Sample Surface Area", raw_metadata)
     # if surface area is None, leave it as None, otherwise multiply by 10,000
-    metadata["surface_area_cm^2"] = 10_000 * surface_area if surface_area else None
-    metadata["heat_flux_kw/m^2"] = extract_num("Radiant Heat Flux", raw_metadata)
+    metadata["surface_area_cm2"] = 10_000 * surface_area if surface_area else None
+    metadata["heat_flux_kW/m2"] = extract_num("Radiant Heat Flux", raw_metadata)
     metadata["sample_orientation"] = extract_string("Sample Orientation", raw_metadata)
 
     # third chunk: sample info
     metadata["sample_description"] = extract_string("Sample Material", raw_metadata, end="Test Notes")
 
     # fourth chunk: pretest comments
-    metadata["pretest_comments"] = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
+    pre_test_comments = extract_string("Pre-test Comments", raw_metadata, end="Post-test Comments")
 
     # fifth chunk: posttest comments
     # theoretically ... this could be bad if posttest comments included "Reduction Parameters" verbatim though
-    metadata["posttest_comments"] = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
+    post_test_comments = extract_string("Post-test Comments", raw_metadata, end="Reduction Parameters")
+
+    metadata["comments"] = f"Pre-test:\n{pre_test_comments}\nPost-test:\n{post_test_comments}"
 
     # sixth chunk: reduction paramters:
     metadata["c_factor"] = extract_num("C-Factor", raw_metadata)

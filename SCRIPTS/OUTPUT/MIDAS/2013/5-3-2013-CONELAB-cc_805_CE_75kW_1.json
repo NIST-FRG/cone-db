@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03718,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 285.0,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 88.4,
+    "date": "2013-05-03T11:08:16",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CHRISTIFIRE Phase 3 NRC cables with cement coating on ends",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 213,
+            "event": "Start Test"
+        },
+        {
+            "time": 305,
+            "event": "Ignition"
+        },
+        {
+            "time": 968,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 213,
+    "time_to_ignition_s": 305,
+    "time_to_flameout_s": 968
+}

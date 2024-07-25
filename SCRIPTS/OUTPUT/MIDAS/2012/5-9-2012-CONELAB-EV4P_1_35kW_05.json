@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0364,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m^2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 172.2,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.0103,
+    "date": "2012-05-09T14:58:23",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Epoxy Carpet Composite; EV4P.1; \n4% clay resin VARTM infused composite",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 916,
+            "event": "Start Test"
+        },
+        {
+            "time": 983,
+            "event": "Ignition"
+        },
+        {
+            "time": 2242,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 916,
+    "time_to_ignition_s": 983,
+    "time_to_flameout_s": 2242
+}

@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03625,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m^2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm^2": 0.01,
+    "date": "2012-04-06T08:56:00",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "C-factor_4_6_2012-5kW_fire",
+    "specimen_number": NaN
+}
