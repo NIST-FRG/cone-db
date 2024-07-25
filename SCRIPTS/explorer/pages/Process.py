@@ -11,9 +11,9 @@ from plotly.subplots import make_subplots
 
 from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH
 
-st.set_page_config(page_title="Cone Data Processor", page_icon="📊")
+st.set_page_config(page_title="(deprecated) Cone Data Processor", page_icon="📊")
 
-st.title("Cone Data Processor")
+st.title("(deprecated) Cone Data Processor")
 
 # Get the paths to all the test files
 test_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}

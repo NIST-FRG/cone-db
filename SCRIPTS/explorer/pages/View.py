@@ -37,7 +37,6 @@ if len(test_selection) != 0:
     columns_to_graph = st.multiselect(
         "Select column(s) to graph across tests",
         options=test_data[0].columns,
-        max_selections=2,
     )
 
     # Create plots
