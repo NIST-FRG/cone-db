@@ -214,7 +214,7 @@ def parse_data(df, metadata):
             "Pe (Pa)": "Pe (Pa)",
             "Io (%)": "I_o (%)",
             "I (%)": "I (%)",
-            "RHRA (kW/m2)": "original HRR (kW/m2)",
+            # "RHRA (kW/m2)": "original HRR (kW/m2)",
             "SampMass (g)": "Mass (g)",
         }
     )
@@ -226,7 +226,7 @@ def parse_data(df, metadata):
     data = process_data(data, metadata)
 
     # set which columns to include in the final output
-    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)", "original HRR (kW/m2)", "Mass (g)"]]
+    data = data[["Time (s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "HRR (kW/m2)", "MFR (kg/s)", "k_smoke (1/m)","Mass (g)"]]
 
     return data
 

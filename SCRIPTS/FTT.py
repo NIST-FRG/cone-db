@@ -207,10 +207,10 @@ def parse_metadata(df):
     metadata["co_co2_data_collected"] = get_bool("CO/CO2 data collected?")
     metadata["mass_data_collected"] = get_bool("Mass data collected?")
     metadata["smoke_data_collected"] = get_bool("Smoke data collected?")
-    metadata["soot_mass_data_collected"] = get_bool("Soot mass data collected?")
+    # metadata["soot_mass_data_collected"] = get_bool("Soot mass data collected?")
 
-    metadata["soot_mass_g"] = get_number("Soot mass (g)")
-    metadata["soot_mass_ratio"] = get_number("Soot mass ratio (1:x)")
+    # metadata["soot_mass_g"] = get_number("Soot mass (g)")
+    # metadata["soot_mass_ratio"] = get_number("Soot mass ratio (1:x)")
 
     metadata["e_mj/kg"] = get_number("E (MJ/kg)")
 

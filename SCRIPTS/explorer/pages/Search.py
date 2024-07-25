@@ -29,6 +29,7 @@ for metadata_path in metadata_name_map.values():
 # Create a dataframe with all the test metadata so that it can be easily displayed
 metadata_df = pd.DataFrame(test_metadata).set_index("File name")
 
+
 query = st_keyup("Search test metadata:", placeholder="e.g. 'PMMA'")
 
 if query:
