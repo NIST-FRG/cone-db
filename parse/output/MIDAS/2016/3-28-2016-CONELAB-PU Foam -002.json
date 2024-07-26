@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0388,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 15.2,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-03-28T15:58:17",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Edge Frame used\nFlux35kW_m2\n100x100x50mm\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 215,
+            "event": "Start Test"
+        },
+        {
+            "time": 219,
+            "event": "Ignition"
+        },
+        {
+            "time": 463,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 215,
+    "time_to_ignition_s": 219,
+    "time_to_flameout_s": 463
+}

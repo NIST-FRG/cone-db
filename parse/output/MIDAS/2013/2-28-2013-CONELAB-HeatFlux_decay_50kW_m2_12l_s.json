@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.03747,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 108.42,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-28T16:32:57",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Record heat flux decay to learn about the temperature drop in the chamber",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 53,
+            "event": "Air supply rate increased to have the same settings than the other day"
+        },
+        {
+            "time": 183,
+            "event": "Heat flux gauge inserted"
+        },
+        {
+            "time": 243,
+            "event": "Cone heater power and sample gas pump switched off"
+        }
+    ]
+}

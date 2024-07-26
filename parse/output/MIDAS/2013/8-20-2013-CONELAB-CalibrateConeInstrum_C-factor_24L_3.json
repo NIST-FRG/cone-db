@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03578,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2013-08-20T14:18:22",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Calibrate Cone instrumentation; determine calibration constant using methane at 24 L/sec. duct flow",
+    "specimen_number": NaN
+}

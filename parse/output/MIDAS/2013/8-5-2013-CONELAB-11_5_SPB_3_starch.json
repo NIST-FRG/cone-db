@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03783,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 24.023,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-08-05T14:46:29",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PU foam  35kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 196,
+            "event": "Start Test"
+        },
+        {
+            "time": 203,
+            "event": "Ignition"
+        },
+        {
+            "time": 780,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 196,
+    "time_to_ignition_s": 203,
+    "time_to_flameout_s": 780
+}

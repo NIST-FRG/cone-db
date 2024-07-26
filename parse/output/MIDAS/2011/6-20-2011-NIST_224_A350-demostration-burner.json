@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.04011,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 40.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2011-06-20T14:34:16",
+    "operator": "Bundy",
+    "director": "nathan",
+    "comments": "demo program",
+    "specimen_number": NaN
+}

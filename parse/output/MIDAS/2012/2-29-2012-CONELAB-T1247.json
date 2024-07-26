@@ -1,0 +1,37 @@
+{
+    "c_factor": 0.03468,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2012-02-29T14:12:08",
+    "operator": "Shields",
+    "director": "TK",
+    "comments": "PS baytube (98/2)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 210,
+            "event": "s"
+        },
+        {
+            "time": 268,
+            "event": "ignition"
+        },
+        {
+            "time": 330,
+            "event": "flame over (small amount)"
+        },
+        {
+            "time": 425,
+            "event": "flame out"
+        },
+        {
+            "time": 449,
+            "event": "sample out"
+        }
+    ]
+}

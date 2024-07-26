@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0419,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 12.038,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2019-11-15T15:38:37",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "PEAA + 5PAA #1\n35kW/m2\nAs = 0.00442",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 282,
+            "event": "Start Test"
+        },
+        {
+            "time": 356,
+            "event": "Ignition"
+        },
+        {
+            "time": 470,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 282,
+    "time_to_ignition_s": 356,
+    "time_to_flameout_s": 470
+}

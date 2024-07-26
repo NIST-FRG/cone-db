@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.03717,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 112.23,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-11T13:06:03",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Particleboard",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 189,
+            "event": "Start Test"
+        },
+        {
+            "time": 224,
+            "event": "Ignition"
+        },
+        {
+            "time": 1281,
+            "event": "Flames extinguished"
+        },
+        {
+            "time": 1510,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 189,
+    "time_to_ignition_s": 224,
+    "time_to_flameout_s": 1510
+}

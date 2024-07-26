@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.036,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 15.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-08-27T08:36:07",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "check_flux_15kW/m^2",
+    "specimen_number": NaN
+}

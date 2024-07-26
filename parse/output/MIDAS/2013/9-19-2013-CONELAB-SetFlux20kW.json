@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03602,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 20.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2013-09-19T09:46:26",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "Set flux  to 20kW/m^2",
+    "specimen_number": NaN
+}

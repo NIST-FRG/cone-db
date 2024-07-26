@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0385,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 4.65,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2016-09-01T11:13:12",
+    "operator": "Shields",
+    "director": "Knowlton",
+    "comments": "Barrier BF-16\n35 kW/m2\n1 minute exposure",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 572,
+            "event": "Start Test"
+        },
+        {
+            "time": 776,
+            "event": "Ignition"
+        },
+        {
+            "time": 792,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 572,
+    "time_to_ignition_s": 776,
+    "time_to_flameout_s": 792
+}

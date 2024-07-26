@@ -1,0 +1,72 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 109.41,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-25T16:14:11",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "16mm Particleboard; 50kW_m^2; 18% O2; 24L/sec.",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 109,
+            "event": "Air flow rate from previous test reduced"
+        },
+        {
+            "time": 209,
+            "event": "Air supply frpm previous test switched off"
+        },
+        {
+            "time": 322,
+            "event": "Air on"
+        },
+        {
+            "time": 342,
+            "event": "chamber closed"
+        },
+        {
+            "time": 584,
+            "event": "Start baseline"
+        },
+        {
+            "time": 720,
+            "event": "chamber open"
+        },
+        {
+            "time": 731,
+            "event": "chamber closed"
+        },
+        {
+            "time": 823,
+            "event": "Start Test"
+        },
+        {
+            "time": 857,
+            "event": "Ignition"
+        },
+        {
+            "time": 1851,
+            "event": "Flames extinguished"
+        },
+        {
+            "time": 2000,
+            "event": "Flame Out"
+        },
+        {
+            "time": 2110,
+            "event": "Chamber opened and sample removed"
+        },
+        {
+            "time": 2129,
+            "event": "Chamber closed"
+        }
+    ],
+    "test_start_time_s": 823,
+    "time_to_ignition_s": 857,
+    "time_to_flameout_s": 2000
+}

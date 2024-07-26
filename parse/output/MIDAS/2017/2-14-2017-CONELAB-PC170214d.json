@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0397,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 13.698,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2017-02-14T15:12:45",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "PEMA +25% ChP100Suc",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 212,
+            "event": "Start Test"
+        },
+        {
+            "time": 252,
+            "event": "Ignition"
+        },
+        {
+            "time": 407,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 212,
+    "time_to_ignition_s": 252,
+    "time_to_flameout_s": 407
+}

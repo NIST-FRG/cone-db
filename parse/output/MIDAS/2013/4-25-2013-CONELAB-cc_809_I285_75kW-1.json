@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.03577,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 419.2,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2013-04-25T10:44:19",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CHRISTIFIRE Phase 3 NRC cables with  FR coating",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 329,
+            "event": "Start Test"
+        },
+        {
+            "time": 375,
+            "event": "Ignition"
+        },
+        {
+            "time": 387,
+            "event": "igniter off"
+        },
+        {
+            "time": 3589,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 329,
+    "time_to_ignition_s": 375,
+    "time_to_flameout_s": 3589
+}

@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0363,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 10.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-08-21T09:50:05",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "PMMA w/5 TCs placed at bottom of sample 10 kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1115,
+            "event": "Start Test"
+        },
+        {
+            "time": 1130,
+            "event": "Ignition"
+        },
+        {
+            "time": 1926,
+            "event": "sample surface bubbling"
+        },
+        {
+            "time": 4509,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1115,
+    "time_to_ignition_s": 1130,
+    "time_to_flameout_s": 4509
+}

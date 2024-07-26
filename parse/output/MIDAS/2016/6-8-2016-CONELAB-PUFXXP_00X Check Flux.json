@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0382,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-06-08T15:01:16",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Foam Fabric Composite\nSetFlux35kW_m2\nFTT edge frame used\nFTT marinite\n18 mm high AL foil pan\n",
+    "specimen_number": NaN
+}

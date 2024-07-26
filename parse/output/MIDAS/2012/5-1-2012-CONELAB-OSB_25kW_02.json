@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.03587,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-05-01T10:13:19",
+    "operator": "Shields",
+    "director": "Bryant",
+    "comments": "OSB_25kW_02",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 576,
+            "event": "Start Test"
+        },
+        {
+            "time": 688,
+            "event": "Ignition"
+        },
+        {
+            "time": 1320,
+            "event": "flame out"
+        }
+    ],
+    "test_start_time_s": 576,
+    "time_to_ignition_s": 688
+}

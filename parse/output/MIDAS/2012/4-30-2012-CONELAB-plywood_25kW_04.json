@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.0368,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-04-30T14:21:42",
+    "operator": "Shields",
+    "director": "Bryant",
+    "comments": "plywood_25kW_04",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 321,
+            "event": "Start Test"
+        },
+        {
+            "time": 498,
+            "event": "Ignition"
+        },
+        {
+            "time": 1517,
+            "event": "flame out"
+        }
+    ],
+    "test_start_time_s": 321,
+    "time_to_ignition_s": 498
+}

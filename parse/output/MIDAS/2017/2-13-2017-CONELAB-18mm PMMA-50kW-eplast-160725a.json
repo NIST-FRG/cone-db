@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0396,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 199.61,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2017-02-13T10:35:36",
+    "operator": "Shields",
+    "director": "jrs",
+    "comments": "50 kW/m2\nE-plastics (Batch #1)\nSample = 18x100x100mm\n",
+    "specimen_number": NaN
+}

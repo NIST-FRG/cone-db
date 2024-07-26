@@ -1,0 +1,60 @@
+{
+    "c_factor": 0.03813,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 109.05,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-15T11:45:05",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Particleboard in chamber at 12 l/s and 18% O2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 139,
+            "event": "chamber closed"
+        },
+        {
+            "time": 981,
+            "event": "Start baseline"
+        },
+        {
+            "time": 1130,
+            "event": "chamber open"
+        },
+        {
+            "time": 1142,
+            "event": "chamber closed"
+        },
+        {
+            "time": 1251,
+            "event": "Start Test"
+        },
+        {
+            "time": 1280,
+            "event": "Ignition"
+        },
+        {
+            "time": 2231,
+            "event": "flames extinguished"
+        },
+        {
+            "time": 2612,
+            "event": "Flame Out"
+        },
+        {
+            "time": 2699,
+            "event": "Open chamber and remove sample"
+        },
+        {
+            "time": 2725,
+            "event": "Chamber closed"
+        }
+    ],
+    "test_start_time_s": 1251,
+    "time_to_ignition_s": 1280,
+    "time_to_flameout_s": 2612
+}

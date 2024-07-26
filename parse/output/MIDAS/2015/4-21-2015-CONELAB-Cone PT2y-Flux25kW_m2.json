@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 5.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2015-04-21T14:40:16",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "Plate TCs\nFlux 25 kW_m2\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 365,
+            "event": "Sync with portable daq"
+        },
+        {
+            "time": 2649,
+            "event": "Flux gauge in at end of test"
+        }
+    ]
+}

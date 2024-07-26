@@ -1,0 +1,40 @@
+{
+    "c_factor": 0.0385,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 38.43,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-07-19T14:50:48",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Foam Fabric Composite\nSetFlux35kW_m2\nFTT edge frame used\nFTT marinite\n18 mm high AL foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1715,
+            "event": "Start Test"
+        },
+        {
+            "time": 1728,
+            "event": "Ignition"
+        },
+        {
+            "time": 1873,
+            "event": "no flame/igniter replaced"
+        },
+        {
+            "time": 2054,
+            "event": "sample reignited/igniter removed"
+        },
+        {
+            "time": 2892,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1715,
+    "time_to_ignition_s": 1728,
+    "time_to_flameout_s": 2892
+}

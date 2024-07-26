@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.039,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2017-02-08T10:00:50",
+    "operator": "Shields",
+    "director": "x",
+    "comments": "x",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 25,
+            "event": "Start Test"
+        },
+        {
+            "time": 30,
+            "event": "Ignition"
+        },
+        {
+            "time": 37,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 25,
+    "time_to_ignition_s": 30,
+    "time_to_flameout_s": 37
+}

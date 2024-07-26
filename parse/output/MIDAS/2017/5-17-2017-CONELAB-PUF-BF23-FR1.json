@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.03983,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 22.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2017-05-17T13:56:59",
+    "operator": "Knowlton",
+    "director": "Nazare",
+    "comments": "SetFlux50kW_m2\nFrame used\n50 mm high AL foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 602,
+            "event": "Start Test"
+        },
+        {
+            "time": 613,
+            "event": "Ignition"
+        },
+        {
+            "time": 726,
+            "event": "Flame Out"
+        },
+        {
+            "time": 733,
+            "event": "Ignitor back in for 5 minutes"
+        }
+    ],
+    "test_start_time_s": 602,
+    "time_to_ignition_s": 613,
+    "time_to_flameout_s": 726
+}

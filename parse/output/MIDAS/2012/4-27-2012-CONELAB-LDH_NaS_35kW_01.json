@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.03627,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-04-27T16:46:21",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "LDH_NaS_35kW_01",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1123,
+            "event": "Start Test"
+        },
+        {
+            "time": 1126,
+            "event": "Ignition"
+        },
+        {
+            "time": 1371,
+            "event": "flame out"
+        }
+    ],
+    "test_start_time_s": 1123,
+    "time_to_ignition_s": 1126
+}

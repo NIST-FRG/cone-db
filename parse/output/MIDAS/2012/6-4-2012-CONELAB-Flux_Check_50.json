@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.0358,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-06-04T15:56:43",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Set flux to 50kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 310,
+            "event": "cone on"
+        }
+    ]
+}

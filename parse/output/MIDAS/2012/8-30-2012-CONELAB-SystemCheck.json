@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-08-30T15:18:58",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Loadcell span 50g",
+    "specimen_number": NaN
+}

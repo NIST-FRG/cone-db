@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0385,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2017-01-12T09:09:23",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "SetFlux35kW_m2\nFTT edge frame used\nFTT marinite\n50 mm high AL foil pan\n",
+    "specimen_number": NaN
+}

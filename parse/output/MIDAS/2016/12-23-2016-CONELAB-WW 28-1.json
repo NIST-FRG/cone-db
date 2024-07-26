@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.039,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 29.34,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-12-23T13:55:43",
+    "operator": "Shields",
+    "director": "Wen Wang",
+    "comments": "Wood resin glued plywood",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 592,
+            "event": "Start Test"
+        },
+        {
+            "time": 648,
+            "event": "Ignition"
+        },
+        {
+            "time": 1008,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 592,
+    "time_to_ignition_s": 648,
+    "time_to_flameout_s": 1008
+}

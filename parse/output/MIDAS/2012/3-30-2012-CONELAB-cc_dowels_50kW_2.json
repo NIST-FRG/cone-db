@@ -1,0 +1,29 @@
+{
+    "c_factor": 0.0355,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2012-03-30T09:32:47",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "cc_dowels_50kW_2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 963,
+            "event": "start"
+        },
+        {
+            "time": 989,
+            "event": "ignition - igniter out"
+        },
+        {
+            "time": 1417,
+            "event": "flame out"
+        }
+    ]
+}

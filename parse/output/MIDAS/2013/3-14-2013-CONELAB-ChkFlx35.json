@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 18.49,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-03-14T13:01:30",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "ChkFlx35\n",
+    "specimen_number": NaN
+}

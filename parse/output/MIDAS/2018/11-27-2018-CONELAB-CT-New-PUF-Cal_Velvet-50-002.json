@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0415,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 30.0,
+    "initial_mass_g": 46.7,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2018-11-27T15:59:46",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Flux measured at 25mm; sample frame at 30mm\nNew Cube Test holder (2018-Cube)\nCube Test - 50kW/m2\nCalifornia Velvet/PUF\nInsulator= low Density Ceramic Board (6mm thick) \n",
+    "specimen_number": NaN
+}

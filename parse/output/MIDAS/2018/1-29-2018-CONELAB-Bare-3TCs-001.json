@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2018-01-29T16:28:56",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Bare-3TCs\n35 kW/m2\n50 mm high Al foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 255,
+            "event": "Start Test"
+        }
+    ],
+    "test_start_time_s": 255
+}

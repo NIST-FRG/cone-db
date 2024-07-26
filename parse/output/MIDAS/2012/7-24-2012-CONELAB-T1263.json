@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0363,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 18.7,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2012-07-24T10:41:19",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PS/closisite 10A (90/10)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 293,
+            "event": "Start Test"
+        },
+        {
+            "time": 321,
+            "event": "Ignition"
+        },
+        {
+            "time": 368,
+            "event": "flame over sample pan edge"
+        },
+        {
+            "time": 455,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 293,
+    "time_to_ignition_s": 321,
+    "time_to_flameout_s": 455
+}

@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.0363,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-06-12T12:53:05",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Set heat flux to 35 kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 498,
+            "event": "Cone heater has been on for ~ 25 min (no adjustments to settings)"
+        }
+    ]
+}

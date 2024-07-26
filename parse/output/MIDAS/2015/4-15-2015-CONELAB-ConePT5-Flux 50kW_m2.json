@@ -1,0 +1,30 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2015-04-15T14:08:32",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "ConePT5-Flux 50kW_m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 629,
+            "event": "Sync portable data acq"
+        },
+        {
+            "time": 860,
+            "event": "Start Test"
+        },
+        {
+            "time": 2194,
+            "event": "end test"
+        }
+    ],
+    "test_start_time_s": 860
+}

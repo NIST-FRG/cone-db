@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03699,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 17.5,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.83,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-01T15:57:51",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Whisper-shield in Al foil pan",
+    "specimen_number": NaN
+}

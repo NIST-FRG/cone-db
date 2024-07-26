@@ -1,0 +1,33 @@
+{
+    "c_factor": 0.041,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2019-07-30T13:17:36",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Calibrate Cone instrumentation; \ndetermine calibration constant using\n methane at 24 l/sec duct flow.\n Methane flow @ 8.405 SLPM = 5.0kW fire\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 349,
+            "event": "Gas Temp = 19.3 C"
+        },
+        {
+            "time": 456,
+            "event": "Gas Pressure = 1.25 \" H2O"
+        },
+        {
+            "time": 511,
+            "event": "Atm. Press = 99.880 kPa"
+        },
+        {
+            "time": 674,
+            "event": "40 L methane/259.1 s"
+        }
+    ]
+}

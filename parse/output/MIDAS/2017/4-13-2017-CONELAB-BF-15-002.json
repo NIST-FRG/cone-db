@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.04029,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 3.5,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2017-04-13T16:19:16",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "SetFlux35kW_m2\nEdge frame used\nCeramic Blanket\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 165,
+            "event": "Start Test"
+        },
+        {
+            "time": 173,
+            "event": "Ignition"
+        },
+        {
+            "time": 180,
+            "event": "Flame out"
+        }
+    ],
+    "test_start_time_s": 165,
+    "time_to_ignition_s": 173
+}

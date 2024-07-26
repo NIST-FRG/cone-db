@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0378,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 20.496,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2016-05-26T14:17:47",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "SetFlux35kW_m2\n75 mm diameter\nAl foil pan\nEpoxy 10% SEL-T, bottom\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 226,
+            "event": "Start Test"
+        },
+        {
+            "time": 333,
+            "event": "Ignition"
+        },
+        {
+            "time": 522,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 226,
+    "time_to_ignition_s": 333,
+    "time_to_flameout_s": 522
+}

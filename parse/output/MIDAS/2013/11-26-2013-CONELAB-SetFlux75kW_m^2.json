@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03595,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2013-11-26T08:23:19",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "Set flux  to75kW/m^2",
+    "specimen_number": NaN
+}

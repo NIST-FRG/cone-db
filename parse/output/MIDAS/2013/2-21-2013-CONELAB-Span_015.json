@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03743,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 110.57,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-21T12:48:45",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "16 mm Particleboard in Chamber (Air) 12 L/sec.",
+    "specimen_number": NaN
+}

@@ -1,0 +1,59 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-04-25T10:55:59",
+    "operator": "Shields",
+    "director": "jrs",
+    "comments": "Check new event marker button",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 34,
+            "event": "Start Test"
+        },
+        {
+            "time": 113,
+            "event": "Ignition"
+        },
+        {
+            "time": 136,
+            "event": "Start Test"
+        },
+        {
+            "time": 154,
+            "event": "Ignition"
+        },
+        {
+            "time": 183,
+            "event": "flame out bottom sample holder "
+        },
+        {
+            "time": 218,
+            "event": "flame out"
+        },
+        {
+            "time": 219,
+            "event": "water"
+        },
+        {
+            "time": 228,
+            "event": "remove sampe,l"
+        },
+        {
+            "time": 257,
+            "event": "rtytrytry"
+        },
+        {
+            "time": 268,
+            "event": "rtytryty"
+        }
+    ],
+    "test_start_time_s": 136,
+    "time_to_ignition_s": 154
+}
