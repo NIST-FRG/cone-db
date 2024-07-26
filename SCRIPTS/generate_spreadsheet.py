@@ -4,7 +4,7 @@ from pathlib import Path
 from dateutil import parser
 
 # Load data from input folder
-INPUT_FOLDER = "./OUTPUT/"
+INPUT_FOLDER = "./processed/"
 
 # Get all JSON (metadata) files from the folder
 meta_files = list(Path(INPUT_FOLDER).rglob("*.json"))
@@ -22,7 +22,7 @@ for path in meta_files:
 
         data["source file"] = str(path.stem)
 
-        data["date"] = parser.parse(data["date"]).strftime("%Y-%m-%d")
+        data["date"] = parser.parse(data["date"]).strftime("%Y-%m-%d %H:%M:%S")
 
         rows.append(data)
 
@@ -34,7 +34,6 @@ df.sort_values(by=["date"], inplace=True)
 
 # Fix the index column (column A)
 df.reset_index(drop=True, inplace=True)
-
 
 # Select columns
 

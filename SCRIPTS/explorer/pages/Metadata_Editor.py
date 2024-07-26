@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime
 
 import pandas as pd
 import json
@@ -28,6 +29,7 @@ def load_metadata():
     )
 
     df["** DELETE FILE"] = False
+    df["material_id"] = None
 
     return df
 
@@ -73,6 +75,7 @@ df = st.data_editor(
     column_order=[
         "** DELETE FILE",
         "date",
+        "material_id",
         "comments",
         "material_name",
         "specimen_description",
@@ -107,4 +110,42 @@ def delete_files():
     st.success(f"{len(files_to_delete)} files deleted")
 
 
-st.sidebar.button("Delete files", on_click=delete_files)
+st.sidebar.button("Delete files", on_click=delete_files, use_container_width=True)
+
+
+def export_metadata():
+    bar = st.progress(0, "Exporting metadata ...")
+    files_exported = 0
+    for index, row in df.iterrows():
+        row = row.to_dict()
+        path = metadata_path_map[str(index)]
+
+        # parse iso format datetime and just keep the date (no time)
+        d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
+        year = d.strftime("%Y")
+        date = d.strftime("%Y-%m-%d")
+
+        if row.get("material_id") is None:
+            continue
+
+        if row.get("specimen_number") is not None:
+            new_filename = f"{date}-{row['material_id']}-r{row['specimen_number']}.json"
+        else:
+            new_filename = f"{date}-{row['material_id']}.json"
+
+        # include the old filename in the metadata
+        row["prev_filename"] = path.name
+
+        with open(path.parent / year / new_filename, "w") as f:
+            json.dump(row, f, indent=4)
+
+        files_exported += 1
+        bar.progress(
+            files_exported / len(metadata_path_map),
+            f"Exporting metadata for {path.stem}",
+        )
+    bar.progress(1.0, f"Metadata exported ({files_exported} files)")
+
+
+st.sidebar.markdown("#### Export metadata")
+st.sidebar.button("Export", on_click=export_metadata, use_container_width=True)
