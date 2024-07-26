@@ -1,9 +1,13 @@
 # script-generated files
 *.pdf
 *.png
-OUTPUT/*
-GRAPHS/
-SCRIPT_FIGURES/
-DATA/
+
+# script-generated files
+parse/data/*.json
+parse/data/*.csv
+
+parse/output/*.csv
+parse/output/*.json
+
 .vscode/
 
