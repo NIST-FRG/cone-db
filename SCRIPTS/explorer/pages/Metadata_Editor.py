@@ -6,7 +6,7 @@ import json
 
 import streamlit as st
 
-from const import INPUT_DATA_PATH
+from const import INPUT_DATA_PATH, EXPORT_DATA_PATH
 
 st.set_page_config(page_title="Metadata Editor", page_icon="📊", layout="wide")
 
@@ -43,6 +43,8 @@ def save_metadata():
 
     # Remove the ** DELETE FILE column
     df = df.drop(columns=["** DELETE FILE"])
+    # Remove the material_id column
+    df = df.drop(columns=["material_id"])
 
     for index, row in df.iterrows():
         # Get the path to the metadata file
@@ -91,6 +93,13 @@ df = st.data_editor(
     ],
 )
 
+st.divider()
+
+st.markdown("#### Notes")
+st.markdown(
+    "Material ID should be in the following format: `<material_name_with_words_separated_by_dashes>:<report_name>`"
+)
+
 st.sidebar.markdown("#### Delete files")
 st.sidebar.markdown(
     "Select files by clicking the checkbox next to the file name, then click **Delete files** to delete the selected files."
@@ -113,8 +122,12 @@ def delete_files():
 st.sidebar.button("Delete files", on_click=delete_files, use_container_width=True)
 
 
-def export_metadata():
+def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
+
+    # Remove the ** DELETE FILE column
+    df = df.drop(columns=["** DELETE FILE"])
+
     files_exported = 0
     for index, row in df.iterrows():
         row = row.to_dict()
@@ -123,29 +136,42 @@ def export_metadata():
         # parse iso format datetime and just keep the date (no time)
         d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
         year = d.strftime("%Y")
-        date = d.strftime("%Y-%m-%d")
 
-        if row.get("material_id") is None:
+        material_id = row.get("material_id")
+
+        if row.get("material_id") is None or row.get("material_id") in ["nan", ""]:
             continue
 
+        material_id = material_id.replace(":", "-")
+
         if row.get("specimen_number") is not None:
-            new_filename = f"{date}-{row['material_id']}-r{row['specimen_number']}.json"
+            new_filename = f"{material_id}-r{row['specimen_number']}.json"
         else:
-            new_filename = f"{date}-{row['material_id']}.json"
+            new_filename = f"{material_id}.json"
 
         # include the old filename in the metadata
         row["prev_filename"] = path.name
 
-        with open(path.parent / year / new_filename, "w") as f:
+        export_path = EXPORT_DATA_PATH / year
+        if not export_path.exists():
+            export_path.mkdir(parents=True, exist_ok=True)
+
+        with open(export_path / new_filename, "w") as f:
             json.dump(row, f, indent=4)
+
+        # load the data file as a dataframe, then save it as a csv
+        data = pd.read_csv(path.with_suffix(".csv"))
+        data.to_csv(export_path / new_filename.replace(".json", ".csv"), index=False)
 
         files_exported += 1
         bar.progress(
             files_exported / len(metadata_path_map),
-            f"Exporting metadata for {path.stem}",
+            f"Exporting {path.stem}",
         )
-    bar.progress(1.0, f"Metadata exported ({files_exported} files)")
+    bar.progress(1.0, f"Tests exported ({files_exported} tests)")
 
 
 st.sidebar.markdown("#### Export metadata")
-st.sidebar.button("Export", on_click=export_metadata, use_container_width=True)
+st.sidebar.button(
+    "Export", on_click=lambda: export_metadata(df), use_container_width=True
+)
