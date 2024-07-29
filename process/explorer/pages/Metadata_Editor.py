@@ -45,15 +45,13 @@ def load_metadata():
         [(Path(x["prev_filename"]).stem, x["material_id"]) for x in all_material_files]
     )
 
-    print(all_ids)
-
     # if the row index is in the list of all_ids, set the material_id to the value in all_ids
     df["material_id"] = df.index.map(lambda x: all_ids.get(x))
 
     return df
 
 
-def save_metadata():
+def save_metadata(df):
     bar = st.progress(0, "Loading metadata ...")
 
     bar.progress(0, "Saving metadata ...")
@@ -81,12 +79,12 @@ def save_metadata():
     bar.progress(1.0, "Metadata saved")
 
 
+df = load_metadata()
+
 st.sidebar.markdown("#### Save metadata")
-st.sidebar.button("Save", on_click=save_metadata, use_container_width=True)
+st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
 st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
 st.divider()
-
-df = load_metadata()
 
 
 df = st.data_editor(
@@ -155,6 +153,9 @@ def export_metadata(df):
         # parse iso format datetime and just keep the date (no time)
         d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
         year = d.strftime("%Y")
+
+        # replace NaN with None
+        row = {k: v if not pd.isna(v) else None for k, v in row.items()}
 
         material_id = row.get("material_id")
 
