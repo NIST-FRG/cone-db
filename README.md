@@ -9,7 +9,7 @@ Files in the standardized format are saved in the `parse/output` folder.
 
 
 # Processing
-See (process/README.md)[process/README.md].
+See [process/README.md](process/README.md).
 
 # Data format
 
