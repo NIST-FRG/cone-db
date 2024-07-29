@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": NaN,
     "specimen_description": NaN,
-    "specimen_number": NaN,
+    "specimen_number": "2",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,

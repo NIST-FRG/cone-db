@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+from shutil import rmtree
 
 import pandas as pd
 import json
@@ -144,6 +145,9 @@ def export_metadata(df):
 
     # Remove the ** DELETE FILE column
     df = df.drop(columns=["** DELETE FILE"])
+
+    # Delete existing files
+    rmtree(OUTPUT_DATA_PATH)
 
     files_exported = 0
     for index, row in df.iterrows():
