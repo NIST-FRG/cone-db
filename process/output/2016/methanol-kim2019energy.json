@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Hamins",
     "events": "[{'time': 419, 'event': 'Start Test'}, {'time': 441, 'event': 'Ignition'}, {'time': 2516, 'event': 'Flame Out'}]",
-    "material_id": "methanol-kim2019energy",
+    "material_id": "methanol:kim2019energy",
     "prev_filename": "4-26-2016-CONELAB-methanol160426b.json"
 }

@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Butler",
     "events": "[{'time': 202, 'event': 'Start Test'}, {'time': 228, 'event': 'Ignition'}, {'time': 366, 'event': 'Flame Out'}]",
-    "material_id": "carpet9-butler2015using",
+    "material_id": "carpet9:butler2015using",
     "prev_filename": "10-24-2013-CONELAB-carpet_009c_35.json"
 }

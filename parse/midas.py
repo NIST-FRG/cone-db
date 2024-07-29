@@ -20,8 +20,10 @@ bad_i_tests = 0
 
 #region parse_dir
 def parse_dir(input_dir):
+    # glob all (scaled) csv files in the input directory
     paths = Path(input_dir).glob("**/*scaled.csv")
 
+    # create the output directory if it doesn't exist
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
     for path in paths:
@@ -39,15 +41,14 @@ def parse_dir(input_dir):
             parse_file(path)
         except Exception as e:
             print(colorize(f" - Error parsing {path}: {e}", "red"))
-
             print()
-
             continue
         
         print(colorize("Parsed successfully\n", "green"))
 
         files_parsed_successfully += 1
     
+    # print out stats about the files parsed
     print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "purple"))
     print(colorize(f"Tests with bad light intensity data (no Ksmoke): {bad_i_tests}", "purple"))
     print(colorize(f"Skipped due to negative delta_P: {negative_pe_tests}", "purple"))
@@ -71,11 +72,14 @@ def parse_file(file_path):
         print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
         return
 
+    # The output folder has directory structure based on the test year
+    # therefore, we need to get the year from the date in the metadata
     test_year = parser.parse(metadata["date"]).year
 
-    # Determine output path
+    # Create the year folder if it doesn't exist yet
     Path(OUTPUT_DIR / str(test_year)).mkdir(parents=True, exist_ok=True)
 
+    # Determine output paths
     metadata_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.json"
     data_output_path = Path(OUTPUT_DIR) / str(test_year) / f"{Path(file_path).stem.replace("-scaled", "")}.csv"
 
@@ -83,7 +87,7 @@ def parse_file(file_path):
     with open(metadata_output_path, "w") as f:
         json.dump(metadata, f, indent=4)
 
-    # write data to csv file
+    # write data to csv file as well
     data.to_csv(data_output_path, index=False)
 
 #region parse_metadata
@@ -94,6 +98,7 @@ def parse_metadata(file_path):
     if Path(file_path).is_file() == False:
         raise Exception(f"Missing -Output metadata file")
 
+    # read in different sheets of the -Output .xls file
     params = pd.read_excel(file_path, "Parameters")
     info = pd.read_excel(file_path, "Info", header=None)
 
@@ -101,6 +106,7 @@ def parse_metadata(file_path):
     params = params.to_dict(orient="list")
     params = {k: v[0] if len(v) > 0 else None for k, v in params.items()}
 
+    # helper functions to get values from the params & info dictionaries
     def get_number(key, dict):
         try:
             return float(dict[key])
@@ -120,8 +126,7 @@ def parse_metadata(file_path):
 
     metadata = {}
 
-    #region metadata properties
-    # Get test parameters
+    #region test parameters
     metadata["c_factor"] = get_number("Cf", params)
     e = get_number("Ef", params)
     if e is None:
@@ -138,13 +143,14 @@ def parse_metadata(file_path):
     area = get_number("As", params)
     if area is None:
         raise Exception("Area not defined in metadata")
+    
     # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
     elif area <= 0.01:
         metadata["surface_area_cm2"] = area  * 100**2
     else:
         metadata["surface_area_cm2"] = area
 
-    # Get test info
+    #region general test info
 
     # get the transpose of the dataframe (swaps rows & columns)
     info = info.T
@@ -162,15 +168,16 @@ def parse_metadata(file_path):
     # parse dates
     date = parser.parse(f"{info["Date"]} {info["Time"]}", dayfirst=False)
 
+    # add date to the metadata dictionary as an ISO 8601 string
     metadata["date"] = date.isoformat()
     metadata["operator"] = info.get("Qualified Operator")
     metadata["director"] = info.get("Test Director")
     metadata["comments"] = info.get("Test Series information")
     metadata["specimen_number"] = info.get("Sample ID")
 
-    # events
+    #region events
 
-    # if there are no events, just return the metadata now
+    # the .read_excel() function will raise an error if the sheet doesn't exist, so if the events sheet doesn't exist, just return the metadata now
     try:
         events = pd.read_excel(file_path, sheet_name="User Events")
     except Exception as e:
@@ -208,6 +215,8 @@ def parse_data(df, metadata):
     df["Te (°C)"] += 273.15
 
     #region final columns
+
+    # rename columns for consistency
     data = df.rename(
         columns={
             "Test Time (s)": "Time (s)",
@@ -237,6 +246,8 @@ def parse_data(df, metadata):
 #region process_data
 def process_data(data, metadata):
 
+    # test parameters used for calculations
+    # second value is the default value if the parameter is not defined in the metadata
     start_time = metadata.get("test_start_time_s", 0)
 
     o2_delay = metadata.get("o2_delay_time_s", 0)
@@ -247,7 +258,7 @@ def process_data(data, metadata):
     c_factor = metadata.get("c_factor")
     e = metadata.get("e_mj/kg", 13.1)
 
-    # convert area to m2
+    # convert area from cm2 to m2
     area = area / (100**2)
 
     #region delay, baselines
@@ -263,7 +274,6 @@ def process_data(data, metadata):
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
     data.drop(data.tail(start_time).index, inplace=True)
-
     data["Time (s)"] -= start_time
 
     # shift certain columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end
@@ -305,9 +315,9 @@ def process_data(data, metadata):
             area,
         )
 
+    # calculate HRR for each row
     data["HRR (kW/m2)"] = data.apply(get_HRR, axis=1)
 
-    # Calculate MFR by row
 
     def get_MFR(row):
         delta_P = row["Pe (Pa)"]
@@ -315,6 +325,7 @@ def process_data(data, metadata):
 
         return calculate_MFR(c_factor, delta_P, T_e)
 
+    # calculate MFR for each row
     data["MFR (kg/s)"] = data.apply(get_MFR, axis=1)
 
     # Calculate K_smoke by row
@@ -341,11 +352,13 @@ def process_data(data, metadata):
         bad_i_tests += 1
         data["k_smoke (1/m)"] = None
         return data
-
+    
+    # calculate k_smoke for each row
     data["k_smoke (1/m)"] = data.apply(get_k, axis=1)
 
     return data
 
+# if the script is being run directly (not as an imported module), then run the parse_dir function
 if __name__ == "__main__":
     parse_dir(INPUT_DIR)
     # parse_file(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter\DATA\2019\08_Aug\PVC_and_Wood_Fence\8-5-2019-CONELAB-PVC-Fen-1-scaled.csv")

@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Bryant",
     "events": "[{'time': 211, 'event': 'Start Test'}, {'time': 383, 'event': 'Ignition'}, {'time': 1346, 'event': 'flame out'}]",
-    "material_id": "plywood7-bryant2013characterizing",
+    "material_id": "plywood7:bryant2013characterizing",
     "prev_filename": "4-30-2012-CONELAB-plywood_25kW_07.json"
 }

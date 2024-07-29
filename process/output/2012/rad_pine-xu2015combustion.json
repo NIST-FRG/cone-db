@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Bryant",
     "events": "[{'time': 218, 'event': 'start'}, {'time': 379, 'event': 'ignition'}]",
-    "material_id": "rad_pine-xu2015combustion",
+    "material_id": "rad_pine:xu2015combustion",
     "prev_filename": "3-16-2012-CONELAB-Rad-pine-1.json"
 }

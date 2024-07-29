@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Bryant",
     "events": "[{'time': 493, 'event': 'Start Test'}, {'time': 540, 'event': 'Ignition'}, {'time': 642, 'event': 'flame out'}]",
-    "material_id": "cotton2-bryant2013characterizing",
+    "material_id": "cotton2:bryant2013characterizing",
     "prev_filename": "4-27-2012-CONELAB-cotton_25kW_02.json"
 }

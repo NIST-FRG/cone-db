@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Nazare",
     "events": "[{'time': 228, 'event': 'Start Test'}, {'time': 252, 'event': 'Ignition'}, {'time': 644, 'event': 'Flame Out'}]",
-    "material_id": "cbuf_fabric_foam-nazare2019assessing",
+    "material_id": "cbuf_fabric_foam:nazare2019assessing",
     "prev_filename": "2-24-2017-CONELAB-PUF-BD-003.json"
 }

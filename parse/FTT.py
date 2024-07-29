@@ -110,14 +110,13 @@ def parse_metadata(df):
     raw_metadata = raw_metadata[1:]
     raw_metadata.columns = new_header
 
+    # convert metadata dataframe to be a dictionary
     raw_metadata = raw_metadata.to_dict(orient="list")
     raw_metadata = {k: v[0] if len(v) > 0 else None for k, v in raw_metadata.items()}
 
-    # pp(raw_metadata)
-
     metadata = {}
 
-    # Process date
+    # helper functions to extract values from the metadata dictionary
 
     def get_number(key):
         try:
@@ -134,6 +133,7 @@ def parse_metadata(df):
             return None
 
     #region metadata properties
+
     # Date parsing
     raw_date = raw_metadata["Date of test"]
     raw_time = raw_metadata["Time of test"]
@@ -147,14 +147,12 @@ def parse_metadata(df):
     metadata["operator"] = raw_metadata["Operator"]
     metadata["report_name"] = raw_metadata["Report name"]
 
-    # metadata["pretest_comments"] = raw_metadata["Pre-test comments"]
-    # metadata["posttest_comments"] = raw_metadata["After-test comments"]
+    # pre-test and post-test comments are combined into one "comments" field
     comments = ""
     if raw_metadata['Pre-test comments'] == raw_metadata["Pre-test comments"]:
         comments += f"Pre-test: {raw_metadata['Pre-test comments']}\n"
     if raw_metadata["After-test comments"] == raw_metadata["After-test comments"]:
         comments += f"Post-test: {raw_metadata["After-test comments"]}\n"
-    
     metadata["comments"] = comments
 
     metadata["grid"] = get_bool("Grid?")
@@ -205,25 +203,19 @@ def parse_metadata(df):
     metadata["co_co2_data_collected"] = get_bool("CO/CO2 data collected?")
     metadata["mass_data_collected"] = get_bool("Mass data collected?")
     metadata["smoke_data_collected"] = get_bool("Smoke data collected?")
-    # metadata["soot_mass_data_collected"] = get_bool("Soot mass data collected?")
-
-    # metadata["soot_mass_g"] = get_number("Soot mass (g)")
-    # metadata["soot_mass_ratio"] = get_number("Soot mass ratio (1:x)")
 
     metadata["e_mj/kg"] = get_number("E (MJ/kg)")
 
-    # TODO: would it be better to convert this to hertz
     metadata["sampling_interval_s"] = get_number("Sampling interval (s)")
 
-    # replace all NaN values with None (which turns into null when serialized) to fit JSON spec
+    # replace all NaN values with None (which turns into null when serialized) to fit JSON spec (and get rid of red underlines)
     metadata = {k: v if v == v else None for k, v in metadata.items()}
-
-    # pp(metadata)
 
     return metadata
 
 #region parse_data
 def parse_data(df, metadata):
+    # remove special characters to make names easier to work with
     def process_name(name):
         # remove parentheses, spaces, and convert to lowercase
         name = name.replace("(", "").replace(")", "").replace(" ", "_").lower()
@@ -243,7 +235,7 @@ def parse_data(df, metadata):
     data.loc[:, "co2_%"] /= 100
     data.loc[:, "co_%"] /= 100
 
-    # we only care about certain columns, so only get that subset
+    # rename columns for consistency
     data = data.rename(
         columns={
             "time_s": "Time (s)",
@@ -261,10 +253,9 @@ def parse_data(df, metadata):
         raise Exception("Time increments are not 1 second")
 
     # get metadata required for HRR calculations
-
     data = process_data(data, metadata)
 
-    # keep only the columns we need
+    # selected columns to keep
     data = data[
         [
             "Time (s)",
@@ -282,6 +273,7 @@ def parse_data(df, metadata):
 #region process_data
 def process_data(data, metadata):
 
+    # test parameters used for calculations
     start_time = int(metadata.get("test_start_time_s", 0))
     o2_delay = int(metadata["o2_delay_time_s"] or 0)
     co2_delay = int(metadata["co2_delay_time_s"] or 0)

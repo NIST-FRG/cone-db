@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Hamins",
     "events": "[{'time': 486, 'event': 'Start Test'}, {'time': 489, 'event': 'Ignition'}, {'time': 1111, 'event': 'Flame Out'}]",
-    "material_id": "acetone-kim2019energy",
+    "material_id": "acetone:kim2019energy",
     "prev_filename": "5-9-2016-CONELAB-acetone160509a.json"
 }

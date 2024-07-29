@@ -42,6 +42,6 @@
     "sampling_interval_s": null,
     "director": "Hamins",
     "events": "[{'time': 382, 'event': 'Start Test'}, {'time': 388, 'event': 'Ignition'}, {'time': 1167, 'event': 'Flame Out'}, {'time': 1391, 'event': 'OD filter 15% transmission'}, {'time': 1502, 'event': 'OD filter 48 % transmission'}]",
-    "material_id": "ethanol-kim2019energy",
+    "material_id": "ethanol:kim2019energy",
     "prev_filename": "5-9-2016-CONELAB-ethanol160509a.json"
 }

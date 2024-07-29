@@ -114,7 +114,7 @@ st.divider()
 
 st.markdown("#### Notes")
 st.markdown(
-    "Material ID should be in the following format: `<material_name_with_words_separated_by_dashes>:<report_name>`"
+    "Material ID should be in the following format: `<material_name_with_words_separated_by_underscores>:<report_name>`"
 )
 
 st.sidebar.markdown("#### Delete files")
