@@ -3,8 +3,8 @@
 *.png
 
 # script-generated files
-parse/data/*.json
-parse/data/*.csv
+parse/data/**/*.json
+parse/data/**/*.csv
 
 parse/output/*.csv
 parse/output/*.json

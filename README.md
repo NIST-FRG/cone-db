@@ -2,6 +2,15 @@
 
 Repository of NIST Cone Calorimeter Data
 
+# Parsing
+Scripts should be placed in the `parse/data` folder. Folder structure doesn't matter. Run the scripts from the root of the repository, `FTT.py` for FTT-formatted files and `midas.py` for MIDAS-formatted files. HRR, mass flow rate, and Ksmoke (if available) data is calculated from the raw/scaled input data.
+
+Files in the standardized format are saved in the `parse/output` folder.
+
+
+# Processing
+See (process/README.md)[process/README.md].
+
 # Data format
 
 ## Metadata
