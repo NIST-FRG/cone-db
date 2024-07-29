@@ -164,10 +164,10 @@ def export_metadata(df):
 
         material_id = material_id.replace(":", "-")
 
-        if row.get("specimen_number") is not None:
-            new_filename = f"{material_id}-r{row['specimen_number']}.json"
+        if row.get("specimen_number") is not None and row.get("specimen_number") != "":
+            new_filename = f"{material_id}-r{row['specimen_number']}-{"vert" if row['orientation'] == 'vertical' else "horiz"}.json"
         else:
-            new_filename = f"{material_id}.json"
+            new_filename = f"{material_id}-{"vert" if row["orientation"] == 'vertical' else "horiz"}.json"
 
         # include the old filename in the metadata
         row["prev_filename"] = path.name
