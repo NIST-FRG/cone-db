@@ -9,7 +9,7 @@
     "heat_flux_kW/m2": 25.0,
     "separation_mm": NaN,
     "manufacturer": NaN,
-    "material_name": NaN,
+    "material_name": "Douglas fir",
     "specimen_description": NaN,
     "specimen_number": NaN,
     "specimen_prep": NaN,

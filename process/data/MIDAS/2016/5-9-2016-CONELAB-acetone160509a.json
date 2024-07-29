@@ -9,7 +9,7 @@
     "heat_flux_kW/m2": 0.0,
     "separation_mm": 25.0,
     "manufacturer": NaN,
-    "material_name": NaN,
+    "material_name": "Acetone",
     "specimen_description": NaN,
     "specimen_number": NaN,
     "specimen_prep": NaN,

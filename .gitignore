@@ -3,11 +3,10 @@
 *.png
 
 # script-generated files
-parse/data/**/*.json
 parse/data/**/*.csv
 
-parse/output/*.csv
-parse/output/*.json
+parse/output/**/*.csv
+parse/output/**/*.json
 
 .vscode/
 
