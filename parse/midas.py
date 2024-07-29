@@ -7,7 +7,8 @@ from dateutil import parser
 
 from utils import calculate_HRR, calculate_MFR, calculate_k, colorize
 
-
+# relative to the path the script is being run from
+# assumes the script is being run from the root of the repo
 INPUT_DIR = Path(r"\\nfrl.el.nist.gov\NFRL_DATA\FRD224ConeCalorimeter")
 OUTPUT_DIR = Path(r"./parse/output/MIDAS")
 
@@ -17,7 +18,7 @@ files_parsed_successfully = 0
 negative_pe_tests = 0
 bad_i_tests = 0
 
-
+#region parse_dir
 def parse_dir(input_dir):
     paths = Path(input_dir).glob("**/*scaled.csv")
 
@@ -51,6 +52,7 @@ def parse_dir(input_dir):
     print(colorize(f"Tests with bad light intensity data (no Ksmoke): {bad_i_tests}", "purple"))
     print(colorize(f"Skipped due to negative delta_P: {negative_pe_tests}", "purple"))
 
+#region parse_file
 def parse_file(file_path):
     print(f"Parsing {file_path}")
 
@@ -84,6 +86,7 @@ def parse_file(file_path):
     # write data to csv file
     data.to_csv(data_output_path, index=False)
 
+#region parse_metadata
 def parse_metadata(file_path):
     # get the -Output .xls file for the metadata
     file_path = str(file_path).replace("-scaled.csv", "-Output.xls")
@@ -117,6 +120,7 @@ def parse_metadata(file_path):
 
     metadata = {}
 
+    #region metadata properties
     # Get test parameters
     metadata["c_factor"] = get_number("Cf", params)
     e = get_number("Ef", params)
@@ -194,7 +198,7 @@ def parse_metadata(file_path):
 
     return metadata
 
-
+#region parse_data
 def parse_data(df, metadata):
 
     # get rid of the numbers in the column names using regex
@@ -203,6 +207,7 @@ def parse_data(df, metadata):
     # Convert Te into K
     df["Te (°C)"] += 273.15
 
+    #region final columns
     data = df.rename(
         columns={
             "Test Time (s)": "Time (s)",
@@ -229,6 +234,7 @@ def parse_data(df, metadata):
 
     return data
 
+#region process_data
 def process_data(data, metadata):
 
     start_time = metadata.get("test_start_time_s", 0)
@@ -243,6 +249,8 @@ def process_data(data, metadata):
 
     # convert area to m2
     area = area / (100**2)
+
+    #region delay, baselines
 
     # if start-time is not defined, just use the first 30 secs for baseline
     baseline_end = int(start_time if start_time > 0 else 30)
@@ -273,6 +281,8 @@ def process_data(data, metadata):
         raise Exception("Negative delta_P found")
 
     # Calculate HRR by row
+
+    #region calc. HRR, MFR, k
 
     def get_HRR(row):
         X_O2 = row["O2 (Vol fr)"]

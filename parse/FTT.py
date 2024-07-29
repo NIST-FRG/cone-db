@@ -6,10 +6,12 @@ from dateutil import parser
 
 from utils import calculate_HRR, calculate_MFR, colorize
 
+# relative to the path the script is being run from
+# assumes the script is being run from the root of the repo
 INPUT_DIR = Path(r"./parse/data/FTT")
 OUTPUT_DIR = Path(r"./parse/output/FTT")
 
-
+#region parse_dir
 def parse_dir(input_dir):
     # read all CSV files in directory
     paths = Path(input_dir).glob("**/*.csv")
@@ -59,7 +61,7 @@ def parse_dir(input_dir):
         )
     )
 
-
+#region parse_file
 def parse_file(file_path):
     print(f"Parsing: {file_path}")
 
@@ -95,7 +97,7 @@ def parse_file(file_path):
 
     data.to_csv(data_output_path, index=False)
 
-
+#region parse_metadata
 def parse_metadata(df):
     # metadata is found in the first two columns of the dataframe
     raw_metadata = df[df.columns[:2]].dropna(how="all")
@@ -131,6 +133,7 @@ def parse_metadata(df):
         else:
             return None
 
+    #region metadata properties
     # Date parsing
     raw_date = raw_metadata["Date of test"]
     raw_time = raw_metadata["Time of test"]
@@ -219,7 +222,7 @@ def parse_metadata(df):
 
     return metadata
 
-
+#region parse_data
 def parse_data(df, metadata):
     def process_name(name):
         # remove parentheses, spaces, and convert to lowercase
@@ -276,7 +279,7 @@ def parse_data(df, metadata):
 
     return data
 
-
+#region process_data
 def process_data(data, metadata):
 
     start_time = int(metadata.get("test_start_time_s", 0))
@@ -289,6 +292,8 @@ def process_data(data, metadata):
 
     # convert area from cm2 to m2
     area = area / (100**2)
+
+    #region delay, baselines
 
     # if start-time is not defined, just use the first 30 secs for baseline
     baseline_end = int(start_time if start_time > 0 else 30)
@@ -311,6 +316,8 @@ def process_data(data, metadata):
     data["CO (Vol fr)"] = data["CO (Vol fr)"].shift(-co_delay)
 
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
+
+    #region calc. HRR & MFR
 
     # Calculate HRR by row
 

@@ -5,11 +5,15 @@ from io import StringIO
 import re
 from dateutil import parser
 
-INPUT_DIR = "./DATA/FAA"
-OUTPUT_DIR = "./OUTPUT/FAA"
+# relative to the path the script is being run from
+# assumes the script is being run from the root of the repo
+INPUT_DIR = "./parse/data/FAA"
+OUTPUT_DIR = "./parse/data/FAA"
 
+#region parse_dir
+# "#region" is used to show labels in the VSCode code minimap
 def parse_dir(input_dir):
-    # read all files in the directory
+    # read all files in the directory, recursively
     paths = Path(input_dir).glob("**/*.txt")
 
     # create output folder
@@ -21,6 +25,7 @@ def parse_dir(input_dir):
         except Exception as e:
             print(f"Error parsing {path}: {e}")
 
+#region parse_file
 def parse_file(file_path):
     # read in TXT file & split the text into metadata & actual data
     print(f"Parsing {file_path}:")
@@ -52,6 +57,7 @@ def parse_file(file_path):
 
     print(f"\tData complete ({df.shape[0]}x{df.shape[1]})")
 
+#region parse_metadata
 def parse_metadata(raw_metadata):
     # remove any leading/trailing whitespace on each line + random special characters
     raw_metadata_lines = re.split(r"\n+", raw_metadata)
@@ -143,6 +149,7 @@ def parse_metadata(raw_metadata):
 
     return metadata
 
+#region parse_data
 def parse_data(raw_data):
 
     # read in data as a tab-delimited CSV
