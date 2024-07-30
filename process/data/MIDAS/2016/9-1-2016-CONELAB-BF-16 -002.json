@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Knowlton",
-    "events": "[{'time': 347, 'event': 'Start Test'}, {'time': 420, 'event': 'Ignition'}, {'time': 422, 'event': 'Flame Out'}, {'time': 720, 'event': 'Start Test'}, {'time': 893, 'event': 'Start Test'}, {'time': 1148, 'event': 'Start Test'}, {'time': 1310, 'event': 'Start Test'}]"
+    "events": "[{'time': 347, 'event': 'Start Test'}, {'time': 420, 'event': 'Ignition'}, {'time': 422, 'event': 'Flame Out'}, {'time': 720, 'event': 'Start Test'}, {'time': 893, 'event': 'Start Test'}, {'time': 1148, 'event': 'Start Test'}, {'time': 1310, 'event': 'Start Test'}]",
+    "material_id": null
 }

@@ -10,7 +10,7 @@
     "separation_mm": 25.0,
     "manufacturer": NaN,
     "material_name": "Acetone",
-    "specimen_description": NaN,
+    "specimen_description": "Acetone, filled to within 1cm of top of holder.  0.096m diameter.",
     "specimen_number": NaN,
     "specimen_prep": NaN,
     "sponsor": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 486, 'event': 'Start Test'}, {'time': 489, 'event': 'Ignition'}, {'time': 1111, 'event': 'Flame Out'}]"
+    "events": "[{'time': 486, 'event': 'Start Test'}, {'time': 489, 'event': 'Ignition'}, {'time': 1111, 'event': 'Flame Out'}]",
+    "material_id": "acetone:kim2019energy"
 }

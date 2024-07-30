@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nazare",
-    "events": "[{'time': 711, 'event': 'Start Test'}, {'time': 714, 'event': 'Ignition'}, {'time': 918, 'event': 'No Flame'}]"
+    "events": "[{'time': 711, 'event': 'Start Test'}, {'time': 714, 'event': 'Ignition'}, {'time': 918, 'event': 'No Flame'}]",
+    "material_id": null
 }

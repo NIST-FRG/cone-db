@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Butler",
-    "events": "[{'time': 409, 'event': 'Start Test'}, {'time': 460, 'event': 'Ignition'}, {'time': 1325, 'event': 'Flame Out'}, {'time': 1341, 'event': 'flame out time late'}]"
+    "events": "[{'time': 409, 'event': 'Start Test'}, {'time': 460, 'event': 'Ignition'}, {'time': 1325, 'event': 'Flame Out'}, {'time': 1341, 'event': 'flame out time late'}]",
+    "material_id": null
 }

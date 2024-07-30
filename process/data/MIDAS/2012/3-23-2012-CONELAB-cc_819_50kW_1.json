@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "McGrattan",
-    "events": "[{'time': 768, 'event': 'start'}, {'time': 803, 'event': 'ignition (igniter removed)'}, {'time': 843, 'event': 'flame out (igniter in)'}, {'time': 926, 'event': 'ignition (igniter removed)'}, {'time': 1391, 'event': 'smoke out bottom of holder'}, {'time': 1426, 'event': 'small flame out bottom of holder'}, {'time': 2297, 'event': 'flame out'}, {'time': 2469, 'event': 'remove sample'}]"
+    "events": "[{'time': 768, 'event': 'start'}, {'time': 803, 'event': 'ignition (igniter removed)'}, {'time': 843, 'event': 'flame out (igniter in)'}, {'time': 926, 'event': 'ignition (igniter removed)'}, {'time': 1391, 'event': 'smoke out bottom of holder'}, {'time': 1426, 'event': 'small flame out bottom of holder'}, {'time': 2297, 'event': 'flame out'}, {'time': 2469, 'event': 'remove sample'}]",
+    "material_id": null
 }

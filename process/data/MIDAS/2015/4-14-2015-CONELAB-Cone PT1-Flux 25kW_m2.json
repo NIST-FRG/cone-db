@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bareham",
-    "events": "[{'time': 591, 'event': 'cone heater power on'}, {'time': 2766, 'event': 'Sync with portable daq'}, {'time': 2891, 'event': 'Start Test - plate TC exposed to cone radiator'}, {'time': 4371, 'event': 'end test'}]"
+    "events": "[{'time': 591, 'event': 'cone heater power on'}, {'time': 2766, 'event': 'Sync with portable daq'}, {'time': 2891, 'event': 'Start Test - plate TC exposed to cone radiator'}, {'time': 4371, 'event': 'end test'}]",
+    "material_id": null
 }

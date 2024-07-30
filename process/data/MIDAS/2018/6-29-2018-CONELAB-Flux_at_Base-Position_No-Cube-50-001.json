@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Zammarano",
-    "events": "[{'time': 242, 'event': 'Flux at 121 mm'}]"
+    "events": "[{'time': 242, 'event': 'Flux at 121 mm'}]",
+    "material_id": null
 }

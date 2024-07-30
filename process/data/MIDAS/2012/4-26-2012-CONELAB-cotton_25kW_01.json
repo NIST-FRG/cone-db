@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 1642, 'event': 'Start Test'}, {'time': 1698, 'event': 'Ignition'}, {'time': 1738, 'event': 'sample curled up toward cone '}, {'time': 1796, 'event': 'flame out'}]"
+    "events": "[{'time': 1642, 'event': 'Start Test'}, {'time': 1698, 'event': 'Ignition'}, {'time': 1738, 'event': 'sample curled up toward cone '}, {'time': 1796, 'event': 'flame out'}]",
+    "material_id": "cotton:bryant2013characterizing"
 }

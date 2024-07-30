@@ -9,7 +9,7 @@
     "heat_flux_kW/m2": 25.0,
     "separation_mm": NaN,
     "manufacturer": NaN,
-    "material_name": "Textile",
+    "material_name": "",
     "specimen_description": NaN,
     "specimen_number": NaN,
     "specimen_prep": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 587, 'event': 'start'}, {'time': 652, 'event': 'ignition'}]"
+    "events": "[{'time': 587, 'event': 'start'}, {'time': 652, 'event': 'ignition'}]",
+    "material_id": ""
 }

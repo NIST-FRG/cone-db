@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 242, 'event': 'Ignition'}, {'time': 458, 'event': 'Ignition'}, {'time': 541, 'event': 'Flame out  approx 458'}, {'time': 610, 'event': 'approx 30 ml Toluene burn'}, {'time': 951, 'event': 'End Test'}]"
+    "events": "[{'time': 242, 'event': 'Ignition'}, {'time': 458, 'event': 'Ignition'}, {'time': 541, 'event': 'Flame out  approx 458'}, {'time': 610, 'event': 'approx 30 ml Toluene burn'}, {'time': 951, 'event': 'End Test'}]",
+    "material_id": null
 }

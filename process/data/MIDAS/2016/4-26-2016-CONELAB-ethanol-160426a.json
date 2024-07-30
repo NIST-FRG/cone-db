@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "Ethanol",
     "specimen_description": "Ethanol pool fire",
-    "specimen_number": NaN,
+    "specimen_number": "1",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 204, 'event': 'Start Test'}, {'time': 213, 'event': 'Ignition'}, {'time': 2526, 'event': 'Flame Out'}]"
+    "events": "[{'time': 204, 'event': 'Start Test'}, {'time': 213, 'event': 'Ignition'}, {'time': 2526, 'event': 'Flame Out'}]",
+    "material_id": "ethanol:kim2019energy"
 }

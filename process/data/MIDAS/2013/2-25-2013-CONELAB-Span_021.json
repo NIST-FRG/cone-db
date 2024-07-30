@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 127, 'event': 'Air supply rate from previous test reduced'}, {'time': 307, 'event': 'Air supply from previous test switched off'}, {'time': 610, 'event': 'Air on'}, {'time': 622, 'event': 'chamber closed'}, {'time': 1080, 'event': 'Start baseline'}, {'time': 1180, 'event': 'chamber open'}, {'time': 1192, 'event': 'chamber closed'}, {'time': 1283, 'event': 'Start Test'}, {'time': 1318, 'event': 'Ignition'}, {'time': 2622, 'event': 'flames extinguished'}, {'time': 2700, 'event': 'Flame Out'}, {'time': 2770, 'event': 'Chamber closed and sample removed'}, {'time': 2788, 'event': 'Chamber closed'}]"
+    "events": "[{'time': 127, 'event': 'Air supply rate from previous test reduced'}, {'time': 307, 'event': 'Air supply from previous test switched off'}, {'time': 610, 'event': 'Air on'}, {'time': 622, 'event': 'chamber closed'}, {'time': 1080, 'event': 'Start baseline'}, {'time': 1180, 'event': 'chamber open'}, {'time': 1192, 'event': 'chamber closed'}, {'time': 1283, 'event': 'Start Test'}, {'time': 1318, 'event': 'Ignition'}, {'time': 2622, 'event': 'flames extinguished'}, {'time': 2700, 'event': 'Flame Out'}, {'time': 2770, 'event': 'Chamber closed and sample removed'}, {'time': 2788, 'event': 'Chamber closed'}]",
+    "material_id": null
 }

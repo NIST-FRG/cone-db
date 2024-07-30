@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 1334, 'event': '4.0 L/min methane flow'}, {'time': 1544, 'event': '1.494 L/min flow'}, {'time': 2065, 'event': '15.02 L/min methane flow'}]"
+    "events": "[{'time': 1334, 'event': '4.0 L/min methane flow'}, {'time': 1544, 'event': '1.494 L/min flow'}, {'time': 2065, 'event': '15.02 L/min methane flow'}]",
+    "material_id": null
 }

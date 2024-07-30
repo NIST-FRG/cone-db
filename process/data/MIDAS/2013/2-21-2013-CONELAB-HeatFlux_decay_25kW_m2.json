@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 50, 'event': 'Air supply set to 800 and 760 scfh'}, {'time': 97, 'event': 'Cone heater switched off'}]"
+    "events": "[{'time': 50, 'event': 'Air supply set to 800 and 760 scfh'}, {'time': 97, 'event': 'Cone heater switched off'}]",
+    "material_id": null
 }

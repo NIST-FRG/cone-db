@@ -9,7 +9,7 @@
     "heat_flux_kW/m2": 25.0,
     "separation_mm": NaN,
     "manufacturer": NaN,
-    "material_name": "Cotton",
+    "material_name": "",
     "specimen_description": NaN,
     "specimen_number": NaN,
     "specimen_prep": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 234, 'event': 'start'}, {'time': 367, 'event': 'flame out'}]"
+    "events": "[{'time': 234, 'event': 'start'}, {'time': 367, 'event': 'flame out'}]",
+    "material_id": ""
 }

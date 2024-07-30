@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 188, 'event': 'Nitrogen supply from previous test switched off'}, {'time': 256, 'event': 'Air supply from previous test switched off'}, {'time': 343, 'event': 'Chamber closed'}, {'time': 725, 'event': 'Start baseline'}, {'time': 845, 'event': 'chamber open'}, {'time': 866, 'event': 'chamber closed'}, {'time': 968, 'event': 'Start Test'}, {'time': 1080, 'event': 'Ignition'}, {'time': 2001, 'event': 'flames extinguished'}, {'time': 2208, 'event': 'Flame Out'}, {'time': 2268, 'event': 'Chamber opened and sample removed'}, {'time': 2278, 'event': 'Chamber closed for drift'}]"
+    "events": "[{'time': 188, 'event': 'Nitrogen supply from previous test switched off'}, {'time': 256, 'event': 'Air supply from previous test switched off'}, {'time': 343, 'event': 'Chamber closed'}, {'time': 725, 'event': 'Start baseline'}, {'time': 845, 'event': 'chamber open'}, {'time': 866, 'event': 'chamber closed'}, {'time': 968, 'event': 'Start Test'}, {'time': 1080, 'event': 'Ignition'}, {'time': 2001, 'event': 'flames extinguished'}, {'time': 2208, 'event': 'Flame Out'}, {'time': 2268, 'event': 'Chamber opened and sample removed'}, {'time': 2278, 'event': 'Chamber closed for drift'}]",
+    "material_id": null
 }

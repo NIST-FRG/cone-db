@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": NaN,
     "specimen_description": NaN,
-    "specimen_number": NaN,
+    "specimen_number": "2",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nazare",
-    "events": "[{'time': 280, 'event': 'Start Test'}, {'time': 289, 'event': 'Ignition'}, {'time': 648, 'event': 'Flame Out'}]"
+    "events": "[{'time': 280, 'event': 'Start Test'}, {'time': 289, 'event': 'Ignition'}, {'time': 648, 'event': 'Flame Out'}]",
+    "material_id": "bf21:nazare2019assessing"
 }

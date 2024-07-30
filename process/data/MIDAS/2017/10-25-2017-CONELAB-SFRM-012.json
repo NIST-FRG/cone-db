@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Choe",
-    "events": "[{'time': 615, 'event': 'Start Test'}, {'time': 8121, 'event': 'End Test'}, {'time': 8123, 'event': 'XSFRM 012; 75 kW/m2; thickness = 16 mm; Mass loss measurement only; No tcs attached.'}]"
+    "events": "[{'time': 615, 'event': 'Start Test'}, {'time': 8121, 'event': 'End Test'}, {'time': 8123, 'event': 'XSFRM 012; 75 kW/m2; thickness = 16 mm; Mass loss measurement only; No tcs attached.'}]",
+    "material_id": null
 }

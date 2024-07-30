@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Putorti",
-    "events": "[{'time': 1168, 'event': 'Sync w/portable daq'}]"
+    "events": "[{'time': 1168, 'event': 'Sync w/portable daq'}]",
+    "material_id": null
 }

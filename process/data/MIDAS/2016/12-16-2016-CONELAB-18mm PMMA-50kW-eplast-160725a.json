@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nazarre",
-    "events": null
+    "events": null,
+    "material_id": null
 }

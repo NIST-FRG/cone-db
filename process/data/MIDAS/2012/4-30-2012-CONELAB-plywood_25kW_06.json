@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 280, 'event': 'Start Test'}, {'time': 476, 'event': 'Ignition'}, {'time': 1300, 'event': 'flame out'}]"
+    "events": "[{'time': 280, 'event': 'Start Test'}, {'time': 476, 'event': 'Ignition'}, {'time': 1300, 'event': 'flame out'}]",
+    "material_id": "plywood:bryant2013characterizing"
 }

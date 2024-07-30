@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Shonali",
-    "events": "[{'time': 269, 'event': 'start'}]"
+    "events": "[{'time': 269, 'event': 'start'}]",
+    "material_id": null
 }

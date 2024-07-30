@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Lydia",
-    "events": "[{'time': 544, 'event': 'Start Test'}, {'time': 747, 'event': 'no flame'}, {'time': 1558, 'event': 'Ember extinguished'}]"
+    "events": "[{'time': 544, 'event': 'Start Test'}, {'time': 747, 'event': 'no flame'}, {'time': 1558, 'event': 'Ember extinguished'}]",
+    "material_id": null
 }

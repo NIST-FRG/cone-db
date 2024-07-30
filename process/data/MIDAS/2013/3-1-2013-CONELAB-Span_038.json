@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 121, 'event': 'Air supply from previous test switched off'}, {'time': 376, 'event': 'Chamber closed'}, {'time': 1010, 'event': 'Start baseline'}, {'time': 1128, 'event': 'Chamber open'}, {'time': 1138, 'event': 'chamber closed'}, {'time': 1234, 'event': 'Start Test'}, {'time': 1264, 'event': 'Ignition'}, {'time': 2209, 'event': 'flames extinguished'}, {'time': 2500, 'event': 'Flame Out'}, {'time': 2568, 'event': 'Chamber opened and sample removed'}, {'time': 2585, 'event': 'Chamber closed'}]"
+    "events": "[{'time': 121, 'event': 'Air supply from previous test switched off'}, {'time': 376, 'event': 'Chamber closed'}, {'time': 1010, 'event': 'Start baseline'}, {'time': 1128, 'event': 'Chamber open'}, {'time': 1138, 'event': 'chamber closed'}, {'time': 1234, 'event': 'Start Test'}, {'time': 1264, 'event': 'Ignition'}, {'time': 2209, 'event': 'flames extinguished'}, {'time': 2500, 'event': 'Flame Out'}, {'time': 2568, 'event': 'Chamber opened and sample removed'}, {'time': 2585, 'event': 'Chamber closed'}]",
+    "material_id": null
 }

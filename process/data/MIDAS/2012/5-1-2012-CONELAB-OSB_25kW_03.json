@@ -9,7 +9,7 @@
     "heat_flux_kW/m2": 25.0,
     "separation_mm": NaN,
     "manufacturer": NaN,
-    "material_name": "Oriented Strand Board",
+    "material_name": NaN,
     "specimen_description": NaN,
     "specimen_number": "2",
     "specimen_prep": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 525, 'event': 'Start Test'}, {'time': 628, 'event': 'Ignition'}, {'time': 1305, 'event': 'flame out'}]"
+    "events": "[{'time': 525, 'event': 'Start Test'}, {'time': 628, 'event': 'Ignition'}, {'time': 1305, 'event': 'flame out'}]",
+    "material_id": "osb:bryant2013characterizing"
 }

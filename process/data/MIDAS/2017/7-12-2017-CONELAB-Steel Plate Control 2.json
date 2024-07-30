@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Choe",
-    "events": "[{'time': 66, 'event': 'Start Test'}, {'time': 1876, 'event': 'Temp set to 768 C'}, {'time': 3433, 'event': 'Set temp to 890 C'}, {'time': 5032, 'event': 'Cone heater power off'}]"
+    "events": "[{'time': 66, 'event': 'Start Test'}, {'time': 1876, 'event': 'Temp set to 768 C'}, {'time': 3433, 'event': 'Set temp to 890 C'}, {'time': 5032, 'event': 'Cone heater power off'}]",
+    "material_id": null
 }

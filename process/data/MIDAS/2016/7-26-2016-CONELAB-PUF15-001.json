@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nazare",
-    "events": "[{'time': 1461, 'event': 'Start Test'}, {'time': 1468, 'event': 'Ignition'}, {'time': 1571, 'event': 'no flame/igniter replaced'}, {'time': 1623, 'event': 'no flame/igniter replaced'}, {'time': 1711, 'event': 'no flame/igniter replaced'}, {'time': 1888, 'event': 'sample reignited/igniter removed'}, {'time': 2261, 'event': 'Flame Out'}]"
+    "events": "[{'time': 1461, 'event': 'Start Test'}, {'time': 1468, 'event': 'Ignition'}, {'time': 1571, 'event': 'no flame/igniter replaced'}, {'time': 1623, 'event': 'no flame/igniter replaced'}, {'time': 1711, 'event': 'no flame/igniter replaced'}, {'time': 1888, 'event': 'sample reignited/igniter removed'}, {'time': 2261, 'event': 'Flame Out'}]",
+    "material_id": null
 }

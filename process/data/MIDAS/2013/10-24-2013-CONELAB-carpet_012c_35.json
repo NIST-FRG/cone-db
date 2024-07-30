@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "Carpet",
     "specimen_description": "DuPont carpet #1 w/single backing",
-    "specimen_number": "13",
+    "specimen_number": "3",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Butler",
-    "events": "[{'time': 1381, 'event': 'Start Test'}, {'time': 1431, 'event': 'Ignition'}, {'time': 1870, 'event': 'Flame Out'}]"
+    "events": "[{'time': 1381, 'event': 'Start Test'}, {'time': 1431, 'event': 'Ignition'}, {'time': 1870, 'event': 'Flame Out'}]",
+    "material_id": "carpet1:butler2015using"
 }

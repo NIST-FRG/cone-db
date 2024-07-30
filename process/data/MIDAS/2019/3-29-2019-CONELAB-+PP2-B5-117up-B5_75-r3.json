@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Zammarano",
-    "events": "[{'time': 485, 'event': 'Start Test'}, {'time': 493, 'event': 'Ignition'}, {'time': 650, 'event': 'Wetting'}, {'time': 707, 'event': 'Dripping'}, {'time': 844, 'event': 'Bottom Ignition'}, {'time': 1149, 'event': 'Flame Out'}]"
+    "events": "[{'time': 485, 'event': 'Start Test'}, {'time': 493, 'event': 'Ignition'}, {'time': 650, 'event': 'Wetting'}, {'time': 707, 'event': 'Dripping'}, {'time': 844, 'event': 'Bottom Ignition'}, {'time': 1149, 'event': 'Flame Out'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 363, 'event': 'Start Test'}, {'time': 373, 'event': 'Ignition'}, {'time': 1090, 'event': 'Flame Out'}, {'time': 1236, 'event': 'Smoke OD filter in 15%, OD 0.707'}, {'time': 1367, 'event': 'Smoke OD filter in 48% transmission, OD 0.303'}]"
+    "events": "[{'time': 363, 'event': 'Start Test'}, {'time': 373, 'event': 'Ignition'}, {'time': 1090, 'event': 'Flame Out'}, {'time': 1236, 'event': 'Smoke OD filter in 15%, OD 0.707'}, {'time': 1367, 'event': 'Smoke OD filter in 48% transmission, OD 0.303'}]",
+    "material_id": "acetone:kim2019energy"
 }

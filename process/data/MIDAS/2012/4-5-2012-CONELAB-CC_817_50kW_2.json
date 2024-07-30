@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "McGrattan",
-    "events": "[{'time': 247, 'event': 'start'}, {'time': 319, 'event': 'ignition - flashing before ignition'}, {'time': 385, 'event': 'flame out - igniter in'}, {'time': 457, 'event': 'ignition - igniter removed'}, {'time': 815, 'event': 'dripping started ~ 300 sec. before event mark time - flaming started ~ 120 sec before event mark time'}, {'time': 1697, 'event': 'flame out - sample removed'}]"
+    "events": "[{'time': 247, 'event': 'start'}, {'time': 319, 'event': 'ignition - flashing before ignition'}, {'time': 385, 'event': 'flame out - igniter in'}, {'time': 457, 'event': 'ignition - igniter removed'}, {'time': 815, 'event': 'dripping started ~ 300 sec. before event mark time - flaming started ~ 120 sec before event mark time'}, {'time': 1697, 'event': 'flame out - sample removed'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Lenenton",
-    "events": "[{'time': 112, 'event': 'Start Test'}, {'time': 148, 'event': \"Shortly after exposure to the heater, a small post it note that was sitting next to the gauge ('check heat lfux has water' warning sign) ignited\"}]"
+    "events": "[{'time': 112, 'event': 'Start Test'}, {'time': 148, 'event': \"Shortly after exposure to the heater, a small post it note that was sitting next to the gauge ('check heat lfux has water' warning sign) ignited\"}]",
+    "material_id": null
 }

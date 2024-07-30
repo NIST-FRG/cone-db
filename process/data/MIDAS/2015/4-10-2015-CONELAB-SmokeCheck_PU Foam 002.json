@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 204, 'event': 'Start Test'}, {'time': 210, 'event': 'Ignition'}, {'time': 350, 'event': 'NO TEST - No Kaowool under Sample '}]"
+    "events": "[{'time': 204, 'event': 'Start Test'}, {'time': 210, 'event': 'Ignition'}, {'time': 350, 'event': 'NO TEST - No Kaowool under Sample '}]",
+    "material_id": null
 }

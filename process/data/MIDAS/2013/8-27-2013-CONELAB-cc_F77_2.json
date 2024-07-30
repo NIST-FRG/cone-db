@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "McGrattan",
-    "events": "[{'time': 808, 'event': 'flux set to 6.0 kW/m^2'}, {'time': 1754, 'event': 'Start Test'}, {'time': 1783, 'event': 'Ignition'}, {'time': 5531, 'event': 'Flame Out'}]"
+    "events": "[{'time': 808, 'event': 'flux set to 6.0 kW/m^2'}, {'time': 1754, 'event': 'Start Test'}, {'time': 1783, 'event': 'Ignition'}, {'time': 5531, 'event': 'Flame Out'}]",
+    "material_id": null
 }

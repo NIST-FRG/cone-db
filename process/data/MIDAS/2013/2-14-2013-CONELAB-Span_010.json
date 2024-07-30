@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 125, 'event': 'chamber closed'}, {'time': 531, 'event': 'Start baseline'}, {'time': 621, 'event': 'Baseline corrupt'}, {'time': 675, 'event': 'Start retaken baseline'}, {'time': 834, 'event': 'chamber open'}, {'time': 851, 'event': 'chamber closed'}, {'time': 963, 'event': 'Start Test'}, {'time': 997, 'event': 'Ignition'}, {'time': 1972, 'event': 'flames extinguished'}, {'time': 2313, 'event': 'Flame Out'}, {'time': 2488, 'event': 'Open chamber and remove sample'}, {'time': 2509, 'event': 'Close chamber for drift'}]"
+    "events": "[{'time': 125, 'event': 'chamber closed'}, {'time': 531, 'event': 'Start baseline'}, {'time': 621, 'event': 'Baseline corrupt'}, {'time': 675, 'event': 'Start retaken baseline'}, {'time': 834, 'event': 'chamber open'}, {'time': 851, 'event': 'chamber closed'}, {'time': 963, 'event': 'Start Test'}, {'time': 997, 'event': 'Ignition'}, {'time': 1972, 'event': 'flames extinguished'}, {'time': 2313, 'event': 'Flame Out'}, {'time': 2488, 'event': 'Open chamber and remove sample'}, {'time': 2509, 'event': 'Close chamber for drift'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Doug Fox",
-    "events": "[{'time': 206, 'event': 'Start Test'}, {'time': 209, 'event': 'Ignition'}]"
+    "events": "[{'time': 206, 'event': 'Start Test'}, {'time': 209, 'event': 'Ignition'}]",
+    "material_id": null
 }

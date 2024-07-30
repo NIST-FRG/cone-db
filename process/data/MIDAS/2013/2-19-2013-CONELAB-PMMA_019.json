@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 90, 'event': 'Sample gas off for filter change'}, {'time': 110, 'event': 'Air supply from previous test switched off'}, {'time': 342, 'event': 'Sample gas pump switched on after filter change'}, {'time': 493, 'event': 'Chamber closed and gas supply switched on'}, {'time': 724, 'event': 'Start baseline'}, {'time': 837, 'event': 'chamber open'}, {'time': 859, 'event': 'chamber closed'}, {'time': 960, 'event': 'Start Test'}, {'time': 988, 'event': 'Ignition'}, {'time': 1525, 'event': 'flames extinguished'}, {'time': 1625, 'event': 'Flame Out'}, {'time': 1717, 'event': 'Chamber opened and sample removed'}, {'time': 1728, 'event': 'Chamber closed for drift'}]"
+    "events": "[{'time': 90, 'event': 'Sample gas off for filter change'}, {'time': 110, 'event': 'Air supply from previous test switched off'}, {'time': 342, 'event': 'Sample gas pump switched on after filter change'}, {'time': 493, 'event': 'Chamber closed and gas supply switched on'}, {'time': 724, 'event': 'Start baseline'}, {'time': 837, 'event': 'chamber open'}, {'time': 859, 'event': 'chamber closed'}, {'time': 960, 'event': 'Start Test'}, {'time': 988, 'event': 'Ignition'}, {'time': 1525, 'event': 'flames extinguished'}, {'time': 1625, 'event': 'Flame Out'}, {'time': 1717, 'event': 'Chamber opened and sample removed'}, {'time': 1728, 'event': 'Chamber closed for drift'}]",
+    "material_id": null
 }

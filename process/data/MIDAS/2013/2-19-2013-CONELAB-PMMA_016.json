@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 189, 'event': 'Supply air from previous test switched off What happens to the chamber temperatures questionmark'}, {'time': 756, 'event': 'Chamber closed'}, {'time': 905, 'event': 'Start baseline'}, {'time': 1018, 'event': 'chamber open'}, {'time': 1033, 'event': 'chamber closed'}, {'time': 1128, 'event': 'Start Test'}, {'time': 1153, 'event': 'Ignition'}, {'time': 1655, 'event': 'flames extinguished'}, {'time': 1762, 'event': 'Flame Out'}, {'time': 1830, 'event': 'Chamber opened and sample removed'}, {'time': 1841, 'event': 'Chamber closed'}]"
+    "events": "[{'time': 189, 'event': 'Supply air from previous test switched off What happens to the chamber temperatures questionmark'}, {'time': 756, 'event': 'Chamber closed'}, {'time': 905, 'event': 'Start baseline'}, {'time': 1018, 'event': 'chamber open'}, {'time': 1033, 'event': 'chamber closed'}, {'time': 1128, 'event': 'Start Test'}, {'time': 1153, 'event': 'Ignition'}, {'time': 1655, 'event': 'flames extinguished'}, {'time': 1762, 'event': 'Flame Out'}, {'time': 1830, 'event': 'Chamber opened and sample removed'}, {'time': 1841, 'event': 'Chamber closed'}]",
+    "material_id": null
 }

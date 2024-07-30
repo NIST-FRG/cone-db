@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bareham",
-    "events": "[{'time': 805, 'event': 'Sync with portable daq'}, {'time': 914, 'event': 'Start Test'}, {'time': 2270, 'event': 'end test'}]"
+    "events": "[{'time': 805, 'event': 'Sync with portable daq'}, {'time': 914, 'event': 'Start Test'}, {'time': 2270, 'event': 'end test'}]",
+    "material_id": null
 }

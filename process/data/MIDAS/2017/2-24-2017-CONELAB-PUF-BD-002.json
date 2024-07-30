@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "CBUF Fabric Foam",
     "specimen_description": null,
-    "specimen_number": "4",
+    "specimen_number": "",
     "specimen_prep": "NO edge frame used\n50 mm high AL foil pan",
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nazare",
-    "events": "[{'time': 198, 'event': 'Start Test'}, {'time': 221, 'event': 'Ignition'}, {'time': 581, 'event': 'Flame Out'}]"
+    "events": "[{'time': 198, 'event': 'Start Test'}, {'time': 221, 'event': 'Ignition'}, {'time': 581, 'event': 'Flame Out'}]",
+    "material_id": ""
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 377, 'event': 'Start Test'}, {'time': 560, 'event': 'Ignition'}, {'time': 1747, 'event': 'Flame Out'}]"
+    "events": "[{'time': 377, 'event': 'Start Test'}, {'time': 560, 'event': 'Ignition'}, {'time': 1747, 'event': 'Flame Out'}]",
+    "material_id": "pine:bryant2013characterizing"
 }

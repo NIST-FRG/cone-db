@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Kashiwagi",
-    "events": "[{'time': 131, 'event': 'Start Test'}, {'time': 256, 'event': 'Ignition'}, {'time': 480, 'event': 'Flame Out'}, {'time': 671, 'event': 'Flame out missed (estimated)'}]"
+    "events": "[{'time': 131, 'event': 'Start Test'}, {'time': 256, 'event': 'Ignition'}, {'time': 480, 'event': 'Flame Out'}, {'time': 671, 'event': 'Flame out missed (estimated)'}]",
+    "material_id": null
 }

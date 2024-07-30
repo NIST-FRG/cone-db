@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 55, 'event': 'Steady Timer-flux at 25mm below face of cone assembly; open except for ring clamp'}, {'time': 337, 'event': 'Steady Timer-flux at 50mm below face of cone assembly; open except for ring clamp'}, {'time': 710, 'event': 'Steady Timer-flux 50mm below face of cone assembly at bottom center of pan; 25mm  clean Al foil pan'}, {'time': 1087, 'event': 'Steady Timer-flux 50mm below face of cone assembly at bottom center of pan; 25mm Al foil pan w/residue'}, {'time': 1439, 'event': 'Steady Timer-flux at 50mm below face of cone assembly; open except for ring clamp'}]"
+    "events": "[{'time': 55, 'event': 'Steady Timer-flux at 25mm below face of cone assembly; open except for ring clamp'}, {'time': 337, 'event': 'Steady Timer-flux at 50mm below face of cone assembly; open except for ring clamp'}, {'time': 710, 'event': 'Steady Timer-flux 50mm below face of cone assembly at bottom center of pan; 25mm  clean Al foil pan'}, {'time': 1087, 'event': 'Steady Timer-flux 50mm below face of cone assembly at bottom center of pan; 25mm Al foil pan w/residue'}, {'time': 1439, 'event': 'Steady Timer-flux at 50mm below face of cone assembly; open except for ring clamp'}]",
+    "material_id": null
 }

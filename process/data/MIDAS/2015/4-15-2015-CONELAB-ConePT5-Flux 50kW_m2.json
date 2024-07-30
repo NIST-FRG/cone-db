@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 629, 'event': 'Sync portable data acq'}, {'time': 860, 'event': 'Start Test'}, {'time': 2194, 'event': 'end test'}]"
+    "events": "[{'time': 629, 'event': 'Sync portable data acq'}, {'time': 860, 'event': 'Start Test'}, {'time': 2194, 'event': 'end test'}]",
+    "material_id": null
 }

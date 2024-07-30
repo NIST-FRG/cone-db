@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryner",
-    "events": "[{'time': 118, 'event': 'Start Test'}, {'time': 245, 'event': 'Ignition'}, {'time': 327, 'event': 'accelerant out'}, {'time': 485, 'event': 'Flame Out'}, {'time': 661, 'event': 'End Test'}]"
+    "events": "[{'time': 118, 'event': 'Start Test'}, {'time': 245, 'event': 'Ignition'}, {'time': 327, 'event': 'accelerant out'}, {'time': 485, 'event': 'Flame Out'}, {'time': 661, 'event': 'End Test'}]",
+    "material_id": null
 }

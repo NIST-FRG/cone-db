@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "Carpet",
     "specimen_description": "DuPont carpet 010",
-    "specimen_number": NaN,
+    "specimen_number": "4",
     "specimen_prep": " primary and secondary with adhesive",
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Butler",
-    "events": "[{'time': 423, 'event': 'Start Test'}, {'time': 443, 'event': 'Ignition'}, {'time': 507, 'event': 'Flame Out'}]"
+    "events": "[{'time': 423, 'event': 'Start Test'}, {'time': 443, 'event': 'Ignition'}, {'time': 507, 'event': 'Flame Out'}]",
+    "material_id": "carpet10:butler2015using"
 }

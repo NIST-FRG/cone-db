@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 218, 'event': 'start'}, {'time': 379, 'event': 'ignition'}]"
+    "events": "[{'time': 218, 'event': 'start'}, {'time': 379, 'event': 'ignition'}]",
+    "material_id": "rad_pine:xu2015combustion"
 }

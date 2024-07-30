@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 575, 'event': 'Start Test'}, {'time': 1530, 'event': 'NOTE: No flaming Ignition'}]"
+    "events": "[{'time': 575, 'event': 'Start Test'}, {'time': 1530, 'event': 'NOTE: No flaming Ignition'}]",
+    "material_id": "drywall:bryant2013characterizing"
 }

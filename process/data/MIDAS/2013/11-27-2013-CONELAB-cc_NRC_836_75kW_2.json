@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bareham",
-    "events": "[{'time': 213, 'event': 'Start Test'}, {'time': 232, 'event': 'Ignition'}, {'time': 318, 'event': 'flame out -- igniter on'}, {'time': 401, 'event': 'igniter off'}, {'time': 1895, 'event': 'Flame Out'}]"
+    "events": "[{'time': 213, 'event': 'Start Test'}, {'time': 232, 'event': 'Ignition'}, {'time': 318, 'event': 'flame out -- igniter on'}, {'time': 401, 'event': 'igniter off'}, {'time': 1895, 'event': 'Flame Out'}]",
+    "material_id": null
 }

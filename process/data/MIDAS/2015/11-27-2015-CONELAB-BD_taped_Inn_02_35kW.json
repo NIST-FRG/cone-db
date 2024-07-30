@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Zammarano",
-    "events": "[{'time': 713, 'event': 'Start Test'}, {'time': 733, 'event': 'Ignition'}, {'time': 897, 'event': 'fire out'}, {'time': 994, 'event': 'reignited from glowing combustion at approximately 940s'}, {'time': 1192, 'event': 'Flame Out'}]"
+    "events": "[{'time': 713, 'event': 'Start Test'}, {'time': 733, 'event': 'Ignition'}, {'time': 897, 'event': 'fire out'}, {'time': 994, 'event': 'reignited from glowing combustion at approximately 940s'}, {'time': 1192, 'event': 'Flame Out'}]",
+    "material_id": null
 }

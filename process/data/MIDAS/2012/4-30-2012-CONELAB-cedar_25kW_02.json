@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 310, 'event': 'Start Test'}, {'time': 524, 'event': 'Ignition'}, {'time': 2411, 'event': 'flame out'}]"
+    "events": "[{'time': 310, 'event': 'Start Test'}, {'time': 524, 'event': 'Ignition'}, {'time': 2411, 'event': 'flame out'}]",
+    "material_id": "cedar:bryant2013characterizing"
 }

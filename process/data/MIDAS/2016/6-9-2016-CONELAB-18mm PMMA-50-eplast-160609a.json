@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 1173, 'event': 'Start Test'}, {'time': 1205, 'event': 'Ignition'}, {'time': 1871, 'event': 'Control TC failed at approximately 1540s = full power to cone'}]"
+    "events": "[{'time': 1173, 'event': 'Start Test'}, {'time': 1205, 'event': 'Ignition'}, {'time': 1871, 'event': 'Control TC failed at approximately 1540s = full power to cone'}]",
+    "material_id": null
 }

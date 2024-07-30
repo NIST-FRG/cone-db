@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Shields",
-    "events": "[{'time': 400, 'event': 'Start Test'}, {'time': 515, 'event': 'Ignition'}, {'time': 840, 'event': 'Flame Out'}, {'time': 1281, 'event': 'Missed Flame Out =need to estimate event'}]"
+    "events": "[{'time': 400, 'event': 'Start Test'}, {'time': 515, 'event': 'Ignition'}, {'time': 840, 'event': 'Flame Out'}, {'time': 1281, 'event': 'Missed Flame Out =need to estimate event'}]",
+    "material_id": null
 }

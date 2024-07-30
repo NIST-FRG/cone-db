@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bryant",
-    "events": "[{'time': 95, 'event': 'Start Test'}]"
+    "events": "[{'time': 95, 'event': 'Start Test'}]",
+    "material_id": "drywall:bryant2013characterizing"
 }

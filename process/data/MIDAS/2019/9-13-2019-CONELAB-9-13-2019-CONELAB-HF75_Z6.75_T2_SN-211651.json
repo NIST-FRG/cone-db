@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Leventon",
-    "events": "[{'time': 131, 'event': 'Start Test'}]"
+    "events": "[{'time': 131, 'event': 'Start Test'}]",
+    "material_id": null
 }

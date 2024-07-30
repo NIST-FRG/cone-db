@@ -61,8 +61,6 @@ def save_metadata(df):
 
     # Remove the ** DELETE FILE column
     df = df.drop(columns=["** DELETE FILE"])
-    # Remove the material_id column
-    df = df.drop(columns=["material_id"])
 
     for index, row in df.iterrows():
         # Get the path to the metadata file
@@ -86,7 +84,6 @@ st.sidebar.markdown("#### Save metadata")
 st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
 st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
 st.divider()
-
 
 df = st.data_editor(
     df,
@@ -168,17 +165,32 @@ def export_metadata(df):
 
         material_id = material_id.replace(":", "-")
 
+        export_path = OUTPUT_DATA_PATH / year
+        if not export_path.exists():
+            export_path.mkdir(parents=True, exist_ok=True)
+
+        date_str = datetime.fromisoformat(row["date"]).strftime("%Y_%m_%dT%H_%M_%S")
+
+        filename_parts = []
+
         if row.get("specimen_number") is not None and row.get("specimen_number") != "":
-            new_filename = f"{material_id}-r{row['specimen_number']}-{"vert" if row['orientation'] == 'vertical' else "horiz"}.json"
+            filename_parts = [
+                material_id,
+                f"r{row['specimen_number']}",
+                str(int(row["heat_flux_kW/m2"])),
+                "vert" if row["orientation"] == "vertical" else "horiz",
+            ]
         else:
-            new_filename = f"{material_id}-{"vert" if row["orientation"] == 'vertical' else "horiz"}.json"
+            filename_parts = [
+                material_id,
+                str(int(row["heat_flux_kW/m2"])),
+                "vert" if row["orientation"] == "vertical" else "horiz",
+            ]
 
         # include the old filename in the metadata
         row["prev_filename"] = path.name
 
-        export_path = OUTPUT_DATA_PATH / year
-        if not export_path.exists():
-            export_path.mkdir(parents=True, exist_ok=True)
+        new_filename = "-".join(filename_parts) + ".json"
 
         with open(export_path / new_filename, "w") as f:
             json.dump(row, f, indent=4)

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 189, 'event': 'Start Test'}, {'time': 219, 'event': 'Ignition'}, {'time': 1211, 'event': 'flames extinguished'}, {'time': 1453, 'event': 'Flame Out'}, {'time': 1525, 'event': 'Sample removed for drift'}]"
+    "events": "[{'time': 189, 'event': 'Start Test'}, {'time': 219, 'event': 'Ignition'}, {'time': 1211, 'event': 'flames extinguished'}, {'time': 1453, 'event': 'Flame Out'}, {'time': 1525, 'event': 'Sample removed for drift'}]",
+    "material_id": null
 }

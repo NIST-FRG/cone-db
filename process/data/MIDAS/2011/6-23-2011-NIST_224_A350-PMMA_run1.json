@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bundy",
-    "events": "[{'time': 69, 'event': 'insert heat flux gauge'}, {'time': 587, 'event': 'remove heat flux gauge'}, {'time': 1014, 'event': 'insert sample and remove shield and start spark ignitor'}, {'time': 1043, 'event': 'Ignition'}, {'time': 2259, 'event': 'Extinuishment'}]"
+    "events": "[{'time': 69, 'event': 'insert heat flux gauge'}, {'time': 587, 'event': 'remove heat flux gauge'}, {'time': 1014, 'event': 'insert sample and remove shield and start spark ignitor'}, {'time': 1043, 'event': 'Ignition'}, {'time': 2259, 'event': 'Extinuishment'}]",
+    "material_id": null
 }

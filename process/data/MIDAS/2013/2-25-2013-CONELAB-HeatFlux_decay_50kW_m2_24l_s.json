@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 81, 'event': 'Cone heater switched off'}, {'time': 2328, 'event': 'Stop recording'}]"
+    "events": "[{'time': 81, 'event': 'Cone heater switched off'}, {'time': 2328, 'event': 'Stop recording'}]",
+    "material_id": null
 }

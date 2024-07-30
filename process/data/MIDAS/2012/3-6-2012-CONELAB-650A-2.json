@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Shonali",
-    "events": "[{'time': 185, 'event': 'start'}, {'time': 230, 'event': 'flame out (ignore ignition time)'}, {'time': 343, 'event': 'sample out'}]"
+    "events": "[{'time': 185, 'event': 'start'}, {'time': 230, 'event': 'flame out (ignore ignition time)'}, {'time': 343, 'event': 'sample out'}]",
+    "material_id": null
 }

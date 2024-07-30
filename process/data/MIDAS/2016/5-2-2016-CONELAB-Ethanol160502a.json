@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "Ethanol",
     "specimen_description": "200mL ethanol",
-    "specimen_number": NaN,
+    "specimen_number": "2",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 655, 'event': 'Start Test'}, {'time': 670, 'event': 'Ignition'}, {'time': 1674, 'event': 'Flame Out'}, {'time': 1949, 'event': '% transmission Smoke filter 48%; OD 0.303'}]"
+    "events": "[{'time': 655, 'event': 'Start Test'}, {'time': 670, 'event': 'Ignition'}, {'time': 1674, 'event': 'Flame Out'}, {'time': 1949, 'event': '% transmission Smoke filter 48%; OD 0.303'}]",
+    "material_id": "ethanol:kim2019energy"
 }

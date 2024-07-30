@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "jrs",
-    "events": "[{'time': 615, 'event': 'Temperature Set to 795 deg. C'}, {'time': 731, 'event': 'Flux set to 50 kW/m2 @ 30mm below cone radiator assembly'}]"
+    "events": "[{'time': 615, 'event': 'Temperature Set to 795 deg. C'}, {'time': 731, 'event': 'Flux set to 50 kW/m2 @ 30mm below cone radiator assembly'}]",
+    "material_id": null
 }

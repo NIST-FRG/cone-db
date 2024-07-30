@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 59, 'event': 'Steady Timer-flux 75mm below face of cone assembly at bottom center of pan; 50mm Al foil pan with residue from test with PU foam \"control\"'}, {'time': 630, 'event': 'Steady Timer-flux at 75mm below face of cone assembly; open except for ring clamp'}]"
+    "events": "[{'time': 59, 'event': 'Steady Timer-flux 75mm below face of cone assembly at bottom center of pan; 50mm Al foil pan with residue from test with PU foam \"control\"'}, {'time': 630, 'event': 'Steady Timer-flux at 75mm below face of cone assembly; open except for ring clamp'}]",
+    "material_id": null
 }

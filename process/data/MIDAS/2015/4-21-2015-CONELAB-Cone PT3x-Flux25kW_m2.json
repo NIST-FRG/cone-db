@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Bareham",
-    "events": "[{'time': 1380, 'event': 'Sync with portable daq'}, {'time': 3207, 'event': 'Flux gauge in'}]"
+    "events": "[{'time': 1380, 'event': 'Sync with portable daq'}, {'time': 3207, 'event': 'Flux gauge in'}]",
+    "material_id": null
 }

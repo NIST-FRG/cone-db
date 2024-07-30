@@ -11,7 +11,7 @@
     "manufacturer": NaN,
     "material_name": "Methanol",
     "specimen_description": "Methanol pool fire",
-    "specimen_number": NaN,
+    "specimen_number": "2",
     "specimen_prep": NaN,
     "sponsor": NaN,
     "thickness_mm": NaN,
@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 419, 'event': 'Start Test'}, {'time': 441, 'event': 'Ignition'}, {'time': 2516, 'event': 'Flame Out'}]"
+    "events": "[{'time': 419, 'event': 'Start Test'}, {'time': 441, 'event': 'Ignition'}, {'time': 2516, 'event': 'Flame Out'}]",
+    "material_id": "methanol:kim2019energy"
 }

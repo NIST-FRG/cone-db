@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Knowlton",
-    "events": "[{'time': 83, 'event': 'Start Test'}, {'time': 4676, 'event': 'Measure flux at 35 mm down from the face of the cone assembly.'}]"
+    "events": "[{'time': 83, 'event': 'Start Test'}, {'time': 4676, 'event': 'Measure flux at 35 mm down from the face of the cone assembly.'}]",
+    "material_id": null
 }

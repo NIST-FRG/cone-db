@@ -41,5 +41,6 @@
     "smoke_data_collected": true,
     "sampling_interval_s": 1.0,
     "director": NaN,
-    "events": NaN
+    "events": NaN,
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Choe",
-    "events": "[{'time': 51, 'event': 'Cone Heater power on - flux set to 25 kW/m2-temp set 588 C'}, {'time': 1965, 'event': 'Set temp to 768 C'}, {'time': 3861, 'event': 'Set Temp to 890 C'}, {'time': 5486, 'event': 'Cone Heater Power off'}]"
+    "events": "[{'time': 51, 'event': 'Cone Heater power on - flux set to 25 kW/m2-temp set 588 C'}, {'time': 1965, 'event': 'Set temp to 768 C'}, {'time': 3861, 'event': 'Set Temp to 890 C'}, {'time': 5486, 'event': 'Cone Heater Power off'}]",
+    "material_id": null
 }

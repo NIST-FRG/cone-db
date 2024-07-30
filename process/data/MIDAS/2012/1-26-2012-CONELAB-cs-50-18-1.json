@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Nathan",
-    "events": "[{'time': 351, 'event': 's'}, {'time': 358, 'event': 'ignition'}]"
+    "events": "[{'time': 351, 'event': 's'}, {'time': 358, 'event': 'ignition'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Hamins",
-    "events": "[{'time': 626, 'event': '1.768 L/min propane'}, {'time': 629, 'event': 'Ignition'}, {'time': 772, 'event': '1.768 L/min'}, {'time': 949, 'event': '0.70 L/min Propane'}, {'time': 2079, 'event': '1.74 L/min Propane'}, {'time': 3235, 'event': 'OD filter 48 % transmission (OD 0.303'}, {'time': 3336, 'event': 'OD filter 15% transmission (OD 0.707)'}, {'time': 3525, 'event': 'OD filter 100%'}]"
+    "events": "[{'time': 626, 'event': '1.768 L/min propane'}, {'time': 629, 'event': 'Ignition'}, {'time': 772, 'event': '1.768 L/min'}, {'time': 949, 'event': '0.70 L/min Propane'}, {'time': 2079, 'event': '1.74 L/min Propane'}, {'time': 3235, 'event': 'OD filter 48 % transmission (OD 0.303'}, {'time': 3336, 'event': 'OD filter 15% transmission (OD 0.707)'}, {'time': 3525, 'event': 'OD filter 100%'}]",
+    "material_id": null
 }

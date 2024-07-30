@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Marsh",
-    "events": "[{'time': 135, 'event': 'Cone heater power on (temp set 532 C)'}]"
+    "events": "[{'time': 135, 'event': 'Cone heater power on (temp set 532 C)'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 147, 'event': 'Start Test'}, {'time': 174, 'event': 'Ignition'}, {'time': 1307, 'event': 'Flame Out'}, {'time': 1331, 'event': 'Flame out was recorded late'}, {'time': 1434, 'event': 'PMMA was flush w/top of sample holder'}]"
+    "events": "[{'time': 147, 'event': 'Start Test'}, {'time': 174, 'event': 'Ignition'}, {'time': 1307, 'event': 'Flame Out'}, {'time': 1331, 'event': 'Flame out was recorded late'}, {'time': 1434, 'event': 'PMMA was flush w/top of sample holder'}]",
+    "material_id": null
 }

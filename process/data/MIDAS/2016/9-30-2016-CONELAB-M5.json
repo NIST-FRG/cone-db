@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Cube Test",
-    "events": "[{'time': 1320, 'event': 'Start Test'}, {'time': 1331, 'event': 'Ignition'}, {'time': 1733, 'event': 'Flame Out'}]"
+    "events": "[{'time': 1320, 'event': 'Start Test'}, {'time': 1331, 'event': 'Ignition'}, {'time': 1733, 'event': 'Flame Out'}]",
+    "material_id": null
 }

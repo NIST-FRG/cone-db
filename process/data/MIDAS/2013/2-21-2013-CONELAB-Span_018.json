@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Pitts",
-    "events": "[{'time': 109, 'event': 'Air supply from previous test switched off'}, {'time': 237, 'event': 'Chamber closed '}, {'time': 406, 'event': 'Start baseline'}, {'time': 544, 'event': 'Chamber open'}, {'time': 556, 'event': 'Chamber closed'}, {'time': 662, 'event': 'Start Test'}, {'time': 779, 'event': 'Ignition'}, {'time': 1071, 'event': 'flames extinguished'}, {'time': 1079, 'event': 'spark igniter reinserted'}, {'time': 1424, 'event': 'sample reignited; spark igniter removed'}, {'time': 1853, 'event': 'Flames extinguished'}, {'time': 2253, 'event': 'Flame Out'}, {'time': 2340, 'event': 'Chamber opened and sample removed'}, {'time': 2360, 'event': 'Chamber closed'}]"
+    "events": "[{'time': 109, 'event': 'Air supply from previous test switched off'}, {'time': 237, 'event': 'Chamber closed '}, {'time': 406, 'event': 'Start baseline'}, {'time': 544, 'event': 'Chamber open'}, {'time': 556, 'event': 'Chamber closed'}, {'time': 662, 'event': 'Start Test'}, {'time': 779, 'event': 'Ignition'}, {'time': 1071, 'event': 'flames extinguished'}, {'time': 1079, 'event': 'spark igniter reinserted'}, {'time': 1424, 'event': 'sample reignited; spark igniter removed'}, {'time': 1853, 'event': 'Flames extinguished'}, {'time': 2253, 'event': 'Flame Out'}, {'time': 2340, 'event': 'Chamber opened and sample removed'}, {'time': 2360, 'event': 'Chamber closed'}]",
+    "material_id": null
 }

@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "McGrattan",
-    "events": "[{'time': 281, 'event': 'start'}, {'time': 326, 'event': 'ignition (igniter off)'}, {'time': 3934, 'event': 'sample removed'}]"
+    "events": "[{'time': 281, 'event': 'start'}, {'time': 326, 'event': 'ignition (igniter off)'}, {'time': 3934, 'event': 'sample removed'}]",
+    "material_id": null
 }

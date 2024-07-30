@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Kashiwagi",
-    "events": "[{'time': 614, 'event': 's'}, {'time': 678, 'event': 'ign'}]"
+    "events": "[{'time': 614, 'event': 's'}, {'time': 678, 'event': 'ign'}]",
+    "material_id": null
 }

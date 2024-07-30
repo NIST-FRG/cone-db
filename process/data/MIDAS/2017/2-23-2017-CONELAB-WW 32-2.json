@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Wang",
-    "events": "[{'time': 112, 'event': 'Start Test'}, {'time': 168, 'event': 'Ignition'}, {'time': 241, 'event': 'no flame/igniter replaced'}, {'time': 275, 'event': 'sample reignited/igniter removed'}, {'time': 733, 'event': 'no flame (1/2 candle size)'}, {'time': 1038, 'event': 'Flame Out'}]"
+    "events": "[{'time': 112, 'event': 'Start Test'}, {'time': 168, 'event': 'Ignition'}, {'time': 241, 'event': 'no flame/igniter replaced'}, {'time': 275, 'event': 'sample reignited/igniter removed'}, {'time': 733, 'event': 'no flame (1/2 candle size)'}, {'time': 1038, 'event': 'Flame Out'}]",
+    "material_id": null
 }

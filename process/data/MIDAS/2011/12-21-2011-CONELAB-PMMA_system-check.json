@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Davis",
-    "events": "[{'time': 405, 'event': 'ignition'}, {'time': 760, 'event': 'end test (polycarboate window max temp approximately 110 C and rising)'}]"
+    "events": "[{'time': 405, 'event': 'ignition'}, {'time': 760, 'event': 'end test (polycarboate window max temp approximately 110 C and rising)'}]",
+    "material_id": null
 }

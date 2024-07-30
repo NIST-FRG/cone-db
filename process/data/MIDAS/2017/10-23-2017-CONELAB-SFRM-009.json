@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Choe",
-    "events": "[{'time': 3010, 'event': 'Start Test'}, {'time': 12423, 'event': 'End Test/Check Flux'}]"
+    "events": "[{'time': 3010, 'event': 'Start Test'}, {'time': 12423, 'event': 'End Test/Check Flux'}]",
+    "material_id": null
 }

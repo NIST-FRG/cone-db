@@ -41,5 +41,6 @@
     "smoke_data_collected": NaN,
     "sampling_interval_s": NaN,
     "director": "Choe",
-    "events": "[{'time': 495, 'event': 'Temp set at 902 C'}, {'time': 683, 'event': 'Start Test'}, {'time': 7175, 'event': '7110 TC wires were disturbed'}]"
+    "events": "[{'time': 495, 'event': 'Temp set at 902 C'}, {'time': 683, 'event': 'Start Test'}, {'time': 7175, 'event': '7110 TC wires were disturbed'}]",
+    "material_id": null
 }
