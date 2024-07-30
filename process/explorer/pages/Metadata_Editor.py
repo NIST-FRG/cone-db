@@ -176,8 +176,8 @@ def export_metadata(df):
         if row.get("specimen_number") is not None and row.get("specimen_number") != "":
             filename_parts = [
                 material_id,
-                f"r{row['specimen_number']}",
                 str(int(row["heat_flux_kW/m2"])),
+                f"r{row['specimen_number']}",
                 "vert" if row["orientation"] == "vertical" else "horiz",
             ]
         else:
