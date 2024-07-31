@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 from const import INPUT_DATA_PATH
 
-st.set_page_config(page_title="Cone Data Viewer", page_icon="📈")
+st.set_page_config(page_title="Cone Data Viewer", page_icon="📈", layout="wide")
 
 st.title("Cone Data Viewer")
 

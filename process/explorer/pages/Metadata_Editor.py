@@ -1,9 +1,11 @@
 from pathlib import Path
 from datetime import datetime
 from shutil import rmtree
+import os
 
 import pandas as pd
 import json
+import zipfile
 
 import streamlit as st
 
@@ -36,25 +38,11 @@ def load_metadata():
         by=["date"]
     )
 
-    # create two new columns, one for deleting files and one for the material_id
+    # create two new columns, one for deleting files and one for the material_id (if it doesn't exist)
     df["** DELETE FILE"] = False
 
-    # get all the existing output files (i.e. the files that have already been processed)
-    existing_output_files = [
-        json.load(open(x)) for x in list(OUTPUT_DATA_PATH.rglob("**/*.json"))
-    ]
-
-    # # use the output files to find which material_ids have already been created and associate them with a filename
-    # # so that they can be shown in the dataframe editor
-    # all_ids = dict(
-    #     [
-    #         (Path(x["prev_filename"]).stem, x["material_id"])
-    #         for x in existing_output_files
-    #     ]
-    # )
-
-    # # if the row index is in the list of all_ids, set the material_id to the value in all_ids
-    # df["material_id"] = df.index.map(lambda x: all_ids.get(x))
+    if "material_id" not in df.columns:
+        df["material_id"] = None
 
     return df
 
@@ -122,7 +110,11 @@ st.divider()
 
 st.markdown("#### Notes")
 st.markdown(
-    "Material ID should be in the following format: `<material_name_with_words_separated_by_underscores>:<report_name>`"
+    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
+    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
+    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
+    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
+    """
 )
 
 st.sidebar.markdown("#### Delete files")
@@ -219,7 +211,7 @@ def export_metadata(df):
     bar.progress(1.0, f"Tests exported ({files_exported} tests)")
 
 
-st.sidebar.markdown("#### Export metadata")
+st.sidebar.markdown("#### Export test data & metadata")
 st.sidebar.button(
     "Export", on_click=lambda: export_metadata(df), use_container_width=True
 )
