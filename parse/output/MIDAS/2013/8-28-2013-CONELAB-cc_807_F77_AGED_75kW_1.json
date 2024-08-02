@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.035,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 455.7,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2013-08-28T12:39:58",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "cc_807_F77_AGED_75kW_1\nCHRISTIFIRE Phase 3 NRC w/ aged cables and aged FR coating",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 854,
+            "event": "Start Test"
+        },
+        {
+            "time": 890,
+            "event": "Ignition"
+        },
+        {
+            "time": 929,
+            "event": "igniter off."
+        },
+        {
+            "time": 3565,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 854,
+    "time_to_ignition_s": 890,
+    "time_to_flameout_s": 3565
+}

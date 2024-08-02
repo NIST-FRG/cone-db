@@ -1,0 +1,27 @@
+{
+    "c_factor": 0.03706,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 6.78,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-01-31T16:00:54",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Norfab/marinite",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 465,
+            "event": "Start Test"
+        },
+        {
+            "time": 899,
+            "event": "No Ignition"
+        }
+    ],
+    "test_start_time_s": 465,
+    "time_to_ignition_s": 899
+}

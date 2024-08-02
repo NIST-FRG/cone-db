@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03659,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 18.414,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2013-11-07T16:45:57",
+    "operator": "Shields",
+    "director": "You-Hao",
+    "comments": "Polystyrene + 5MMT_10A; disk 75 mm dia.",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 357,
+            "event": "Start Test"
+        },
+        {
+            "time": 421,
+            "event": "Ignition"
+        },
+        {
+            "time": 579,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 357,
+    "time_to_ignition_s": 421,
+    "time_to_flameout_s": 579
+}

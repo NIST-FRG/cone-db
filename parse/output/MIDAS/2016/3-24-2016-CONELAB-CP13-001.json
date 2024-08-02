@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03903,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 7.8,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-03-24T14:32:28",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cotton Polester cover laminated over BF13",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 380,
+            "event": "Start Test"
+        },
+        {
+            "time": 398,
+            "event": "Ignition"
+        },
+        {
+            "time": 452,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 380,
+    "time_to_ignition_s": 398,
+    "time_to_flameout_s": 452
+}

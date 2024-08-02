@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03573,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 20.493,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2013-08-19T13:11:19",
+    "operator": "Shields",
+    "director": "Butler",
+    "comments": "DuPont carpet #3 composite 24 oz;  edge frame w/grid + wire; conditioned at 50 to 55% RH; room RH ~48%",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 186,
+            "event": "Start Test"
+        },
+        {
+            "time": 233,
+            "event": "Ignition"
+        },
+        {
+            "time": 695,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 186,
+    "time_to_ignition_s": 233,
+    "time_to_flameout_s": 695
+}

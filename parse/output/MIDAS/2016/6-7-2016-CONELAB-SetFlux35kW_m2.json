@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0374,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-06-07T14:17:55",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "FTT edge frame used\nFTT marinite\n18 mm high AL foil pan\n",
+    "specimen_number": NaN
+}

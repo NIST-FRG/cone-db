@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-03-16T12:40:15",
+    "operator": "Shields",
+    "director": "Bryant",
+    "comments": "FluxChk-25",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 251,
+            "event": "Start cone heater power"
+        }
+    ],
+    "test_start_time_s": 251
+}

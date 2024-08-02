@@ -1,0 +1,31 @@
+{
+    "c_factor": 0.0398,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 292.8,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2015-07-09T09:45:05",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "25mm PMMA w/cardboard sides-50kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 2382,
+            "event": "Start Test"
+        },
+        {
+            "time": 2408,
+            "event": "Ignition"
+        },
+        {
+            "time": 3843,
+            "event": "flame out approx 3660s"
+        }
+    ],
+    "test_start_time_s": 2382,
+    "time_to_ignition_s": 2408
+}

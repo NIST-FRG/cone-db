@@ -1,0 +1,44 @@
+{
+    "c_factor": 0.0404,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": false,
+    "separation_mm": 30.0,
+    "initial_mass_g": 53.4,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2019-05-08T13:33:32",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test - Control - 75 kW/m2; Frame @ 30mm below bottom face of Cone Assembly\nNew foam-\nInsulator= low Density Ceramic Board (6mm thick) \n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 407,
+            "event": "Start Test"
+        },
+        {
+            "time": 415,
+            "event": "Ignition"
+        },
+        {
+            "time": 601,
+            "event": "Wetting"
+        },
+        {
+            "time": 611,
+            "event": "Dripping"
+        },
+        {
+            "time": 781,
+            "event": "Bottom Ignition"
+        },
+        {
+            "time": 877,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 407,
+    "time_to_ignition_s": 781,
+    "time_to_flameout_s": 877
+}

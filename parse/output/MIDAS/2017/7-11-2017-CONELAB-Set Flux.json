@@ -1,0 +1,60 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2017-07-11T10:50:52",
+    "operator": "Shields",
+    "director": "Choe",
+    "comments": "Set Flux \n25 kW/m2\n50 kW/m2\n75 kW/m2\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 58,
+            "event": "Start Test"
+        },
+        {
+            "time": 119,
+            "event": "Ignition"
+        },
+        {
+            "time": 1038,
+            "event": "Adjust Temp to 590 C"
+        },
+        {
+            "time": 1276,
+            "event": "Adjust temp 588"
+        },
+        {
+            "time": 1636,
+            "event": "set temp to 765 C"
+        },
+        {
+            "time": 2057,
+            "event": "Set Temp to 768C"
+        },
+        {
+            "time": 2453,
+            "event": "Set temp to 851 C"
+        },
+        {
+            "time": 2836,
+            "event": "set flux to  890 C"
+        },
+        {
+            "time": 3465,
+            "event": "Cone Power Off"
+        },
+        {
+            "time": 3698,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 58,
+    "time_to_ignition_s": 119,
+    "time_to_flameout_s": 3698
+}

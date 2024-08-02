@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0385,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 26.79,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2016-07-20T15:15:51",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "Check Loadcell",
+    "specimen_number": NaN
+}

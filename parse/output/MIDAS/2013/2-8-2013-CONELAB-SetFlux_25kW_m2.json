@@ -1,0 +1,33 @@
+{
+    "c_factor": 0.03753,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 25.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-08T13:09:52",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Set cone flux to 25 kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1231,
+            "event": "Put Shutter in"
+        },
+        {
+            "time": 1241,
+            "event": "Pull Shutter out"
+        },
+        {
+            "time": 1279,
+            "event": "Put Shutter in"
+        },
+        {
+            "time": 1290,
+            "event": "Pull Shutter out"
+        }
+    ]
+}

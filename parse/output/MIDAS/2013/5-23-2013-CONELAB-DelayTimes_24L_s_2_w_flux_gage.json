@@ -1,0 +1,41 @@
+{
+    "c_factor": 0.03626,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2013-05-23T15:06:05",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Delay times w/one heat exchanger (one cold trap module) at 24 L/sec. duct flow - 5kW fire",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 210,
+            "event": "burner in"
+        },
+        {
+            "time": 385,
+            "event": "burner out"
+        },
+        {
+            "time": 579,
+            "event": "burner in"
+        },
+        {
+            "time": 836,
+            "event": "burner out"
+        },
+        {
+            "time": 1090,
+            "event": "burner in"
+        },
+        {
+            "time": 1352,
+            "event": "burner out"
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "c_factor": 0.03641,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2012-04-20T10:36:07",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CC_812_75kW_3",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 327,
+            "event": "start"
+        },
+        {
+            "time": 353,
+            "event": "ignition - flashing before ignition"
+        },
+        {
+            "time": 451,
+            "event": "flame out - igniter in"
+        },
+        {
+            "time": 642,
+            "event": "ignition -- igniter removed"
+        }
+    ]
+}

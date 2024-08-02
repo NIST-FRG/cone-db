@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0391,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 16.404,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2016-04-28T15:29:40",
+    "operator": "Shields",
+    "director": "Doug Fox",
+    "comments": "G20LP10A1C\n35kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 352,
+            "event": "Start Test"
+        },
+        {
+            "time": 358,
+            "event": "Ignition"
+        },
+        {
+            "time": 468,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 352,
+    "time_to_ignition_s": 358,
+    "time_to_flameout_s": 468
+}

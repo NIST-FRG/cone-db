@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.034,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-02-14T15:34:00",
+    "operator": "Shields",
+    "director": "Marsh",
+    "comments": "sofa",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 508,
+            "event": "s"
+        }
+    ]
+}

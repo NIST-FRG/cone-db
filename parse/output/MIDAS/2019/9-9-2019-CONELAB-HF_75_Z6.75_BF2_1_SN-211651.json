@@ -1,0 +1,22 @@
+{
+    "c_factor": 0.041,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 75.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2019-09-09T13:44:59",
+    "operator": "Shields",
+    "director": "Lenenton",
+    "comments": "Set_Flux_Gauge SN-211651.\n75 kW/m2.\n25 mm down from the base of the Cone Radiator Assembly.\nGauge location Z=8\nUsing Barrier Fabric 4 (light glass)",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 77,
+            "event": "Start Test"
+        }
+    ],
+    "test_start_time_s": 77
+}

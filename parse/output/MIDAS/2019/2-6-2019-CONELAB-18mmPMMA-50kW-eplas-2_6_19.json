@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0419,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 206.55,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2019-02-06T16:03:25",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "18mmPMMA-50kW-eplas-\n50 kW/m2\nFollow FTT PMMA Testing Procedure\nE-plastics (Batch #1)\nSample = 18x100x100mm\nAL foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 436,
+            "event": "Start Test"
+        },
+        {
+            "time": 462,
+            "event": "Ignition"
+        },
+        {
+            "time": 1179,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 436,
+    "time_to_ignition_s": 462,
+    "time_to_flameout_s": 1179
+}

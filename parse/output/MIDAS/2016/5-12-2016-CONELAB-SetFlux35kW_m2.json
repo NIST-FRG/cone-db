@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.0392,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2016-05-12T13:58:02",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "Set Flux Flux35kW_m2",
+    "specimen_number": NaN
+}

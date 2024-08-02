@@ -1,0 +1,21 @@
+{
+    "c_factor": 0.0366,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-04-09T14:08:27",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "Set Flux to 75kW/m^2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 212,
+            "event": "cone on"
+        }
+    ]
+}

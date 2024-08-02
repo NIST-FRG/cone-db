@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0391,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 21.81,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2015-11-27T15:58:01",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Blue Denim glass taped/50 mm thick Innocore Foam\nSetFlux35kW_m2; edge frame used\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1526,
+            "event": "Start Test"
+        },
+        {
+            "time": 1547,
+            "event": "Ignition"
+        },
+        {
+            "time": 2001,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1526,
+    "time_to_ignition_s": 1547,
+    "time_to_flameout_s": 2001
+}

@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0375,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 21.47,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-06T15:30:37",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "FR PU foam",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 139,
+            "event": "Start Test"
+        },
+        {
+            "time": 144,
+            "event": "Ignition"
+        },
+        {
+            "time": 705,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 139,
+    "time_to_ignition_s": 144,
+    "time_to_flameout_s": 705
+}

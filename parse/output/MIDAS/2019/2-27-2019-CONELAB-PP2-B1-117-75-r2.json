@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0411,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 56.1,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2019-02-27T16:49:24",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test - Control - 75 kW/m2\nPP/TB 117 foam-2013\nInsulator= low Density Ceramic Board (6mm thick) \n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1199,
+            "event": "Start Test"
+        },
+        {
+            "time": 1204,
+            "event": "Ignition"
+        },
+        {
+            "time": 1525,
+            "event": "1st drip"
+        },
+        {
+            "time": 2069,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1199,
+    "time_to_ignition_s": 1204,
+    "time_to_flameout_s": 2069
+}

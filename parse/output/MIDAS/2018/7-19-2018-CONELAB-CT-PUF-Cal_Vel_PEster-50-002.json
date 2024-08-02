@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0413,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 51.99,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2018-07-19T16:27:55",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Cube Test - 50kW/m2\nCalifornia Velvet/Polyester Smolder Barrier/PUF\nInsulator= low Density Ceramic Board (6mm thick) \n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1313,
+            "event": "Start Test"
+        },
+        {
+            "time": 1322,
+            "event": "Ignition"
+        },
+        {
+            "time": 1760,
+            "event": "Flame Out"
+        },
+        {
+            "time": 2113,
+            "event": "No flame 1760s"
+        }
+    ],
+    "test_start_time_s": 1313,
+    "time_to_ignition_s": 1322,
+    "time_to_flameout_s": 1760
+}

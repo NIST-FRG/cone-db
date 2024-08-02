@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 0.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 1.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 1.0,
+    "date": "2017-06-26T15:12:04",
+    "operator": "Shields",
+    "director": "Zammarano",
+    "comments": "Check new HC w/spare TCs\nCone TCs",
+    "specimen_number": NaN
+}

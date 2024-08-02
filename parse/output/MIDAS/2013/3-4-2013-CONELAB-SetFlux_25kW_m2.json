@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.03643,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-03-04T10:24:21",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Set flux to 25kW/m^2;",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 53,
+            "event": "Sample gas pump switched off"
+        },
+        {
+            "time": 135,
+            "event": "Cone heater switched on"
+        }
+    ]
+}

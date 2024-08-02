@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.0341,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 25.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-02-03T16:33:38",
+    "operator": "Shields",
+    "director": "Marsh",
+    "comments": "bookcase",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 265,
+            "event": "start"
+        },
+        {
+            "time": 286,
+            "event": "ignition"
+        }
+    ]
+}

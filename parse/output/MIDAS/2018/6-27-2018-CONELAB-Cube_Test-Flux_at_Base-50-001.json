@@ -1,0 +1,26 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 0.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2018-06-27T16:00:21",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "Cube Test - 50kW/m2;\nFlux at Base of Sample Holder; flux at center.\nInsulator= low Density Ceramic Board (6mm thick). \n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 534,
+            "event": "Start Test"
+        },
+        {
+            "time": 1787,
+            "event": "End Test"
+        }
+    ],
+    "test_start_time_s": 534
+}

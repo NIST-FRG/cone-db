@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03717,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 69.97,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 50.0,
+    "date": "2013-02-11T14:09:56",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "12mm black PMMA",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 149,
+            "event": "Start Test"
+        },
+        {
+            "time": 178,
+            "event": "Ignition"
+        },
+        {
+            "time": 687,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 149,
+    "time_to_ignition_s": 178,
+    "time_to_flameout_s": 687
+}

@@ -1,0 +1,37 @@
+{
+    "c_factor": 0.03659,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2012-04-09T11:23:56",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "CC_803_75kW_2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 392,
+            "event": "start"
+        },
+        {
+            "time": 421,
+            "event": "ignition"
+        },
+        {
+            "time": 499,
+            "event": "flame out - igniter in"
+        },
+        {
+            "time": 786,
+            "event": "ignition - igniter removed"
+        },
+        {
+            "time": 2132,
+            "event": "flame out"
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.0375,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 17.9,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 44.2,
+    "date": "2013-02-06T14:07:24",
+    "operator": "Shields",
+    "director": "Davis",
+    "comments": "PS/Ammonium Salfanate\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 233,
+            "event": "Start Test"
+        },
+        {
+            "time": 295,
+            "event": "Ignition"
+        },
+        {
+            "time": 448,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 233,
+    "time_to_ignition_s": 295,
+    "time_to_flameout_s": 448
+}

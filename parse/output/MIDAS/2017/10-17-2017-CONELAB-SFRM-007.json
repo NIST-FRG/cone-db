@@ -1,0 +1,26 @@
+{
+    "c_factor": 0.04,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 414.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 56.2,
+    "date": "2017-10-17T09:38:18",
+    "operator": "Shields",
+    "director": "Choe",
+    "comments": "SFRM\nCoated Steel\nCoating 20mm thick\n50 kW/m2",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 237,
+            "event": "Start Test"
+        },
+        {
+            "time": 7665,
+            "event": "End Test"
+        }
+    ],
+    "test_start_time_s": 237
+}

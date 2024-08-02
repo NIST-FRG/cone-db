@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03655,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 75.0,
+    "grid": true,
+    "separation_mm": 25.0,
+    "initial_mass_g": 242.7,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2012-11-06T10:39:13",
+    "operator": "Shields",
+    "director": "McGrattan",
+    "comments": "Electrical cables with cemented ends -75kW/m2; edge frame; grid",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 1492,
+            "event": "Start Test"
+        },
+        {
+            "time": 1509,
+            "event": "Ignition"
+        },
+        {
+            "time": 2209,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 1492,
+    "time_to_ignition_s": 1509,
+    "time_to_flameout_s": 2209
+}

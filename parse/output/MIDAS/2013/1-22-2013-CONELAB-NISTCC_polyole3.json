@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03699,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 9.99,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-01-22T12:25:32",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "polyole liquid",
+    "specimen_number": NaN
+}

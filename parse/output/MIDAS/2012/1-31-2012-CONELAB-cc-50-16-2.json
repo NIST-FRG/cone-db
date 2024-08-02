@@ -1,0 +1,25 @@
+{
+    "c_factor": 0.03373,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": null,
+    "separation_mm": null,
+    "initial_mass_g": null,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2012-01-31T15:47:14",
+    "operator": "Shields",
+    "director": "Marsh",
+    "comments": "electrical cable",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 365,
+            "event": "s"
+        },
+        {
+            "time": 378,
+            "event": "ign"
+        }
+    ]
+}

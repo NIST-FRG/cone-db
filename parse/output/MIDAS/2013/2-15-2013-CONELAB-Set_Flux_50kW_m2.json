@@ -1,0 +1,15 @@
+{
+    "c_factor": 0.03813,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 107.29,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-02-15T15:00:26",
+    "operator": "Shields",
+    "director": "Pitts",
+    "comments": "Set_Flux_50kW_m2",
+    "specimen_number": NaN
+}

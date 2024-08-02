@@ -1,0 +1,26 @@
+{
+    "c_factor": 0.037,
+    "e_mj/kg": 12.54,
+    "heat_flux_kW/m2": 50.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 30.0,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2015-04-17T13:40:07",
+    "operator": "Shields",
+    "director": "Bareham",
+    "comments": "ConeP13-Flux 75 kW_m2-",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 423,
+            "event": "Sync with portable daq"
+        },
+        {
+            "time": 584,
+            "event": "Start Test"
+        }
+    ],
+    "test_start_time_s": 584
+}

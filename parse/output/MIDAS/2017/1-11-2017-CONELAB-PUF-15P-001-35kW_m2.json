@@ -1,0 +1,36 @@
+{
+    "c_factor": 0.0387,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 22.6,
+    "initial_mass_g": 24.8,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 88.4,
+    "date": "2017-01-11T15:38:17",
+    "operator": "Shields",
+    "director": "Nazare",
+    "comments": "SetFlux35kW_m2\nFTT edge frame used\nFTT marinite\n50 mm high AL foil pan\n",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 457,
+            "event": "Start Test"
+        },
+        {
+            "time": 467,
+            "event": "Ignition"
+        },
+        {
+            "time": 845,
+            "event": "no flame/igniter replaced"
+        },
+        {
+            "time": 1143,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 457,
+    "time_to_ignition_s": 467,
+    "time_to_flameout_s": 1143
+}

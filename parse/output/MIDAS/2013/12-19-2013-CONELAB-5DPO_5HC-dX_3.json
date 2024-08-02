@@ -1,0 +1,32 @@
+{
+    "c_factor": 0.03768,
+    "e_mj/kg": 13.1,
+    "heat_flux_kW/m2": 35.0,
+    "grid": false,
+    "separation_mm": 25.0,
+    "initial_mass_g": 14.232,
+    "orientation": "Horizontal",
+    "surface_area_cm2": 100.0,
+    "date": "2013-12-19T17:11:20",
+    "operator": "Shields",
+    "director": "Fox",
+    "comments": "Flexible polyether foamw/add",
+    "specimen_number": NaN,
+    "events": [
+        {
+            "time": 875,
+            "event": "Start Test"
+        },
+        {
+            "time": 880,
+            "event": "Ignition"
+        },
+        {
+            "time": 1009,
+            "event": "Flame Out"
+        }
+    ],
+    "test_start_time_s": 875,
+    "time_to_ignition_s": 880,
+    "time_to_flameout_s": 1009
+}
