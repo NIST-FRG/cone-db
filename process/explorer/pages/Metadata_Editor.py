@@ -117,17 +117,17 @@ def save_metadata(df):
 df = load_metadata()
 
 # sidebar UI
-st.sidebar.markdown("#### Save metadata")
-st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
-st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
-st.divider()
 
-df = st.data_editor(
-    df,
-    use_container_width=True,
-    height=650,
-    # columns that are shown in the dataframe editor
-    column_order=[
+st.sidebar.markdown("#### Select columns \nLeave blank to use defaults.")
+
+selected_columns = st.sidebar.multiselect(
+    "Columns",
+    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
+    default=[],
+)
+if len(selected_columns) == 0:
+    # defaults
+    selected_columns = [
         "** DELETE FILE",
         "date",
         "material_id",
@@ -144,7 +144,20 @@ df = st.data_editor(
         "test_start_time_s",
         "test_end_time_s",
         "c_factor",
-    ],
+    ]
+
+
+st.sidebar.markdown("#### Save metadata")
+st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
+st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
+st.divider()
+
+df = st.data_editor(
+    df,
+    use_container_width=True,
+    height=650,
+    # columns that are shown in the dataframe editor
+    column_order=selected_columns,
     column_config={
         "HRR (kW/m2)": st.column_config.LineChartColumn(
             "HRR (kW/m2)",
