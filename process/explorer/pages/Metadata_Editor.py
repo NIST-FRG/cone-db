@@ -21,22 +21,29 @@ metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 
 # region load_metadata
 # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
-@st.cache_data(show_spinner=True)
+@st.cache_data(show_spinner=False)
 def load_metadata():
+
+    placeholder = st.empty()
+    bar = placeholder.progress(0, "Loading metadata ...")
 
     # create a list of the contents of all the metadata files, as dicts
     all_metadata = []
+    metadata_loaded = 0
     for metadata_path in metadata_path_map.values():
         all_metadata.append(json.load(open(metadata_path)))
+        metadata_loaded += 1
+        bar.progress(
+            metadata_loaded / len(metadata_path_map),
+            f"({metadata_loaded}/{len(metadata_path_map)}) Loading metadata for {metadata_path.stem}",
+        )
 
     if len(all_metadata) == 0:
         st.error("No tests found.")
         return pd.DataFrame()
 
     # create a dataframe from the list of dicts, and sort it by date (ascending)
-    df = pd.DataFrame(all_metadata, index=list(metadata_path_map.keys())).sort_values(
-        by=["date"]
-    )
+    df = pd.DataFrame(all_metadata, index=list(metadata_path_map.keys()))
 
     # create two new columns, one for deleting files and one for the material_id (if it doesn't exist)
     df["** DELETE FILE"] = False
@@ -44,7 +51,40 @@ def load_metadata():
     if "material_id" not in df.columns:
         df["material_id"] = None
 
-    return df
+    bar.progress(1.0, "Metadata loaded")
+
+    bar.progress(0, "Loading HRR data ...")
+
+    # load in the test data
+    tests_loaded = 0
+    all_test_data = []
+    for metadata_path in metadata_path_map.values():
+        test_path = metadata_path.with_suffix(".csv")
+        with open(test_path) as f:
+            all_test_data.append(pd.read_csv(f))
+            tests_loaded += 1
+            bar.progress(
+                tests_loaded / len(metadata_path_map),
+                f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
+            )
+
+    # each row in the dataframe is a test, and the "HRR (kW/m2)" column should contain all the HRR values for that test, as a pd series
+    hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
+    hrr.columns = metadata_path_map.keys()
+    hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
+    hrr = pd.Series(hrr.values, index=hrr.index)
+
+    df.insert(0, "HRR (kW/m2)", hrr)
+
+    print(df["HRR (kW/m2)"].head())
+
+    bar.progress(1.0, "Loading complete")
+
+    st.success(
+        f"Loaded {len(all_test_data)} test data files, {len(all_metadata)} metadata files"
+    )
+
+    return df.sort_values(by=["date"])
 
 
 # region save_metadata
@@ -95,6 +135,7 @@ df = st.data_editor(
         "heat_flux_kW/m2",
         "comments",
         "material_name",
+        "HRR (kW/m2)",
         "specimen_description",
         "specimen_prep",
         "report_name",
@@ -104,6 +145,12 @@ df = st.data_editor(
         "test_end_time_s",
         "c_factor",
     ],
+    column_config={
+        "HRR (kW/m2)": st.column_config.LineChartColumn(
+            "HRR (kW/m2)",
+            width="medium",
+        )
+    },
 )
 
 st.divider()

@@ -6,7 +6,7 @@ st.set_page_config(page_title="NIST Cone Data Explorer", page_icon="🔬")
 st.title("NIST Cone Data Explorer")
 
 st.markdown(
-    """
+    r"""
 *The below information can also be found in the README.md file.*
 ## Setup
 Place .csv & .json files from the parsing scripts (e.g. FTT.py, midas.py, etc.) in the `data` folder. Folder structure doesn't matter, but please ensure that the CSV data file and the JSON metadata file for each test have the same name and are in the same folder.
@@ -46,5 +46,3 @@ If you encounter any unexpected errors, try interrupting the program (Ctrl+C) an
 # Make sure the INPUT_DATA_PATH and OUTPUT_DATA_PATH exist, if not create them
 if not INPUT_DATA_PATH.exists():
     INPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
-# if not OUTPUT_DATA_PATH.exists():
-#     OUTPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
