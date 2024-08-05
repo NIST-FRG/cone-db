@@ -2,11 +2,12 @@
 *.pdf
 *.png
 
-# script-generated files
-parse/data/**/*.csv
+# data files
+data/raw/**/*.*
+data/auto-processed/**/*.*
 
-parse/output/**/*.csv
-parse/output/**/*.json
+.vscode/settings.json
 
-.vscode/
+# pycache files
+**/__pycache__/*
 
