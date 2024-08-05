@@ -2,11 +2,9 @@
 *.pdf
 *.png
 
-# script-generated files
-parse/data/**/*.csv
-
-parse/output/**/*.csv
-parse/output/**/*.json
+# data files
+data/raw/**/*.*
+data/auto-processed/**/*.*
 
 .vscode/
 
