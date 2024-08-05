@@ -1,8 +1,13 @@
 # script-generated files
 *.pdf
 *.png
-DATA/*
-OUTPUT/*
-GRAPHS/
-SCRIPT_FIGURES/
+
+# data files
+data/raw/**/*.*
+data/auto-processed/**/*.*
+
+.vscode/settings.json
+
+# pycache files
+**/__pycache__/*
 
