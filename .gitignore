@@ -6,5 +6,8 @@
 data/raw/**/*.*
 data/auto-processed/**/*.*
 
-.vscode/
+.vscode/settings.json
+
+# pycache files
+**/__pycache__/*
 

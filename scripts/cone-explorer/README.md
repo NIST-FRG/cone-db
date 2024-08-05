@@ -6,12 +6,13 @@
 Place .csv & .json files from the parsing scripts (e.g. FTT.py, midas.py, etc.) in the `data` folder. Folder structure doesn't matter, but make sure the CSV data file and the JSON metadata file for each test have the same name and are in the same folder.
 
 ## Usage
-`cd` into this directory (from the root of the repository: `cd process`).
+From the root of the repository, run the following command:
 
-Run the following command to start the app:
+```bash
+streamlit run scripts/cone-explorer/Main.py 
 ```
-streamlit run explorer/Main.py
-```
+
+(if the above doesn't work, you can also try `python -m streamlit run scripts/cone-explorer/Main.py`)
 
 ## Tools
 
