@@ -115,66 +115,12 @@ df = load_metadata()
 
 # sidebar UI
 
-st.sidebar.markdown("#### Select columns \nLeave blank to use defaults.")
-
-selected_columns = st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
-    default=[],
-)
-if len(selected_columns) == 0:
-    # defaults
-    selected_columns = [
-        "** DELETE FILE",
-        "date",
-        "material_id",
-        "specimen_number",
-        "heat_flux_kW/m2",
-        "comments",
-        "material_name",
-        "HRR (kW/m2)",
-        "specimen_description",
-        "specimen_prep",
-        "report_name",
-        "laboratory",
-        "operator",
-        "test_start_time_s",
-        "test_end_time_s",
-        "c_factor",
-    ]
-
-
-st.sidebar.markdown("#### Save metadata")
+st.sidebar.markdown("### Save metadata")
 st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
 st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
 st.divider()
 
-df = st.data_editor(
-    df,
-    use_container_width=True,
-    height=650,
-    # columns that are shown in the dataframe editor
-    column_order=selected_columns,
-    column_config={
-        "HRR (kW/m2)": st.column_config.LineChartColumn(
-            "HRR (kW/m2)",
-            width="medium",
-        )
-    },
-)
-
-st.divider()
-
-st.markdown("#### Notes")
-st.markdown(
-    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
-    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
-    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
-    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
-    """
-)
-
-st.sidebar.markdown("#### Delete files")
+st.sidebar.markdown("### Delete files")
 st.sidebar.markdown(
     "Select files by clicking the checkbox next to the file name, then click **Delete files** to delete the selected files."
 )
@@ -268,7 +214,58 @@ def export_metadata(df):
     bar.progress(1.0, f"Tests exported ({files_exported} tests)")
 
 
-st.sidebar.markdown("#### Export test data & metadata")
+st.sidebar.markdown("### Export test data & metadata")
 st.sidebar.button(
     "Export", on_click=lambda: export_metadata(df), use_container_width=True
+)
+
+st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
+
+selected_columns = st.sidebar.multiselect(
+    "Columns",
+    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
+    default=[
+        "** DELETE FILE",
+        "date",
+        "material_id",
+        "specimen_number",
+        "heat_flux_kW/m2",
+        "comments",
+        "material_name",
+        "HRR (kW/m2)",
+        "specimen_description",
+        "specimen_prep",
+        "report_name",
+        "laboratory",
+        "operator",
+        "test_start_time_s",
+        "test_end_time_s",
+        "c_factor",
+    ],
+)
+
+
+df = st.data_editor(
+    df,
+    use_container_width=True,
+    height=650,
+    # columns that are shown in the dataframe editor
+    column_order=selected_columns,
+    column_config={
+        "HRR (kW/m2)": st.column_config.LineChartColumn(
+            "HRR (kW/m2)",
+            width="medium",
+        )
+    },
+)
+
+st.divider()
+
+st.markdown("#### Notes")
+st.markdown(
+    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
+    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
+    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
+    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
+    """
 )
