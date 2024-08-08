@@ -92,7 +92,7 @@ def save_metadata(df):
     files_saved = 0
 
     # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE"])
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
 
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
@@ -146,8 +146,8 @@ st.sidebar.button("Delete files", on_click=delete_files, use_container_width=Tru
 def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
 
-    # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE"])
+    # Remove the ** DELETE FILE, HRR columns
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
 
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
@@ -159,12 +159,16 @@ def export_metadata(df):
         # convert the dataframe row back to a dictionary so it can be saved as a json file
         row = row.to_dict()
 
-        # if the file has no material_id, just skip it
+        # if the file has no material_id, skip it
         if row.get("material_id") is None or row.get("material_id") in ["nan", ""]:
             continue
 
         # replace NaN with None to conform to official json format
         row = {k: v if not pd.isna(v) else None for k, v in row.items()}
+
+        # if the file has no heat flux, skip it:
+        if row.get("heat_flux_kW/m2") is None:
+            continue
 
         # find the path to the metadata file & include the old filename in the metadata
         path = metadata_path_map[str(index)]
