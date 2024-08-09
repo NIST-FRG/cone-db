@@ -86,6 +86,7 @@ def parse_file(file_path):
     if df.iloc[1].isnull().all():
         df = df.drop(1)
 
+    # TODO
     df = df.dropna(how="all")
 
     metadata = parse_metadata(df)
@@ -320,6 +321,7 @@ def process_data(data, metadata):
     data["CO2 (Vol fr)"] = data["CO2 (Vol fr)"].shift(-co2_delay)
     data["CO (Vol fr)"] = data["CO (Vol fr)"].shift(-co_delay)
 
+    # shift certain columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end from the other signals
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
 
     #region calc. HRR & MFR
