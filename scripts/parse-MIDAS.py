@@ -110,7 +110,10 @@ def parse_metadata(file_path):
         raise Exception(f"Missing -Output metadata file")
 
     # read in different sheets of the -Output .xls file
+    # three tabs in MIDAS output files: Parameters, Info, and User Events
+    # User Events is parsed later b/c it is not always present in all tests
     params = pd.read_excel(file_path, "Parameters")
+    # TODO: also consider "ReportInfo" sheet
     info = pd.read_excel(file_path, "Info", header=None)
 
     # convert params to a dictionary
@@ -143,6 +146,10 @@ def parse_metadata(file_path):
     if e is None:
         e = 13100
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
+    elif e == 13.1:
+        e = 13100
+    elif e == 12.54:
+        e = 12540
     e /= 1000
     metadata["e_mj/kg"] = e
     metadata["heat_flux_kW/m2"] = get_number("CONEHEATFLUX", params)
@@ -155,8 +162,8 @@ def parse_metadata(file_path):
     if area is None:
         raise Exception("Area not defined in metadata")
     
-    # if the area is less than 0.01, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
-    elif area <= 0.01:
+    # if the area is less than 0.025, it's probably in square meters rather than square cm, so multiply by 100^2 to convert it
+    elif area <= 0.025:
         metadata["surface_area_cm2"] = area  * 100**2
     else:
         metadata["surface_area_cm2"] = area
@@ -209,7 +216,7 @@ def parse_metadata(file_path):
     for event in parsed_events:
         if "Ignition" in event["event"]:
             metadata["time_to_ignition_s"] = event["time"]
-        elif "Flame Out" in event["event"]:
+        elif "flame out" in event["event"].lower() or "fire out" in event["event"].lower():
             metadata["time_to_flameout_s"] = event["time"]
         elif "Start" in event["event"]:
             metadata["test_start_time_s"] = event["time"]
