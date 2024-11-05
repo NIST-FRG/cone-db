@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import json
 import zipfile
+import numpy as np
 
 import streamlit as st
 
@@ -72,13 +73,12 @@ def load_metadata():
     hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
     hrr.columns = metadata_path_map.keys()
     hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
-    hrr = pd.Series(hrr.values, index=hrr.index)
-
-    df.insert(0, "HRR (kW/m2)", hrr)
+    hrr = pd.Series(hrr.squeeze())
+    df.insert(0, "HRR (kW/m2)", [hrr.values])
 
     bar.progress(
         1.0,
-        f"Loaded {len(all_test_data)} tests",
+        f"Loaded {len(all_test_data)} test(s)",
     )
 
     return df.sort_values(by=["date"])

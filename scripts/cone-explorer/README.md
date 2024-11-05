@@ -10,7 +10,7 @@ From the root of the repository, run the following command:
 
 ```bash
 streamlit run scripts/cone-explorer/Main.py 
-```
+``
 
 (if the above doesn't work, you can also try `python -m streamlit run scripts/cone-explorer/Main.py`)
 

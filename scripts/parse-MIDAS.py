@@ -4,7 +4,6 @@ import json
 from dateutil import parser
 import re
 import sys
-from dateutil import parser
 
 from utils import calculate_HRR, calculate_MFR, calculate_k, colorize
 
@@ -141,7 +140,7 @@ def parse_metadata(file_path):
     metadata["c_factor"] = get_number("Cf", params)
     e = get_number("Ef", params)
     if e is None:
-        e = 13100
+        e = 13100 #kj/kg
         print(colorize(" - Ef not defined in metadata, defaulting to 13.1", "yellow"))
     e /= 1000
     metadata["e_mj/kg"] = e
