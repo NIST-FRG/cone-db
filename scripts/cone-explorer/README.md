@@ -14,6 +14,11 @@ streamlit run scripts/cone-explorer/Main.py
 
 (if the above doesn't work, you can also try `python -m streamlit run scripts/cone-explorer/Main.py`)
 
+If you're running the app for the first time and you get an error about missing packages, you may need to install streamlit again.
+```bash
+pip install streamlit
+```
+
 ## Tools
 
 ### Metadata Editor
