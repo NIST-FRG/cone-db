@@ -1,7 +1,7 @@
 % !TEX root = ConeDB_Technote.tex
 
 \section{Introduction} \label{sec:intro}
-\subsection{Background} \label{ssec:intro-background}
+\subsection{Background: Development of the Cone Calorimeter} \label{ssec:intro-background}
 Need for fire testing:
 \begin{itemize}
 \item Bench-scale apparatus to measure HRR
@@ -16,10 +16,18 @@ Need for fire testing:
 \subsection{Conception of the NIST Cone Calorimeter Database} \label{ssec:intro-concept}
 Since its development at NIST in 1982 (then the National Bureau of Standards, NBS)~\cite{babrauskas1982nbs}, the cone calorimeter has enabled researchers to collect invaluable data for the characterization of material flammability behavior in response to well-characterized heating conditions. This data – including measurements of sample and product mass loss rate (MLR), heat release rate (HRR; based on oxygen consumption calorimetry), and smoke and toxic gas production – has been crucial in the development of fire safety standards and fire-resistant materials. Currently, this wealth of measurement data is presented across dozens of separate publications, making it difficult to effectively access, parse, and use.
 
-This project aims to create a digital repository of cone calorimetry data, organized with standard formatting and metadata to allow easy access to experimental measurements and derived properties (e.g., heat of combustion, ignition and fire growth parameters, and average burning rate in response to known heating conditions). These values will be compiled and stored in a publicly accessible, version controlled, and continually growing database for use by fire safety scientists and engineers outside NIST. Data from 1983 to the present will be made available, including thousands of experiments on a wide range of materials including commodity plastics, woods, cables, vegetative fuels, and flooring and other building materials. Additionally, the database is designed to integrate with the Fire Dynamics Simulator, FDS, by presenting measured material property information with standard formatting needed for use as model inputs in FDS. 
+This technical note describes the development, maintenance and use of a digital repository of cone calorimetry data, organized with standard formatting and metadata to allow easy access to experimental measurements and derived properties (e.g., heat of combustion, ignition and fire growth parameters, and average burning rate in response to known heating conditions). These values will be compiled and stored in a publicly accessible, version controlled, and continually growing database for use by fire safety scientists and engineers outside NIST. Data from 1983 to the present will be made available, including thousands of experiments on a wide range of materials including commodity plastics, woods, cables, vegetative fuels, and flooring and other building materials. Additionally, the database is designed to integrate with the Fire Dynamics Simulator, FDS, by presenting measured material property information with standard formatting needed for use as model inputs in FDS. 
 
-\subsection{Connection to } \label{ssec:intro-databases}
+\subsection{Connection to other NIST Fire Research Databases} \label{ssec:intro-databases}
+The NIST Fire Research Division currently maintains several repositories of fire test data designed to assist fire safety science engineers, researchers, and modelers by providing: (1) reference measurement data for design calculations, (2) calibrated material property sets and representative HRR profiles for use as fire model inputs, and (3) validation datasets that allow for the determination of how well computational fluid dynamics (CFD) fire models predict the chemical and physical phenomena controlling fire behaviors of interest. A brief introduction the these related repositories is provided below.  The NIST Cone Calorimeter Database is primarily designed to offer users measurement data to asses the relatively flammability of different materials and model inputs that can be used for engineering-level simulations of [material flammability response**].
+
 
 Intro the Matl-Fl-DB. \\
-Connect to FCD for formatting/design.\\
+
+Intro the FCD, note the how/why. Highlight that the CCDB follows the data formatting/design of the FCD.
+%https://higherlogicdownload.s3.amazonaws.com/SFPE/93e7d31c-6432-4991-b440-97a413556197/UploadedImages/FPE_Extra/Issue_63/2021_03_ET.pdf
 Connect to FDS Validation guide.
+
+
+
+The NIST FCD, Material Flammability Database, and Cone Calorimeter Database each can serve as models for other institutions to make valuable fire data available to the fire safety community. To facilitate sharing, interpretation, and analysis of cone calorimeter data produced by fire research and testing programs around the world, the automated tools (i.e., python scripts) for data analysis used in the development of the Cone Calorimeter Database are made publicly available. Among other things**, these tools are designed to facilitate the production of standardized test data and metadata files (with consistent naming and formatting conventions) based on [varied file formats produced by different standard apparatus manufacturers**].
