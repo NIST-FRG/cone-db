@@ -1,0 +1,63 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     LaTeX source code to approximate a NIST Technical report
+%	DOI and CrossMark watermark will be added on final PDF
+% 	Developed by K. Miller, kmm5@nist.gov 
+%	Last updated: 21-June-2022
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document class and template package DO NOT DELETE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{settings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DRAFT: TRUE OR FALSE?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REQUIRED!!! Select either Draft (toggletrue) or Final (togglefalse)
+\newtoggle{draft}
+% \toggletrue{draft} % use if this is a Draft
+ \togglefalse{draft} % use if this is Final
+%
+
+\iftoggle{draft}{
+\usepackage{lineno}
+\linenumbers
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Publication Metadata
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\pubseries}{Technical Note} % Replace with a series title from the list below %
+% {Advanced Manufacturing Series}
+% {Data Collection Instruments}
+% {Economic Analysis Brief}
+% {Grant/Contractor Report}
+% {Handbook}
+% {IR}
+% {Special Publication}
+% {Technical Note}
+% {Technology Transfer Brief}
+% {NCSTAR}
+\newcommand{\pubnumber}{Publication Identifier} 
+\newcommand{\DOI}{https://doi.org/10.6028/NIST.XXX.XXXX}
+\newcommand{\pubmonth}{Month}
+\newcommand{\pubyear}{Year}
+\newcommand{\erratadate}{MM-DD-YYYY}
+\newcommand{\pubtitle}{The NIST Cone Calorimeter Database}
+\newcommand{\pubsubtitle}{Subtitle} % delete if no subtitle %
+%\newcommand{\draftstage}{Draft Stage} % Draft Stage is REQUIRED for drafts/preprints; Draft stages are listed in the NIST Publication Identifier guidance: https://www.nist.gov/nist-research-library/nist-technical-series-publications-author-instructions#pubid   %
+\newcommand{\authorlist}{Isaac T. Leventon, Karen De Lannoye}
+\newcommand{\authorone}{Isaac T. Leventon}
+\newcommand{\authortwo}{Tyler Song}
+\newcommand{\authorthree}{Sereen Khalil}
+\newcommand{\authorfour}{Tzong-Hao Chen}
+\newcommand{\authorfive}{Author }
+\newcommand{\authorsix}{Author }
+\newcommand{\authorseven}{Author 7}
+\newcommand{\authoreight}{Author 8}
+\newcommand{\authornine}{Author 9} % Add or delete commands based on number of authors %
+\newcommand{\pubabstract}{This document summarizes the development, organization, and contents of the NIST Cone Calorimetery Database. Since its development at NIST in 1982 (then the National Bureau of Standards, NBS), the cone calorimeter has enabled researchers to collect invaluable data for the characterization of material flammability behavior in response to well-characterized heating conditions. This project aims to create a digital repository of cone calorimetry data, organized with standard formatting and metadata to allow easy access to experimental measurements and derived properties (e.g., heat of combustion, ignition and fire growth parameters, and average burning rate in response to known heating conditions). Measurement data collected from 1983 to the present will be made available, including thousands of experiments on a wide range of materials including commodity plastics, woods, cables, vegetative fuels, and flooring and other building materials.}
+\newcommand{\keywords}{Cone Calorimeter; Fire Modeling; Fire Protection Engineering; Material Flammability.}
+\newcommand{\publang}{English} %If translation, change to correct language%
+\usepackage{pdfproperties}
