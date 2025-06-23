@@ -20,7 +20,7 @@ if len(args) > 2:
 # assumes the script is being run from the root of the repo
 ## ex path matching INPUT_DIR: C:Users/user-id/path-to-repo-folder/cone-db/data/raw/FTT
 INPUT_DIR = Path(r"../data/raw/FTT")
-OUTPUT_DIR = Path(r"../data/auto-processed/FTT")
+OUTPUT_DIR = Path(r"cone-explorer/data/auto-processed/FTT")
 
 if len(args) == 2:
     INPUT_DIR = Path(args[0])
