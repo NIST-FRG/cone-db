@@ -11,6 +11,7 @@ import numpy as np
 from utils import calculate_HRR, calculate_MFR, colorize
 
 INPUT_DIR = Path(r"../data/raw/md_A")
+OUTPUT_DIR_CSV = Path(r"../data/auto-processed/md_A")
 
 #region parse_dir
 # Find/load the Markdown files
@@ -66,9 +67,15 @@ def parse_file(file_path):
         print(f"Read {len(lines)} lines from file")
        # print(lines)
 
+    # separating tests within the file
     tests = get_tests(lines)
 
-    
+    for test in tests:
+        # for each test, separate data from metadata
+        test_data_df, metadata = get_data(tests[test])
+        # generate test data csv
+        parse_data(test_data_df,test,file_path.name)
+   
 
 ####### separate tests in file #######
 #region get_tests
@@ -98,6 +105,111 @@ def get_tests(file_contents):
 
     return tests    
     
+
+####### separate metadata from test data #######
+#region get_data
+def get_data(data):
+    # data  = list of lines (test)
+    
+    dataStart = -1
+    dataEnd = -1
+    index = 0
+    has_page = False
+    for line in data:
+        line = str(line.upper())
+        if "TIMES" in line:
+            if dataStart == -1:
+                 dataStart = index
+            has_page = True
+        if ("---" == line or index == len(data)-1) and has_page:
+            has_page = False
+            dataEnd = index + 1
+        index += 1
+
+    test_data = data[dataStart:dataEnd]
+    metadata = data[:dataStart] + data[dataEnd:]
+    
+    # convert test_data to df
+    pd_format_test_data = StringIO("\n".join(test_data))
+    test_data_df = pd.read_csv(pd_format_test_data, sep="|")
+
+    return test_data_df, metadata
+
+# outputting dataframe to csv file
+#region parse_data
+def parse_data(data_df,test,file_name):
+    data_df = data_df.iloc[:, 1:-1]
+
+    # extract indices of separate datatables
+    new_table_start = 0
+    col_idx = data_df.columns[0]
+    for index,row in data_df.iterrows():
+        if (index != 1) and (str(row[col_idx]).strip() == '0.0'):
+            new_table_start = index-2
+    
+    # save new datatable as df
+    new_table = data_df.iloc[new_table_start:,1:]
+    # transform new table into additional columns
+    for col in new_table.columns:
+        #skip first row
+        if pd.notna(new_table.iloc[0][col]):
+            new_col_name = str(new_table.iloc[0][col]).strip()
+            #init new column and fill
+            data_df[new_col_name] = np.nan
+            data_df[new_col_name] = data_df[new_col_name].astype("object")  # make string-compatible
+            data_df.loc[0:(len(new_table)-2),new_col_name] = new_table.iloc[1:][col].values 
+
+    # remove datatable at undesirable location
+    data_df.iloc[new_table_start:,:] = np.nan
+    
+    def delete_cells(col):
+        # Convert to string, strip whitespace
+        col_stripped = col.astype(str).str.strip()
+
+        # Define mask for valid (non-empty) values
+        is_not_empty = col.notna() & ~col_stripped.isin(['', '-', ' - '])
+
+        #Exclude any cells containing letters
+        has_letters = col.astype(str).str.contains(r'[a-zA-Z]', na=False)
+
+        # Exclude values with more than 2 dashes
+        too_many_dashes = col_stripped.str.count('-') > 2
+
+        # Final mask: valid and not full of dashes
+        mask = is_not_empty & ~too_many_dashes & ~has_letters
+
+        # Filter and shift
+        non_empty = col[mask]
+        n_missing = len(col) - len(non_empty)
+        return pd.Series(list(non_empty) + [np.nan]*n_missing, index=col.index)
+
+    # remove all miscellaneous cells
+    data_df = data_df.apply(delete_cells)
+
+    # remove unnecessary headers
+    # data_df = data_df[~data_df.astype(str).apply(lambda row: row.str.contains("TIME", case=False, na=False).any(), axis=1)]
+
+    '''
+    # detect every header
+    col_idx = data_df.columns[1]
+    prev = data_df.columns[1]
+    for index,row in data_df.iterrows():
+        if any('TIME' in str(cell) for cell in row) and column_head != row[col_idx]:
+    '''
+
+    OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
+
+    #generate test data csv name
+    test_name = test.casefold()
+    test_name = test_name.replace(" ", "")
+    test_name = test_name + "_" + file_name[0:4:1]
+    test_name = f"{test_name}.csv"
+    
+    output_path = OUTPUT_DIR_CSV / test_name
+    data_df.to_csv(output_path, index=False)
+    print(colorize(f"Generated {output_path}", "blue"))
+
+
 
 
 #region main
