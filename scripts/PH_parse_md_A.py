@@ -12,6 +12,7 @@ from utils import calculate_HRR, calculate_MFR, colorize
 
 INPUT_DIR = Path(r"../data/raw/md_A")
 OUTPUT_DIR_CSV = Path(r"../data/auto-processed/md_A")
+LOG_FILE = Path(r"../data/raw/md_A/md_A_log.json")
 
 #region parse_dir
 # Find/load the Markdown files
@@ -34,7 +35,17 @@ def parse_dir(input_dir):
             files_parsed += 1
             parse_file(path)
         except Exception as e:
-            print(colorize(f" - Error parsing {path}: {e}", "red"))
+
+            # log error in md_A_log
+            with open(LOG_FILE, "r", encoding="utf-8") as w:  
+                logfile = json.load(w)
+            logfile.update({
+                    str(path.name)[0:8:1] : str(e)
+                })
+            with open(LOG_FILE, "w", encoding="utf-8") as f:
+	            f.write(json.dumps(logfile, indent=4))
+
+            print(colorize(f" - Error parsing {path}: {e}\n", "red"))
             continue
         print(colorize(f"Parsed {path} successfully\n", "green"))
         files_parsed_successfully += 1
@@ -53,7 +64,6 @@ def parse_dir(input_dir):
 #def split_md_df(file_path): maybe move split to parts here
 #region parse file   
 def parse_file(file_path):
-
     index = 0
     dataStart = -1
     test_starts = []
@@ -74,7 +84,11 @@ def parse_file(file_path):
         # for each test, separate data from metadata
         test_data_df, metadata = get_data(tests[test])
         # generate test data csv
-        parse_data(test_data_df,test,file_path.name)
+        logfile = parse_data(test_data_df,test,file_path.name)
+        #update md_A_log.json
+        with open(LOG_FILE, "w", encoding="utf-8") as f:
+	        f.write(json.dumps(logfile, indent=4))
+
    
 
 ####### separate tests in file #######
@@ -159,7 +173,7 @@ def parse_data(data_df,test,file_name):
             data_df[new_col_name] = data_df[new_col_name].astype("object")  # make string-compatible
             data_df.loc[0:(len(new_table)-2),new_col_name] = new_table.iloc[1:][col].values 
 
-    # remove datatable at undesirable location
+    # remove new table at original location
     data_df.iloc[new_table_start:,:] = np.nan
     
     def delete_cells(col):
@@ -202,16 +216,40 @@ def parse_data(data_df,test,file_name):
     #generate test data csv name
     test_name = test.casefold()
     test_name = test_name.replace(" ", "")
-    test_name = test_name + "_" + file_name[0:4:1]
+    test_name = test_name + "_" + file_name[0:8:1]
     test_name = f"{test_name}.csv"
+
+    #generating contents for md_A_log
+    with open(LOG_FILE, "r", encoding="utf-8") as w:  
+        logfile = json.load(w)
+
+    # checking validity of data parsing
+    data_df_cols = data_df.drop('HCLKG/KG', axis=1)
+    column_counts = data_df_cols.count()
+    if column_counts.nunique() != 1:
+        column_uniform = "Datatable columns are not uniform"
+    else:
+        column_uniform = "Datatable columns are uniform"
+    # update md_A_log based off uniformity of columns
+    logfile.update({
+            str(test_name) + "_cols" : column_uniform 
+        })
     
     output_path = OUTPUT_DIR_CSV / test_name
     data_df.to_csv(output_path, index=False)
     print(colorize(f"Generated {output_path}", "blue"))
+
+    return logfile
 
 
 
 
 #region main
 if __name__ == "__main__":
+    # if log file doesn't exist, create
+    #if not os.path.exists("../data/raw/md_A/md_A_log.json"):
+    logfile = {}
+    with open("../data/raw/md_A/md_A_log.json", "w", encoding="utf-8") as f:
+        f.write(json.dumps(logfile, indent=4))
+    print("✅ md_A_log.json created.")
     parse_dir(INPUT_DIR)
