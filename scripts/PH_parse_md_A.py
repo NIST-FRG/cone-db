@@ -131,10 +131,18 @@ def get_data(data):
     has_page = False
     for line in data:
         line = str(line.upper())
-        if "TIMES" in line:
+        time_index = line.find("TIME")
+        # if "times" or "time |"
+        if ("TIMES" in line):
             if dataStart == -1:
                  dataStart = index
             has_page = True
+        elif (time_index != -1):
+            for i in range(4):
+                if line[time_index+i] == "|":
+                    if dataStart == -1:
+                        dataStart = index
+                    has_page = True
         if ("---" == line or index == len(data)-1) and has_page:
             has_page = False
             dataEnd = index + 1
@@ -224,7 +232,7 @@ def parse_data(data_df,test,file_name):
         logfile = json.load(w)
 
     # checking validity of data parsing
-    data_df_cols = data_df.drop('HCLKG/KG', axis=1)
+    data_df_cols = data_df.iloc[:,:-1]
     column_counts = data_df_cols.count()
     if column_counts.nunique() != 1:
         column_uniform = "Datatable columns are not uniform"
