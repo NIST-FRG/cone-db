@@ -128,27 +128,34 @@ def get_data(data):
     dataStart = -1
     dataEnd = -1
     index = 0
-    has_page = False
+    #has_page = False
     for line in data:
         line = str(line.upper())
         time_index = line.find("TIME")
-        # if "times" or "time |"
+        # if "times"
         if ("TIMES" in line):
             if dataStart == -1:
                  dataStart = index
-            has_page = True
+            #has_page = True
+        # if "time |"
         elif (time_index != -1):
-            for i in range(4):
-                if line[time_index+i] == "|":
+            # check if | in vicinity
+            for i in range(4,8):
+                if (time_index+i < len(line)) and str(line[time_index+i]) == "|":
                     if dataStart == -1:
                         dataStart = index
-                    has_page = True
-        if ("---" == line or index == len(data)-1) and has_page:
-            has_page = False
-            dataEnd = index + 1
+                    #has_page = True
+                    break                    
+        # mark ending of test data
+        #if ("---" == line or index == len(data)-1) and has_page:
+        if (("PARAMETER SHEET" in line) or index == len(data)-1):
+            #has_page = False
+            dataEnd = index
+            break
         index += 1
 
     test_data = data[dataStart:dataEnd]
+    print(f"{dataStart} to {dataEnd}")
     metadata = data[:dataStart] + data[dataEnd:]
     
     # convert test_data to df
@@ -166,8 +173,14 @@ def parse_data(data_df,test,file_name):
     new_table_start = 0
     col_idx = data_df.columns[0]
     for index,row in data_df.iterrows():
+        # new table starting where time is 0 again
         if (index != 1) and (str(row[col_idx]).strip() == '0.0'):
-            new_table_start = index-2
+            # find column header row
+            for i in range(1,5):
+                first_col_cell = str(data_df.iloc[index-i,0])
+                if "T" in first_col_cell.upper():
+                    new_table_start = index-i
+                    break
     
     # save new datatable as df
     new_table = data_df.iloc[new_table_start:,1:]
@@ -240,9 +253,16 @@ def parse_data(data_df,test,file_name):
         column_uniform = "Datatable columns are uniform"
     # update md_A_log based off uniformity of columns
     logfile.update({
-            str(test_name) + "_cols" : column_uniform 
+            str(test_name) + "_cols" : f"{column_uniform} || #Col = {data_df.shape[1]}"
         })
     
+    # renaming column headers
+    if data_df.shape[1] == 12:
+        data_df.columns = ['Time (s)', 'Q-Dot (kW/m2)', 'Sum Q (MJ/m2)', 'M-Dot (g/s-m2)', 'Mass Loss (kg/m2)', 'HT Comb (MJ/kg)', 'Ex Area (m2/kg)', 'CO2% (kg/kg)', 'CO% (kg/kg)', 'H2O% (kg/kg)', 'H\'carbs% (kg/kg)', 'HCl% (kg/kg)']
+    
+    # replacing "*" with NaN
+    #data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
+
     output_path = OUTPUT_DIR_CSV / test_name
     data_df.to_csv(output_path, index=False)
     print(colorize(f"Generated {output_path}", "blue"))
