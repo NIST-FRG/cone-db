@@ -12,7 +12,7 @@ from utils import calculate_HRR, calculate_MFR, colorize
 
 INPUT_DIR = Path(r"../data/raw/md_A")
 OUTPUT_DIR_CSV = Path(r"../data/auto-processed/md_A")
-LOG_FILE = Path(r"../data/raw/md_A/md_A_log.json")
+LOG_FILE = INPUT_DIR / "md_A_log.json"
 
 #region parse_dir
 # Find/load the Markdown files
@@ -261,7 +261,7 @@ def parse_data(data_df,test,file_name):
         data_df.columns = ['Time (s)', 'Q-Dot (kW/m2)', 'Sum Q (MJ/m2)', 'M-Dot (g/s-m2)', 'Mass Loss (kg/m2)', 'HT Comb (MJ/kg)', 'Ex Area (m2/kg)', 'CO2% (kg/kg)', 'CO% (kg/kg)', 'H2O% (kg/kg)', 'H\'carbs% (kg/kg)', 'HCl% (kg/kg)']
     
     # replacing "*" with NaN
-    #data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
+    # data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
 
     output_path = OUTPUT_DIR_CSV / test_name
     data_df.to_csv(output_path, index=False)
@@ -277,7 +277,7 @@ if __name__ == "__main__":
     # if log file doesn't exist, create
     #if not os.path.exists("../data/raw/md_A/md_A_log.json"):
     logfile = {}
-    with open("../data/raw/md_A/md_A_log.json", "w", encoding="utf-8") as f:
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
     print("✅ md_A_log.json created.")
     parse_dir(INPUT_DIR)
