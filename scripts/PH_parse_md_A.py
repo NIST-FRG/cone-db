@@ -88,7 +88,7 @@ def parse_file(file_path):
         # generate test data csv
         logfile,test_name = parse_data(test_data_df,test,file_path.name)
         # parse through and generate metadata json file
-        parse_metadata(metadata,test_name)
+        logfile = parse_metadata(metadata,test_name,logfile)
         #update md_A_log.json
         with open(LOG_FILE, "w", encoding="utf-8") as f:
 	        f.write(json.dumps(logfile, indent=4))
@@ -263,7 +263,7 @@ def parse_data(data_df,test,file_name):
         column_uniform = "Datatable columns are uniform"
     # update md_A_log based off uniformity of columns
     logfile.update({
-            str(test_name) + "_cols" : f"{column_uniform} || #Col = {data_df.shape[1]}"
+            str(test_name) : f"{column_uniform} || #Col = {data_df.shape[1]}"
         })
     
     # renaming column headers
@@ -283,11 +283,13 @@ def parse_data(data_df,test,file_name):
 ####### metadata clean and output functions #######
 #region parse_metadata
 # clean and output metadata as json
-def parse_metadata(input,test_name):
-    test_name = "meta_" + test_name + ".json"
-    meta_path = METADATA_DIR / test_name
+def parse_metadata(input,test_name,log_file):
+    meta_filename = "meta_" + test_name + ".json"
+    meta_path = METADATA_DIR / meta_filename
     metadata_json = {}
     metadata = []
+
+    METADATA_DIR.mkdir(parents=True, exist_ok=True)
 
     # checking for existing test metadata file 
     if meta_path.exists():
@@ -327,7 +329,11 @@ def parse_metadata(input,test_name):
     ############ finding metadata fields ############
     metadata_json["notes"] = []
     for item in metadata:
-        if "HOR" in item:
+        if metadata.index(item) == 0:
+            metadata_json["lab/operator"] = item
+        elif metadata.index(item) == 5:
+            metadata_json["material_name"] = item
+        elif "HOR" in item:
             metadata_json["orientation"] = "HORIZONTAL"
         elif "VERT" in item:
             metadata_json["orientation"] = "VERTICAL"
@@ -337,18 +343,50 @@ def parse_metadata(input,test_name):
             metadata_json["c_factor"] = get_number(item[3:],"flt")
         elif "INITIAL WEIGHT" in item:
             metadata_json["initial_mass_g"] = get_number(item[3:],"flt")
+        elif "FINAL MASS" in item:
+            metadata_json["final_mass_g"] = get_number(item[3:],"flt")
         elif "SURFACE AREA" in item:
             metadata_json["surface_area_m2"] = get_number(item[3:],"flt")
         elif "SOOT AVERAGE" in item:
-            metadata_json["soot_average"] = get_field(item)
+            metadata_json["soot_average_g/g"] = get_number(item,"exp")
+        elif "MASS CONSUMED" in item:
+            metadata_json["mass_consumed"] = get_field(item)
+        elif item.find("CONVERSION FACTOR") == 0:
+            metadata_json["conversion_factor"] = get_field(item)
+        elif "TIME TO IGNITION" in item:
+            metadata_json["t_ign_s"] = get_number(item,"int")
+        elif "PEAK Q-DOT" in item:
+            match = re.search(r'(\d+)\s+KW', item)
+            if match:
+                metadata_json["peak_q_dot_kw/m2"] = int(match.group(1))
+        elif "PEAK M-DOT" in item:
+            match = re.search(r'(\d+\.\d+)\s+G', item)
+            if match:
+                metadata_json["peak_m_dot_g/s-m2"] = float(match.group(1))
+        elif "TEST" in item:
+            match = re.search(r'TEST\s+(\d{4})', item)
+            if match:
+                metadata_json["test_number"] = int(match.group(1))
+        elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
+            metadata_json["date"] = item
         else:
             metadata_json["notes"].append(item) 
-            
-            
+        
 
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4))
+
+    # adding field count to test in log file(md_A_log.json)
+    fields_found = len(metadata_json)
+    log_test = str(test_name) + ".csv"
+    log_file.update({
+            log_test : log_file[log_test] + " || #Metadata_fields = " + str(fields_found)
+        })
+
+    print(colorize(f"Generated {meta_path}", "blue"))
+
+    return log_file
 
     
 
@@ -362,8 +400,10 @@ def parse_metadata(input,test_name):
     # data_output_path = Path(OUTPUT_DIR_JSON) / str(test_year) /f"{Path(file_path).stem}.csv"
     # metadata_output_path = Path(OUTPUT_DIR_JSON) / str(test_year) / f"{Path(file_path).stem}.json"
 
-#get number(int, float,)
+#region helpers
+#get number(int,float,exponent,)
 def get_number(item, num_type):
+    number = "Not found"
     match num_type:
         case "int":
             match = re.search(r'\d+', item)
@@ -371,7 +411,12 @@ def get_number(item, num_type):
                 number = int(match.group())
         case "flt":
             match = re.search(r'\d*\.\d+', item)
-            number = float(match.group())
+            if match:
+                number = float(match.group())
+        case "exp":
+            match = re.search(r'\d*\.\d+[E][+-]*\d', item)
+            if match:
+                number = str(match.group())
 
     return number
 
