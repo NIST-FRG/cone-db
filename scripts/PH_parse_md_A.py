@@ -10,7 +10,7 @@ import os
 import numpy as np
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/test")
+INPUT_DIR = Path(r"../data/raw/md_A")
 OUTPUT_DIR_CSV = Path(r"../data/auto-processed/md_A")
 METADATA_DIR = Path(r"../metadata/md_A")
 LOG_FILE = INPUT_DIR / "md_A_log.json"
@@ -166,7 +166,7 @@ def get_data(data):
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
     metadata = data[:massWStart] + data[dataEnd:]
-    print(f"{massWStart} to {dataEnd}")
+    print(f"{dataStart} to {dataEnd}")
     
     # convert test_data to df
     pd_format_test_data = StringIO("\n".join(test_data))
