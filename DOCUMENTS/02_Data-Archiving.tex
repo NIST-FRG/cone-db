@@ -1,0 +1,54 @@
+% !TEX root = ConeDB_Technote.tex
+\section{Data Archiving} \label{sec:data-archiving}
+\subsection{template}
+\label{level2:headingscap}
+\normalsize When referring to references in the text parenthetically, use the form [X]. For example, As Jones and Smith have shown [X]; however, when a reference is referred to non-parenthetically, use the form Ref. [X], except at the beginning of a sentence where Reference [X] is the correct form.\cite{Caxton,Eston1993,Farindon,FIPS1402,giancoli2008physics,Isley,Joslin,Maloney2016,Marcheford,MSU-CSE-06-2,Prives2016,Roberts1982,SP80053r4,wilkinson_1990,Xiong2015} 
+
+
+All sections and subsection titles should be capitalized. Here is an example of a text box, use these sparingly.
+\begin{tcolorbox}
+This is some block text. You can change the spacing, background color, and font formatting as needed
+\end{tcolorbox}
+\subsubsection{Section 1.1.1.}
+\label{level3:headingscap}
+Section references are Sec. X. Section X is used at beginning of sentence.
+Tables should appear after they are mentioned in the text (see Table~\ref{tab:example}).
+\begin{table}[h]
+	\centering
+	\caption{Title.}
+	\label{tab:example}
+	\small
+	\begin{tabular}{cc}
+		\hline
+		ColumnA & ColumnB \\ \hline
+		text & text{\scriptsize $^{\rm a}$} \\
+		text & text \\
+		text & text \\
+		text & text \\
+		\hline
+	\end{tabular}
+	
+	{\footnotesize 	{\scriptsize $^{\rm a}$}Footnote}
+\end{table}
+\paragraph{Section 1.1.1.1.}
+Equation references are Eq. (X). Equation (X) is used at beginning of sentence.\footnote{NIST disclaimer text here.} %Disclaimer needs to appear as a numbered footnote at first mention of commercial product%
+\begin{equation}
+\label{eq:example}
+{x}^{n} + {y}^{n} = {z}^{n}
+\end{equation}
+The default table style (borders, shading, banding, size) can be adjusted as needed. Any use of color in tables must not be used to convey information and must pass \href{https://support.microsoft.com/en-us/office/make-your-content-accessible-to-everyone-with-the-accessibility-checker-38059c2d-45ef-4830-9797-618f0e96f3ab}{contrast validation}. Authors should avoid merging table cells or using tables to achieve text formats. Use simple table structures, specify column header information, and repeating header rows. Superscripted letters (a, b, c, etc.) should be used for table footnotes and should appear directly below the table, restarting with ‘a’ for each table.
+
+Figures should not rely on color alone to convey information. When choosing color follow these best practices: provide sufficient contrast, avoid \href{https://www.nature.com/articles/519291d}{rainbow scale}, and check your color palettes using \href{http://selection.datavisualization.ch/}{online tools}.
+
+All images must have alternative text. The text should explain the image for those who use screen readers. The goal is to simplify complex images where possible. Follow instructions on how to add alt text to images in the \href{https://helpx.adobe.com/acrobat/using/editing-document-structure-content-tags.html#add_alternate_text_and_supplementary_information_to_tags}{PDF}.
+
+Figure references are written as Fig. X. Figure X is used as the beginning of a sentence. Figures should appear after they are mentioned in the text. 
+
+The alt text used for \href{https://equidox.co/blog/beyond-basic-alt-text-charts-maps-and-diagrams/}{Fig. 1} is “Line graph showing an upward trend in cell phone services from 2001 through 2010, with a corresponding downward trend in residential phone services over the same period.” 
+\begin{figure}[h] 
+	\centering 	\includegraphics[width=6in]{../FIGURES/llama1.png}
+	\caption{This is the caption text.}
+	\label{fig:llama}
+\end{figure}
+
+If there was a corresponding data table in the same report, the following could be used: “Chart showing an upward trend over time; refer to the data table on this page for specific details.”

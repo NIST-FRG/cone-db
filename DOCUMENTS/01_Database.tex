@@ -1,0 +1,62 @@
+% !TEX root = ConeDB_Technote.tex
+\section{Organization of the NIST Cone Calorimeter Database} \label{sec:DB-overview}
+Key components:
+\begin{itemize}
+\item The NIST Cone Calorimeter Github Repository
+\item Standard formatting and naming convention (files, folders, data)
+\item Metadata (test and material)
+\item Derived properties/model inputs
+\item Graphical User Interface (GUI https://www.nist.gov/)
+\item Data Sources (Legacy and New; references)
+\end{itemize}
+
+\subsection{How to Access and Interact with the NIST Cone Calorimeter Database} \label{sec:DB-user-interface}
+\subsubsection{The Graphical User Interface (GUI)/Website}
+This data repository is available to fire modelers, fire protection engineers, and fire research scientists who wish to find **material property data for engineering-level fire modeling**. A Graphical User Interface for the NIST Cone Calorimeter Database repository is available online: \url{www.flammability.el.nist.gov/cone.}. On this webpage, users can:
+\begin{itemize}
+\item Access and quickly review a table of cone calorimeter property data (e.g., heat of combustion, gaseous species yields [CO, CO2, Soot]; time to ignition and mass loss/heat release in response to known heating conditions) for all materials available
+\item Search for specific materials, or material types, of interest
+\item Plot and compare time-resolved flammability response (e.g., HRR or MLR) of single or multiple multiples under different heating conditions
+\item Compare the relative flammability of different materials (i.e., compare tabulated fire growth parameters~\cite{lyon2024}
+\                  
+\end{itemize}
+
+\subsubsection{The Github Repository}
+The NIST Cone Calorimeter Database repository is hosted on GitHub: (\url{https://github.com/NIST-FRG/cone-db}). The repository is continuously updated, and users who interact with the database programmatically/directly through GitHub are expected to consult the repository regularly for possible additions. The repository is managed by Isaac Leventon of the National Institute of Standards and Technology (NIST). It contains:
+
+\subsubsection{How to Cite Measurement Data/The Repository}
+
+Users of the experimental measurements and derived parameters found in the NIST Cone Calorimeter Database~\cite{NIST-cone-db} are encouraged to: (a) cite the repository (see below) and (b) directly credit the original authors/publication that provided the experimental measurements of interest. Relevant publications and contributor information are detailed in the **metadata files associated with each dataset; **APA-format** citations are also provided for each dataset on the the \href{www.nist.gov**}{Graphical User Interface} of the NIST Cone Calorimeter Database.
+
+The NIST Cone Calorimeter Database is version controlled. When citing this database, please include the date accessed. You may cite the use of this data as follows:
+
+\begin{lstlisting}
+Leventon, I.T., Song, T., Khalil, S., and Chen, T-Z., ``The NIST Cone Calorimeter Database'', https://github.com/NIST-FRG/cone-db, date accessed: day-month-year, **https://doi.org/10.18434/mds2-2586**.
+\end{lstlisting}
+
+Table of Materials\\
+Table of Properties\\
+
+\subsection{File and Folder Naming and Formatting} \label{ssec:DB-formatting}
+
+\subsection{Metadata (test and material)} \label{ssec:DB-metadata}
+Measurement data from thousands of experiments on a wide range of materials including commodity plastics, woods, cables, vegetative fuels, and flooring and other building materials is available on the NIST Cone Calorimeter database. A continuously-updated, version controlled, searchable `Table of Materials' is available online: \href{www.nist.gov}{**link to ToM}.
+
+Table of Properties
+\subsection{Derived properties/model inputs} \label{ssec:DB-properties}
+Derived property values from each of the materials included in the NIST Cone Calorimetry Database (including commodity plastics, woods, cables, vegetative fuels, and flooring and other building materials) is available online: **link . This `Table of Properties' is continuously-updated, version controlled, and searchable.
+
+\subsection{Data Sources} \label{ssec:DB-Data}
+\subsubsection{NIST/NBS Legacy Data}
+\subsubsection{Current and Future NIST Data}
+\subsubsection{External from Trusted** Collaborators} 
+
+
+\subsection{User Support for the NIST Material Flammability Database} \label{ssec:MFDB-support}
+\subsubsection{The Version Number}
+When citing the database 
+requesting assistance with FDS problems, it is crucial to submit, along with a description of the problem, the FDS version number. Each release of FDS comes with a version number, for example 6.7.2, where the first number is the major release, the second is the minor release, and the third is the maintenance release. Major releases occur every few years, and as the name implies significantly change the functionality of the model. Minor releases occur every few months, and may cause minor changes in functionality. Release notes can help you decide whether the changes should affect the type of applications that you typically do. Maintenance releases are just bug fixes, and should not affect code functionality. To get the version number, just type the executable at the command prompt without an input file, and the relevant information will appear, along with a date of compilation (useful to you) and a so-called Git hash tag (useful to us). The Git hash tag refers to the GitHub repository number of the source code. It allows anyone to obtain the exact source code files that were used to build that version’s executable.
+
+Get in the habit of checking the version number of your executable, periodically checking for new releases which might already have addressed your problem, and telling us what version you are using if you report a problem
+
+\subsubsection{Support Requests and Bug Tracking}

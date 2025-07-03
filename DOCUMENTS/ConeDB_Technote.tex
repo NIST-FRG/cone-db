@@ -1,0 +1,349 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   	FILL OUT METADATA IN PREAMBLE TEX FILE FIRST
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{ConeDB_Preamble.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   	BEGIN DOCUMENT 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\urlstyle{rm} % Format style of \url  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   	DELETE INSTRUCTIONS PAGE BEFORE SUBMISSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\import{./}{instructions.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Cover Page is REQUIRED and must contain the information 
+%	displayed here, at a minimum. Additional artwork may be included 
+%	(e.g., official project/conference logo, etc.).
+%	Most info automated based on metadata entered in preamble.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{titlepage}
+		\begin{flushright}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 	Automated based on metadata 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\LARGE{\sffamily{\textbf{NIST \pubseries}}}\\
+\LARGE{\sffamily{\textbf{\pubnumber}}}\\
+\vfill
+\Huge{\sffamily{\textbf{\pubtitle}}}\\
+\Large{\sffamily{\textit{\pubsubtitle}}}\\
+%\vfill include if draft
+%\Large{\draftstage}\\ include if draft
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Authors - automated based on metadata
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\large \authorone\\
+\large \authortwo\\
+\large \authorthree\\
+\large \authorfour\\
+%\large \authorfive\\
+%\large \authorsix\\
+%\large \authorseven\\
+%\large \authoreight\\
+%\large \authornine\\
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	The DOI is automated based on metadata.	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\normalsize This publication is available free of charge from:\\
+\DOI\\
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	NIST LOGO - keep as-is The cover page can include additional visual elements. Commercial logos are not permitted. NIST program logos are permitted. Other agency logos are permitted if interagency report.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\includegraphics[trim=0 0 0.7in 0,clip,width=3.62in]{../FIGURES/NIST-Logo-Brand-Black-2022.pdf}\\ 
+
+\end{flushright}
+\end{titlepage}
+\begin{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Title Page is REQUIRED
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{flushright}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Automated based on metadata 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\LARGE{\sffamily{\textbf{NIST \pubseries}}}\\
+\LARGE{\sffamily{\textbf{\pubnumber}}}\\
+\vfill
+\Huge{\sffamily{\textbf{\pubtitle}}}\\
+\Large{\sffamily{\textit{\pubsubtitle}}}\\
+%\vfill include if draft
+%\Large{\draftstage}\\ include if draft
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Author Order and Grouping. Always identify the primary author/creator first (s/he does not have to be a NIST author). For publications with multiple authors, group authors by their organizational affiliation. The organizational groupings and the names within each grouping should generally be ordered by decreasing level of contribution.
+%	For non-NIST authors, list their city and state below their organization name.
+%	For NIST authors, include the Division and Laboratory names (but do not include their city and state).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\normalsize \authorone\\
+\authortwo\\
+\authorthree\\
+\authorfour\\
+\textit{Office of XXXX}\\
+\textit{First Operating Unit}\\
+\vspace{12pt}
+\authorfive\\
+\authorsix\\
+%\authorseven\\
+\textit{Office of XXXX}\\
+\textit{Second Operating Unit}\\
+\vspace{12pt}
+%\authoreight\\
+%\authornine\\
+\textit{Office of XXXX}\\
+\textit{Second Operating Unit}\\
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Automated based on metadata 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\normalsize This publication is available free of charge from:\\
+\DOI\\
+\vfill
+\normalsize \pubmonth~\pubyear\\
+%\textsc{Includes Updates as of \erratadate; See \appendixname~\ref{app:log}} %include if errata update
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Department of Commerce LOGO - leave as-is
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\includegraphics[width=0.2\linewidth]{../FIGURES/doc-logo-black.pdf}\\ 
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Department of Commerce & NIST Leadership 
+%	will be updated as changes occur
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\footnotesize U.S. Department of Commerce\\ 
+\textit{Gina M. Raimondo, Secretary}\\
+\vspace{10pt}
+National Institute of Standards and Technology\\ 
+\hspace*{-3cm}\textit{Laurie E. Locascio, NIST Director and Under Secretary of Commerce for Standards and Technology}  
+\end{flushright}
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Disclaimer & Publication History Page -- REQUIRED
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{titlepage}
+\begin{flushleft}
+\footnotesize  Certain commercial equipment, instruments, or materials, commercial or non-commercial, are identified in this paper in order to specify the experimental procedure adequately. Such identification does not imply recommendation or endorsement of any product or service by NIST, nor does it imply that the materials or equipment identified are necessarily the best available for the purpose.\\ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OTHER DISCLAIMERS - INCLUDE AS APPROPRIATE %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This publication was produced as part of contract <contract number> with the National Institute of Standards and Technology. The contents of this publication do not necessarily reflect the views or policies of the National Institute of Standards and Technology or the US Government.
+% The NIST Data Collection Instruments series include questionnaires or survey instruments, interview guides, and other structured means of collecting data. Some of these instruments are designed for human subjects research focused on households, social institutions, and businesses. The instruments are approved by both NIST Institutional Review Board (IRB) and OMB/Paperwork Reduction Act.
+% Publications in the SP 1200 subseries include written procedural methods in the design and implementation of experiments that ensure successful replication of results by others. Publications may include detailed procedures, lists of required equipment and instruments, information on safety precautions, the calculation of results and reporting standards.
+% Publications in the SP1500 subseries are intended to capture external perspectives related to NIST standards, measurement, and testing-related efforts. These external perspectives can come from industry, academia, government, and others. These reports are intended to document external perspectives and do not represent official NIST positions. The opinions, recommendations, findings, and conclusions in this publication do not necessarily reflect the views or policies of NIST or the United States Government.
+% Publications in the SP 2000 subseries provide detailed descriptions of important activities and features related to the use and harmonization of standards and conformity assessment in the United States and globally. The publications include reports, guidelines, and other information resources on key concepts, activities, features, and other specific topics regarding coordination of standards and use of conformity assessment impacting both international and U.S. trade.
+% Publications in the SP 2100 subseries are proceedings from conferences organized predominately by NIST scientific and technical staff. These proceedings are published as a single document that includes all abstracts or extended abstracts accepted by the conference organizers. This publication may include external perspectives from industry, academia, government, and others. The opinions, recommendations, findings, and conclusions in this publication do not necessarily reflect the views or policies of NIST or the United States Government.
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   This section maintained by Library - do not change
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\footnotesize 
+\sffamily{\textbf{NIST Technical Series Policies}}\\
+\rmfamily {\href{https://doi.org/10.6028/NIST-TECHPUBS.CROSSMARK-POLICY}{Copyright, Use, and Licensing Statements}\\
+\href{https://www.nist.gov/nist-research-library/nist-technical-series-publications-author-instructions#pubid}{NIST Technical Series Publication Identifier Syntax}}
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Complete this section as appropriate
+% ERB approval date is REQUIRED.
+% Publication ID, Month/Year, and DOI of report being replaced (superseded)  is only required if this manuscript is a new version (revision, edition, errata update). 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sffamily{\textbf{Publication History}}\\
+ \rmfamily {Approved by the NIST Editorial Review Board on YYYY-MM-DD\\
+Supersedes NIST Series XXX (Month Year) DOI}\\
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This section is automated
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sffamily{\textbf{How to cite this NIST Technical Series Publication:}} \\
+ \rmfamily {\authorlist~(\pubyear)~\pubtitle.~(National Institute of Standards and Technology, Gaithersburg, MD),~\pubnumber.~ \DOI}
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ORCID IDs required for all NIST authors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sffamily{\textbf{NIST Author ORCID iDs}}\\
+ \rmfamily {\authorone: 0000-0002-8835-8087\\
+\authortwo: 0000-0000-0000-0000\\
+\authorthree: 0000-0000-0000-0000\\
+\authorfour: 0000-0000-0000-0000\\
+\authorfive: 0000-0000-0000-0000\\
+\authorsix: 0000-0000-0000-0000\\}
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTIONAL, include email address / mailing address / etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sffamily{\textbf{Contact Information}}\\
+\rmfamily {
+\href{mailto:Isaac.Leventon@NIST.gov}{Isaac.Leventon@NIST.gov} 
+}
+\vfill
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTIONAL FOR DRAFTS, include how to submit comments and any other relevant information (e.g., disclaimers or FOIA release statements). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sffamily{\textbf{Public Comment Period}}\\
+\rmfamily {Month Day, YYYY - Month Day, YYYY}
+
+\sffamily{\textbf{Submit Comments}}\\ 
+\rmfamily {contact@nist.gov 
+Mailing Address}
+
+\end{flushleft}
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Start front matter - page number starts with "i"
+% Additional information can be added to the verso and front matter as needed
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{titlepage}
+\pagenumbering{roman}
+\thispagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+  \fancyhead{}
+  \fancyhead[l]{\small \pubnumber \\ 
+	\small \pubmonth~\pubyear \\}
+	\fancyfoot[c]{\thepage}
+\section*{Abstract}
+\pubabstract
+\section*{Keywords}
+\keywords
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Table of Contents is required
+% 	List of Tables & Figures required if more than 5 tables/figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace*{-3cm}\small{\pubnumber \newline  \pubmonth~\pubyear}
+\vspace{18pt}
+\begin{center}
+	\tableofcontents
+	\appendixtitleon
+    \appendixtitletocon
+	\listoftables
+	\listoffigures
+	\end{center}
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Front matter continued
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+  \fancyhead{}
+  \fancyhead[l]{\small \pubnumber \\ 
+	\small \pubmonth~\pubyear \\}
+	\fancyfoot[c]{\thepage}
+\section*{Foreword}
+OPTIONAL. The foreword is an introductory statement that presents background material or places the report in context. It is usually written by someone other than the creator of the report. The name and affiliation of the foreword author should be listed.
+\section*{Preface}
+OPTIONAL. A preface is an introductory statement that announces the purpose and scope of the report, and may acknowledge contributions of those not listed as authors. Material that is not necessary for understanding the report belongs in the preface. 
+\section*{Acknowledgments}
+OPTIONAL. Delete if not needed.
+\section*{Author Contributions}
+% OPTIONAL: Provide statement on the contributions of each author using the ANSI/NISO Z39.104-2022 CRediT roles taxonomy. This can also be used to inform the sequence of authors on the cover page and in the citation (i.e., authors with more roles are listed first).
+\textbf{\authorone}: Conceptualization, Data Analysis, Database Maintenance, Methodology, Writing; \textbf{\authortwo}: Data Analysis, Data Archaeology, Software; \textbf{\authorthree}:  Experimental Measurements, Data Analysis, Data Archaeology, Writing; \textbf{\authorfour}:  Software.
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Header text and page numbering
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+  \fancyhead{}
+  \fancyhead[l]{\small \pubnumber \\ 
+	\small \pubmonth~\pubyear \\}
+\pagenumbering{arabic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Start body of text - page number starts with "1"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Executive Summary}
+\addcontentsline{toc}{section}{Executive Summary}
+\label{sec:es}
+\normalsize OPTIONAL, recommended if report exceeds 50 pages. Non-technical presentation that provides information to management and/or decision-makers who need a basic understanding of the findings and recommendations. May include any policy or fiscal implications of the recommendations.
+
+
+\clearpage
+\input{00_Introduction}
+\clearpage
+\input{01_Database}
+\clearpage
+\input{02_Data-Archiving}
+%\clearpage
+%\input{03_DSC}
+%\clearpage
+%\input{04_MCC}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Please use the techpubs BibTeX style when compiling bibliography to format your .bib / .bbl file appropriately.
+% . Examples are also provided here. Authors can choose between using Numeric (“[1]”) and Named with no spaces (“[SP800-300]”) references but should use only one. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{References}
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{techpubs}
+\bibliography{Cone_References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendix section change for appendix package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\titleformat{\section}{\normalsize\bfseries\sffamily}{\appendixname~\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries\sffamily}{\appendixname~\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\sffamily}{\appendixname~\thesubsubsection.}{0.5em}{}
+\titleformat{\paragraph}{\normalsize\bfseries\sffamily}{\appendixname~\theparagraph.}{0.5em}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin appendices
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{appendices}
+\section{Selected Bibliography}
+\label{app:bib}
+OPTIONAL. Additional sources of information not referenced in the text.  Do not include if the Reference section is a complete list.
+\subsection{Heading 2}
+Example of an Appendix Heading 2
+\subsubsection{Heading 3}
+Example of an Appendix Heading 3
+\paragraph{Heading 4}
+Example of an Appendix Heading 4
+\section{List of Symbols, Abbreviations, and Acronyms}
+\label{app:abbr}
+OPTIONAL, if more than five symbols, abbreviations, and/or acronyms are used in a report that are not readily recognized as a standard in the field. Do not include symbols, abbreviations, and/or acronyms that are commonly used in the field of the target audience.
+\begin{description}
+\item[Abbreviation/Acronym/Symbol] Definition.
+\item[Abbreviation/Acronym/Symbol] Definition.
+\item[Abbreviation/Acronym/Symbol] Definition.
+\end{description}
+\section{Glossary}
+\label{app:gloss}
+OPTIONAL. List of terms defined and explained to facilitate a reader’s comprehension of the report.
+\begin{description}
+\item[Term] Definition.
+\item[Term] Definition.
+\item[Term] Definition.
+\end{description}
+\section{Index}
+\label{app:index}
+OPTIONAL. Alphabetical listing of all major topics discussed in a report. An index cites the page or location where the topic can be found. The arrangement and level of detail of the index are determined by the structure of the report, its target audience, and use.
+\section{Change Log}
+\label{app:log}
+REQUIRED IF UPDATE OR REVISION. If this report is an update, revision, or new edition of a previously published report, briefly state changes made and the date of changes. Some examples of how to list changes made are:
+In a table:
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+Date & Type of Edit & Change & Location \\ \hline
+     &              &        &          \\ \hline
+     &              &        &          \\ \hline
+     &              &        &          \\ \hline
+\end{tabular}
+\end{table}
+Or an informative sentence:
+\begin{tcolorbox}
+Page 37, line 5 reads cosine of the angle, but should read sine of the angle.
+\end{tcolorbox}
+Or a narrative and accompanying bulleted list:
+
+\vspace{12pt}
+In May 2022, the following changes were made to the report:
+\begin{itemize}
+\item Abstract –provides direct information on the key establishment schemes (DH, MQV) and the underlying mathematics structure (discrete logs on finite field, elliptic curve).
+\item Section 3.1 – Added definitions of assumption, binding, bit string, byte, byte string, destroy, key-establishment pair, key-wrapping key, trusted association; removed definitions on assurance of identifier, initiator, and responder.
+\end{itemize}
+\end{appendices}
+\end{document}
