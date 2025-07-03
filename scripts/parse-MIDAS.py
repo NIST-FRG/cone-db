@@ -203,6 +203,7 @@ def parse_metadata(file_path):
     
     def parse_event(row):
         return {
+            # shift event back by start time
             "time": row["Time (s)"],
             "event": row["Event Description"],
         }
