@@ -74,7 +74,7 @@ def load_metadata():
     hrr.columns = metadata_path_map.keys()
     hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
     hrr = pd.Series(hrr.squeeze())
-    df.insert(0, "HRR (kW/m2)", [hrr.values])
+    df.insert(0, "HRR (kW/m2)", hrr.values)
 
     bar.progress(
         1.0,
@@ -160,26 +160,32 @@ def export_metadata(df):
         row = row.to_dict()
 
         # if the file has no material_id, skip it
-        if row.get("material_id") is None or row.get("material_id") in ["nan", ""]:
+        if row.get("material_id") is None or row.get("material_id") in ["nan", ""] or "/" in row.get("material_id"):
             continue
 
         # replace NaN with None to conform to official json format
-        row = {k: v if not pd.isna(v) else None for k, v in row.items()}
+        # row = {k: v if not pd.isna(v) else None for k, v in row.items()}
+        row = {
+            k: (v if not (pd.isna(v) if np.isscalar(v) else False) else None)
+            for k, v in row.items()
+        }
 
         # if the file has no heat flux, skip it:
-        if row.get("heat_flux_kW/m2") is None:
+        if (row.get("heat_flux_kW/m2") is None) or row.get("heat_flux_kW/m2") == "Not found":
             continue
 
         # find the path to the metadata file & include the old filename in the metadata
         path = metadata_path_map[str(index)]
         row["prev_filename"] = path.name
 
+        
         # parse iso format datetime and just keep the date (no time)
-        d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
-        year = d.strftime("%Y")
+        #d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
+        #year = d.strftime("%Y")
 
         # files are sorted into folder by year
-        export_path = OUTPUT_DATA_PATH / year
+        # export_path = OUTPUT_DATA_PATH / year
+        export_path = OUTPUT_DATA_PATH / "md_A"
         if not export_path.exists():
             export_path.mkdir(parents=True, exist_ok=True)
 
@@ -199,7 +205,7 @@ def export_metadata(df):
             filename_parts.insert(2, f"r{row['specimen_number']}")
 
         # join all the filename parts together with a dash & add the file extension (.json)
-        new_filename = "-".join(filename_parts) + ".json"
+        new_filename = "_".join(filename_parts) + ".json"
 
         # save the metadata file
         with open(export_path / new_filename, "w") as f:

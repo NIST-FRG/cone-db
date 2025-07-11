@@ -332,6 +332,8 @@ def parse_metadata(input,test_name,log_file):
     for item in metadata:
         if metadata.index(item) == 0:
             metadata_json["laboratory"] = item
+        elif metadata.index(item) == 4:
+            metadata_json["material_id"] = item
         elif metadata.index(item) == 5:
             metadata_json["material_name"] = item
         elif "HOR" in item:
@@ -373,6 +375,8 @@ def parse_metadata(input,test_name,log_file):
         else:
             metadata_json["comments"].append(item) 
         
+
+    metadata_json["number_of_fields"] = len(metadata_json)
 
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

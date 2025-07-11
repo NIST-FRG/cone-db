@@ -9,6 +9,7 @@ INPUT_DIR = Path(r"../data/pre-parsed/md_A")
 OUTPUT_DIR_CSV = Path(r"../data/parsed/md_A")
 PREPARSED_META = Path(r"../metadata/md_A/preparsed")
 OUTPUT_META = Path(r"../metadata/md_A/parsed")
+OUTPUT_PREPARED = Path(r"cone-explorer/data/parsed/md_A")
 
 LOG_FILE = Path(r"..") / "parse_md_A_log.json"
 
@@ -94,6 +95,25 @@ def parse_metadata():
     # copy all metadata files from preparsed metadata folder to parsed metadata folder
     shutil.copytree(PREPARSED_META, OUTPUT_META)
 
+#region files_to_prepare
+# copying data and metadata files ready to be prepared/manually reviewed --> cone explorer input directory
+def files_to_prepare():
+    OUTPUT_PREPARED.mkdir(parents=True, exist_ok=True)
+
+    for file in OUTPUT_META.iterdir():
+        with open(file, "r", encoding="utf-8") as w:  
+            metadata = json.load(w)
+        if metadata["number_of_fields"] == 19:
+            csv_file = file.with_suffix(".csv").name
+            csv_path = OUTPUT_DIR_CSV / csv_file
+            if os.path.exists(csv_path):
+                shutil.copy(file, OUTPUT_PREPARED)
+                shutil.copy(csv_path, OUTPUT_PREPARED)
+
+    print(colorize(f"Files sent to {OUTPUT_PREPARED}", "green"))
+            
+
+
 
 #region main
 if __name__ == "__main__":
@@ -103,3 +123,4 @@ if __name__ == "__main__":
         f.write(json.dumps(logfile, indent=4))
     print("✅ parse_md_A_log.json created.")
     parse_dir(INPUT_DIR)
+    files_to_prepare()
