@@ -33,6 +33,7 @@ def parse_dir(input_dir):
         try:
             files_parsed += 1
             parse_file(path)
+            
         except Exception as e:
             # log error in md_A_log
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
@@ -58,21 +59,33 @@ def parse_file(file_path):
     
 #region parse data
 def parse_data(file_path):
+    # extract heat flux from current test
+    file_stem = file_path.stem
+    meta_file = str(file_stem) + ".json"
+    with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
+        metadata = json.load(w)
+    flux = metadata["heat_flux_kW/m2"]
+
     df = pd.read_csv(file_path)
     df = df.rename(columns={
         "Q-Dot (kW/m2)" : "HRR (kW/m2)",
-        "CO2 (kg/kg)" : "CO2 (Vol fr)",
-        "CO (kg/kg)" : "CO (Vol fr)",
-        "H2O (kg/kg)" : "H2O (Vol fr)",
-        "H'carbs (kg/kg)" : "H'carbs (Vol fr)",
+        "CO2 (kg/kg)" : "CO2 (Vol %)",
+        "CO (kg/kg)" : "CO (Vol %)",
+        "H2O (kg/kg)" : "H2O (Vol %)",
+        "H'carbs (kg/kg)" : "H'carbs (Vol %)",
         "M-Dot (g/s-m2)" : "MLR (g/s-m2)",
         "Sum Q (MJ/m2)" : "THR (MJ/m2)"
 
         })
     
+    # generate (time * external heat flux) column
+    t_qext = df["Time (s)"] * flux
+    df.insert(1,"t * EHF (kJ/m2)",t_qext)
+
     data = df[
         [
             "Time (s)",
+            "t * EHF (kJ/m2)",
             "HRR (kW/m2)",
             "MLR (g/s-m2)",
             "THR (MJ/m2)"
@@ -112,7 +125,6 @@ def files_to_prepare():
 
     print(colorize(f"Files sent to {OUTPUT_PREPARED}", "green"))
             
-
 
 
 #region main

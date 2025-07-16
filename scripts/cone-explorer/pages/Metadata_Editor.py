@@ -202,7 +202,7 @@ def export_metadata(df):
 
         # if there is a specimen number, include that in the filename
         if row.get("specimen_number") is not None and row.get("specimen_number") != "":
-            filename_parts.insert(2, f"r{row['specimen_number']}")
+            filename_parts.insert(2, f"{row['specimen_number']}")
 
         # join all the filename parts together with a dash & add the file extension (.json)
         new_filename = "_".join(filename_parts) + ".json"

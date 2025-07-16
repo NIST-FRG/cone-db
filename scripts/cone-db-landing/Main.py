@@ -28,9 +28,6 @@ python -m streamlit run scripts/cone-db-landing/Main.py
 #### Material IDs
 Material IDs should use the format `<material_name>:<report_identifier>`. Spaces in a material name should be replaced with underscores. For example, the material ID for a material named "Material A" with a report identifier of "smith2015characterization" would be `Material_A:smith2015characterization`.
 
-### Search
-Searches metadata files for a given text query
-
 ### View
 Plots data for multiple tests at a time.
 
