@@ -57,7 +57,52 @@ def parse_dir(input_dir):
 def parse_file(file_path):
     parse_data(file_path)
     
+'''
 #region parse data
+def parse_data(file_path):
+    # extract heat flux from current test
+    file_stem = file_path.stem
+    meta_file = str(file_stem) + ".json"
+    with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
+        metadata = json.load(w)
+
+    df = pd.read_csv(file_path)
+    df = df.rename(columns={
+        "Q-Dot (kW/m2)" : "HRR (kW/m2)",
+        "CO2 (kg/kg)" : "CO2 (Vol %)",
+        "CO (kg/kg)" : "CO (Vol %)",
+        "H2O (kg/kg)" : "H2O (Vol %)",
+        "H'carbs (kg/kg)" : "H'carbs (Vol %)",
+        "M-Dot (g/s-m2)" : "MLR (g/s-m2)",
+        "Sum Q (MJ/m2)" : "THR (MJ/m2)"
+
+        })
+
+    data = df[
+        [
+            "Time (s)",
+            "HRR (kW/m2)",
+            "CO2 (Vol %)",
+            "CO (Vol %)",
+            "MLR (g/s-m2)",
+            "Ex Area (m2/kg)"
+
+        ]
+    ]
+    
+    OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
+    data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
+
+    data.to_csv(data_output_path, index=False)
+
+    print(colorize(f"Generated {data_output_path}", "blue"))
+
+#region parse file   
+def parse_file(file_path):
+    parse_data(file_path)
+'''
+    
+#region parse_plot_data
 def parse_data(file_path):
     # extract heat flux from current test
     file_stem = file_path.stem
