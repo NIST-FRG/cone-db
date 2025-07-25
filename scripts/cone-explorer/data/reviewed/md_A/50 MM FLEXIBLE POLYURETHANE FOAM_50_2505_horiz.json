@@ -58,5 +58,7 @@
     "surface_area_m2": "Not found",
     "material_id": "50 MM FLEXIBLE POLYURETHANE FOAM",
     "number_of_fields": 19,
-    "prev_filename": "test2505_1016_001.json"
+    "mf/m0_g/g": 0.0,
+    "prev_filename": "test2505_1016_001.json",
+    "MLRPUA": 8.561764705882354
 }

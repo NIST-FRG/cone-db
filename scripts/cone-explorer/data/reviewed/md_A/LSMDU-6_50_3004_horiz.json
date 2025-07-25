@@ -80,5 +80,7 @@
     "surface_area_m2": "Not found",
     "material_id": "LSMDU-6",
     "number_of_fields": 19,
-    "prev_filename": "test3004_0764_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test3004_0764_001.json",
+    "MLRPUA": 4.882548638132296
 }

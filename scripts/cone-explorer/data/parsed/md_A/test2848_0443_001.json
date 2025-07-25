@@ -65,5 +65,6 @@
     "initial_mass_g": 225.7,
     "surface_area_m2": 0.008836,
     "material_id": "TEST 2848",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.5321222862206468
 }

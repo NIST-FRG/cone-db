@@ -57,5 +57,7 @@
     "surface_area_m2": "0.01",
     "material_id": "50 MM RIGID POLYSTYRENE FOAM",
     "number_of_fields": 19,
-    "prev_filename": "test2500_1014_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2500_1014_001.json",
+    "MLRPUA": 7.048837209302325
 }

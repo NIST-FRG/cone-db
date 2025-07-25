@@ -74,5 +74,7 @@
     "surface_area_m2": "0.008836",
     "material_id": "LSTTRS-6",
     "number_of_fields": 19,
-    "prev_filename": "test2959_1111_001.json"
+    "mf/m0_g/g": 0.526595744680851,
+    "prev_filename": "test2959_1111_001.json",
+    "MLRPUA": 4.962453987730061
 }

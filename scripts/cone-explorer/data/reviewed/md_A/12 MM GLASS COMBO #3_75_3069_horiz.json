@@ -69,5 +69,7 @@
     "surface_area_m2": "Not found",
     "material_id": "12 MM GLASS COMBO #3",
     "number_of_fields": 19,
-    "prev_filename": "test3069_0851_001.json"
+    "mf/m0_g/g": 0.5685381891755186,
+    "prev_filename": "test3069_0851_001.json",
+    "MLRPUA": 2.7491935483870966
 }

@@ -55,5 +55,7 @@
     "surface_area_m2": "0.01",
     "material_id": "SOLEM",
     "number_of_fields": 19,
-    "prev_filename": "test3124_0832_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test3124_0832_001.json",
+    "MLRPUA": 9.202857142857143
 }

@@ -371,5 +371,7 @@
     "surface_area_m2": "0.0055",
     "material_id": "HPMA",
     "number_of_fields": 19,
-    "prev_filename": "test2911_1071_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2911_1071_001.json",
+    "MLRPUA": 9.128852459016395
 }

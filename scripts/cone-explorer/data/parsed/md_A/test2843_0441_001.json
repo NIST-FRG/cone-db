@@ -61,5 +61,6 @@
     "initial_mass_g": 215.8,
     "surface_area_m2": 0.008836,
     "material_id": "TTXS0-6",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.7182576459684893
 }

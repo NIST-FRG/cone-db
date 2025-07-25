@@ -56,5 +56,6 @@
     "initial_mass_g": 13.3,
     "surface_area_m2": 0.00893,
     "material_id": "FAA - IF",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 5.864661654135338
 }

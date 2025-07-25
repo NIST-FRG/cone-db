@@ -59,5 +59,6 @@
     "initial_mass_g": 54.14,
     "surface_area_m2": "Not found",
     "material_id": "2 IN VINYL /MELAMINE /INTERBARRIER",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.1994828223125231
 }

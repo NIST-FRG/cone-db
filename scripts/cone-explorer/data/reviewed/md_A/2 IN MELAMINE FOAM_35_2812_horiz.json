@@ -60,5 +60,7 @@
     "surface_area_m2": "Not found",
     "material_id": "2 IN MELAMINE FOAM",
     "number_of_fields": 19,
-    "prev_filename": "test2812_0519_001.json"
+    "mf/m0_g/g": 0.5708502024291497,
+    "prev_filename": "test2812_0519_001.json",
+    "MLRPUA": 2.8335294117647054
 }

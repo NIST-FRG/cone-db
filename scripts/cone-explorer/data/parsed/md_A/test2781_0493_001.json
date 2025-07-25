@@ -68,5 +68,6 @@
     "initial_mass_g": 40.52,
     "surface_area_m2": "Not found",
     "material_id": "2 IN NYLON /MELAMINE /INTERBARRIER",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.18756169792694963
 }

@@ -67,5 +67,6 @@
     "initial_mass_g": 225.6,
     "surface_area_m2": 0.008836,
     "material_id": "22 MM DIA",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.5252659574468085
 }

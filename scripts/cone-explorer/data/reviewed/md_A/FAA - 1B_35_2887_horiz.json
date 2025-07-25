@@ -62,5 +62,7 @@
     "surface_area_m2": "0.00893",
     "material_id": "FAA - 1B",
     "number_of_fields": 19,
-    "prev_filename": "test2887_1063_001.json"
+    "mf/m0_g/g": 6.090909090909092,
+    "prev_filename": "test2887_1063_001.json",
+    "MLRPUA": 0.5944736842105264
 }

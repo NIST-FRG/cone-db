@@ -19,12 +19,12 @@ metadata_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 test_metadata = []
 for metadata_path in metadata_name_map.values():
     m = json.load(open(metadata_path))
-    m = {k: m[k] for k in m.keys() & {"material_id", "t_ign_s", "soot_average_g/g", "peak_q_dot_kw/m2"}}
+    m = {k: m[k] for k in m.keys() & {"material_id", "t_ign_s", "soot_average_g/g", "peak_q_dot_kw/m2", "mf/m0_g/g", "MLRPUA"}}
     test_metadata.append(m)
 
 # Create a dataframe with all the test metadata so that it can be easily displayed
 metadata_df = pd.DataFrame(test_metadata)
-metadata_df = metadata_df.rename(columns={"material_id" : "Material_ID", "peak_q_dot_kw/m2" : "HRR_peak (kW/m2)", "t_ign_s" : "t_ign (s)"})
+metadata_df = metadata_df.rename(columns={"material_id" : "Material_ID", "peak_q_dot_kw/m2" : "HRR_peak (kW/m2)", "t_ign_s" : "t_ign (s)", "mf/m0_g/g" : "mf/m0 (g/g)", "MLRPUA" : "MLRPUA (g/s-m2)"})
 metadata_df = metadata_df.set_index("Material_ID")
 
 query = st_keyup("Search test metadata:", placeholder="e.g. 'PMMA'")

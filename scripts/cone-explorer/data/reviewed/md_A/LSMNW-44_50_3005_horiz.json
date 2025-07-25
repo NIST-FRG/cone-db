@@ -72,5 +72,7 @@
     "surface_area_m2": "Not found",
     "material_id": "LSMNW-44",
     "number_of_fields": 19,
-    "prev_filename": "test3005_0763_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test3005_0763_001.json",
+    "MLRPUA": 5.926240963855422
 }

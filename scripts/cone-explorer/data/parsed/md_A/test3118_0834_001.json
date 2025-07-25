@@ -65,5 +65,6 @@
     "initial_mass_g": 101.5,
     "surface_area_m2": 0.00893,
     "material_id": "ATMI",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.7871921182266011
 }

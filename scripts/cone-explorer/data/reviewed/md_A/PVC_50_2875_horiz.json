@@ -64,5 +64,7 @@
     "surface_area_m2": "Not found",
     "material_id": "PVC",
     "number_of_fields": 19,
-    "prev_filename": "test2875_1059_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2875_1059_001.json",
+    "MLRPUA": 10.738730158730158
 }

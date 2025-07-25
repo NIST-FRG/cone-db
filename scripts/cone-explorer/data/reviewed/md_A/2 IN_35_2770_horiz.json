@@ -59,5 +59,7 @@
     "surface_area_m2": "0.01",
     "material_id": "2 IN",
     "number_of_fields": 19,
-    "prev_filename": "test2770_0497_001.json"
+    "mf/m0_g/g": 0.2176063303659743,
+    "prev_filename": "test2770_0497_001.json",
+    "MLRPUA": 7.005072463768116
 }

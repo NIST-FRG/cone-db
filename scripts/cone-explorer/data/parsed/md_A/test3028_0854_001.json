@@ -63,5 +63,6 @@
     "initial_mass_g": 323.4,
     "surface_area_m2": 0.00893,
     "material_id": "LSMSCU-44",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.839517625231911
 }

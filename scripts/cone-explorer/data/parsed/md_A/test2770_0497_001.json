@@ -58,5 +58,6 @@
     "initial_mass_g": 30.33,
     "surface_area_m2": 0.01,
     "material_id": "2 IN",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.2176063303659743
 }

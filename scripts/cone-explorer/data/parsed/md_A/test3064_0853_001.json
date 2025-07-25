@@ -72,5 +72,6 @@
     "initial_mass_g": 233.2,
     "surface_area_m2": "Not found",
     "material_id": "TEST 3064",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.6029159519725558
 }

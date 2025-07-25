@@ -62,5 +62,7 @@
     "surface_area_m2": "0.008836",
     "material_id": "TTXS0-6",
     "number_of_fields": 19,
-    "prev_filename": "test2837_0438_001.json"
+    "mf/m0_g/g": 0.7703327171903881,
+    "prev_filename": "test2837_0438_001.json",
+    "MLRPUA": 2.342860040567951
 }

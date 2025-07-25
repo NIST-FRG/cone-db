@@ -56,5 +56,6 @@
     "initial_mass_g": 16.7,
     "surface_area_m2": 0.01,
     "material_id": "50 MM RIGID POLYURETHANE FOAM",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.0
 }

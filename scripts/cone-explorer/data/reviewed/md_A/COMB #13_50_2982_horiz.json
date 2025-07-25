@@ -73,5 +73,7 @@
     "surface_area_m2": "0.01",
     "material_id": "COMB #13",
     "number_of_fields": 19,
-    "prev_filename": "test2982_1120_001.json"
+    "mf/m0_g/g": 0.1488933601609658,
+    "prev_filename": "test2982_1120_001.json",
+    "MLRPUA": 7.0120661157024795
 }

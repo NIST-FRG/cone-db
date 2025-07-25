@@ -76,5 +76,7 @@
     "surface_area_m2": "Not found",
     "material_id": "2XSAW-14",
     "number_of_fields": 19,
-    "prev_filename": "test2836_0511_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2836_0511_001.json",
+    "MLRPUA": 2.092545045045045
 }

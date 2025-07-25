@@ -63,5 +63,7 @@
     "surface_area_m2": "Not found",
     "material_id": "RIDGID POLYURETHANE FOAM",
     "number_of_fields": 19,
-    "prev_filename": "test2955_1109_001.json"
+    "mf/m0_g/g": 0.0,
+    "prev_filename": "test2955_1109_001.json",
+    "MLRPUA": 19.099562499999998
 }

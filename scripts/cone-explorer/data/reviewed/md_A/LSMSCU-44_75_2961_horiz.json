@@ -61,5 +61,7 @@
     "surface_area_m2": "0.008836",
     "material_id": "LSMSCU-44",
     "number_of_fields": 19,
-    "prev_filename": "test2961_1112_001.json"
+    "mf/m0_g/g": 0.725923682616596,
+    "prev_filename": "test2961_1112_001.json",
+    "MLRPUA": 3.7753860294117647
 }

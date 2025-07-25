@@ -65,5 +65,7 @@
     "surface_area_m2": "0.01",
     "material_id": "13 MM",
     "number_of_fields": 19,
-    "prev_filename": "test3127_0831_001.json"
+    "mf/m0_g/g": 0.23529411764705885,
+    "prev_filename": "test3127_0831_001.json",
+    "MLRPUA": 0.7194871794871794
 }

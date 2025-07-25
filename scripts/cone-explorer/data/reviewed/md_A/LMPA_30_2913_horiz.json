@@ -380,5 +380,7 @@
     "surface_area_m2": "0.0055",
     "material_id": "LMPA",
     "number_of_fields": 19,
-    "prev_filename": "test2913_1072_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2913_1072_001.json",
+    "MLRPUA": 10.314865900383143
 }

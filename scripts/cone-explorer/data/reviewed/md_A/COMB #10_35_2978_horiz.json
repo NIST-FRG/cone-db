@@ -63,5 +63,7 @@
     "surface_area_m2": "Not found",
     "material_id": "COMB #10",
     "number_of_fields": 19,
-    "prev_filename": "test2978_1118_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test2978_1118_001.json",
+    "MLRPUA": 5.7666666666666675
 }

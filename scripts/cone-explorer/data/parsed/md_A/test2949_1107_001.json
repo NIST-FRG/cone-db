@@ -53,5 +53,6 @@
     "initial_mass_g": 51.7,
     "surface_area_m2": 0.01,
     "material_id": "POLYETHYLENE",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.12572533849129594
 }

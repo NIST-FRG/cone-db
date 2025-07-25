@@ -61,5 +61,7 @@
     "surface_area_m2": "Not found",
     "material_id": "23 MM",
     "number_of_fields": 19,
-    "prev_filename": "test3051_0771_001.json"
+    "mf/m0_g/g": null,
+    "prev_filename": "test3051_0771_001.json",
+    "MLRPUA": 5.9593750000000005
 }

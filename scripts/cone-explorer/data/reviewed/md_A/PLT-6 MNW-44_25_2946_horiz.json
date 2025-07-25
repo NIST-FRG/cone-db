@@ -68,5 +68,7 @@
     "surface_area_m2": "0.008836",
     "material_id": "PLT-6 MNW-44",
     "number_of_fields": 19,
-    "prev_filename": "test2946_1106_001.json"
+    "mf/m0_g/g": 0.9612748457847841,
+    "prev_filename": "test2946_1106_001.json",
+    "MLRPUA": 2.9296808510638295
 }

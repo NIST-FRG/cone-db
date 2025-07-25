@@ -231,8 +231,9 @@ st.sidebar.button(
 
 st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
 
-'''
-selected_columns = st.sidebar.multiselect(
+
+_ = """selected_columns = 
+st.sidebar.multiselect(
     "Columns",
     df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
     default=[
@@ -254,7 +255,8 @@ selected_columns = st.sidebar.multiselect(
         "c_factor",
     ],
 )
-'''
+"""
+
 
 # adjusted for format md_A
 selected_columns = st.sidebar.multiselect(

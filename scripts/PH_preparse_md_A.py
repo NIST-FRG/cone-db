@@ -378,6 +378,10 @@ def parse_metadata(input,test_name,log_file):
 
     metadata_json["number_of_fields"] = len(metadata_json)
 
+    #autoprocessed values
+    if ("initial_mass_g" in metadata_json) and ("final_mass_g" in metadata_json):
+        metadata_json["mf/m0_g/g"] = float(metadata_json["final_mass_g"]) / float(metadata_json["initial_mass_g"])
+
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4))

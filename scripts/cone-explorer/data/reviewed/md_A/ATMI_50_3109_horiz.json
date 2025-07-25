@@ -59,5 +59,7 @@
     "surface_area_m2": "0.00893",
     "material_id": "ATMI",
     "number_of_fields": 19,
-    "prev_filename": "test3109_0838_001.json"
+    "mf/m0_g/g": 0.9124613800205973,
+    "prev_filename": "test3109_0838_001.json",
+    "MLRPUA": 5.348461538461538
 }
