@@ -5,7 +5,7 @@ import json
 import shutil
 import os
 
-INPUT_DIR = Path(r"cone-explorer/data/reviewed/md_A")
+INPUT_DIR = Path(r"cone-explorer/data/prepared/md_A")
 #OUTPUT_DIR= Path(r"../data/auto-processed/md_A")
 
 def process_dir(input_dir):

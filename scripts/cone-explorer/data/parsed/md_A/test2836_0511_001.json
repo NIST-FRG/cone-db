@@ -63,17 +63,18 @@
     "specimen_number": 2836,
     "material_name": "NAVY CABLE",
     "orientation": "HORIZONTAL",
-    "heat_flux_kW/m2": 25,
+    "heat_flux_kW/m2": "25",
     "soot_average_g/g": "1.2646E-5",
-    "t_ign_s": 480,
-    "final_mass_g": 254.7,
+    "t_ign_s": 480.0,
+    "final_mass_g": "254.7",
     "mass_consumed": "39.4 G  = 13.4 %",
-    "peak_q_dot_kw/m2": 151,
+    "peak_q_dot_kw/m2": 151.0,
     "peak_m_dot_g/s-m2": 18.76,
     "conversion_factor": "13100 KJOULE/KG O2 BURNED",
     "c_factor": "Not found",
     "initial_mass_g": "Not found",
     "surface_area_m2": "Not found",
     "material_id": "2XSAW-14",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": NaN
 }

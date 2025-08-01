@@ -58,18 +58,19 @@
     "date": "22 MAR 1988",
     "specimen_number": 2918,
     "material_name": "17 L/MIN",
-    "heat_flux_kW/m2": 0,
     "orientation": "HORIZONTAL",
+    "heat_flux_kW/m2": "0",
     "soot_average_g/g": "5.4897E-6",
-    "t_ign_s": 135,
+    "t_ign_s": 135.0,
     "final_mass_g": "Not found",
     "mass_consumed": "94.0 G  = 100.0 %",
-    "peak_q_dot_kw/m2": 1036,
+    "peak_q_dot_kw/m2": 1036.0,
     "peak_m_dot_g/s-m2": 20.12,
     "conversion_factor": "",
     "c_factor": "Not found",
     "initial_mass_g": "Not found",
     "surface_area_m2": "Not found",
     "material_id": "GAS BURNER",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": NaN
 }

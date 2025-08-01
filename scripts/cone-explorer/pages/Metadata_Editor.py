@@ -69,6 +69,9 @@ def load_metadata():
                 f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
             )
 
+    # Replace known bad values with NaN
+    for test_data in all_test_data:
+        test_data['HRR (kW/m2)'] = pd.to_numeric(test_data['HRR (kW/m2)'].replace(' . ', np.nan), errors='coerce')
     # each row in the dataframe is a test, and the "HRR (kW/m2)" column should contain all the HRR values for that test, as a pd series
     hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
     hrr.columns = metadata_path_map.keys()
@@ -202,7 +205,7 @@ def export_metadata(df):
 
         # if there is a specimen number, include that in the filename
         if row.get("specimen_number") is not None and row.get("specimen_number") != "":
-            filename_parts.insert(2, f"{row['specimen_number']}")
+            filename_parts.insert(3, f"{row['specimen_number']}")
 
         # join all the filename parts together with a dash & add the file extension (.json)
         new_filename = "_".join(filename_parts) + ".json"

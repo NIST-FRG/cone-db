@@ -59,17 +59,18 @@
     "specimen_number": 2996,
     "material_name": "NAVY CABLE",
     "orientation": "VERTICAL",
-    "heat_flux_kW/m2": 50,
+    "heat_flux_kW/m2": "50",
     "soot_average_g/g": "Not found",
-    "t_ign_s": 46,
-    "final_mass_g": 165.5,
+    "t_ign_s": 46.0,
+    "final_mass_g": "165.5",
     "mass_consumed": "108.2 G = 39.5 %",
-    "peak_q_dot_kw/m2": 285,
+    "peak_q_dot_kw/m2": 285.0,
     "peak_m_dot_g/s-m2": 14.03,
     "conversion_factor": "13100 KJOULE/KG O2 BURNED",
     "c_factor": "Not found",
     "initial_mass_g": "Not found",
     "surface_area_m2": "Not found",
     "material_id": "LSMNW-44",
-    "number_of_fields": 19
+    "number_of_fields": 19,
+    "mf/m0_g/g": NaN
 }
