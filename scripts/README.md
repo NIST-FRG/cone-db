@@ -63,7 +63,7 @@ python PH_parse_md_A.py
 
 ## Prepare
 
-Navigate the terminal to /cone-db/scripts/cone-explorer
+<ins>Navigate the terminal to /cone-db/scripts/cone-explorer</ins>
 
 Run:
 ```
@@ -99,7 +99,7 @@ streamlit run Main.py
 
 ## Autoprocess
 
-Navigate the terminal to \cone-db\scripts.
+<ins>Navigate the terminal to \cone-db\scripts.</ins>
 
 Run:
 ```
@@ -116,20 +116,23 @@ Full List of Additional Calculated Features : https://docs.google.com/document/d
 
 # External Cone-DB 
 
-Navigate the terminal to \cone-db\scripts\cone-db-landing.
+<ins>Navigate the terminal to \cone-db\scripts\cone-db-landing.</ins>
 
 Run:
-‘’’
+```
 streamlit run Main.py 
-‘’’
+```
 
 The external Cone-DB contains pages to view and analyze the data tables and metadata in tabular and visualized plotted formats. Pages include the Cone Data Table and Cone Data Explorer. 
 
 ## Cone Data Table
-This page displays the critical measured and calculated thermophysical properties and key features of material flammability as a sortable filterable data table. 
-Search Bar : displaying tests for a specified material
+- This page displays the critical measured and calculated thermophysical properties and key features of material flammability as a sortable filterable data table. 
+- Search Bar : displaying tests for a specified material
 
 ## Cone Data Explorer
-Plot any number of tests to compare across any three curves: Heat Release Rate (kW/m2) vs. Time (s), Mass Loss Rate (g/s-m2) vs. Time (s), Total Heat Release (MJ/m2) vs. Time (s)
+- Plot any number of tests to compare across any three curves:
+    - Heat Release Rate (kW/m2) vs. Time (s)
+    - Mass Loss Rate (g/s-m2) vs. Time (s)
+    - Total Heat Release (MJ/m2) vs. Time (s)
 
 
