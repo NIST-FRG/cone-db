@@ -26,29 +26,39 @@ python PH_preparse_md_A.py
 - Input LlamaParsed files at **../data/raw/md_A**
 - This script applies pre-parsing to all format A files. Pre-parsing entails extracting the data tables and remaining metadata into two separate files.
 - Data Table columns are compiled as a singular dataframe and exported as a csv file.
-    - Data columns: Time (s), Q-Dot (kW/m2), Sum Q (MJ/m2), M-Dot (g/s-m2), Mass Loss (kg/m2), HT Comb (MJ/kg), Ex Area (m2/kg), CO2 (kg/kg), CO (kg/kg), H2O (kg/kg), H'carbs (kg/kg), HCl (kg/kg)
-    - Performs restrictive parsing, removing unnecessary whitespace, dashes, stars, etc
+    - Performs restrictive parsing, removing unnecessary whitespace, dashes, stars, etc  
     - Output Directory : **\cone-db\data\pre-parsed\md_A\test####_pdf_name.csv**
-- Metadata contains information on testing conditions and parameters, material data, additional measured values, etc. 
+    - Data Columns :
+
+| Time (s) | Q-Dot (kW/m²) | Sum Q (MJ/m²) | M-Dot (g/s·m²) | Mass Loss (kg/m²) | HT Comb (MJ/kg) | Ex Area (m²/kg) | CO₂ (kg/kg) | CO (kg/kg) | H₂O (kg/kg) | H'carbs (kg/kg) | HCl (kg/kg) |
+|----------|----------------|----------------|----------------|-------------------|------------------|------------------|--------------|-------------|--------------|------------------|--------------|
+
+- Metadata contains information on testing conditions and parameters, material data, additional measured values, etc.  
     - Output Directory: **\cone-db\metadata\md_A\preparsed\test####_pdf_name.json**
+
+ 
 
 ## Parsing
 
 Run:
-‘’’
+```
 python PH_parse_md_A.py
-‘’’
+```
 
-The parsing script selects the crucial columns/data features of the pre-parsed data table (.csv), most informative in determining material flammability. It copies all pre-parsed metadata files to the parsed folder, as there’s no additional parsing needed. 
-Input : 
-pre-parsed data table files [\cone-db\data\pre-parsed\md_A\test####_pdf_name.csv]
-metadata files [\cone-db\metadata\md_A\preparsed\test####_pdf_name.json]
-Updated Data Table
-Selected columns: Time (s), HRR (kW/m2), CO2 (Vol %), CO (Vol %), MLR (g/s-m2), Ex Area (m2/kg)
-Output Directory: /cone-db/data/parsed/md_A/test####_pdf_name.csv
-Copying all metadata 
-Output Directory: /cone-db/data/parsed/md_A/test####_pdf_name.json
-Both Parsed Metadata and Data Table files are sent to [\cone-db\scripts\cone-explorer\data\parsed\md_A] ready to be prepared.
+- The parsing script selects the crucial columns/data features of the pre-parsed data table (.csv), most informative in determining material flammability. It copies all pre-parsed metadata files to the parsed folder, as there’s no additional parsing needed. 
+- Input : 
+    - Pre-parsed data table files : **\cone-db\data\pre-parsed\md_A\test####_pdf_name.csv]**
+    - Metadata files : **\cone-db\metadata\md_A\preparsed\test####_pdf_name.json**
+- Updated Data Table
+    - Output Directory: /cone-db/data/parsed/md_A/test####_pdf_name.csv
+    - Selected columns:
+
+| Time (s) | HRR (kW/m2) | CO2 (Vol %) | CO (Vol %) | MLR (g/s-m2) | Ex Area (m2/kg) |
+|-----------|------------|-------------|------------|--------------|-----------------|
+
+- Copying all metadata 
+    - Output Directory: /cone-db/data/parsed/md_A/test####_pdf_name.json
+- Both Parsed Metadata and Data Table files are sent to **\cone-db\scripts\cone-explorer\data\parsed\md_A** ready to be prepared.
 
 
 ## Prepare
