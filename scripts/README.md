@@ -66,32 +66,32 @@ python PH_parse_md_A.py
 Navigate the terminal to /cone-db/scripts/cone-explorer
 
 Run:
-‘’’
+```
 streamlit run Main.py
-‘’’
+```
 
-The preparation stage for the Legacy Cone Data consists of performing initial data tables and metadata processing. The manual preparation includes connecting all tests to publications, fixing errors in metadata fields, and renaming .csv data table and .json metadata files. 
-The manual preparation is executed through the NIST Cone Data Explorer.
-Input : 
-Parsed Metadata and Data Table files [\cone-db\scripts\cone-explorer\data\parsed\md_A]
+- The preparation stage for the Legacy Cone Data consists of performing initial data tables and metadata processing. The manual preparation includes connecting all tests to publications, fixing errors in metadata fields, and renaming .csv data table and .json metadata files. 
+- The manual preparation is executed through the NIST Cone Data Explorer.
+    - Input : 
+        - Parsed Metadata and Data Table files **\cone-db\scripts\cone-explorer\data\parsed\md_A**
 
 ### NIST Cone Data Explorer
 
 #### Metadata Editor
-Loads all metadata and HRR curves as an organized dataframe, with each row representing a test and columns listing material information, testing conditions, and additional metadata per test.
-**Editable cells** : double-click any cell to edit, remove all unsaved edits by pressing the “Reload” button
-**Saving Updated Metadata** : Press the “Save” button to save all metadata field changes to their respective parsed metadata files.
-**Select Columns** : Select from the dropdown to limit displayed columns. Remove all selected columns to display all metadata fields.
-**Exporting & Renaming Test files** : Press the “Export” button to export the current version of metadata as newly prepared metadata files. During the export process, the corresponding metadata and data table files will be copied and renamed to “Matl-ID_HF_Orientation_Test# and placed into the output prepared directory.
-Output Prepared Directory : \cone-db\scripts\cone-explorer\data\prepared\md_A
+- Loads all metadata and HRR curves as an organized dataframe, with each row representing a test and columns listing material information, testing conditions, and additional metadata per test.
+- **<ins>Editable cells</ins>** : double-click any cell to edit, remove all unsaved edits by pressing the “Reload” button
+- **<ins>Saving Updated Metadata</ins>** : Press the “Save” button to save all metadata field changes to their respective parsed metadata files.
+- **<ins>Select Columns</ins>** : Select from the dropdown to limit displayed columns. Remove all selected columns to display all metadata fields.
+- **<ins>Exporting & Renaming Test files</ins>** : Press the “Export” button to export the current version of metadata as newly prepared metadata files. During the export process, the corresponding metadata and data table files will be copied and renamed to “Matl-ID_HF_Orientation_Test# and placed into the output prepared directory.
+    - Output Prepared Directory : \cone-db\scripts\cone-explorer\data\prepared\md_A
 
 #### Cone Metadata Search
-Displays all metadata fields for each test.
-Search bar above can be used to filter a key value or word applied to all fields.
+- Displays all metadata fields for each test.
+- Search bar above can be used to filter a key value or word applied to all fields.
 
 #### Cone Data Viewer
-Plot any number of tests to compare across any three curves: Heat Release Rate (kW/m2) vs. Time (s), Mass Loss Rate (g/s-m2) vs. Time (s), Total Heat Release (MJ/m2) vs. Time (s)
-_ Fix into displaying any columns of parsed data table _
+- Plot any number of tests to compare across any three curves: Heat Release Rate (kW/m2) vs. Time (s), Mass Loss Rate (g/s-m2) vs. Time (s), Total Heat Release (MJ/m2) vs. Time (s)
+- **_Still need to Fix into displaying columns of parsed data table_**
 
 
 **_Main page containing setup and page functionality descriptions needs updating_**
