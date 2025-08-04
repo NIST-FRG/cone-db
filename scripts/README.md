@@ -102,14 +102,14 @@ streamlit run Main.py
 Navigate the terminal to \cone-db\scripts.
 
 Run:
-‘’’
+```
 python autoprocess_md_A.py
-‘’’
+```
 
-The autoprocessing script calculates additional key features and thermophysical properties related to material flammability. Listed below is the current collection of programmatically calculated values as “Property/Value (unit) [metadata_field_name]”:
-Average Mass Loss Rate (g/s-m2) [MLRPUA]
-Residue Yield (g/g) [mf/m0_g/g]
-Peak HRR (kW/m2) [peak_q_dot_kw/m2]
+- The autoprocessing script calculates additional key features and thermophysical properties related to material flammability. Listed below is the current collection of programmatically calculated values as “Property/Value (unit) [metadata_field_name]”:
+    - Average Mass Loss Rate (g/s-m2) **[MLRPUA]**
+    - Residue Yield (g/g) **[mf/m0_g/g]**
+    - Peak HRR (kW/m2) **[peak_q_dot_kw/m2]**
 
 Full List of Additional Calculated Features : https://docs.google.com/document/d/1uqdBjGeKTKFXSLZ6MUrCiqjBiaWAMfYQEK9GYorT1Aw/edit?tab=t.0
 
