@@ -4,6 +4,11 @@ This folder contains scripts and explorers to parse, prepare, and process experi
 
 Required: Python 3.11 or higher
 
+## Installing packages
+Run the following command to install the required packages:
+```bash
+pip install -r requirements.txt
+```
 
 ## Raw Experimental Data
 **Legacy Cone Calorimeter Data** : 
