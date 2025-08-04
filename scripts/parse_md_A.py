@@ -382,7 +382,7 @@ def parse_file(file_path):
        #region chunk split
        
     for file_path in OUTPUT_DIR_MD.glob("*.md"):
-    print(f"\nProcessing file: {file_path.name}")
+        print(f"\nProcessing file: {file_path.name}")
     test_name = file_path.stem
 
     with open(file_path, "r", encoding="utf-8") as file:

@@ -16,6 +16,14 @@ OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A")
 METADATA_DIR = Path(r"../metadata/md_A/preparsed")
 LOG_FILE = Path(r"..") / "preparse_md_A_log.json"
 
+'''
+#Test pathing
+INPUT_DIR = Path(r"../data/raw/md_A_more_columns")
+OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A_more_columns")
+METADATA_DIR = Path(r"../metadata/md_A_more_columns/preparsed")
+LOG_FILE = Path(r"..") / "preparse_md_A_more_log.json"
+'''
+
 
 #region parse_dir
 # Find/load the Markdown files
