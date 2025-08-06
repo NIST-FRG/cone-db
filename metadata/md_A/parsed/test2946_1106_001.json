@@ -67,5 +67,6 @@
     "initial_mass_g": 291.8,
     "surface_area_m2": 0.008836,
     "material_id": "PLT-6 MNW-44",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.9612748457847841
 }

@@ -64,5 +64,6 @@
     "initial_mass_g": 31.3,
     "surface_area_m2": 0.01,
     "material_id": "BOREHAMWOOD COMBINATION #4 RUN #2",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.17891373801916932
 }

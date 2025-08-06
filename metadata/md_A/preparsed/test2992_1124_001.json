@@ -57,5 +57,6 @@
     "initial_mass_g": 466.6,
     "surface_area_m2": 0.00893,
     "material_id": "LSMDU-6",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.9622803257608229
 }

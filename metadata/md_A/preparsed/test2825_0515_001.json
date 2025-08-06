@@ -67,5 +67,6 @@
     "initial_mass_g": 304.7,
     "surface_area_m2": 0.00893,
     "material_id": "LS2SWAU-10",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.6491631112569741
 }

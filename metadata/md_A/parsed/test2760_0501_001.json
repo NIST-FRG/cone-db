@@ -66,5 +66,6 @@
     "initial_mass_g": 49.31,
     "surface_area_m2": 0.01,
     "material_id": "2 IN VINYL / MELAMINE",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.22916244169539648
 }

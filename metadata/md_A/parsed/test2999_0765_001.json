@@ -59,5 +59,6 @@
     "initial_mass_g": 224.5,
     "surface_area_m2": 0.00893,
     "material_id": "LSTTRS-6",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.4971046770601336
 }

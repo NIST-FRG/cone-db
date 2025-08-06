@@ -64,5 +64,6 @@
     "initial_mass_g": 40.3,
     "surface_area_m2": "Not found",
     "material_id": "COMB #10",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.11662531017369729
 }

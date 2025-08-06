@@ -380,5 +380,6 @@
     "initial_mass_g": 54.25,
     "surface_area_m2": 0.01,
     "material_id": "| TIME S | CO2 KG/KG | CO KG/KG | H2O KG/KG | H'CARBS KG/KG | HCL KG/KG |",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.7926267281105991
 }

@@ -623,5 +623,6 @@
     "initial_mass_g": 135.9,
     "surface_area_m2": "Not found",
     "material_id": "T7",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.8270787343635025
 }

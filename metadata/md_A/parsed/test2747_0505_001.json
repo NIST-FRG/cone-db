@@ -60,5 +60,6 @@
     "initial_mass_g": 41.66,
     "surface_area_m2": 0.01,
     "material_id": "2 IN VINYL /POLYURETHANE",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.12241958713394144
 }

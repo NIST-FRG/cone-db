@@ -65,5 +65,6 @@
     "initial_mass_g": 29.43,
     "surface_area_m2": 0.01,
     "material_id": "2 IN  OLEFIN /MELAMINE",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 0.2072714916751614
 }

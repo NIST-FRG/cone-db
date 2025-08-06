@@ -64,5 +64,6 @@
     "initial_mass_g": 103.9,
     "surface_area_m2": "Not found",
     "material_id": "EPOXY/FIBERGLASS W/CERAMIC COAT 75 KW/M2 HORIZONTAL TEST 2802",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.8893166506256015
 }

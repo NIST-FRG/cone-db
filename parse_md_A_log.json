@@ -57,7 +57,6 @@
     "test2889": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",
     "test2910": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",
     "test2912": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",
-    "test2914": "Parsing Issue: 'Time (s)'",
     "test2915": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",
     "test2917": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",
     "test2919": "Parsing Issue: ufunc 'multiply' did not contain a loop with signature matching types (dtype('float64'), dtype('<U9')) -> None",

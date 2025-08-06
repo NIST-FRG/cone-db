@@ -59,5 +59,6 @@
     "initial_mass_g": 193.9,
     "surface_area_m2": 0.0101,
     "material_id": "12 MM  SPECIAL BULKHEAD MATERIAL  75 KW/M2  HOR  TEST 3072",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.10675605982465187
 }

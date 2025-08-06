@@ -57,5 +57,6 @@
     "initial_mass_g": 76.6,
     "surface_area_m2": "Not found",
     "material_id": "6 MM",
-    "number_of_fields": 19
+    "number_of_fields": 20,
+    "mf/m0_g/g": 1.0
 }

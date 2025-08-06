@@ -82,5 +82,6 @@
     "initial_mass_g": 274.1,
     "surface_area_m2": 0.008836,
     "material_id": "LSMNW-44",
-    "number_of_fields": 18
+    "number_of_fields": 19,
+    "mf/m0_g/g": 0.6479387085005471
 }
