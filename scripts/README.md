@@ -63,12 +63,12 @@ python PH_parse_md_A.py
 
 - Copying all metadata 
     - Output Directory: /cone-db/data/parsed/md_A/test####_pdf_name.json
-- Both Parsed Metadata and Data Table files are sent to **\cone-db\scripts\cone-explorer\data\parsed\md_A** ready to be prepared.
+- Both Parsed Metadata and Data Table files are sent to **\cone-db\scripts\PH_cone-explorer\data\parsed\md_A** ready to be prepared.
 
 
 ## Prepare
 
-<ins>Navigate the terminal to /cone-db/scripts/cone-explorer</ins>
+<ins>Navigate the terminal to /cone-db/scripts/PH_cone-explorer</ins>
 
 Run:
 ```
@@ -88,7 +88,7 @@ streamlit run Main.py
 - **<ins>Saving Updated Metadata</ins>** : Press the “Save” button to save all metadata field changes to their respective parsed metadata files.
 - **<ins>Select Columns</ins>** : Select from the dropdown to limit displayed columns. Remove all selected columns to display all metadata fields.
 - **<ins>Exporting & Renaming Test files</ins>** : Press the “Export” button to export the current version of metadata as newly prepared metadata files. During the export process, the corresponding metadata and data table files will be copied and renamed to “Matl-ID_HF_Orientation_Test# and placed into the output prepared directory.
-    - Output Prepared Directory : \cone-db\scripts\cone-explorer\data\prepared\md_A
+    - Output Prepared Directory : \cone-db\scripts\PH_cone-explorer\data\prepared\md_A
 
 #### Cone Metadata Search
 - Displays all metadata fields for each test.
