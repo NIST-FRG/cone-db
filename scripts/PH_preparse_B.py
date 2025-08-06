@@ -122,7 +122,7 @@ def get_tests(file_contents):
             # ensure this is a new test
             if (max_test is not None) or (param_test is not None):
                 test_number = test_match.group(1)
-                print(f"Match on line {i}: {line}")
+                # print(f"Match on line {i}: {line}")
 
         # adding lines to respective test/key
         if test_number != -1:
@@ -161,7 +161,6 @@ def get_data(data):
             param_test = re.search(r"PARAMETER", line)
             for i in range(1,10):
                 if (time_index+i < len(line)) and str(line[time_index+i]) == "|" and (max_test is None) and (param_test is None):
-                    print(line)
                     if dataStart == -1:
                         dataStart = index
                     #has_page = True
@@ -172,7 +171,7 @@ def get_data(data):
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
     metadata = data[:massWStart] + data[dataEnd:]
-    print(f"{dataStart} to {dataEnd}")
+    print(f"Data Table from {dataStart} to {dataEnd}")
     
     # convert test_data to df
     pd_format_test_data = StringIO("\n".join(test_data))
@@ -203,7 +202,6 @@ def parse_data(data_df,test,file_name):
     print(table_idx_list)
 
     for idx in range(len(table_idx_list)):
-        print(table_idx_list[idx])
         # save new datatable as df
         if idx == (len(table_idx_list)-1):
             new_table = data_df.iloc[table_idx_list[idx]:,1:]
@@ -281,6 +279,29 @@ def parse_data(data_df,test,file_name):
     logfile.update({
             str(test_name) : f"{column_uniform} || #Col = {data_df.shape[1]}"
         })
+
+
+    # renaming column headers
+    if data_df.shape[1] == 16:
+        data_df.columns = [
+            'Time (s)', 
+            'Q-Dot (kW/m2)', 
+            'Sum Q (MJ/m2)', 
+            'HT Comb (MJ/kg)', 
+            'Mass (g)', 
+            'Mass Loss (g/s)', 
+            'CO2 (kg/kg)', 
+            'CO (kg/kg)', 
+            'H2O (kg/kg)', 
+            'H\'carbs (kg/kg)', 
+            'HCl (kg/kg)',
+            'M-Duct (kg/s)',
+            'V-Duct (m3/s)',
+            'Soot (kg/kg)',
+            'Ex Area (m2/kg)', 
+            'Sum Ex Area (m2/kg)', 
+            ]
+    
     
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))

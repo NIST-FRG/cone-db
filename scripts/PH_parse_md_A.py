@@ -9,7 +9,7 @@ INPUT_DIR = Path(r"../data/pre-parsed/md_A")
 OUTPUT_DIR_CSV = Path(r"../data/parsed/md_A")
 PREPARSED_META = Path(r"../metadata/md_A/preparsed")
 OUTPUT_META = Path(r"../metadata/md_A/parsed")
-OUTPUT_PREPARED = Path(r"cone-explorer/data/parsed/md_A")
+OUTPUT_PREPARED = Path(r"PH_cone-explorer/data/parsed/md_A")
 
 LOG_FILE = Path(r"..") / "parse_md_A_log.json"
 
