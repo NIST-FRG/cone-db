@@ -130,7 +130,11 @@ def get_tests(file_contents):
                 tests[test_number].append(line)
             else:
                 tests[test_number] = [line]
-        
+
+    # add skipped last two lines to the last detected test
+    tests[test_number].append(str(file_contents[len(file_contents) - 2]).upper().strip())
+    tests[test_number].append(str(file_contents[len(file_contents) - 1]).upper().strip())
+
     print(tests.keys())
 
     return tests    
@@ -170,7 +174,7 @@ def get_data(data):
 
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
-    metadata = data[:massWStart] + data[dataEnd:]
+    metadata = data[:dataStart] + data[dataEnd:]
     print(f"Data Table from {dataStart} to {dataEnd}")
     
     # convert test_data to df
@@ -362,53 +366,16 @@ def parse_metadata(input,test_name,log_file):
     ############ finding metadata fields ############
     metadata_json["comments"] = []
     for item in metadata:
-        '''
-        if metadata.index(item) == 0:
-            metadata_json["laboratory"] = item
-        elif metadata.index(item) == 4:
-            metadata_json["material_id"] = item
-        elif metadata.index(item) == 5:
-            metadata_json["material_name"] = item
+        if "MAX TIME" in item:
+            metadata_json["time_s"] = get_number(item, "flt")
         elif "HOR" in item:
             metadata_json["orientation"] = "HORIZONTAL"
         elif "VERT" in item:
             metadata_json["orientation"] = "VERTICAL"
-        elif "IRRADIANCE" in item:
-            metadata_json["heat_flux_kW/m2"] = get_number(item,"int")
-        elif "CALIBRATION" in item:
-            metadata_json["c_factor"] = get_number(item[3:],"flt")
-        elif "INITIAL WEIGHT" in item:
-            metadata_json["initial_mass_g"] = get_number(item[3:],"flt")
-        elif "FINAL MASS" in item:
-            metadata_json["final_mass_g"] = get_number(item[3:],"flt")
-        elif "SURFACE AREA" in item:
-            metadata_json["surface_area_m2"] = get_number(item[3:],"flt")
-        elif "SOOT AVERAGE" in item:
-            metadata_json["soot_average_g/g"] = get_number(item,"exp")
-        elif "MASS CONSUMED" in item:
-            metadata_json["mass_consumed"] = get_field(item)
-        elif item.find("CONVERSION FACTOR") == 0:
-            metadata_json["conversion_factor"] = get_field(item)
-        elif "TIME TO IGNITION" in item:
-            metadata_json["t_ign_s"] = get_number(item,"int")
-        elif "PEAK Q-DOT" in item:
-            match = re.search(r'(\d+)\s+KW', item)
-            if match:
-                metadata_json["peak_q_dot_kw/m2"] = int(match.group(1))
-        elif "PEAK M-DOT" in item:
-            match = re.search(r'(\d+\.\d+)\s+G', item)
-            if match:
-                metadata_json["peak_m_dot_g/s-m2"] = float(match.group(1))
-        elif "TEST" in item:
-            match = re.search(r'TEST\s+(\d{4})', item)
-            if match:
-                metadata_json["specimen_number"] = int(match.group(1))
-        elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
-            metadata_json["date"] = item
+        elif "MAX HEAT RELEASE" in item:
+            metadata_json["peak_q_dot_kw/m2"] = get_number(item, "flt")
         else:
             metadata_json["comments"].append(item) 
-        '''
-        metadata_json["comments"].append(item) 
         
 
     metadata_json["number_of_fields"] = len(metadata_json)
