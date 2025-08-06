@@ -12,7 +12,15 @@ pip install -r requirements.txt
 
 ## Data
 
-Raw data should be placed in the `data/raw` folder; folder structure doesn't matter. Run the scripts from the root of the repository, `parse-FTT.py` for FTT-formatted files and `parse-MIDAS.py` for MIDAS-formatted files. HRR, mass flow rate, and Ksmoke (if available) data is calculated from the raw/scaled input data.
+Raw data should be placed in the `data/raw` folder. Place:
+- FTT-format files under `data/raw/FTT`
+- FAA-format files under `data/raw/FAA`
+- Legacy (scanned) files under `data/raw/legacy`
+- MIDAS files are downloaded from the NFRL_DATA server by default
+
+All of these locations can be overridden.
+
+folder structure doesn't matter. Run the scripts from the root of the repository, `parse-FTT.py` for FTT-formatted files and `parse-MIDAS.py` for MIDAS-formatted files. HRR, mass flow rate, and Ksmoke (if available) data is calculated from the raw/scaled input data. `utils.py` contains additional functions used in the parsing scripts (e.g. calculating HRR, mass flow rate, etc.).
 
 Files in the standardized format are saved in the `data/auto-processed` folder.
 

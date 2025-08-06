@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 from dateutil import parser
 
+import sys
 from utils import calculate_HRR, calculate_MFR, colorize
 
 # first argument is the input directory, 2nd argument is the output directory
@@ -17,8 +18,9 @@ if len(args) > 2:
 
 # relative to the path the script is being run from
 # assumes the script is being run from the root of the repo
-INPUT_DIR = Path(r"./data/raw/FTT")
-OUTPUT_DIR = Path(r"./data/auto-processed/FTT")
+## ex path matching INPUT_DIR: C:Users/user-id/path-to-repo-folder/cone-db/data/raw/FTT
+INPUT_DIR = Path(r"../data/raw/FTT")
+OUTPUT_DIR = Path(r"../data/auto-processed/FTT")
 
 if len(args) == 2:
     INPUT_DIR = Path(args[0])
@@ -27,7 +29,8 @@ if len(args) == 2:
 #region parse_dir
 def parse_dir(input_dir):
     # read all CSV files in directory
-    paths = Path(input_dir).glob("**/*.csv")
+    paths = Path(input_dir).glob("**/*.CSV")
+    
 
     # ignore the reduced data files (can be recalculated later from raw data)
     paths = filter(lambda x: not x.stem.endswith("red"), list(paths))
@@ -86,6 +89,7 @@ def parse_file(file_path):
     if df.iloc[1].isnull().all():
         df = df.drop(1)
 
+    # TODO
     df = df.dropna(how="all")
 
     metadata = parse_metadata(df)
@@ -150,8 +154,15 @@ def parse_metadata(df):
     # Date parsing
     raw_date = raw_metadata["Date of test"]
     raw_time = raw_metadata["Time of test"]
+    
+    # Remove seconds from time string
+    raw_time_rounded = raw_time[:5]  # Get only the first 5 characters (HH:MM)
 
-    date = datetime.strptime(f"{raw_date} {raw_time}", "%d/%m/%Y %H:%M")
+    # Combine date and time into one string
+    datetime_string = f"{raw_date} {raw_time_rounded}"
+
+    # Parse without seconds
+    date = datetime.strptime(datetime_string, "%d/%m/%Y %H:%M")
 
     metadata["date"] = date.isoformat()
 
@@ -320,6 +331,7 @@ def process_data(data, metadata):
     data["CO2 (Vol fr)"] = data["CO2 (Vol fr)"].shift(-co2_delay)
     data["CO (Vol fr)"] = data["CO (Vol fr)"].shift(-co_delay)
 
+    # shift certain columns up to account for O2, CO, CO2 analyzer time delay, and remove the rows at the end from the other signals
     data.drop(data.tail(max(o2_delay, co_delay, co2_delay)).index, inplace=True)
 
     #region calc. HRR & MFR

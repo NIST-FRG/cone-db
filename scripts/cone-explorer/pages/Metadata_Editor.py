@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import json
 import zipfile
+import numpy as np
 
 import streamlit as st
 
@@ -72,13 +73,12 @@ def load_metadata():
     hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
     hrr.columns = metadata_path_map.keys()
     hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
-    hrr = pd.Series(hrr.values, index=hrr.index)
-
-    df.insert(0, "HRR (kW/m2)", hrr)
+    hrr = pd.Series(hrr.squeeze())
+    df.insert(0, "HRR (kW/m2)", [hrr.values])
 
     bar.progress(
         1.0,
-        f"Loaded {len(all_test_data)} tests",
+        f"Loaded {len(all_test_data)} test(s)",
     )
 
     return df.sort_values(by=["date"])
@@ -92,7 +92,7 @@ def save_metadata(df):
     files_saved = 0
 
     # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE"])
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
 
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
@@ -115,66 +115,12 @@ df = load_metadata()
 
 # sidebar UI
 
-st.sidebar.markdown("#### Select columns \nLeave blank to use defaults.")
-
-selected_columns = st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
-    default=[],
-)
-if len(selected_columns) == 0:
-    # defaults
-    selected_columns = [
-        "** DELETE FILE",
-        "date",
-        "material_id",
-        "specimen_number",
-        "heat_flux_kW/m2",
-        "comments",
-        "material_name",
-        "HRR (kW/m2)",
-        "specimen_description",
-        "specimen_prep",
-        "report_name",
-        "laboratory",
-        "operator",
-        "test_start_time_s",
-        "test_end_time_s",
-        "c_factor",
-    ]
-
-
-st.sidebar.markdown("#### Save metadata")
+st.sidebar.markdown("### Save metadata")
 st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
 st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
 st.divider()
 
-df = st.data_editor(
-    df,
-    use_container_width=True,
-    height=650,
-    # columns that are shown in the dataframe editor
-    column_order=selected_columns,
-    column_config={
-        "HRR (kW/m2)": st.column_config.LineChartColumn(
-            "HRR (kW/m2)",
-            width="medium",
-        )
-    },
-)
-
-st.divider()
-
-st.markdown("#### Notes")
-st.markdown(
-    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
-    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
-    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
-    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
-    """
-)
-
-st.sidebar.markdown("#### Delete files")
+st.sidebar.markdown("### Delete files")
 st.sidebar.markdown(
     "Select files by clicking the checkbox next to the file name, then click **Delete files** to delete the selected files."
 )
@@ -200,8 +146,8 @@ st.sidebar.button("Delete files", on_click=delete_files, use_container_width=Tru
 def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
 
-    # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE"])
+    # Remove the ** DELETE FILE, HRR columns
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
 
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
@@ -213,12 +159,16 @@ def export_metadata(df):
         # convert the dataframe row back to a dictionary so it can be saved as a json file
         row = row.to_dict()
 
-        # if the file has no material_id, just skip it
+        # if the file has no material_id, skip it
         if row.get("material_id") is None or row.get("material_id") in ["nan", ""]:
             continue
 
         # replace NaN with None to conform to official json format
         row = {k: v if not pd.isna(v) else None for k, v in row.items()}
+
+        # if the file has no heat flux, skip it:
+        if row.get("heat_flux_kW/m2") is None:
+            continue
 
         # find the path to the metadata file & include the old filename in the metadata
         path = metadata_path_map[str(index)]
@@ -268,7 +218,58 @@ def export_metadata(df):
     bar.progress(1.0, f"Tests exported ({files_exported} tests)")
 
 
-st.sidebar.markdown("#### Export test data & metadata")
+st.sidebar.markdown("### Export test data & metadata")
 st.sidebar.button(
     "Export", on_click=lambda: export_metadata(df), use_container_width=True
+)
+
+st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
+
+selected_columns = st.sidebar.multiselect(
+    "Columns",
+    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
+    default=[
+        "** DELETE FILE",
+        "date",
+        "material_id",
+        "specimen_number",
+        "heat_flux_kW/m2",
+        "comments",
+        "material_name",
+        "HRR (kW/m2)",
+        "specimen_description",
+        "specimen_prep",
+        "report_name",
+        "laboratory",
+        "operator",
+        "test_start_time_s",
+        "test_end_time_s",
+        "c_factor",
+    ],
+)
+
+
+df = st.data_editor(
+    df,
+    use_container_width=True,
+    height=650,
+    # columns that are shown in the dataframe editor
+    column_order=selected_columns,
+    column_config={
+        "HRR (kW/m2)": st.column_config.LineChartColumn(
+            "HRR (kW/m2)",
+            width="medium",
+        )
+    },
+)
+
+st.divider()
+
+st.markdown("#### Notes")
+st.markdown(
+    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
+    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
+    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
+    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
+    """
 )
