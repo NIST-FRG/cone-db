@@ -58,18 +58,17 @@
     "specimen_number": 2784,
     "material_name": "NYLON /MELAMINE /INTERBARRIER",
     "orientation": "HORIZONTAL",
-    "heat_flux_kW/m2": "35",
+    "heat_flux_kW/m2": 35,
     "soot_average_g/g": "Not found",
-    "t_ign_s": 25.0,
-    "final_mass_g": "7.5",
+    "t_ign_s": 25,
+    "final_mass_g": 7.5,
     "mass_consumed": "34.1 G = 82.0 %",
-    "peak_q_dot_kw/m2": 392.0,
+    "peak_q_dot_kw/m2": 392,
     "peak_m_dot_g/s-m2": 23.39,
     "conversion_factor": "13100 KJOULE/KG O2 BURNED",
     "c_factor": "Not found",
     "initial_mass_g": "Not found",
     "surface_area_m2": "Not found",
     "material_id": "2 IN",
-    "number_of_fields": 19,
-    "mf/m0_g/g": NaN
+    "number_of_fields": 19
 }

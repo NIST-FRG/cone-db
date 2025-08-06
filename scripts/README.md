@@ -78,7 +78,7 @@ streamlit run Main.py
 - The preparation stage for the Legacy Cone Data consists of performing initial data tables and metadata processing. The manual preparation includes connecting all tests to publications, fixing errors in metadata fields, and renaming .csv data table and .json metadata files. 
 - The manual preparation is executed through the NIST Cone Data Explorer.
     - Input : 
-        - Parsed Metadata and Data Table files **\cone-db\scripts\cone-explorer\data\parsed\md_A**
+        - Parsed Metadata and Data Table files **\cone-db\scripts\PH_cone-explorer\data\parsed\md_A**
 
 ### NIST Cone Data Explorer
 

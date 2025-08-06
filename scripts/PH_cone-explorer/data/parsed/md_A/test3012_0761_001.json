@@ -55,16 +55,15 @@
     "orientation": "VERTICAL",
     "heat_flux_kW/m2": "Not found",
     "soot_average_g/g": "Not found",
-    "t_ign_s": 58.0,
-    "final_mass_g": "209.4",
+    "final_mass_g": 209.4,
+    "t_ign_s": 58,
     "mass_consumed": "93.5 G = 30.9 %",
-    "peak_q_dot_kw/m2": 161.0,
+    "peak_q_dot_kw/m2": 161,
     "peak_m_dot_g/s-m2": 12.32,
     "conversion_factor": "",
-    "c_factor": "0.0457714872896",
-    "initial_mass_g": "302.9",
-    "surface_area_m2": "0.00893",
+    "c_factor": 0.0457714872896,
+    "initial_mass_g": 302.9,
+    "surface_area_m2": 0.00893,
     "material_id": "LS2SWAU-10",
-    "number_of_fields": 19,
-    "mf/m0_g/g": NaN
+    "number_of_fields": 19
 }

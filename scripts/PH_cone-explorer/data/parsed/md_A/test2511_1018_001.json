@@ -58,16 +58,15 @@
     "orientation": "HORIZONTAL",
     "heat_flux_kW/m2": "Not found",
     "soot_average_g/g": "Not found",
-    "t_ign_s": 37.0,
+    "t_ign_s": 37,
     "final_mass_g": "Not found",
     "mass_consumed": "35.2 G  =  81.7 %",
-    "peak_q_dot_kw/m2": 212.0,
+    "peak_q_dot_kw/m2": 212,
     "peak_m_dot_g/s-m2": 26.5,
     "conversion_factor": "",
-    "c_factor": "0.0450447960855",
-    "initial_mass_g": "43.1",
+    "c_factor": 0.0450447960855,
+    "initial_mass_g": 43.1,
     "surface_area_m2": "Not found",
     "material_id": "PVC-ILE PELLETS",
-    "number_of_fields": 19,
-    "mf/m0_g/g": NaN
+    "number_of_fields": 19
 }
