@@ -14,7 +14,7 @@ from utils import calculate_HRR, calculate_MFR, colorize
 INPUT_DIR = Path(r"../data/raw/test")
 OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/test")
 METADATA_DIR = Path(r"../metadata/test/preparsed")
-LOG_FILE = Path(r"..") / "test_log.json"
+LOG_FILE = Path(r"../logs/") / "test_log.json"
 
 '''
 #Test pathing
@@ -459,6 +459,8 @@ def get_field(item):
 #region main
 if __name__ == "__main__":
     # write new log file at every run
+    LOG_DIR = Path(r"../logs/")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
