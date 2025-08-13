@@ -34,27 +34,34 @@ if len(test_selection) != 0:
         test_data.append(pd.read_csv(test_name_map[test_stem]))
         test_metadata.append(json.load(open(metadata_name_map[test_stem])))
 
-    # Select which column(s) to graph
-    columns_to_graph = st.multiselect(
-        "Select column(s) to graph across tests",
-        options=test_data[0].columns,
+    x_axis_column = st.selectbox(
+        "Select the column for the x-axis",
+        options=['Time (s)', 't * EHF (kJ/m2)'],
     )
-
+    # Select the y-axis columns
+    y_axis_columns = st.multiselect(
+        "Select column(s) for the y-axis across tests",
+        options=['HRR (kW/m2)', 'MLR (g/s-m2)', 'THR (MJ/m2)'],
+    )
     # Create plots
-
-    for column in columns_to_graph:
-        # fig = px.line(test_data[0][column].rename(test_selection[0]))
-        fig = go.Figure()
-
-        # Add additional traces for each test
-
-        for i in range(0, len(test_data)):
-            fig.add_trace(
-                go.Scatter(
-                    y=test_data[i][column],
-                    name=test_selection[i],
+    if x_axis_column and y_axis_columns:
+        for y_column in y_axis_columns:
+            fig = go.Figure()
+            # Add additional traces for each test
+            for i in range(len(test_data)):
+                fig.add_trace(
+                    go.Scatter(
+                        x=test_data[i][x_axis_column],  # Use selected x-axis column
+                        y=test_data[i][y_column],  # Use the current y-axis column
+                        name=test_selection[i],
+                    )
                 )
-            ).update_layout(yaxis_title=column, xaxis_title="Time (s)")
-
-        st.markdown(f"#### {column}")
-        st.plotly_chart(fig)
+            
+            # Update layout for the current figure
+            fig.update_layout(
+                yaxis_title=y_column,
+                xaxis_title=x_axis_column,
+            )
+            
+            st.markdown(f"#### {y_column} vs {x_axis_column}")
+            st.plotly_chart(fig)
