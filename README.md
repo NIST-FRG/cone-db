@@ -80,11 +80,6 @@ Empty / undefined values are `null` in the metadata file.
 
 ### Events
 
-<<<<<<< HEAD
-TBD
-# ryan edit
-
-=======
 Events are stored as a list of JSON objects, each with the following properties:
 
 | Name    | Data type | Notes                                               |
@@ -93,4 +88,3 @@ Events are stored as a list of JSON objects, each with the following properties:
 | `event` | String    | Name of the event (e.g. "Ignition" or "Start Test") |
 
 *Note that data is shifted to remove the start time - for example, if the start time is 50 seconds, then the first 50 seconds are used to calculate the baseline, then removed so that t=50 is now t=0.*
->>>>>>> upstream/main

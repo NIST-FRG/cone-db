@@ -19,70 +19,70 @@ st.title("Bulk Metadata Editor")
 # maps the filename stem to the full path of the metadata file
 metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 
-
+if "metadata_loaded_once" not in st.session_state:
+    st.session_state.metadata_loaded_once = False
 # region load_metadata
 # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
 @st.cache_data(show_spinner=False)
-def load_metadata():
+def load_metadata(show_bar=True):
+    """Load all metadata and test data, return as a dataframe."""
+    if show_bar:
+        placeholder = st.empty()
+        bar = placeholder.progress(0, "Loading metadata ...")
+    else:
+        bar = None
 
-    placeholder = st.empty()
-    bar = placeholder.progress(0, "Loading metadata ...")
-
-    # create a list of the contents of all the metadata files, as dicts
     all_metadata = []
     metadata_loaded = 0
     for metadata_path in metadata_path_map.values():
         all_metadata.append(json.load(open(metadata_path)))
         metadata_loaded += 1
-        bar.progress(
-            metadata_loaded / len(metadata_path_map),
-            f"({metadata_loaded}/{len(metadata_path_map)}) Loading metadata for {metadata_path.stem}",
-        )
+        if bar:
+            bar.progress(
+                metadata_loaded / len(metadata_path_map),
+                f"({metadata_loaded}/{len(metadata_path_map)}) Loading metadata for {metadata_path.stem}",
+            )
 
     if len(all_metadata) == 0:
         st.error("No tests found.")
         return pd.DataFrame()
 
-    # create a dataframe from the list of dicts, and sort it by date (ascending)
     df = pd.DataFrame(all_metadata, index=list(metadata_path_map.keys()))
-
-    # create two new columns, one for deleting files and one for the material_id (if it doesn't exist)
     df["** DELETE FILE"] = False
-
+    df["** EXPORT FILE"] = False
     if "material_id" not in df.columns:
         df["material_id"] = None
 
-    bar.progress(1.0, "Metadata loaded")
+    if bar:
+        bar.progress(1.0, "Metadata loaded")
+        bar.progress(0, "Loading HRR data ...")
 
-    bar.progress(0, "Loading HRR data ...")
-
-    # load in the test data
-    tests_loaded = 0
     all_test_data = []
+    tests_loaded = 0
     for metadata_path in metadata_path_map.values():
         test_path = metadata_path.with_suffix(".csv")
         with open(test_path) as f:
             all_test_data.append(pd.read_csv(f))
             tests_loaded += 1
-            bar.progress(
-                tests_loaded / len(metadata_path_map),
-                f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
-            )
+            if bar:
+                bar.progress(
+                    tests_loaded / len(metadata_path_map),
+                    f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
+                )
 
-    # Replace known bad values with NaN
     for test_data in all_test_data:
-        test_data['HRR (kW/m2)'] = pd.to_numeric(test_data['HRR (kW/m2)'].replace(' . ', np.nan), errors='coerce')
-    # each row in the dataframe is a test, and the "HRR (kW/m2)" column should contain all the HRR values for that test, as a pd series
+        test_data['HRR (kW/m2)'] = pd.to_numeric(
+            test_data['HRR (kW/m2)'].replace(' . ', np.nan), errors='coerce'
+        )
+
     hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
     hrr.columns = metadata_path_map.keys()
     hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
     hrr = pd.Series(hrr.squeeze())
     df.insert(0, "HRR (kW/m2)", hrr.values)
 
-    bar.progress(
-        1.0,
-        f"Loaded {len(all_test_data)} test(s)",
-    )
+    if bar:
+        bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
 
     return df.sort_values(by=["date"])
 
@@ -95,7 +95,7 @@ def save_metadata(df):
     files_saved = 0
 
     # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE"])
 
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
@@ -114,14 +114,53 @@ def save_metadata(df):
     bar.progress(1.0, "Metadata saved")
 
 
-df = load_metadata()
+def refresh_meta():
+    '''''
+    Function activated when the user clicks the "Reload" button.
+    This function will clear the cache and reload the metadata
+    '''
+    st.cache_data.clear()
+    df = load_metadata()
+    return df
+
+    # Editor remount key
+if "editor_key" not in st.session_state:
+    st.session_state.editor_key = 0
+
+# Reset flag and holder
+if "use_reset_df" not in st.session_state:
+    st.session_state.use_reset_df = False
+if "reset_df" not in st.session_state:
+    st.session_state.reset_df = None
+
+
+def reload_metadata():
+    """
+    Revert the editor to the original values from JSON (using cached load),
+    then force the editor to remount so UI updates immediately.
+    """
+    st.session_state.reset_df = load_metadata(show_bar = False)
+    st.session_state.use_reset_df = True
+    st.session_state.editor_key += 1
+    #st.rerun()
+
+df = refresh_meta()
+# Override df if reset was requested
+if st.session_state.use_reset_df:
+    df = st.session_state.reset_df.copy()
+    st.session_state.use_reset_df = False
+
+# --- Store original copy for reset ---
+if 'df_original' not in st.session_state:
+    st.session_state.df_original = df.copy()
+st.session_state.df = df
 
 # sidebar UI
-
 st.sidebar.markdown("### Save metadata")
 st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
-st.sidebar.button("Reload", on_click=st.cache_data.clear, use_container_width=True)
+st.sidebar.button("Reload", on_click= reload_metadata, use_container_width=True)
 st.divider()
+
 
 st.sidebar.markdown("### Delete files")
 st.sidebar.markdown(
@@ -148,9 +187,9 @@ st.sidebar.button("Delete files", on_click=delete_files, use_container_width=Tru
 # region export_metadata
 def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
-
+    export_df = df[df["** EXPORT FILE"]==True]
     # Remove the ** DELETE FILE, HRR columns
-    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)"])
+    export = export_df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE"])
 
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
@@ -158,7 +197,7 @@ def export_metadata(df):
 
     files_exported = 0
     # Go through the dataframe row by row & save each file
-    for index, row in df.iterrows():
+    for index, row in export.iterrows():
         # convert the dataframe row back to a dictionary so it can be saved as a json file
         row = row.to_dict()
 
@@ -229,7 +268,7 @@ def export_metadata(df):
 
 st.sidebar.markdown("### Export test data & metadata")
 st.sidebar.button(
-    "Export", on_click=lambda: export_metadata(df), use_container_width=True
+    "Export", on_click=lambda: export_metadata(st.session_state.df), use_container_width=True
 )
 
 st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
@@ -264,8 +303,9 @@ st.sidebar.multiselect(
 # adjusted for format md_A
 selected_columns = st.sidebar.multiselect(
     "Columns",
-    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
+    df.columns.tolist() ,
     default=[
+        "** EXPORT FILE",
         "** DELETE FILE",
         "date",
         "material_id",
@@ -279,12 +319,11 @@ selected_columns = st.sidebar.multiselect(
     ],
 )
 
-
 df = st.data_editor(
     df,
+    key=st.session_state.editor_key,  
     use_container_width=True,
     height=650,
-    # columns that are shown in the dataframe editor
     column_order=selected_columns,
     column_config={
         "HRR (kW/m2)": st.column_config.LineChartColumn(
@@ -293,6 +332,8 @@ df = st.data_editor(
         )
     },
 )
+
+
 
 st.divider()
 
