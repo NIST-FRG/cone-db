@@ -127,11 +127,11 @@ def refresh_meta():
 if "editor_key" not in st.session_state:
     st.session_state.editor_key = 0
 
-# Reset flag and holder
-if "use_reset_df" not in st.session_state:
-    st.session_state.use_reset_df = False
-if "reset_df" not in st.session_state:
-    st.session_state.reset_df = None
+# Reload flag and holder
+if "use_reload_df" not in st.session_state:
+    st.session_state.use_reload_df = False
+if "reload_df" not in st.session_state:
+    st.session_state.reload_df = None
 
 
 def reload_metadata():
@@ -139,21 +139,22 @@ def reload_metadata():
     Revert the editor to the original values from JSON (using cached load),
     then force the editor to remount so UI updates immediately.
     """
-    st.session_state.reset_df = load_metadata(show_bar = False)
-    st.session_state.use_reset_df = True
+    st.session_state.reload_df = load_metadata(show_bar = False)
+    st.session_state.use_reload_df = True
     st.session_state.editor_key += 1
     #st.rerun()
 
 df = refresh_meta()
-# Override df if reset was requested
-if st.session_state.use_reset_df:
-    df = st.session_state.reset_df.copy()
-    st.session_state.use_reset_df = False
+# Override df if reload was requested
+if st.session_state.use_reload_df:
+    df = st.session_state.reload_df.copy()
+    st.session_state.use_reload_df = False
 
-# --- Store original copy for reset ---
+# --- Store original copy for reload ---
 if 'df_original' not in st.session_state:
     st.session_state.df_original = df.copy()
 st.session_state.df = df
+
 
 # sidebar UI
 st.sidebar.markdown("### Save metadata")
@@ -187,8 +188,11 @@ st.sidebar.button("Delete files", on_click=delete_files, use_container_width=Tru
 # region export_metadata
 def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
-    export_df = df[df["** EXPORT FILE"]==True]
-    # Remove the ** DELETE FILE, HRR columns
+    print(df)
+    export_indices = df.index[df["** EXPORT FILE"]==True].tolist()
+    
+    # Remove the ** DELETE FILE, ** EXPORT FILE, HRR columns
+    export_df = st.session_state.reload_df.loc[export_indices]
     export = export_df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE"])
 
     # Delete the existing output directory
@@ -260,44 +264,10 @@ def export_metadata(df):
         # update progress bar & statistics
         files_exported += 1
         bar.progress(
-            files_exported / len(metadata_path_map),
+            files_exported / len(export_indices),
             f"Exporting {path.stem} → {new_filename}",
         )
     bar.progress(1.0, f"Tests exported ({files_exported} tests)")
-
-
-st.sidebar.markdown("### Export test data & metadata")
-st.sidebar.button(
-    "Export", on_click=lambda: export_metadata(st.session_state.df), use_container_width=True
-)
-
-st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
-
-
-_ = """selected_columns = 
-st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
-    default=[
-        "** DELETE FILE",
-        "date",
-        "material_id",
-        "specimen_number",
-        "heat_flux_kW/m2",
-        "comments",
-        "material_name",
-        "HRR (kW/m2)",
-        "specimen_description",
-        "specimen_prep",
-        "report_name",
-        "laboratory",
-        "operator",
-        "test_start_time_s",
-        "test_end_time_s",
-        "c_factor",
-    ],
-)
-"""
 
 
 # adjusted for format md_A
@@ -332,6 +302,43 @@ df = st.data_editor(
         )
     },
 )
+
+print(st.session_state.df_original.index)
+
+st.sidebar.markdown("### Export test data & metadata")
+st.sidebar.button(
+    "Export", on_click=lambda: export_metadata(df), use_container_width=True
+)
+
+st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
+
+
+_ = """selected_columns = 
+st.sidebar.multiselect(
+    "Columns",
+    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
+    default=[
+        "** DELETE FILE",
+        "date",
+        "material_id",
+        "specimen_number",
+        "heat_flux_kW/m2",
+        "comments",
+        "material_name",
+        "HRR (kW/m2)",
+        "specimen_description",
+        "specimen_prep",
+        "report_name",
+        "laboratory",
+        "operator",
+        "test_start_time_s",
+        "test_end_time_s",
+        "c_factor",
+    ],
+)
+"""
+
+
 
 
 
