@@ -145,9 +145,12 @@ def get_data(data):
     #has_page = False
     for line in data:
         line = str(line.upper())
+        line = str(line.strip())
+        #print (line)
+        #print(line)
         time_index = line.find("TIME")
         # if "times"
-        if ("TIMES" in line):
+        if (line.startswith("|TIME") or line.startswith("| TIME")) and ('H' in line or 'DOT' in line):
             if dataStart == -1:
                  dataStart = index
             #has_page = True
@@ -176,7 +179,7 @@ def get_data(data):
     #print(f"{dataStart} to {dataEnd}")
     metadata = data[:massWStart] + data[dataEnd:]
     print(f"{dataStart} to {dataEnd}")
-    
+
     # convert test_data to df
     pd_format_test_data = StringIO("\n".join(test_data))
     test_data_df = pd.read_csv(pd_format_test_data, sep="|")
@@ -276,9 +279,39 @@ def parse_data(data_df,test,file_name):
         })
     
     # renaming column headers
-    if data_df.shape[1] == 12:
-        data_df.columns = ['Time (s)', 'Q-Dot (kW/m2)', 'Sum Q (MJ/m2)', 'M-Dot (g/s-m2)', 'Mass Loss (kg/m2)', 'HT Comb (MJ/kg)', 'Ex Area (m2/kg)', 'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', 'H\'carbs (kg/kg)', 'HCl (kg/kg)']
+    #if data_df.shape[1] == 12:
+    #    data_df.columns = ['Time (s)', 'Q-Dot (kW/m2)', 'Sum Q (MJ/m2)', 'M-Dot (g/s-m2)', 'Mass Loss (kg/m2)', 
+    # 'HT Comb (MJ/kg)', 'Ex Area (m2/kg)', 'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', 'H\'carbs (kg/kg)', 'HCl (kg/kg)']
     
+    for i, column in enumerate(data_df.columns):
+        if "TIME" in column:
+            data_df.columns.values[i] = "Time (s)"
+        elif "Q-DOT" in column:
+            data_df.columns.values[i] = "Q-Dot (kW/m2)"
+        elif "SUM Q" in column:
+            data_df.columns.values[i] = "Sum Q (MJ/m2)"
+        elif "M-DOT" in column:
+            data_df.columns.values[i] = "M-Dot (g/s-m2)"
+        elif "MASS" in column and "LOSS" in column:
+            data_df.columns.values[i] = "Mass Loss (kg/m2)"
+        elif "HT" in column:
+            data_df.columns.values[i] = "HT Comb (MJ/kg)"
+        elif "EX" in column:
+            data_df.columns.values[i] = "Ex Area (m2/kg)"
+        elif "CO2" in column or "C02" in column:
+            data_df.columns.values[i] = "CO2 (kg/kg)"
+        elif ("CO" in column or "C0" in column) and "2" not in column:
+            data_df.columns.values[i] = "CO (kg/kg)"
+        elif "H2" in column:
+            #some of the O were seen as 0, H2 to remove error
+            data_df.columns.values[i] = "H2O (kg/kg)"
+        elif "CARBS" in column:
+            data_df.columns.values[i] ="H'carbs (kg/kg)"
+        elif "HCL" in column:
+            data_df.columns.values[i] = "HCl (kg/kg)"
+        else:
+            print(colorize(f'WARNING:UNKNOWN COLUMN = {column}', 'purple'))
+
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
 
