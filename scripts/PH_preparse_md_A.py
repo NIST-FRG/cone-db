@@ -306,9 +306,11 @@ def parse_metadata(input,test_name,log_file):
             metadata_json = json.load(w)
 
     for line in input:
+        # Preprocess line to remove excessive whitespace after '='
+        line = re.sub(r'=\s*', '= ', line)  # Replace '=' followed by whitespace with '= '
         # finds all space blocks separating potential metadata values
         # assumes metadata blocks are separated by at least 3 whitespaces
-        match_whitespace = re.search("\\s{3,}", line)
+        match_whitespace = re.search("\\s{4,}", line)
         match_semicolon = re.search(";", line)
         while match_whitespace is not None or match_semicolon is not None:
 
@@ -338,6 +340,7 @@ def parse_metadata(input,test_name,log_file):
     ############ finding metadata fields ############
     metadata_json["comments"] = []
     for item in metadata:
+        #print(item)
         if metadata.index(item) == 0:
             metadata_json["laboratory"] = item
         elif metadata.index(item) == 4:
@@ -352,9 +355,9 @@ def parse_metadata(input,test_name,log_file):
             metadata_json["heat_flux_kW/m2"] = get_number(item,"int")
         elif "CALIBRATION" in item:
             metadata_json["c_factor"] = get_number(item[3:],"flt")
-        elif "INITIAL WEIGHT" in item:
+        elif "INITIAL MASS=" in item:
             metadata_json["initial_mass_g"] = get_number(item[3:],"flt")
-        elif "FINAL MASS" in item:
+        elif "FINAL MASS=" in item:
             metadata_json["final_mass_g"] = get_number(item[3:],"flt")
         elif "SURFACE AREA" in item:
             metadata_json["surface_area_m2"] = get_number(item[3:],"flt")
@@ -381,7 +384,7 @@ def parse_metadata(input,test_name,log_file):
         elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
             metadata_json["date"] = item
         else:
-            metadata_json["comments"].append(item) 
+            metadata_json["comments"].append(item)
         
 
     metadata_json["number_of_fields"] = len(metadata_json)
