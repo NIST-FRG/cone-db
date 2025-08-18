@@ -112,76 +112,79 @@ def get_tests(file_contents):
     tests = {}
     # Use while loop for lookahead and test detection
     for line in file_contents:
-        # normalizes string
         line = str(line).upper().strip()
-        # looks for TEST then a digit, re.search returns None if can't find pattern
-        test_number_match = re.search("TEST\\s+\\d\\d\\d\\d", line)
-        # print(line[test_number_match.start():])
-        
-        # ensure test number exists and doesn't equal the previous test number
-        if (test_number_match is not None) and (line[test_number_match.start():] != test_number):
-            # assumes test number will be end of string, gets start of match to EOL
-            test_number = line[test_number_match.start():test_number_match.end()]
+        test_number_match = re.search(r"TEST\s+\d{4}", line)
+
+        if test_number_match is not None:
+            # Extract the matched substring (could be e.g. "TEST 2865", "TEST   2865")
+            test_number_str = line[test_number_match.start():test_number_match.end()]
+            # Only one space btwn test and #:
+            real_test_number = re.sub(r"\s+", " ", test_number_str)
+            # Only update if changed:
+            if real_test_number != test_number:
+                test_number = real_test_number
+
         if test_number != -1:
             if test_number in tests:
                 tests[test_number].append(line)
             else:
                 tests[test_number] = [line]
-        
     print(tests.keys())
-
     return tests    
     
 
 ####### separate metadata from test data #######
 #region get_data
 def get_data(data):
-    # data  = list of lines (test)
-    
+    # data: list of lines (test)
     dataStart = -1
     dataEnd = -1
     massWStart = -1
-    index = 0
-    #has_page = False
-    for line in data:
-        line = str(line.upper())
-        line = str(line.strip())
-        #print (line)
-        #print(line)
-        time_index = line.find("TIME")
-        # if "times"
-        if (line.startswith("|TIME") or line.startswith("| TIME")) and ('H' in line or 'DOT' in line):
+
+    # Find the start and end lines for the time-series table
+    for index, line in enumerate(data):
+        # Normalize line for easy matching
+        uline = line.upper().strip()
+        # Only match time-series table headers, not summary tables
+        # Require TIME and at least one key column typical of measurements
+        if (
+            (uline.startswith("|TIME") or uline.startswith("| TIME") or uline.startswith("TIME")) and
+            any(key in uline for key in ("SUM", "DOT", "H"))
+        ):
             if dataStart == -1:
-                 dataStart = index
-            #has_page = True
-        # if "time |"
-        elif (time_index != -1):
-            # check if | in vicinity
-            for i in range(4,8):
-                if (time_index+i < len(line)) and str(line[time_index+i]) == "|":
-                    if dataStart == -1:
-                        dataStart = index
-                    #has_page = True
-                    break                    
-        # if "mass weighted", end of starting metadata chunk
-        if massWStart == -1 and ("MASS WEIGHTED" in line):
+                dataStart = index
+
+        # Find end of starting metadata chunk
+        if massWStart == -1 and ("MASS WEIGHTED" in uline):
             massWStart = index
 
-        # mark ending of test data
-        #if ("---" == line or index == len(data)-1) and has_page:
-        if (("PARAMETER SHEET" in line) or index == len(data)-1):
-            #has_page = False
+        # Mark ending of test data
+        if ("PARAMETER SHEET" in uline) or (index == len(data)-1):
             dataEnd = index
             break
-        index += 1
 
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
     metadata = data[:massWStart] + data[dataEnd:]
     print(f"{dataStart} to {dataEnd}")
-
+    filtered_test_data = []
+    for line in test_data:
+        # Remove Page Headers if they have in table
+        if any(bad in line for bad in ('TEST', 'PAGE', 'HOR', 'VERT')):
+            continue
+        # Remove markdown delimiter rows like |---|---|---|...| or just ---... or lines with only pipes/spaces/hyphens
+        if (line.strip().replace('-', '').replace('|', '').replace(' ', '') == '') \
+           and ('-' in line or '|' in line):
+            continue
+        # Optionally: remove lines that are only spaces
+        if not line.strip():
+            continue
+        filtered_test_data.append(line)
     # convert test_data to df
-    pd_format_test_data = StringIO("\n".join(test_data))
+    pd_format_test_data = StringIO("\n".join(filtered_test_data))
+    
+    #Majority of tests pipe delimited, but some are multispace delimited
+
     test_data_df = pd.read_csv(pd_format_test_data, sep="|")
 
     return test_data_df, metadata
@@ -311,6 +314,7 @@ def parse_data(data_df,test,file_name):
             data_df.columns.values[i] = "HCl (kg/kg)"
         else:
             print(colorize(f'WARNING:UNKNOWN COLUMN = {column}', 'purple'))
+
 
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
