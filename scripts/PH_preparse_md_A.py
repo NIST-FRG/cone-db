@@ -35,32 +35,23 @@ def parse_dir(input_dir):
     total_files = len(paths)
     print(colorize(f"Found {len(paths)} files to parse", "purple"))
     files_parsed = 0
-    files_parsed_successfully = 0
+    files_parsed_fully = 0
+    files_parsed_partial = 0
     
-    # track and print parsing success rate
     for path in paths:
-        if files_parsed % 20 == 0 and files_parsed != 0:
-            print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "blue"))
-
-        try:
-            files_parsed += 1
-            parse_file(path)
-        except Exception as e:
-
-            # log error in md_A_log
-            with open(LOG_FILE, "r", encoding="utf-8") as w:  
-                logfile = json.load(w)
-            logfile.update({
-                    str(path.name)[0:8:1] : str(e)
-                })
-            with open(LOG_FILE, "w", encoding="utf-8") as f:
-	            f.write(json.dumps(logfile, indent=4))
-
-            print(colorize(f" - Error parsing {path}: {e}\n", "red"))
-            continue
-        print(colorize(f"Parsed {path} successfully\n", "green"))
-        files_parsed_successfully += 1
-    
+        files_parsed += 1
+        pct = parse_file(path)
+        if pct == 100:
+            print(colorize(f"Parsed {path} successfully\n", "green"))
+            files_parsed_fully += 1
+        elif pct == 0:
+            print(colorize(f"{path} could not be parsed", "red"))
+        else:
+            print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
+            files_parsed_partial += 1
+    print(colorize(f"Files parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
+    print(colorize(f"Files parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
+ 
     '''
     # printing number of lines read
     for filename in os.listdir(input_dir):
@@ -90,18 +81,34 @@ def parse_file(file_path):
 
     # separating tests within the file
     tests = get_tests(lines)
+    numtests = len(tests)
+    parsed = 0
+    for i, test in enumerate(tests):
+        try:
+            # for each test, separate data from metadata
+            test_data_df, metadata = get_data(tests[test])
+            # generate test data csv
+            logfile,test_name = parse_data(test_data_df,test,file_path.name)
+            # parse through and generate metadata json file
+            logfile = parse_metadata(metadata,test_name,logfile)
+            #update md_A_log.json
+            with open(LOG_FILE, "w", encoding="utf-8") as f:
+                f.write(json.dumps(logfile, indent=4))
+            parsed += 1
+        except Exception as e:
+            # log error in md_A_log
+            with open(LOG_FILE, "r", encoding="utf-8") as w:  
+                logfile = json.load(w)
+            logfile.update({
+                    str(test) : str(e)
+                })
+            with open(LOG_FILE, "w", encoding="utf-8") as f:
+	            f.write(json.dumps(logfile, indent=4))
 
-    for test in tests:
-        # for each test, separate data from metadata
-        test_data_df, metadata = get_data(tests[test])
-        # generate test data csv
-        logfile,test_name = parse_data(test_data_df,test,file_path.name)
-        # parse through and generate metadata json file
-        logfile = parse_metadata(metadata,test_name,logfile)
-        #update md_A_log.json
-        with open(LOG_FILE, "w", encoding="utf-8") as f:
-	        f.write(json.dumps(logfile, indent=4))
-
+            print(colorize(f" - Error parsing {test}: {e}\n", "red"))
+            continue
+    pct_parsed = (parsed / numtests) *100
+    return pct_parsed
    
 
 ####### separate tests in file #######
@@ -168,6 +175,7 @@ def get_data(data):
     metadata = data[:massWStart] + data[dataEnd:]
     print(f"{dataStart} to {dataEnd}")
     filtered_test_data = []
+    
     for line in test_data:
         # Remove Page Headers if they have in table
         if any(bad in line for bad in ('TEST', 'PAGE', 'HOR', 'VERT')):
@@ -176,17 +184,23 @@ def get_data(data):
         if (line.strip().replace('-', '').replace('|', '').replace(' ', '') == '') \
            and ('-' in line or '|' in line):
             continue
+        #Remove only unit rows
+        if any(unit in line for unit in ("S", "KG","M2","KW","KJ")) and not any(header in line for header in ("TIME","DOT", "H", "SUM", "MASS","CO", "AREA")):
+            continue
         # Optionally: remove lines that are only spaces
         if not line.strip():
             continue
         filtered_test_data.append(line)
-    # convert test_data to df
-    pd_format_test_data = StringIO("\n".join(filtered_test_data))
+    #print(filtered_test_data[0])
     
-    #Majority of tests pipe delimited, but some are multispace delimited
-
-    test_data_df = pd.read_csv(pd_format_test_data, sep="|")
-
+    #print(f"HEADER ({len(filtered_test_data[0].split('|'))} cols):", filtered_test_data[0])
+    #for i, row in enumerate(filtered_test_data[1:6]):
+     #   print(f"ROW {i} ({len(row.split('|'))} cols):", row)
+        # convert test_data to df
+        pd_format_test_data = StringIO("\n".join(filtered_test_data))
+    
+    #Majority of tests pipe delimited, but some are multispace delimited    
+    test_data_df = pd.read_csv(pd_format_test_data, sep="|", header= 0, engine = 'python')
     return test_data_df, metadata
 
 # outputting dataframe to csv file
@@ -268,7 +282,7 @@ def parse_data(data_df,test,file_name):
     #generating contents for md_A_log
     with open(LOG_FILE, "r", encoding="utf-8") as w:  
         logfile = json.load(w)
-
+    #print(data_df)
     # checking validity of data parsing
     data_df_cols = data_df.iloc[:,:-1]
     column_counts = data_df_cols.count()
@@ -296,7 +310,12 @@ def parse_data(data_df,test,file_name):
         elif "M-DOT" in column:
             data_df.columns.values[i] = "M-Dot (g/s-m2)"
         elif "MASS" in column and "LOSS" in column:
-            data_df.columns.values[i] = "Mass Loss (kg/m2)"
+            if "M-Dot (g/s-m2)" not in data_df.columns.values:
+                data_df.columns.values[i] = "M-Dot (g/s-m2)"
+                #some tests (ex 2227) have m-dot labled as mass loss, no cumulative mass loss stored so this should correct
+                #if this becomes an issue (Mass loss listed before MLR) can switch to check if monotonically inc
+            else:
+                data_df.columns.values[i] = "Mass Loss (kg/m2)"
         elif "HT" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "EX" in column:
@@ -313,7 +332,8 @@ def parse_data(data_df,test,file_name):
         elif "HCL" in column:
             data_df.columns.values[i] = "HCl (kg/kg)"
         else:
-            print(colorize(f'WARNING:UNKNOWN COLUMN = {column}', 'purple'))
+            msg = f'Illegal Column Detected: {column}'
+            raise Exception(msg)
 
 
     # replacing "*" with NaN
