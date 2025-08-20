@@ -27,9 +27,6 @@ def parse_dir(input_dir):
 
     # track and print parsing success rate
     for path in paths:
-        if files_parsed % 20 == 0 and files_parsed != 0:
-            print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({(files_parsed_successfully/files_parsed) * 100}%)", "blue"))
-
         try:
             files_parsed += 1
             parse_file(path)
@@ -51,7 +48,7 @@ def parse_dir(input_dir):
 
     parse_metadata()
     print(colorize(f"Copied all metadata files from {PREPARSED_META} to {OUTPUT_META}\n", "green"))
-
+    print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({((files_parsed_successfully)/files_parsed) * 100}%)", "blue"))
 
 #region parse file   
 def parse_file(file_path):
@@ -112,6 +109,12 @@ def parse_data(file_path):
     flux = metadata["heat_flux_kW/m2"]
 
     df = pd.read_csv(file_path)
+
+    if "Sum Q (MJ/m2)" not in df.columns:
+        df['dt'] = df["Time (s)"].diff()
+        df['Q (MJ/m2)'] = (df['Q-Dot (kW/m2)']*df['dt'])/1000
+        df['Sum Q (MJ/m2)'] = df["Q (MJ/m2)"].cumsum()
+        print(df)
     df = df.rename(columns={
         "Q-Dot (kW/m2)" : "HRR (kW/m2)",
         "CO2 (kg/kg)" : "CO2 (Vol %)",
@@ -161,7 +164,7 @@ def files_to_prepare():
     for file in OUTPUT_META.iterdir():
         with open(file, "r", encoding="utf-8") as w:  
             metadata = json.load(w)
-        if metadata["number_of_fields"] == 19:
+        if True : #if metadata["number_of_fields"] == 19:
             csv_file = file.with_suffix(".csv").name
             csv_path = OUTPUT_DIR_CSV / csv_file
             if os.path.exists(csv_path):

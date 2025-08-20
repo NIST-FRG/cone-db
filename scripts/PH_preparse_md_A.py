@@ -49,8 +49,8 @@ def parse_dir(input_dir):
         else:
             print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
             files_parsed_partial += 1
-    print(colorize(f"Files parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
-    print(colorize(f"Files parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
+    print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
+    print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
     '''
     # printing number of lines read
@@ -367,7 +367,7 @@ def parse_metadata(input,test_name,log_file):
         line = re.sub(r'=\s*', '= ', line)  # Replace '=' followed by whitespace with '= '
         # finds all space blocks separating potential metadata values
         # assumes metadata blocks are separated by at least 3 whitespaces
-        match_whitespace = re.search("\\s{4,}", line)
+        match_whitespace = re.search("\\s{3,}", line)
         match_semicolon = re.search(";", line)
         while match_whitespace is not None or match_semicolon is not None:
 
@@ -396,20 +396,21 @@ def parse_metadata(input,test_name,log_file):
     
     ############ finding metadata fields ############
     metadata_json["comments"] = []
+    prev_item = None
+    metadata_json["material_id"] = None
     for item in metadata:
-        #print(item)
+        #print(metadata.index(item),item)
         if metadata.index(item) == 0:
             metadata_json["laboratory"] = item
-        elif metadata.index(item) == 4:
-            metadata_json["material_id"] = item
-        elif metadata.index(item) == 5:
-            metadata_json["material_name"] = item
+        elif "IRRADIANCE" in item:
+            metadata_json["heat_flux_kW/m2"] = get_number(item,"int")
+        elif "TEST" in prev_item and not metadata_json.get("material_name"):
+            metadata_json["material_id"] = None
+            metadata_json["material_name"] = item    
         elif "HOR" in item:
             metadata_json["orientation"] = "HORIZONTAL"
         elif "VERT" in item:
             metadata_json["orientation"] = "VERTICAL"
-        elif "IRRADIANCE" in item:
-            metadata_json["heat_flux_kW/m2"] = get_number(item,"int")
         elif "CALIBRATION" in item:
             metadata_json["c_factor"] = get_number(item[3:],"flt")
         elif "INITIAL MASS=" in item:
@@ -442,7 +443,7 @@ def parse_metadata(input,test_name,log_file):
             metadata_json["date"] = item
         else:
             metadata_json["comments"].append(item)
-        
+        prev_item = item
 
     metadata_json["number_of_fields"] = len(metadata_json)
 
