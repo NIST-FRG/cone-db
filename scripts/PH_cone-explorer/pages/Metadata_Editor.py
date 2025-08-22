@@ -33,9 +33,13 @@ def load_metadata(show_bar=True):
         bar = None
 
     all_metadata = []
+    all_surf_areas = []
     metadata_loaded = 0
     for metadata_path in metadata_path_map.values():
-        all_metadata.append(json.load(open(metadata_path)))
+        one_metadata = json.load(open(metadata_path))
+        surf_area = one_metadata["Surface Area (m2)"]
+        all_surf_areas.append(surf_area)
+        all_metadata.append(one_metadata)
         metadata_loaded += 1
         if bar:
             bar.progress(
@@ -71,16 +75,17 @@ def load_metadata(show_bar=True):
                     f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
                 )
 
-    for test_data in all_test_data:
-        test_data['HRR (kW/m2)'] = pd.to_numeric(
-            test_data['HRR (kW/m2)'].replace(' . ', np.nan), errors='coerce'
-        )
 
-    hrr = pd.concat([test_data["HRR (kW/m2)"] for test_data in all_test_data], axis=1)
+    for i, test_data in enumerate(all_test_data):
+            test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
+                test_data['HRR (kW)'], errors='coerce'
+            ) / all_surf_areas[i]  # or * if that's appropriate
+
+    hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
     hrr.columns = metadata_path_map.keys()
     hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
     hrr = pd.Series(hrr.squeeze())
-    df.insert(0, "HRR (kW/m2)", hrr.values)
+    df.insert(0, "HRRPUA (kW/m2)", hrr.values)
 
     if bar:
         bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
@@ -183,6 +188,7 @@ st.session_state.df = df
 
 # sidebar UI
 st.sidebar.button("Reload Page", on_click= reload_metadata, use_container_width=True)
+st.sidebar.markdown("Discards unsaved changes and reloads in data and metadata from local explorer")
 st.sidebar.button("Save Metadata", on_click=lambda: save_metadata(df), use_container_width=True)
 st.sidebar.markdown("Saves all changes in the active dataframe to your local explorer")
 st.sidebar.button("Revert Metadata", on_click= revert_to_parsed, use_container_width=True)
@@ -206,7 +212,7 @@ selected_columns = st.sidebar.multiselect(
         "Heat Flux (kW/m2)",
         "Comments",
         "Material Name",
-        "HRR (kW/m2)",
+        "HRRPUA (kW/m2)",
         "Institution",
         "C Factor",
     ],
@@ -219,8 +225,8 @@ df = st.data_editor(
     #height=650,
     column_order=selected_columns,
     column_config={
-        "HRR (kW/m2)": st.column_config.LineChartColumn(
-            "HRR (kW/m2)",
+        "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
+            "HRRPUA (kW/m2)",
             width="medium",
         )
     },
@@ -268,7 +274,7 @@ def export_metadata(df):
         date = row["Test Date"]
         dt_obj = datetime.strptime(date, "%d %b %Y")  # Parse the string
         row['Test Date'] = dt_obj.strftime("%Y-%m-%d")  
-        row['Auto Prepared'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        row['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         
         # parse iso format datetime and just keep the date (no time)

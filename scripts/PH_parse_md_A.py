@@ -10,7 +10,7 @@ INPUT_DIR = Path(r"../data/pre-parsed/md_A")
 OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_A")
 PREPARSED_META = Path(r"../Metadata/preparsed/md_A")
 OUTPUT_META = Path(r"../Metadata/Parsed/md_A")
-OUTPUT_PREPARED = Path(r"PH_cone-explorer/data/parsed/md_A")
+OUTPUT_EXPLORER = Path(r"PH_cone-explorer/data/parsed/md_A")
 
 LOG_FILE = Path(r"..") / "parse_md_A_log.json"
 
@@ -22,15 +22,26 @@ def parse_dir(input_dir):
     #paths = list(filter(lambda x: x.stem.endswith("md"), list(paths)))
     print(paths)
     total_files = len(paths)
-    print(colorize(f"Found {len(paths)} files to parse", "purple"))
+    print(colorize(f"Found {total_files} files to parse", "purple"))
     files_parsed = 0
     files_parsed_successfully = 0
-
+    files_SmURFed = 0
     # track and print parsing success rate
     for path in paths:
+        output_meta = Path(str(path).replace(str(INPUT_DIR), str(OUTPUT_META))).with_suffix('.json')
+        input_meta = Path(str(output_meta).replace(str(OUTPUT_META),str(PREPARSED_META)))
+        if output_meta.exists():
+            with open(output_meta, "r") as f:
+                metadata = json.load(f)
+                if metadata['SmURF'] is not None:
+                    files_SmURFed += 1
+                    oldname = metadata['Original Testname']
+                    newname = metadata ['Testname']
+                    print(colorize(f'{oldname} has already been SmURFed to {newname}. Skipping Parsing','blue'))
+                    continue
         try:
             files_parsed += 1
-            parse_file(path)
+            parse_file(path, input_meta, output_meta)
             
         except Exception as e:
             # log error in md_A_log
@@ -47,14 +58,14 @@ def parse_dir(input_dir):
         print(colorize(f"Parsed {path} successfully\n", "green"))
         files_parsed_successfully += 1
 
-    parse_metadata()
     print(colorize(f"Copied all metadata files from {PREPARSED_META} to {OUTPUT_META}\n", "green"))
+    print(colorize(f"Files previously SmURFed:{files_SmURFed}/{total_files} ({((files_SmURFed)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({((files_parsed_successfully)/files_parsed) * 100}%)", "blue"))
-
-#region parse file   
-def parse_file(file_path):
-    parse_data(file_path)
     
+#region parse file   
+def parse_file(file_path, input_meta, output_meta):
+    parse_data(file_path)
+    parse_metadata(input_meta,output_meta)
 '''
 #region parse data
 def parse_data(file_path):
@@ -107,66 +118,49 @@ def parse_data(file_path):
     meta_file = str(file_stem) + ".json"
     with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-    flux = metadata["Heat Flux (kW/m2)"]
-
+    surf_area = metadata["Surface Area (m2)"]
+    mass = metadata["Sample Mass (g)"]
     df = pd.read_csv(file_path)
-
+    
+    df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
+    if "Mass Loss (kg/m2)" in df.columns:
+        df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
+        data = df[["Time (s)","Mass (g)","HRR (kW)"]]
+    else:
+        print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
+        df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area
+        data = df[["Time (s)","MLR (g/s)","HRR (kW)"]]
+        metadata["Comments"].append("NO RAW MASS LOSS DATA")
+    
     if "Sum Q (MJ/m2)" not in df.columns:
         df['dt'] = df["Time (s)"].diff()
         df['Q (MJ/m2)'] = (df['Q-Dot (kW/m2)']*df['dt'])/1000
         df['Sum Q (MJ/m2)'] = df["Q (MJ/m2)"].cumsum()
-        #print(df)
-    df = df.rename(columns={
-        "Q-Dot (kW/m2)" : "HRR (kW/m2)",
-        "CO2 (kg/kg)" : "CO2 (Vol %)",
-        "CO (kg/kg)" : "CO (Vol %)",
-        "H2O (kg/kg)" : "H2O (Vol %)",
-        "H'carbs (kg/kg)" : "H'carbs (Vol %)",
-        "M-Dot (g/s-m2)" : "MLR (g/s-m2)",
-        "Sum Q (MJ/m2)" : "THR (MJ/m2)"
 
-        })
-    
-    # generate (time * external heat flux) column
-    t_qext = df["Time (s)"] * flux
-    df.insert(1,"t * EHF (kJ/m2)",t_qext)
-
-    data = df[
-        [
-            "Time (s)",
-            "t * EHF (kJ/m2)",
-            "HRR (kW/m2)",
-            "MLR (g/s-m2)",
-            "THR (MJ/m2)"
-
-        ]
-    ]
     
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 
     data.to_csv(data_output_path, index=False)
 
-    print(colorize(f"Generated {data_output_path}", "blue"))
+    print(colorize(f"Generated {data_output_path}", "green"))
 
 #region parse_metadata
-def parse_metadata():
-    # remove parsed metadata folder if exists
-    if os.path.exists(OUTPUT_META):
-        shutil.rmtree(OUTPUT_META)
-    # copy all metadata files from preparsed metadata folder to parsed metadata folder
-    shutil.copytree(PREPARSED_META, OUTPUT_META)
-    for file in OUTPUT_META.iterdir():
-        with open(file, "r") as f:
-            metadata = json.load(f)
-        metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(file, "w", encoding="utf-8") as f:
-            f.write(json.dumps(metadata, indent=4))
+def parse_metadata(input_meta, output_meta):
+    # copy metadata from preparsed to parsed
+    Path(output_meta).parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(input_meta, output_meta)
+    with open(output_meta, "r") as f:
+        metadata = json.load(f)
+    #parsed tag
+    metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(output_meta, "w", encoding="utf-8") as f:
+        f.write(json.dumps(metadata, indent=4))
+
 #region files_to_prepare
 # copying data and metadata files ready to be prepared/manually reviewed --> cone explorer input directory
 def files_to_prepare():
-    OUTPUT_PREPARED.mkdir(parents=True, exist_ok=True)
-
+    OUTPUT_EXPLORER.mkdir(parents=True, exist_ok=True)
     for file in OUTPUT_META.iterdir():
         with open(file, "r", encoding="utf-8") as w:  
             metadata = json.load(w)
@@ -174,10 +168,10 @@ def files_to_prepare():
             csv_file = file.with_suffix(".csv").name
             csv_path = OUTPUT_DIR_CSV / csv_file
             if os.path.exists(csv_path):
-                shutil.copy(file, OUTPUT_PREPARED)
-                shutil.copy(csv_path, OUTPUT_PREPARED)
+                shutil.copy(file, OUTPUT_EXPLORER)
+                shutil.copy(csv_path, OUTPUT_EXPLORER)
 
-    print(colorize(f"Files sent to {OUTPUT_PREPARED}", "green"))
+    print(colorize(f"Files sent to {OUTPUT_EXPLORER}", "green"))
             
 
 

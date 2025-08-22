@@ -96,12 +96,13 @@ def parse_file(file_path):
             # for each test, separate data from metadata
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
-            logfile,test_name = parse_data(test_data_df,test,file_path.name)
+            data_df,test_filename = parse_data(test_data_df,test,file_path.name)
             # parse through and generate metadata json file
-            logfile = parse_metadata(metadata,test_name,logfile)
-            #update md_A_log.json
-            with open(LOG_FILE, "w", encoding="utf-8") as f:
-                f.write(json.dumps(logfile, indent=4))
+            parse_metadata(metadata,test_filename)
+            test_name = f"{test_filename}.csv"
+            output_path = OUTPUT_DIR_CSV / test_name
+            data_df.to_csv(output_path, index=False)
+            print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
             # log error in md_A_log
@@ -155,16 +156,18 @@ def get_data(data):
     dataStart = -1
     dataEnd = -1
     massWStart = -1
-
+    prevline = " "
     # Find the start and end lines for the time-series table
     for index, line in enumerate(data):
+        if not line.strip():
+            continue #get rid of whitespace lines
         # Normalize line for easy matching
         uline = line.upper().strip()
         # Only match time-series table headers, not summary tables
         # Require TIME and at least one key column typical of measurements
         if (
             (uline.startswith("|TIME") or uline.startswith("| TIME") or uline.startswith("TIME")) and
-            any(key in uline for key in ("SUM", "DOT", "H"))
+            any(key in uline for key in ("SUM", "DOT", "H")) and ("MASS WEIGHTED" not in prevline)
         ):
             if dataStart == -1:
                 dataStart = index
@@ -177,7 +180,7 @@ def get_data(data):
         if ("PARAMETER SHEET" in uline) or (index == len(data)-1):
             dataEnd = index
             break
-
+        prevline = uline
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
     metadata = data[:dataStart] + data[dataEnd:]
@@ -298,16 +301,16 @@ def parse_data(data_df,test,file_name):
         column_uniform = "Datatable columns are not uniform"
     else:
         column_uniform = "Datatable columns are uniform"
+    
+    
+    
     # update md_A_log based off uniformity of columns
-    logfile.update({
-            str(test_name) : f"{column_uniform} || #Col = {data_df.shape[1]}"
-        })
+    #logfile.update({
+    #        str(test_name) : f"{column_uniform} || #Col = {data_df.shape[1]}"
+     #   })
     
-    # renaming column headers
-    #if data_df.shape[1] == 12:
-    #    data_df.columns = ['Time (s)', 'Q-Dot (kW/m2)', 'Sum Q (MJ/m2)', 'M-Dot (g/s-m2)', 'Mass Loss (kg/m2)', 
-    # 'HT Comb (MJ/kg)', 'Ex Area (m2/kg)', 'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', 'H\'carbs (kg/kg)', 'HCl (kg/kg)']
     
+    #Renaming Column Headers
     for i, column in enumerate(data_df.columns):
         if "TIME" in column:
             data_df.columns.values[i] = "Time (s)"
@@ -347,17 +350,13 @@ def parse_data(data_df,test,file_name):
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
 
-    output_path = OUTPUT_DIR_CSV / test_name
-    data_df.to_csv(output_path, index=False)
-    print(colorize(f"Generated {output_path}", "blue"))
-
-    return logfile, test_filename
+    return data_df, test_filename
 
 
 ####### metadata clean and output functions #######
 #region parse_metadata
 # clean and output metadata as json
-def parse_metadata(input,test_name,log_file):
+def parse_metadata(input,test_name):
     meta_filename = test_name + ".json"
     meta_path = METADATA_DIR / meta_filename
     metadata_json = {}
@@ -373,6 +372,7 @@ def parse_metadata(input,test_name,log_file):
     for line in input:
         # Preprocess line to remove excessive whitespace after '='
         line = re.sub(r'=\s*', '= ', line)  # Replace '=' followed by whitespace with '= '
+        line = re.sub(r'\s*=', '=', line) # Remove whitespace before "="
         # finds all space blocks separating potential metadata values
         # assumes metadata blocks are separated by at least 3 whitespaces
         match_whitespace = re.search("\\s{3,}", line)
@@ -407,14 +407,13 @@ def parse_metadata(input,test_name,log_file):
     prev_item = None
     metadata_json["Material ID"] = None
     for item in metadata:
-   #     print(metadata.index(item),item)
+        #print(metadata.index(item),item)
         if metadata.index(item) == 0:
             metadata_json["Institution"] = item
         elif "IRRADIANCE" in item:
             metadata_json["Heat Flux (kW/m2)"] = get_number(item,"int")
         elif "TEST" in prev_item and not metadata_json.get("Material Name"):
             metadata_json["Material Name"] = item    
-    #        print('^^^^^^ Test Name')
         elif "HOR" in item:
             metadata_json["Orientation"] = "HORIZONTAL"
         elif "VERT" in item:
@@ -425,8 +424,9 @@ def parse_metadata(input,test_name,log_file):
             metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
         elif "FINAL MASS=" in item:
             metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
-        elif "SURFACE AREA" in item:
-            metadata_json["Surface Area (m2)"] = get_number(item[3:],"flt")
+        elif "AREA OF SAMPLE" in item and not metadata_json.get("Surface Area (m2)"):
+            #print('area')
+            metadata_json["Surface Area (m2)"] = get_number(item,"flt")
         elif "SOOT AVERAGE" in item:
             metadata_json["Soot Average (g/g)"] = get_number(item,"exp")
         elif "MASS CONSUMED" in item:
@@ -452,6 +452,9 @@ def parse_metadata(input,test_name,log_file):
         else:
             metadata_json["Comments"].append(item)
         prev_item = item
+    if not metadata_json.get("Surface Area (m2)"):
+        msg = f"No Surface Area Detected"
+        raise Exception (msg)
     metadata_json["Number of Fields"] = len(metadata_json) #Excluding the added for now
     metadata_json['Original Testname'] = test_name
     metadata_json ['Testname'] = None
@@ -459,6 +462,8 @@ def parse_metadata(input,test_name,log_file):
     metadata_json['Autoprocessed'] = None
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata_json['Parsed'] = None
+    metadata_json['SmURF'] = None
+    metadata_json['Bad Data'] = None
     metadata_json["Auto Prepared"] = None
     metadata_json["Manually Prepared"] = None
     metadata_json["Manually Reviewed Series"] = None
@@ -470,35 +475,14 @@ def parse_metadata(input,test_name,log_file):
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
-        f.write(json.dumps(metadata_json, indent=4))
-
-    # adding field count to test in log file(md_A_log.json)
-    fields_found = metadata_json["Number of Fields"]
-    log_test = str(test_name) + ".csv"
-    log_file.update({
-            log_test : log_file[log_test] + " || #Metadata_fields = " + str(fields_found)
-        })
-
+        f.write(json.dumps(metadata_json, indent=4)) 
     print(colorize(f"Generated {meta_path}", "blue"))
 
-    return log_file
-
-    
-
-    # metadata table checker
-    # if line[0] == | then until not | at line[0] add to a table
-
-
-    # # Determine output path
-    # Path(OUTPUT_DIR_JSON / str(test_year)).mkdir(parents=True, exist_ok=True)
-
-    # data_output_path = Path(OUTPUT_DIR_JSON) / str(test_year) /f"{Path(file_path).stem}.csv"
-    # metadata_output_path = Path(OUTPUT_DIR_JSON) / str(test_year) / f"{Path(file_path).stem}.json"
 
 #region helpers
 #get number(int,float,exponent,)
 def get_number(item, num_type):
-    number = "Not found"
+    number = 'Not found'
     match num_type:
         case "int":
             match = re.search(r'\d+', item)
