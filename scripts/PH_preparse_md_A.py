@@ -11,9 +11,9 @@ import numpy as np
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/md_A")
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A")
-METADATA_DIR = Path(r"../metadata/md_A/preparsed")
+INPUT_DIR = Path(r"../data/raw/md_A") ###This will eventually be on firedata
+OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A") ###This will eventually be on firedata
+METADATA_DIR = Path(r"../Metadata/preparsed/md_A")###Store here for now, but will be on firedata either sep or together with csvs
 LOG_FILE = Path(r"..") / "preparse_md_A_log.json"
 
 '''
@@ -41,14 +41,22 @@ def parse_dir(input_dir):
     for path in paths:
         files_parsed += 1
         pct = parse_file(path)
+        out_path = False
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
         elif pct == 0:
             print(colorize(f"{path} could not be parsed", "red"))
+            out_path = Path(str(path).replace('md_A', 'md_A_bad'))
         else:
             print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
             files_parsed_partial += 1
+            out_path = Path(str(path).replace('md_A', 'md_A_bad'))
+
+        # If output path is set, ensure the directory exists and copy
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -83,7 +91,7 @@ def parse_file(file_path):
     tests = get_tests(lines)
     numtests = len(tests)
     parsed = 0
-    for i, test in enumerate(tests):
+    for test in tests:
         try:
             # for each test, separate data from metadata
             test_data_df, metadata = get_data(tests[test])
@@ -172,7 +180,7 @@ def get_data(data):
 
     test_data = data[dataStart:dataEnd]
     #print(f"{dataStart} to {dataEnd}")
-    metadata = data[:massWStart] + data[dataEnd:]
+    metadata = data[:dataStart] + data[dataEnd:]
     print(f"{dataStart} to {dataEnd}")
     filtered_test_data = []
     
@@ -395,68 +403,77 @@ def parse_metadata(input,test_name,log_file):
 
     
     ############ finding metadata fields ############
-    metadata_json["comments"] = []
+    metadata_json["Comments"] = []
     prev_item = None
-    metadata_json["material_id"] = None
+    metadata_json["Material ID"] = None
     for item in metadata:
-        #print(metadata.index(item),item)
+   #     print(metadata.index(item),item)
         if metadata.index(item) == 0:
-            metadata_json["laboratory"] = item
+            metadata_json["Institution"] = item
         elif "IRRADIANCE" in item:
-            metadata_json["heat_flux_kW/m2"] = get_number(item,"int")
-        elif "TEST" in prev_item and not metadata_json.get("material_name"):
-            metadata_json["material_id"] = None
-            metadata_json["material_name"] = item    
+            metadata_json["Heat Flux (kW/m2)"] = get_number(item,"int")
+        elif "TEST" in prev_item and not metadata_json.get("Material Name"):
+            metadata_json["Material Name"] = item    
+    #        print('^^^^^^ Test Name')
         elif "HOR" in item:
-            metadata_json["orientation"] = "HORIZONTAL"
+            metadata_json["Orientation"] = "HORIZONTAL"
         elif "VERT" in item:
-            metadata_json["orientation"] = "VERTICAL"
+            metadata_json["Orientation"] = "VERTICAL"
         elif "CALIBRATION" in item:
-            metadata_json["c_factor"] = get_number(item[3:],"flt")
+            metadata_json["C Factor"] = get_number(item[3:],"flt")
         elif "INITIAL MASS=" in item:
-            metadata_json["initial_mass_g"] = get_number(item[3:],"flt")
+            metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
         elif "FINAL MASS=" in item:
-            metadata_json["final_mass_g"] = get_number(item[3:],"flt")
+            metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
         elif "SURFACE AREA" in item:
-            metadata_json["surface_area_m2"] = get_number(item[3:],"flt")
+            metadata_json["Surface Area (m2)"] = get_number(item[3:],"flt")
         elif "SOOT AVERAGE" in item:
-            metadata_json["soot_average_g/g"] = get_number(item,"exp")
+            metadata_json["Soot Average (g/g)"] = get_number(item,"exp")
         elif "MASS CONSUMED" in item:
-            metadata_json["mass_consumed"] = get_field(item)
+            metadata_json["Mass Consumed"] = get_field(item)
         elif item.find("CONVERSION FACTOR") == 0:
-            metadata_json["conversion_factor"] = get_field(item)
+            metadata_json["Conversion Factor"] = get_field(item)
         elif "TIME TO IGNITION" in item:
-            metadata_json["t_ign_s"] = get_number(item,"int")
+            metadata_json["Time to Ignition (s)"] = get_number(item,"int")
         elif "PEAK Q-DOT" in item:
             match = re.search(r'(\d+)\s+KW', item)
             if match:
-                metadata_json["peak_q_dot_kw/m2"] = int(match.group(1))
+                metadata_json["Peak Heat Release Rate (kW/m2)"] = int(match.group(1))
         elif "PEAK M-DOT" in item:
             match = re.search(r'(\d+\.\d+)\s+G', item)
             if match:
-                metadata_json["peak_m_dot_g/s-m2"] = float(match.group(1))
+                metadata_json["Peak Mass Loss Rate (g/s-m2)"] = float(match.group(1))
         elif "TEST" in item:
             match = re.search(r'TEST\s+(\d{4})', item)
             if match:
-                metadata_json["specimen_number"] = int(match.group(1))
+                metadata_json["Specimen Number"] = int(match.group(1))
         elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
-            metadata_json["date"] = item
+            metadata_json["Test Date"] = item
         else:
-            metadata_json["comments"].append(item)
+            metadata_json["Comments"].append(item)
         prev_item = item
-
-    metadata_json["number_of_fields"] = len(metadata_json)
-
+    metadata_json["Number of Fields"] = len(metadata_json) #Excluding the added for now
+    metadata_json['Original Testname'] = test_name
+    metadata_json ['Testname'] = None
+    metadata_json['Instrument'] = "NBS Cone Calorimeter"
+    metadata_json['Autoprocessed'] = None
+    metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    metadata_json['Parsed'] = None
+    metadata_json["Auto Prepared"] = None
+    metadata_json["Manually Prepared"] = None
+    metadata_json["Manually Reviewed Series"] = None
+    metadata_json['Pass Review'] = None
+    metadata_json["Published"] = None
     #autoprocessed values
-    if ("initial_mass_g" in metadata_json) and ("final_mass_g" in metadata_json):
-        metadata_json["mf/m0_g/g"] = float(metadata_json["final_mass_g"]) / float(metadata_json["initial_mass_g"])
-
+    if ("Sample Mass (g)" in metadata_json) and ("Residual Mass (g)" in metadata_json):
+        metadata_json["Residue Yield (g/g)"] = float(metadata_json["Residual Mass (g)"]) / float(metadata_json["Sample Mass (g)"])
+    metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4))
 
     # adding field count to test in log file(md_A_log.json)
-    fields_found = len(metadata_json)
+    fields_found = metadata_json["Number of Fields"]
     log_test = str(test_name) + ".csv"
     log_file.update({
             log_test : log_file[log_test] + " || #Metadata_fields = " + str(fields_found)

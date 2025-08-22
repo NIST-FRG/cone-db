@@ -4,11 +4,12 @@ import pandas as pd
 import json
 import shutil
 import os
+from datetime import datetime
 
 INPUT_DIR = Path(r"../data/pre-parsed/md_A")
-OUTPUT_DIR_CSV = Path(r"../data/parsed/md_A")
-PREPARSED_META = Path(r"../metadata/md_A/preparsed")
-OUTPUT_META = Path(r"../metadata/md_A/parsed")
+OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_A")
+PREPARSED_META = Path(r"../Metadata/preparsed/md_A")
+OUTPUT_META = Path(r"../Metadata/Parsed/md_A")
 OUTPUT_PREPARED = Path(r"PH_cone-explorer/data/parsed/md_A")
 
 LOG_FILE = Path(r"..") / "parse_md_A_log.json"
@@ -106,7 +107,7 @@ def parse_data(file_path):
     meta_file = str(file_stem) + ".json"
     with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-    flux = metadata["heat_flux_kW/m2"]
+    flux = metadata["Heat Flux (kW/m2)"]
 
     df = pd.read_csv(file_path)
 
@@ -114,7 +115,7 @@ def parse_data(file_path):
         df['dt'] = df["Time (s)"].diff()
         df['Q (MJ/m2)'] = (df['Q-Dot (kW/m2)']*df['dt'])/1000
         df['Sum Q (MJ/m2)'] = df["Q (MJ/m2)"].cumsum()
-        print(df)
+        #print(df)
     df = df.rename(columns={
         "Q-Dot (kW/m2)" : "HRR (kW/m2)",
         "CO2 (kg/kg)" : "CO2 (Vol %)",
@@ -155,7 +156,12 @@ def parse_metadata():
         shutil.rmtree(OUTPUT_META)
     # copy all metadata files from preparsed metadata folder to parsed metadata folder
     shutil.copytree(PREPARSED_META, OUTPUT_META)
-
+    for file in OUTPUT_META.iterdir():
+        with open(file, "r") as f:
+            metadata = json.load(f)
+        metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(file, "w", encoding="utf-8") as f:
+            f.write(json.dumps(metadata, indent=4))
 #region files_to_prepare
 # copying data and metadata files ready to be prepared/manually reviewed --> cone explorer input directory
 def files_to_prepare():
@@ -183,4 +189,4 @@ if __name__ == "__main__":
         f.write(json.dumps(logfile, indent=4))
     print("✅ parse_md_A_log.json created.")
     parse_dir(INPUT_DIR)
-    files_to_prepare()
+    files_to_prepare()  

@@ -9,8 +9,8 @@ import zipfile
 import numpy as np
 
 import streamlit as st
-
-from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH
+import shutil
+from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PREPARED_DATA_PATH, PREPARED_METADATA_PATH
 
 st.set_page_config(page_title="Metadata Editor", page_icon="📊", layout="wide")
 
@@ -50,8 +50,9 @@ def load_metadata(show_bar=True):
     df = pd.DataFrame(all_metadata, index=list(metadata_path_map.keys()))
     df["** DELETE FILE"] = False
     df["** EXPORT FILE"] = False
-    if "material_id" not in df.columns:
-        df["material_id"] = None
+    df["** REVERT FILE"] = False
+    if "Material ID" not in df.columns:
+        df["Material ID"] = None
 
     if bar:
         bar.progress(1.0, "Metadata loaded")
@@ -84,7 +85,7 @@ def load_metadata(show_bar=True):
     if bar:
         bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
 
-    return df.sort_values(by=["date"])
+    return df.sort_values(by=["Test Date"])
 
 
 # region save_metadata
@@ -95,7 +96,7 @@ def save_metadata(df):
     files_saved = 0
 
     # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE"])
+    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
 
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
@@ -150,24 +151,15 @@ if st.session_state.use_reload_df:
     df = st.session_state.reload_df.copy()
     st.session_state.use_reload_df = False
 
-# --- Store original copy for reload ---
-if 'df_original' not in st.session_state:
-    st.session_state.df_original = df.copy()
-st.session_state.df = df
-
-
-# sidebar UI
-st.sidebar.markdown("### Save metadata")
-st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
-st.sidebar.button("Reload", on_click= reload_metadata, use_container_width=True)
-st.divider()
-
-
-st.sidebar.markdown("### Delete files")
-st.sidebar.markdown(
-    "Select files by clicking the checkbox next to the file name, then click **Delete files** to delete the selected files."
-)
-
+def revert_to_parsed():
+    "Pulls in the unmodified, parsed JSON file, undoing any saved and unsaved changes that were made"
+    files_to_revert = df[df['** REVERT FILE']].index
+    for file in files_to_revert:
+        bad_data = str(metadata_path_map[file])
+        original_data = bad_data.replace(str(INPUT_DATA_PATH), str(PARSED_METADATA_PATH))
+        save_path = str(metadata_path_map[file])
+        shutil.copy(original_data, save_path)
+        st.success(f"Metadata for {file} reverted to parsed")
 
 # region delete_files
 def delete_files():
@@ -182,19 +174,69 @@ def delete_files():
     st.success(f"{len(files_to_delete)} files deleted")
 
 
+
+# --- Store original copy for reload ---
+if 'df_original' not in st.session_state:
+    st.session_state.df_original = df.copy()
+st.session_state.df = df
+
+
+# sidebar UI
+st.sidebar.button("Reload Page", on_click= reload_metadata, use_container_width=True)
+st.sidebar.button("Save Metadata", on_click=lambda: save_metadata(df), use_container_width=True)
+st.sidebar.markdown("Saves all changes in the active dataframe to your local explorer")
+st.sidebar.button("Revert Metadata", on_click= revert_to_parsed, use_container_width=True)
+st.sidebar.markdown("Reverts metadata for selected files to their parsed state, all changes will be lost")
 st.sidebar.button("Delete files", on_click=delete_files, use_container_width=True)
+st.sidebar.markdown("Deletes selected files from the explorer, these will not be pushed forward")
+st.divider()
+
+st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
+# adjusted for format md_A
+selected_columns = st.sidebar.multiselect(
+    "Columns",
+    df.columns.tolist() ,
+    default=[
+        "** EXPORT FILE",
+        "** DELETE FILE",
+        '** REVERT FILE',
+        "Test Date",
+        "Material ID",
+        "Specimen Number",
+        "Heat Flux (kW/m2)",
+        "Comments",
+        "Material Name",
+        "HRR (kW/m2)",
+        "Institution",
+        "C Factor",
+    ],
+)
+
+df = st.data_editor(
+    df,
+    key=st.session_state.editor_key,  
+    use_container_width=True,
+    #height=650,
+    column_order=selected_columns,
+    column_config={
+        "HRR (kW/m2)": st.column_config.LineChartColumn(
+            "HRR (kW/m2)",
+            width="medium",
+        )
+    },
+)
+
 
 
 # region export_metadata
 def export_metadata(df):
     bar = st.progress(0, "Exporting metadata ...")
-    print(df)
     export_indices = df.index[df["** EXPORT FILE"]==True].tolist()
     
     # Remove the ** DELETE FILE, ** EXPORT FILE, HRR columns
     export_df = st.session_state.reload_df.loc[export_indices]
-    export = export_df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE"])
-
+    export = export_df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
+    print(export_df)
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
         rmtree(OUTPUT_DATA_PATH)
@@ -204,9 +246,9 @@ def export_metadata(df):
     for index, row in export.iterrows():
         # convert the dataframe row back to a dictionary so it can be saved as a json file
         row = row.to_dict()
-
         # if the file has no material_id, skip it
-        if row.get("material_id") is None or row.get("material_id") in ["nan", ""] or "/" in row.get("material_id"):
+        if row.get("Material ID") is None or row.get("Material ID") in ["nan", ""] or "/" in row.get("Material ID"):
+            print('wack')
             continue
 
         # replace NaN with None to conform to official json format
@@ -217,13 +259,17 @@ def export_metadata(df):
         }
 
         # if the file has no heat flux, skip it:
-        if (row.get("heat_flux_kW/m2") is None) or row.get("heat_flux_kW/m2") == "Not found":
+        if (row.get("Heat Flux (kW/m2)") is None) or row.get("Heat Flux (kW/m2)") == "Not found":
             continue
 
         # find the path to the metadata file & include the old filename in the metadata
         path = metadata_path_map[str(index)]
-        row["prev_filename"] = path.name
 
+        date = row["Test Date"]
+        dt_obj = datetime.strptime(date, "%d %b %Y")  # Parse the string
+        row['Test Date'] = dt_obj.strftime("%Y-%m-%d")  
+        row['Auto Prepared'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         
         # parse iso format datetime and just keep the date (no time)
         #d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
@@ -234,33 +280,50 @@ def export_metadata(df):
         export_path = OUTPUT_DATA_PATH / "md_A"
         if not export_path.exists():
             export_path.mkdir(parents=True, exist_ok=True)
-
-        material_id = row.get("material_id")
+        if not PREPARED_DATA_PATH.exists():
+            PREPARED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+        if not PREPARED_METADATA_PATH.exists():
+            PREPARED_METADATA_PATH.mkdir(parents=True, exist_ok=True)
+        material_id = row.get("Material ID")
 
         # replace the colon in the material_id with a dash (colons are not allowed in Windows filenames)
         material_id = material_id.replace(":", "-")
 
         filename_parts = [
             material_id,
-            str(int(row["heat_flux_kW/m2"])),
-            "vert" if row["orientation"] == "vertical" else "horiz",
+            str(int(row["Heat Flux (kW/m2)"])),
+            "vert" if row["Orientation"] == "vertical" else "horiz",
         ]
 
         # if there is a specimen number, include that in the filename
-        if row.get("specimen_number") is not None and row.get("specimen_number") != "":
-            filename_parts.insert(3, f"{row['specimen_number']}")
+        if row.get("Specimen Number") is not None and row.get("Specimen Number") != "":
+            filename_parts.insert(3, f"{row['Specimen Number']}")
 
         # join all the filename parts together with a dash & add the file extension (.json)
+        row['Testname'] = "_".join(filename_parts)
         new_filename = "_".join(filename_parts) + ".json"
+        row.pop('Number of Fields')
+        neworder = ['Material ID', 'Sample Mass (g)','Specimen Number','Testname', 
+                'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', 'Autoprocessed', 
+                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
+                   'Surface Area (m2)','Time to Ignition (s)', 'Residual Mass (g)', 'Residue Yield (g/g)','Mass Consumed', "Soot Average (g/g)",
+                   'Peak Heat Release Rate (kW/m2)', 'Peak Mass Loss Rate (g/s-m2)', 'Comments', 'Data Corrections' ]
+        reordered_metadata = {key: row[key] for key in neworder}
+        for key in row:
+            if key not in neworder:
+                reordered_metadata[key] = row[key]
 
         # save the metadata file
         with open(export_path / new_filename, "w") as f:
-            json.dump(row, f, indent=4)
+            json.dump(reordered_metadata, f, indent=4)
+        with open(PREPARED_METADATA_PATH / new_filename, "w") as f:
+            json.dump(reordered_metadata, f, indent=4)
 
         # Get the CSV data file as well and save that in the same folder as the metadata file
         data = pd.read_csv(path.with_suffix(".csv"))
         data.to_csv(export_path / new_filename.replace(".json", ".csv"), index=False)
-
+        data.to_csv( PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
+ 
         # update progress bar & statistics
         files_exported += 1
         bar.progress(
@@ -270,47 +333,10 @@ def export_metadata(df):
     bar.progress(1.0, f"Tests exported ({files_exported} tests)")
 
 
-# adjusted for format md_A
-selected_columns = st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() ,
-    default=[
-        "** EXPORT FILE",
-        "** DELETE FILE",
-        "date",
-        "material_id",
-        "specimen_number",
-        "heat_flux_kW/m2",
-        "comments",
-        "material_name",
-        "HRR (kW/m2)",
-        "laboratory",
-        "c_factor",
-    ],
-)
 
-df = st.data_editor(
-    df,
-    key=st.session_state.editor_key,  
-    use_container_width=True,
-    height=650,
-    column_order=selected_columns,
-    column_config={
-        "HRR (kW/m2)": st.column_config.LineChartColumn(
-            "HRR (kW/m2)",
-            width="medium",
-        )
-    },
-)
+st.sidebar.button("Export", on_click=lambda: export_metadata(df), use_container_width=True)
+st.sidebar.markdown("Selected files are renamed, and their data and metadata are exported to the prepared stage")
 
-print(st.session_state.df_original.index)
-
-st.sidebar.markdown("### Export test data & metadata")
-st.sidebar.button(
-    "Export", on_click=lambda: export_metadata(df), use_container_width=True
-)
-
-st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
 
 
 _ = """selected_columns = 
