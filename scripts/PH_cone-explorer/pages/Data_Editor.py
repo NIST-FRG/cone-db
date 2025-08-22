@@ -45,16 +45,35 @@ if test_selection:
         st.sidebar.success(f"Data in {save_path} reverted to original.")
         
     df=pd.read_csv(test_name_map[test_selection])
+    surf_area = test_metadata["Surface Area (m2)"]
+    df["HRRPUA (kW/m2)"] = df["HRR (kW)"]/ surf_area
+    df['dt'] = df["Time (s)"].diff()
+    df['Q (MJ)'] = (df['HRR (kW)']*df['dt'])/1000
+    df['THR(MJ)'] = df["Q (MJ)"].cumsum()
+    df['THRPUA (MJ/m2)'] = df["THR(MJ)"]/surf_area
+    if "Mass (g)" in df.columns:
+        df["MassPUA (g/m2)"] = df["Mass (g)"]/surf_area
+        df['MLR (g/s)'] = np.gradient(df["Mass (g)"]) # COME BACK TO THIS
+    else:
+        df["Mass (g)"] = None
+        df["MassPUA (g/m2)"] = None
+    df['MLRPUA (g/s-m2)'] = df['MLR (g/s)']/surf_area
     test_data = df
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
 
-    # Select which column(s) to graph
-    columns_to_graph = st.multiselect(
+    if st.checkbox("Normalize Data Per Unit Area"):
+        columns_to_graph = st.multiselect(
         "Select data to graph across tests",
-        options= ['HRR (kW/m2)', "MLR (g/s-m2)", "THR (MJ/m2)"]
+        options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)"]
     )
+    else:     
+        # Select which column(s) to graph
+        columns_to_graph = st.multiselect(
+            "Select data to graph across tests",
+            options= ['Mass (g)',"MLR (g/s)",'HRR (kW/m2)',"THR (MJ/m2)"]
+        )
     
     if len(columns_to_graph) != 0:
         # Add number inputs for x- and y-axis limits
@@ -109,7 +128,6 @@ if test_selection:
 ########################################################################################################################################
     
 ################################################ Saving Adjusted/ Clipped Data ########################################################################
-        print(data_copy)
         # Save the adjusted data to a specified path
         if st.sidebar.button("Save Adjusted Data"):
             save_path = str(test_name_map[test_selection])
