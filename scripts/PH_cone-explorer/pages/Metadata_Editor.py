@@ -12,12 +12,33 @@ import streamlit as st
 import shutil
 from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PREPARED_DATA_PATH, PREPARED_METADATA_PATH
 
+################################ Title of Page #####################################################
 st.set_page_config(page_title="Metadata Editor", page_icon="📊", layout="wide")
-
 st.title("Bulk Metadata Editor")
+
+#####################################################################################################
 
 # maps the filename stem to the full path of the metadata file
 metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
+if st.checkbox('SmURF Filter'):
+    st.write("Select the test status you would like to view")
+    test_types = ['SmURFed', "Not SmURFed"]
+    selected_type = st.selectbox("Choose SmURF status", test_types)
+    # Filter tests based on selected types
+    filtered_tests = []
+    if selected_type == 'SmURFed':
+        for test_name, test_value in metadata_path_map.items():     
+            with open(test_value, 'r') as f:
+                metadata = json.load(f)
+            if metadata["SmURF"] != None:
+                filtered_tests.append(test_name)
+    else:
+        for test_name, test_value in metadata_path_map.items():     
+            with open(test_value, 'r') as f:
+                metadata = json.load(f)
+            if metadata["SmURF"] == None:
+                filtered_tests.append(test_name)
+    metadata_path_map = {test: metadata_path_map[test] for test in filtered_tests if test in metadata_path_map}
 
 if "metadata_loaded_once" not in st.session_state:
     st.session_state.metadata_loaded_once = False
@@ -81,12 +102,19 @@ def load_metadata(show_bar=True):
                 test_data['HRR (kW)'], errors='coerce'
             ) / all_surf_areas[i]  # or * if that's appropriate
 
-    hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
-    hrr.columns = metadata_path_map.keys()
-    hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
-    hrr = pd.Series(hrr.squeeze())
-    df.insert(0, "HRRPUA (kW/m2)", hrr.values)
-
+    if len(all_test_data) > 1:
+        hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
+        hrr.columns = metadata_path_map.keys()
+        hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
+        hrr = pd.Series(hrr.squeeze())
+        df.insert(0, "HRRPUA (kW/m2)", hrr.values)
+    else:
+        #HRR curve still not displaying properly if one test present only, come back to this
+        hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
+        hrr.columns = metadata_path_map.keys()
+        hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
+        hrr = pd.Series(hrr.squeeze())
+        df.insert(0, "HRRPUA (kW/m2)", [hrr])
     if bar:
         bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
 
@@ -100,8 +128,8 @@ def save_metadata(df):
     bar.progress(0, "Saving metadata ...")
     files_saved = 0
 
-    # Remove the ** DELETE FILE column
-    df = df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
+    # Remove the ** DELETE FILE and other things
+    df = df.drop(columns=["** DELETE FILE", "HRRPUA (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
 
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
@@ -172,6 +200,15 @@ def delete_files():
     files_to_delete = df[df["** DELETE FILE"]].index
     # delete the metadata files as well as their corresponding csv files
     for file in files_to_delete:
+        #tag parsed file as being bad so it is not re-imported
+        active_file = metadata_path_map[file]
+        parsed_file = Path(str(active_file).replace(str(INPUT_DATA_PATH), str(PARSED_METADATA_PATH)))
+        print(parsed_file)
+        with open(parsed_file, "r", encoding="utf-8") as w:  
+            parsed = json.load(w) 
+        parsed["Bad Data"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open (parsed_file, "w", encoding="utf-8") as w:
+            json.dump(parsed, w, indent = 4)
         metadata_path_map[file].unlink()
         metadata_path_map[file].with_suffix(".csv").unlink()
     # clear the cache so that the metadata files are reloaded
@@ -199,38 +236,40 @@ st.divider()
 
 st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
 # adjusted for format md_A
-selected_columns = st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() ,
-    default=[
-        "** EXPORT FILE",
-        "** DELETE FILE",
-        '** REVERT FILE',
-        "Test Date",
-        "Material ID",
-        "Specimen Number",
-        "Heat Flux (kW/m2)",
-        "Comments",
-        "Material Name",
-        "HRRPUA (kW/m2)",
-        "Institution",
-        "C Factor",
-    ],
-)
 
-df = st.data_editor(
-    df,
-    key=st.session_state.editor_key,  
-    use_container_width=True,
-    #height=650,
-    column_order=selected_columns,
-    column_config={
-        "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
+if len(metadata_path_map)> 0:
+    selected_columns = st.sidebar.multiselect(
+        "Columns",
+        df.columns.tolist() ,
+        default=[
+            "** EXPORT FILE",
+            "** DELETE FILE",
+            '** REVERT FILE',
+            "Test Date",
+            "Material ID",
+            "Specimen Number",
+            "Heat Flux (kW/m2)",
+            "Comments",
+            "Material Name",
             "HRRPUA (kW/m2)",
-            width="medium",
-        )
-    },
-)
+            "Institution",
+            "C Factor",
+        ],
+    )
+
+    df = st.data_editor(
+        df,
+        key=st.session_state.editor_key,  
+        use_container_width=True,
+        #height=650,
+        column_order=selected_columns,
+        column_config={
+            "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
+                "HRRPUA (kW/m2)",
+                width="medium",
+            )
+        },
+    )
 
 
 
@@ -241,8 +280,7 @@ def export_metadata(df):
     
     # Remove the ** DELETE FILE, ** EXPORT FILE, HRR columns
     export_df = st.session_state.reload_df.loc[export_indices]
-    export = export_df.drop(columns=["** DELETE FILE", "HRR (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
-    print(export_df)
+    export = export_df.drop(columns=["** DELETE FILE", "HRRPUA (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
         rmtree(OUTPUT_DATA_PATH)
@@ -254,7 +292,6 @@ def export_metadata(df):
         row = row.to_dict()
         # if the file has no material_id, skip it
         if row.get("Material ID") is None or row.get("Material ID") in ["nan", ""] or "/" in row.get("Material ID"):
-            print('wack')
             continue
 
         # replace NaN with None to conform to official json format
@@ -275,14 +312,8 @@ def export_metadata(df):
         dt_obj = datetime.strptime(date, "%d %b %Y")  # Parse the string
         row['Test Date'] = dt_obj.strftime("%Y-%m-%d")  
         row['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        
-        # parse iso format datetime and just keep the date (no time)
-        #d = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S")
-        #year = d.strftime("%Y")
 
-        # files are sorted into folder by year
-        # export_path = OUTPUT_DATA_PATH / year
+
         export_path = OUTPUT_DATA_PATH / "md_A"
         if not export_path.exists():
             export_path.mkdir(parents=True, exist_ok=True)
@@ -308,10 +339,11 @@ def export_metadata(df):
         # join all the filename parts together with a dash & add the file extension (.json)
         row['Testname'] = "_".join(filename_parts)
         new_filename = "_".join(filename_parts) + ".json"
+        old_filename = row["Original Testname"] + '.json'
         row.pop('Number of Fields')
         neworder = ['Material ID', 'Sample Mass (g)','Specimen Number','Testname', 
-                'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', 'Autoprocessed', 
-                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
+                'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', "SmURF", 'Autoprocessed', 
+                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
                    'Surface Area (m2)','Time to Ignition (s)', 'Residual Mass (g)', 'Residue Yield (g/g)','Mass Consumed', "Soot Average (g/g)",
                    'Peak Heat Release Rate (kW/m2)', 'Peak Mass Loss Rate (g/s-m2)', 'Comments', 'Data Corrections' ]
         reordered_metadata = {key: row[key] for key in neworder}
@@ -319,16 +351,20 @@ def export_metadata(df):
             if key not in neworder:
                 reordered_metadata[key] = row[key]
 
-        # save the metadata file
+        # save the metadata file, including to parsed
         with open(export_path / new_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
         with open(PREPARED_METADATA_PATH / new_filename, "w") as f:
+            json.dump(reordered_metadata, f, indent=4)
+        with open(PARSED_METADATA_PATH / old_filename, "w") as f:
+            json.dump(reordered_metadata, f, indent=4)
+        with open(INPUT_DATA_PATH / old_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
 
         # Get the CSV data file as well and save that in the same folder as the metadata file
         data = pd.read_csv(path.with_suffix(".csv"))
         data.to_csv(export_path / new_filename.replace(".json", ".csv"), index=False)
-        data.to_csv( PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
+        data.to_csv(PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
  
         # update progress bar & statistics
         files_exported += 1

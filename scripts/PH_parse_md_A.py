@@ -26,6 +26,7 @@ def parse_dir(input_dir):
     files_parsed = 0
     files_parsed_successfully = 0
     files_SmURFed = 0
+    bad_files = 0
     # track and print parsing success rate
     for path in paths:
         output_meta = Path(str(path).replace(str(INPUT_DIR), str(OUTPUT_META))).with_suffix('.json')
@@ -38,6 +39,12 @@ def parse_dir(input_dir):
                     oldname = metadata['Original Testname']
                     newname = metadata ['Testname']
                     print(colorize(f'{oldname} has already been SmURFed to {newname}. Skipping Parsing','blue'))
+                    continue
+                elif metadata["Bad Data"] is not None:
+                    bad_files += 1
+                    oldname = metadata['Original Testname']
+                    newname = metadata ['Testname']
+                    print(colorize(f'{oldname} was deemed bad on {metadata["Bad Data"]}. Skipping Parsing','purple'))
                     continue
         try:
             files_parsed += 1
@@ -59,6 +66,7 @@ def parse_dir(input_dir):
         files_parsed_successfully += 1
 
     print(colorize(f"Copied all metadata files from {PREPARSED_META} to {OUTPUT_META}\n", "green"))
+    print(colorize(f"Bad Files:{bad_files}/{total_files} ({((bad_files)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files previously SmURFed:{files_SmURFed}/{total_files} ({((files_SmURFed)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({((files_parsed_successfully)/files_parsed) * 100}%)", "blue"))
     
@@ -132,12 +140,6 @@ def parse_data(file_path):
         data = df[["Time (s)","MLR (g/s)","HRR (kW)"]]
         metadata["Comments"].append("NO RAW MASS LOSS DATA")
     
-    if "Sum Q (MJ/m2)" not in df.columns:
-        df['dt'] = df["Time (s)"].diff()
-        df['Q (MJ/m2)'] = (df['Q-Dot (kW/m2)']*df['dt'])/1000
-        df['Sum Q (MJ/m2)'] = df["Q (MJ/m2)"].cumsum()
-
-    
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 
@@ -157,22 +159,7 @@ def parse_metadata(input_meta, output_meta):
     with open(output_meta, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata, indent=4))
 
-#region files_to_prepare
-# copying data and metadata files ready to be prepared/manually reviewed --> cone explorer input directory
-def files_to_prepare():
-    OUTPUT_EXPLORER.mkdir(parents=True, exist_ok=True)
-    for file in OUTPUT_META.iterdir():
-        with open(file, "r", encoding="utf-8") as w:  
-            metadata = json.load(w)
-        if True : #if metadata["number_of_fields"] == 19:
-            csv_file = file.with_suffix(".csv").name
-            csv_path = OUTPUT_DIR_CSV / csv_file
-            if os.path.exists(csv_path):
-                shutil.copy(file, OUTPUT_EXPLORER)
-                shutil.copy(csv_path, OUTPUT_EXPLORER)
 
-    print(colorize(f"Files sent to {OUTPUT_EXPLORER}", "green"))
-            
 
 
 #region main
@@ -183,4 +170,4 @@ if __name__ == "__main__":
         f.write(json.dumps(logfile, indent=4))
     print("✅ parse_md_A_log.json created.")
     parse_dir(INPUT_DIR)
-    files_to_prepare()  
+    

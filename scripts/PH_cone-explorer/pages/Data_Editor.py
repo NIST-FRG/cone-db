@@ -19,9 +19,31 @@ st.title("Cone Data Editor")
 ############################## Get test files, select by material, then material id, then test #################
 # Get the paths to all the test files
 test_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
-
 # Get the paths to all the metadata files
 metadata_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
+
+if st.checkbox('SmURF Filter'):
+    st.write("Select the test status you would like to view")
+    test_types = ['SmURFed', "Not SmURFed"]
+    selected_type = st.selectbox("Choose SmURF status", test_types)
+    # Filter tests based on selected types
+    filtered_tests = []
+    if selected_type == 'SmURFed':
+        for test_name, test_value in metadata_name_map.items():     
+            with open(test_value, 'r') as f:
+                metadata = json.load(f)
+            if metadata["SmURF"] != None:
+                filtered_tests.append(test_name)
+    else:
+        for test_name, test_value in metadata_name_map.items():     
+            with open(test_value, 'r') as f:
+                metadata = json.load(f)
+            if metadata["SmURF"] == None:
+                filtered_tests.append(test_name)
+    metadata_name_map = {test: metadata_name_map[test] for test in filtered_tests if test in metadata_name_map}
+    test_name_map = {test: metadata_name_map[test].with_suffix('.csv') for test in filtered_tests}
+
+
 
 test_selection = st.selectbox(
     "Select a test to view and edit:",
@@ -53,7 +75,7 @@ if test_selection:
     df['THRPUA (MJ/m2)'] = df["THR(MJ)"]/surf_area
     if "Mass (g)" in df.columns:
         df["MassPUA (g/m2)"] = df["Mass (g)"]/surf_area
-        df['MLR (g/s)'] = np.gradient(df["Mass (g)"]) # COME BACK TO THIS
+        df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
     else:
         df["Mass (g)"] = None
         df["MassPUA (g/m2)"] = None
@@ -72,7 +94,7 @@ if test_selection:
         # Select which column(s) to graph
         columns_to_graph = st.multiselect(
             "Select data to graph across tests",
-            options= ['Mass (g)',"MLR (g/s)",'HRR (kW/m2)',"THR (MJ/m2)"]
+            options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)"]
         )
     
     if len(columns_to_graph) != 0:

@@ -1,10 +1,51 @@
 import streamlit as st
-from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH
-
+from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PARSED_DATA_PATH, PREPARED_DATA_PATH
+import json
+import shutil
+import os
+from pathlib import Path
 st.set_page_config(page_title="NIST Cone Data Explorer", page_icon="🔬")
 
 st.title("NIST Cone Data Explorer")
+if st.button("Import Data To Explorer"):
+    INPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
+    for file in PARSED_METADATA_PATH.iterdir():
+        with open(file, "r", encoding="utf-8") as w:  
+            metadata = json.load(w)
+        smurf = metadata["SmURF"]
+        bad = metadata["Bad Data"]
+        new_file = Path(str(file).replace(str(PARSED_METADATA_PATH), str(INPUT_DATA_PATH)))
+        csv_file = file.with_suffix(".csv").name
+        parsed_csv_path = PARSED_DATA_PATH / csv_file
+        prep_csv_path = PREPARED_DATA_PATH / csv_file
 
+        # If test is "bad", remove files from explorer if present
+        if bad is not None:
+            if new_file.exists(): 
+                new_file.unlink()
+            csv_in_explorer = new_file.with_suffix(".csv")
+            if csv_in_explorer.exists():
+                csv_in_explorer.unlink()
+            st.sidebar.error(f"{new_file.stem} has been removed from the explorer, as it was deemed a bad test.")
+            continue  # move to next file
+
+        # Otherwise, check whether file already exists in explorer
+        if new_file.exists():
+            # Compare keys for possible differences
+            with open(new_file, "r", encoding="utf-8") as r:
+                new_metadata = json.load(r)
+            badkey = next((key for key in new_metadata if metadata.get(key) != new_metadata.get(key)), None)
+            if badkey is not None and smurf is None:
+                st.sidebar.error(f"Warning: please export or revert changes to {file.stem}. Difference detected in {badkey}.")
+                continue  # skip further copy for this file
+
+        # now: copy files if not skipped above
+        # Try prepared data first, then parsed if not found
+        src_csv_path = prep_csv_path if prep_csv_path.exists() else parsed_csv_path if parsed_csv_path.exists() else None
+        if src_csv_path:
+            shutil.copy(file, INPUT_DATA_PATH)
+            shutil.copy(src_csv_path, INPUT_DATA_PATH)
+    st.success("Data and Metadata imported successfully")
 st.markdown(
     r"""
 *The below information can also be found in the README.md file.*
