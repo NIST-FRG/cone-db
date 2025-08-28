@@ -145,7 +145,7 @@ def get_tests(file_contents):
     tests = {}
     for i in range(len(file_contents) - 2):  # Stop at len - 2 to allow i+2 access
         line = str(file_contents[i]).upper().strip()
-        test_match = re.search(r"\((\d{4})\)", line)
+        test_match = re.search(r"\((\d{3,4})\)", line)
         if test_match is not None:
             line_after_two = file_contents[i + 2].upper().strip()
 
@@ -431,13 +431,13 @@ def parse_metadata(input,test_name):
 
     ############ finding metadata fields ############
     metadata_json["Comments"] = []
-    metadata_json["Specimen Number"] = str(test_name).split("_")[0]
+    metadata_json["Specimen Number"] = str(test_name).split("_")[0].split("t")[-1] # just the number
     metadata_json["Material ID"] = None
     for item in metadata:
         if metadata.index(item) == 0:
             name = item.split("(", 1)[0].strip()
             metadata_json["Material Name"] = name
-        if not metadata_json.get("Heat Flux (kW/m2)"):
+        if "Heat Flux (kW/m2)" not in metadata_json:
             if "KW/M2" in item:
                 match = re.search(r'(\d+\s*KW/M2)', item)
             if match:
@@ -446,7 +446,7 @@ def parse_metadata(input,test_name):
                 # Alternative: get all characters (digits, possibly units and spaces) just before KW/M2
                 match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
                 substring = match.group(1) if match else None
-            metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "flt")
+            metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
         if "MAX TIME" in item:
             metadata_json["time_s"] = get_number(item, "flt")
         elif "MAX HEAT RELEASE" in item:
@@ -528,7 +528,7 @@ def parse_metadata(input,test_name):
 #region helpers
 #get number(int,float,exponent,)
 def get_number(item, num_type):
-    number = "Not found"
+    number = None
     match num_type:
         case "int":
             match = re.search(r'\d+', item)

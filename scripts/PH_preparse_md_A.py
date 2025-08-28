@@ -53,10 +53,10 @@ def parse_dir(input_dir):
             files_parsed_partial += 1
             out_path = Path(str(path).replace('md_A', 'md_A_partial'))
 
-        # If output path is set, ensure the directory exists and copy
-        #if out_path:
-        #    out_path.parent.mkdir(parents=True, exist_ok=True)
-        #    shutil.move(path, out_path)
+        # If output path is set, ensure the directory exists and move
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -376,9 +376,9 @@ def parse_metadata(input,test_name):
     METADATA_DIR.mkdir(parents=True, exist_ok=True)
 
     # checking for existing test metadata file 
-    if meta_path.exists():
-        with open(meta_path, "r", encoding="utf-8") as w:  
-            metadata_json = json.load(w)
+    #if meta_path.exists():
+     #   with open(meta_path, "r", encoding="utf-8") as w:  
+      #      metadata_json = json.load(w)
 
     for line in input:
         # Preprocess line to remove excessive whitespace after '='
@@ -512,7 +512,7 @@ def parse_metadata(input,test_name):
 #region helpers
 #get number(int,float,exponent,)
 def get_number(item, num_type):
-    number = 'Not found'
+    number = None
     match num_type:
         case "int":
             match = re.search(r'\d+', item)

@@ -68,6 +68,7 @@ if test_selection:
         
     df=pd.read_csv(test_name_map[test_selection])
     surf_area = test_metadata["Surface Area (m2)"]
+    mass = test_metadata["Sample Mass (g)"]
     df['dt'] = df["Time (s)"].diff()
     #CASE B
     if "Mass (g)" in df.columns and "HRRPUA (kW/m2)" in df.columns:
