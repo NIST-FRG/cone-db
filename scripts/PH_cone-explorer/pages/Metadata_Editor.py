@@ -98,10 +98,14 @@ def load_metadata(show_bar=True):
 
 
     for i, test_data in enumerate(all_test_data):
+        if 'HRR (kW)' in test_data.columns:
             test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
                 test_data['HRR (kW)'], errors='coerce'
             ) / all_surf_areas[i]  # or * if that's appropriate
-
+        else:
+            test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
+                test_data['HRRPUA (kW/m2)'], errors='coerce'
+            )
     if len(all_test_data) > 1:
         hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
         hrr.columns = metadata_path_map.keys()

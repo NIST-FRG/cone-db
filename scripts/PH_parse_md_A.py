@@ -126,20 +126,34 @@ def parse_data(file_path):
     meta_file = str(file_stem) + ".json"
     with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-    surf_area = metadata["Surface Area (m2)"]
+    
     mass = metadata["Sample Mass (g)"]
+    surf_area = metadata["Surface Area (m2)"]
     df = pd.read_csv(file_path)
-    
-    df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
-    if "Mass Loss (kg/m2)" in df.columns:
-        df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
-        data = df[["Time (s)","Mass (g)","HRR (kW)"]]
+    data = None
+    if surf_area == None:
+        print(colorize(f'Warning: {file_stem} does not have a defined surface area, data is output per unit area', "yellow"))
+        metadata["Comments"].append("PER UNIT AREA DATA ONLY")
+        df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
+        if "Mass Loss (kg/m2)" in df.columns:
+            df["MassPUA (g/m2)"] = mass - (df["Mass Loss (kg/m2)"]* 1000) #surface area m2, 1000g/kg
+            data = df[["Time (s)","MassPUA (g/m2)","HRRPUA (kW/m2)"]]
+        else:
+            print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
+            df["MLRPUA (g/s-m2)"] = df["M-Dot (g/s-m2)"]
+            data = df[["Time (s)","MLRPUA (g/s-m2)","HRRPUA (kW/m2)"]]
+            metadata["Comments"].append("NO RAW MASS LOSS DATA")
     else:
-        print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area
-        data = df[["Time (s)","MLR (g/s)","HRR (kW)"]]
-        metadata["Comments"].append("NO RAW MASS LOSS DATA")
-    
+        df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
+        if "Mass Loss (kg/m2)" in df.columns:
+            df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
+            data = df[["Time (s)","Mass (g)","HRR (kW)"]]
+        else:
+            print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
+            df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area
+            data = df[["Time (s)","MLR (g/s)","HRR (kW)"]]
+            metadata["Comments"].append("NO RAW MASS LOSS DATA")
+        
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 

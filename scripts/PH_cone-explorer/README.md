@@ -3,7 +3,7 @@
 #### A web-based app for processing + visualizing cone calorimeter test data.
 
 ## Setup
-Place .csv & .json files from the parsing scripts (e.g. FTT.py, midas.py, etc.) in the `data` folder. Folder structure doesn't matter, but make sure the CSV data file and the JSON metadata file for each test have the same name and are in the same folder.
+Prior to opening the explorer, preparsing and parsing of data should have been performed. Please run these scripts if this is not the case, or pull down the data from GitHub. Upon opening the explorer (see Usage), click the import data button on the `Main` page to pull in parsed data.
 
 ## Usage
 From the root of the repository, run the following command:
@@ -18,8 +18,65 @@ If you're running the app for the first time and you get an error about missing 
 ```bash
 pip install streamlit
 ```
+### SmURF
+The major use of this data explorer will be 
 
 ## Tools
+
+### Compare Tests
+
+##### Overview
+
+Grants the user the ability to view and compare the data from multiple tests.
+
+##### Filter Options
+
+Select `SmURF Filter` to select a date range of tests; start and end date must be in the format **YYYY-MM-DD**.
+
+##### Selecting Tests to View
+
+Type out the material you wish to view, followed by the version of that material if more than one exist.
+Select the specific tests you would like to view, or click one of the three checkboxes.
+
+`Select All Tests for []` will select all tests for the material(s) and version(s) you have selected in brackets.
+
+`Select All Average Tests` will select all average test file for each version of each material.
+
+`Select All Manually Reviewed and Approved Tests` will select all tests that have been manually reviewed and approved.
+
+##### Data Plotting Options
+
+For TGA, curves of Mass (mg), Normalized Mass (g/g_0), Mass Loss Rate (mg/s), and Normalized Mass Loss Rate (1/s) can be plotted against Temperature (K).
+
+Average curves only exist for Normalized Data. If an average test exists, click `View Uncertainty in Average (data type)` to plot its expanded uncertainty (2 sigma).
+
+Plots can zoom in and out, pan, and save the plot as a .png file. Click on the name of a test to hide its curve; double click to isolate a curve.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Metadata Editor
 Allows for editing metadata fields through a spreadsheet/table-like interface, as well as bulk deleting files.  
