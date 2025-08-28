@@ -136,8 +136,14 @@ def parse_data(file_path):
         metadata["Comments"].append("PER UNIT AREA DATA ONLY")
         df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
         if "Mass Loss (kg/m2)" in df.columns:
-            df["MassPUA (g/m2)"] = mass - (df["Mass Loss (kg/m2)"]* 1000) #surface area m2, 1000g/kg
-            data = df[["Time (s)","MassPUA (g/m2)","HRRPUA (kW/m2)"]]
+            if mass != None:
+                df["MassPUA (g/m2)"] = mass - (df["Mass Loss (kg/m2)"]* 1000) #surface area m2, 1000g/kg
+                data = df[["Time (s)","MassPUA (g/m2)","HRRPUA (kW/m2)"]]
+            else: 
+                print(colorize(f'Warning: {file_stem} is missing sample mass, mass loss is output', "yellow"))
+                df["Mass LossPUA (g/m2)"] = (df["Mass Loss (kg/m2)"]* 1000)
+                data = df[["Time (s)","MassPUA (g/m2)","HRRPUA (kW/m2)"]]
+                metadata["Comments"].append("MISSING SAMPLE MASS")
         else:
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
             df["MLRPUA (g/s-m2)"] = df["M-Dot (g/s-m2)"]
@@ -146,8 +152,14 @@ def parse_data(file_path):
     else:
         df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
         if "Mass Loss (kg/m2)" in df.columns:
-            df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
-            data = df[["Time (s)","Mass (g)","HRR (kW)"]]
+            if mass != None:
+                df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
+                data = df[["Time (s)","Mass (g)","HRR (kW)"]]
+            else:
+                print(colorize(f'Warning: {file_stem} is missing sample mass, mass loss is output', "yellow"))
+                df["Mass Loss (g)"] = (df["Mass Loss (kg/m2)"] * surf_area * 1000)
+                data = df[["Time (s)","Mass Loss (g)","HRR (kW)"]]
+                metadata["Comments"].append("MISSING SAMPLE MASS")
         else:
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
             df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area

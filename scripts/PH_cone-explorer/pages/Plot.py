@@ -59,12 +59,13 @@ if len(test_selection) != 0:
         test_metadata = (json.load(open(metadata_name_map[test_stem])))
         surf_area = test_metadata["Surface Area (m2)"]
         flux = test_metadata["Heat Flux (kW/m2)"]
-        if flux != None:
+        if flux != None :
             df["t * EHF (kJ/m2)"] = df["Time (s)"] * flux
         else:
             df["t * EHF (kJ/m2)"] = None
         df["dt"] = df["Time (s)"].diff()
         surf_area = test_metadata["Surface Area (m2)"]
+        mass = test_metadata["Sample Mass (g)"]
         #CASE B
         if "Mass (g)" in df.columns and "HRRPUA (kW/m2)" in df.columns:
             df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
