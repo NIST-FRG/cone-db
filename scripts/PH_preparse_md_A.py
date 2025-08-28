@@ -51,12 +51,12 @@ def parse_dir(input_dir):
         else:
             print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
             files_parsed_partial += 1
-            out_path = Path(str(path).replace('md_A', 'md_A_bad'))
+            out_path = Path(str(path).replace('md_A', 'md_A_partial'))
 
         # If output path is set, ensure the directory exists and copy
-        if out_path:
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(path, out_path)
+        #if out_path:
+        #    out_path.parent.mkdir(parents=True, exist_ok=True)
+        #    shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -109,8 +109,8 @@ def parse_file(file_path):
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                    str(test) : str(e)
-                })
+                f"{file_path.name}-{test}": str(e)
+            })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
 
@@ -131,7 +131,7 @@ def get_tests(file_contents):
         line = str(line).upper().strip()
         test_number_match = re.search(r"TEST\s+\d{4}", line)
 
-        if test_number_match is not None:
+        if test_number_match is not None and "REPEAT" not in line and "SAME" not in line:
             # Extract the matched substring (could be e.g. "TEST 2865", "TEST   2865")
             test_number_str = line[test_number_match.start():test_number_match.end()]
             # Only one space btwn test and #:
@@ -338,10 +338,21 @@ def parse_data(data_df,test,file_name):
         elif "H2" in column:
             #some of the O were seen as 0, H2 to remove error
             data_df.columns.values[i] = "H2O (kg/kg)"
-        elif "CARBS" in column:
+        elif "CARB" in column:
             data_df.columns.values[i] ="H'carbs (kg/kg)"
         elif "HCL" in column:
             data_df.columns.values[i] = "HCl (kg/kg)"
+        elif "EPSILON" in column:
+            if "Epsilon One" not in data_df.columns.values:
+                data_df.columns.values[i] = "Epsilon One"
+            else:
+                data_df.columns.values[i] = "Epsilon Two"
+        elif "TEOM" in column: 
+            data_df.columns.values[i] = "TEOM (g/s)"
+        elif "KS" in str(column.replace(" ", "")):
+            data_df.columns.values[i] = "K s (m2/g)"
+        elif "EXTCOEFF" in column:
+            data_df.columns.values[i] = "EXT Coeff (1/m)"
         else:
             msg = f'Illegal Column Detected: {column}'
             raise Exception(msg)
@@ -420,9 +431,9 @@ def parse_metadata(input,test_name):
             metadata_json["Orientation"] = "VERTICAL"
         elif "CALIBRATION" in item:
             metadata_json["C Factor"] = get_number(item[3:],"flt")
-        elif "INITIAL MASS=" in item:
+        elif "INITIAL MASS" in item and "FRACTION" not in item:
             metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
-        elif "FINAL MASS=" in item:
+        elif "FINAL MASS=" in item and "FRACTION" not in item:
             metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
         elif "AREA OF SAMPLE" in item and not metadata_json.get("Surface Area (m2)"):
             #print('area')
@@ -452,10 +463,31 @@ def parse_metadata(input,test_name):
         else:
             metadata_json["Comments"].append(item)
         prev_item = item
-    if not metadata_json.get("Surface Area (m2)"):
-        msg = f"No Surface Area Detected"
-        raise Exception (msg)
-    metadata_json["Number of Fields"] = len(metadata_json) #Excluding the added for now
+
+    expected_keys = [
+        "Institution",
+        "Heat Flux (kW/m2)",
+        "Material Name",
+        "Orientation",
+        "C Factor",
+        "Sample Mass (g)",
+        "Residual Mass (g)",
+        "Surface Area (m2)",
+        "Soot Average (g/g)",
+        "Mass Consumed",
+        "Conversion Factor",
+        "Time to Ignition (s)",
+        "Peak Heat Release Rate (kW/m2)",
+        "Peak Mass Loss Rate (g/s-m2)",
+        "Specimen Number",
+        "Test Date",
+        "Residue Yield (g/g)"
+    ]
+        #autoprocessed values
+    if ("Sample Mass (g)" in metadata_json) and ("Residual Mass (g)" in metadata_json) and (metadata_json["Sample Mass (g)"] != None) and (metadata_json["Sample Mass (g)"] != None):
+        metadata_json["Residue Yield (g/g)"] = float(metadata_json["Residual Mass (g)"]) / float(metadata_json["Sample Mass (g)"])
+    for key in expected_keys:
+        metadata_json.setdefault(key, None)
     metadata_json['Original Testname'] = test_name
     metadata_json ['Testname'] = None
     metadata_json['Instrument'] = "NBS Cone Calorimeter"
@@ -469,9 +501,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-    #autoprocessed values
-    if ("Sample Mass (g)" in metadata_json) and ("Residual Mass (g)" in metadata_json):
-        metadata_json["Residue Yield (g/g)"] = float(metadata_json["Residual Mass (g)"]) / float(metadata_json["Sample Mass (g)"])
+
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
