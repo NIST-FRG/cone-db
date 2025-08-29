@@ -6,13 +6,13 @@ import shutil
 import os
 from datetime import datetime
 
-INPUT_DIR = Path(r"../data/pre-parsed/md_B")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_B")
-PREPARSED_META = Path(r"../Metadata/preparsed/md_B")
-OUTPUT_META = Path(r"../Metadata/Parsed/md_B")
-OUTPUT_EXPLORER = Path(r"PH_cone-explorer/data/parsed/md_B")
+INPUT_DIR = Path(r"../data/pre-parsed/md_C")
+OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_C")
+PREPARSED_META = Path(r"../Metadata/preparsed/md_C")
+OUTPUT_META = Path(r"../Metadata/Parsed/md_C")
+OUTPUT_EXPLORER = Path(r"PH_cone-explorer/data/parsed/md_C")
 
-LOG_FILE = Path(r"..") / "parse_md_B_log.json"
+LOG_FILE = Path(r"..") / "parse_md_C_log.json"
 
 #region parse_dir
 # Find/load the pre-parsed CSV files
@@ -128,9 +128,15 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
-    df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
-    data = df[["Time (s)","Mass (g)","HRRPUA (kW/m2)"]]
-
+    if "Mass (kg)" in df.columns:
+        df["Mass (g)"] = df["Mass (kg)"] * 1000
+        data = df[["Time (s)","Mass (g)","HRRPUA (kW/m2)"]]
+    elif "MLR (g/s)" in df.columns:
+        print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
+        data = df[["Time (s)","MLR (g/s)","HRRPUA (kW/m2)"]]
+    else:
+        print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
+        data  = df[["Time (s)","HRRPUA (kW/m2)"]]
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
@@ -160,6 +166,6 @@ if __name__ == "__main__":
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
-    print("✅ parse_md_B_log.json created.")
+    print("✅ parse_md_C_log.json created.")
     parse_dir(INPUT_DIR)
     
