@@ -560,5 +560,5 @@ if __name__ == "__main__":
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
-    print("✅ preparse_md_A_log.json created.")
+    print("✅ preparse_md_B_log.json created.")
     parse_dir(INPUT_DIR)
