@@ -71,9 +71,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_B', 'md_B_partial'))
 
         # If output path is set, ensure the directory exists and copy
-        #if out_path:
-        #    out_path.parent.mkdir(parents=True, exist_ok=True)
-        #    shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
     
@@ -346,9 +346,8 @@ def parse_data(data_df,test,file_name):
             data_df.columns.values[i] = "Sum Q (MJ/m2)"
         elif "MASS" in column:
             data_df.columns.values[i] = "Mass (g)"
-        elif "MLOSS" in str(column.replace(" ", "")):
-            if "M-Dot (g/s-m2)" not in data_df.columns.values:
-                data_df.columns.values[i] = "MLR (g/s)"
+        elif "M" in column and "LOSS" in column:
+            data_df.columns.values[i] = "MLR (g/s)"
         elif "COMB" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "CO2" in column or "C02" in column:
@@ -447,8 +446,6 @@ def parse_metadata(input,test_name):
                 match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
                 substring = match.group(1) if match else None
             metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
-        if "MAX TIME" in item:
-            metadata_json["time_s"] = get_number(item, "flt")
         elif "MAX HEAT RELEASE" in item:
             metadata_json["Peak Heat Release Rate (kW/m2)"] = get_number(item, "flt")
         elif "HOR" in item:
@@ -487,9 +484,7 @@ def parse_metadata(input,test_name):
         "Test Date",
         "Residue Yield (g/g)"
     ]
-        #autoprocessed values
-    if ("Sample Mass (g)" in metadata_json) and ("Residual Mass (g)" in metadata_json) and (metadata_json["Sample Mass (g)"] != None) and (metadata_json["Sample Mass (g)"] != None):
-        metadata_json["Residue Yield (g/g)"] = float(metadata_json["Residual Mass (g)"]) / float(metadata_json["Sample Mass (g)"])
+    
     for key in expected_keys:
         metadata_json.setdefault(key, None)
     metadata_json['Original Testname'] = test_name
@@ -505,7 +500,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-
+    metadata_json["Markdown Format"] = "B"
     metadata_json['Data Corrections'] =[]
 
     #update respective test metadata file

@@ -54,9 +54,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_C', 'md_C_partial'))
 
         # If output path is set, ensure the directory exists and move
-        #if out_path:
-         #   out_path.parent.mkdir(parents=True, exist_ok=True)
-          #  shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -321,7 +321,7 @@ def parse_data(data_df,test,file_name):
             # Additional check: Is this column monotonically decreasing?
             col_vals = pd.to_numeric(data_df[column], errors='coerce').dropna()
             # Check monotonic decreasing
-            if (col_vals.diff().dropna() <= 0).all():
+            if (col_vals.diff().dropna() <= 0).all() and (col_vals != 0.0).all():
                 data_df.columns.values[i] = "Mass (kg)"
             else:
                 data_df.columns.values[i] = "MLR (g/s)"
@@ -332,7 +332,6 @@ def parse_data(data_df,test,file_name):
         elif ("CO" in column or "C0" in column) and "2" not in column:
             data_df.columns.values[i] = "CO (kg/kg)"
         elif "AIR" in column:
-            #some of the O were seen as 0, H2 to remove error
             data_df.columns.values[i] = "Air/Sample (kg/kg)"
         else:
             msg = f'Illegal Column Detected: {column}'
@@ -444,7 +443,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-
+    metadata_json["Markdown Format"] = "C"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

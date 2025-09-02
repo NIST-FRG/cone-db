@@ -10,7 +10,6 @@ INPUT_DIR = Path(r"../data/pre-parsed/md_C")
 OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_C")
 PREPARSED_META = Path(r"../Metadata/preparsed/md_C")
 OUTPUT_META = Path(r"../Metadata/Parsed/md_C")
-OUTPUT_EXPLORER = Path(r"PH_cone-explorer/data/parsed/md_C")
 
 LOG_FILE = Path(r"..") / "parse_md_C_log.json"
 
@@ -120,7 +119,7 @@ def parse_file(file_path):
 '''
     
 #region parse_plot_data
-def parse_data(file_path):
+def parse_data(file_path):    
     # extract heat flux from current test
     file_stem = file_path.stem
     meta_file = str(file_stem) + ".json"
@@ -128,15 +127,31 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
+    if "CO2 (kg/kg)" not in df.columns:
+        df["CO2 (kg/kg)"] = None
+    if "CO (kg/kg)" not in df.columns:
+        df["CO (kg/kg)"] = None
+    if "H2O (kg/kg)" not in df.columns:
+        df["H2O (kg/kg)"] = None
+    if "HCl (kg/kg)" not in df.columns:
+        df["HCl (kg/kg)"] = None
+    if "H'carbs (kg/kg)" not in df.columns:
+        df["H'carbs (kg/kg)"] = None
+
     if "Mass (kg)" in df.columns:
         df["Mass (g)"] = df["Mass (kg)"] * 1000
-        data = df[["Time (s)","Mass (g)","HRRPUA (kW/m2)"]]
+        df["HRR (kW)"] = None
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
     elif "MLR (g/s)" in df.columns:
+        df["Mass (g)"] = None
+        df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        data = df[["Time (s)","MLR (g/s)","HRRPUA (kW/m2)"]]
+        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "MLR (g/s)", "HRRPUA (kW/m2)"]]
     else:
+        df["Mass (g)"] = None
+        df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
-        data  = df[["Time (s)","HRRPUA (kW/m2)"]]
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)

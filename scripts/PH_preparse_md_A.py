@@ -433,7 +433,7 @@ def parse_metadata(input,test_name):
             metadata_json["C Factor"] = get_number(item[3:],"flt")
         elif "INITIAL MASS" in item and "FRACTION" not in item:
             metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
-        elif "FINAL MASS=" in item and "FRACTION" not in item:
+        elif "FINAL MASS" in item and "FRACTION" not in item:
             metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
         elif "AREA OF SAMPLE" in item and not metadata_json.get("Surface Area (m2)"):
             #print('area')
@@ -458,6 +458,8 @@ def parse_metadata(input,test_name):
             match = re.search(r'TEST\s+(\d{4})', item)
             if match:
                 metadata_json["Specimen Number"] = int(match.group(1))
+        elif "INITIAL WEIGHT" in item and not metadata_json.get("Sample Mass (g)"):
+            metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
         elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
             metadata_json["Test Date"] = item
         else:
@@ -483,9 +485,7 @@ def parse_metadata(input,test_name):
         "Test Date",
         "Residue Yield (g/g)"
     ]
-        #autoprocessed values
-    if ("Sample Mass (g)" in metadata_json) and ("Residual Mass (g)" in metadata_json) and (metadata_json["Sample Mass (g)"] != None) and (metadata_json["Sample Mass (g)"] != None):
-        metadata_json["Residue Yield (g/g)"] = float(metadata_json["Residual Mass (g)"]) / float(metadata_json["Sample Mass (g)"])
+
     for key in expected_keys:
         metadata_json.setdefault(key, None)
     metadata_json['Original Testname'] = test_name
@@ -501,7 +501,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-
+    metadata_json["Markdown Format"] = "A"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

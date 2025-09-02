@@ -10,7 +10,7 @@ INPUT_DIR = Path(r"../data/pre-parsed/md_B")
 OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_B")
 PREPARSED_META = Path(r"../Metadata/preparsed/md_B")
 OUTPUT_META = Path(r"../Metadata/Parsed/md_B")
-OUTPUT_EXPLORER = Path(r"PH_cone-explorer/data/parsed/md_B")
+
 
 LOG_FILE = Path(r"..") / "parse_md_B_log.json"
 
@@ -129,7 +129,18 @@ def parse_data(file_path):
 
     df = pd.read_csv(file_path)
     df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
-    data = df[["Time (s)","Mass (g)","HRRPUA (kW/m2)"]]
+    if "CO2 (kg/kg)" not in df.columns:
+        df["CO2 (kg/kg)"] = None
+    if "CO (kg/kg)" not in df.columns:
+        df["CO (kg/kg)"] = None
+    if "H2O (kg/kg)" not in df.columns:
+        df["H2O (kg/kg)"] = None
+    if "HCl (kg/kg)" not in df.columns:
+        df["HCl (kg/kg)"] = None
+    if "H'carbs (kg/kg)" not in df.columns:
+        df["H'carbs (kg/kg)"] = None
+    df["HRR (kW)"] = None
+    data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
 
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
