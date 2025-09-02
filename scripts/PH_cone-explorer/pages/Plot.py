@@ -57,47 +57,38 @@ if len(test_selection) != 0:
     for i, test_stem in enumerate(test_selection):
         df=pd.read_csv(test_name_map[test_stem])
         test_metadata = (json.load(open(metadata_name_map[test_stem])))
-        surf_area = test_metadata["Surface Area (m2)"]
-        flux = test_metadata["Heat Flux (kW/m2)"]
+        surf_area = test_metadata.get("Surface Area (m2)")
+        flux = test_metadata.get("Heat Flux (kW/m2)")
         if flux != None :
             df["t * EHF (kJ/m2)"] = df["Time (s)"] * flux
         else:
             df["t * EHF (kJ/m2)"] = None
-        df["dt"] = df["Time (s)"].diff()
-        surf_area = test_metadata["Surface Area (m2)"]
-        mass = test_metadata["Sample Mass (g)"]
-        #CASE B
-        if "Mass (g)" in df.columns and "HRRPUA (kW/m2)" in df.columns:
-            df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
-            df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
-            df["THR (MJ)"] = None
-            df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
-            df["HRR (kW)"] = None
-            df["THR (MJ)"] = None
+        df['dt'] = df["Time (s)"].diff()
+        #Normal and area adjusted HRR and THR generation
+        if "HRRPUA (kW/m2)" not in df.columns:
+            df["HRRPUA (kW/m2)"] = df["HRR (kW)"] / surf_area if surf_area is not None else None
+        df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
+        df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
+        df['Q (MJ)'] = (df['HRR (kW)']*df['dt'])/1000
+        df['THR (MJ)'] = df["Q (MJ)"].cumsum()
+    
+
+    #Mass and Mass Loss Rate Data
+        if "MLR (g/s)" in df.columns:
+            df["MLRPUA (g/s-m2)"] = df["MLR (g/s)"] / surf_area if surf_area is not None else None
             df["MassPUA (g/m2)"] = None
+        elif "MLRPUA (g/s-m2)" in df.columns:
+            df["MLR (g/s)"] = df["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
+            df["MassPUA (g/m2)"] = None
+        elif not df["Mass (g)"].isnull().all():
+            df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
+            df["MLRPUA (g/s-m2)"] = df["MLR (g/s)"] / surf_area if surf_area is not None else None 
+            df["MassPUA (g/m2)"] = df["Mass (g)"]  / surf_area if surf_area is not None else None 
+        else: 
+            df["MassPUA (g/m2)"] = None
+            df["MLR (g/s)"] = None
             df["MLRPUA (g/s-m2)"] = None
-        ###CASE A
-        else:
-            if surf_area != None:
-                df["HRRPUA (kW/m2)"] = df["HRR (kW)"]/ surf_area
-                df['Q (MJ)'] = (df['HRR (kW)']*df['dt'])/1000
-                df['THR (MJ)'] = df["Q (MJ)"].cumsum()
-                df['THRPUA (MJ/m2)'] = df["THR (MJ)"]/surf_area
-                if "Mass (g)" in df.columns:
-                    df["MassPUA (g/m2)"] = df["Mass (g)"]/surf_area
-                    df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
-                else:
-                    df["Mass (g)"] = None
-                    df["MassPUA (g/m2)"] = None
-                df['MLRPUA (g/s-m2)'] = df['MLR (g/s)']/surf_area
-            else:
-                df["HRR (kW)"] = None
-                df["Mass (g)"] = None
-                df["MassPUA (g/m2)"] = None
-                df["MLR (g/s)"] = None
-                df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
-                df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
-                df["THR (MJ)"] = None
+
         test_data.append(df)
 ######################################################################################################################################################
 

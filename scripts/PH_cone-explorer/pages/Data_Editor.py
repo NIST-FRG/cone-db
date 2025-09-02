@@ -67,42 +67,36 @@ if test_selection:
         st.sidebar.success(f"Data in {save_path} reverted to original.")
         
     df=pd.read_csv(test_name_map[test_selection])
-    surf_area = test_metadata["Surface Area (m2)"]
-    mass = test_metadata["Sample Mass (g)"]
+    surf_area = test_metadata.get("Surface Area (m2)")
+    mass = test_metadata.get("Sample Mass (g)")
     df['dt'] = df["Time (s)"].diff()
-    #CASE B
-    if "Mass (g)" in df.columns and "HRRPUA (kW/m2)" in df.columns:
-        df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
-        df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
-        df["THR (MJ)"] = None
-        df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
-        df["HRR (kW)"] = None
-        df["THR (MJ)"] = None
+    #Normal and area adjusted HRR and THR generation
+    if "HRRPUA (kW/m2)" not in df.columns:
+        df["HRRPUA (kW/m2)"] = df["HRR (kW)"] / surf_area if surf_area is not None else None
+    df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
+    df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
+    df['Q (MJ)'] = (df['HRR (kW)']*df['dt'])/1000
+    df['THR (MJ)'] = df["Q (MJ)"].cumsum()
+   
+
+   #Mass and Mass Loss Rate Data
+    if "MLR (g/s)" in df.columns:
+        df["MLRPUA (g/s-m2)"] = df["MLR (g/s)"] / surf_area if surf_area is not None else None
         df["MassPUA (g/m2)"] = None
+    elif "MLRPUA (g/s-m2)" in df.columns:
+        df["MLR (g/s)"] = df["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
+        df["MassPUA (g/m2)"] = None
+    elif not df["Mass (g)"].isnull().all():
+        df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
+        df["MLRPUA (g/s-m2)"] = df["MLR (g/s)"] / surf_area if surf_area is not None else None 
+        df["MassPUA (g/m2)"] = df["Mass (g)"]  / surf_area if surf_area is not None else None 
+    else: 
+        df["MassPUA (g/m2)"] = None
+        df["MLR (g/s)"] = None
         df["MLRPUA (g/s-m2)"] = None
-    ###CASE A
-    else:
-        if surf_area != None:
-            df["HRRPUA (kW/m2)"] = df["HRR (kW)"]/ surf_area
-            df['Q (MJ)'] = (df['HRR (kW)']*df['dt'])/1000
-            df['THR (MJ)'] = df["Q (MJ)"].cumsum()
-            df['THRPUA (MJ/m2)'] = df["THR (MJ)"]/surf_area
-            if "Mass (g)" in df.columns:
-                df["MassPUA (g/m2)"] = df["Mass (g)"]/surf_area
-                df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
-            else:
-                df["Mass (g)"] = None
-                df["MassPUA (g/m2)"] = None
-            df['MLRPUA (g/s-m2)'] = df['MLR (g/s)']/surf_area
-        else:
-            df["HRR (kW)"] = None
-            df["Mass (g)"] = None
-            df["MassPUA (g/m2)"] = None
-            df["MLR (g/s)"] = None
-            df["QPUA (MJ/m2)"] = (df['HRRPUA (kW/m2)']*df['dt'])/1000
-            df["THRPUA (MJ/m2)"] = df["QPUA (MJ/m2)"].cumsum()
-            df["THR (MJ)"] = None
+    
     test_data = df
+    print(df[-5:])
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
@@ -173,13 +167,24 @@ if test_selection:
     
 ################################################ Saving Adjusted/ Clipped Data ########################################################################
         # Save the adjusted data to a specified path
-        if st.sidebar.button("Save Adjusted Data"):
+        st.sidebar.markdown("This button only saves data clipping, csv file modifications are saved seperatley")
+        if st.sidebar.button("Save Clipped Data"):
             save_path = str(test_name_map[test_selection])
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            data_out = data_copy[['Time (s)', 't * EHF (kJ/m2)', 'HRR (kW/m2)', "MLR (g/s-m2)", "THR (MJ/m2)"]]
-            # Remove rows where all values in the selected columns are NaN
-            data_out = data_out.dropna()
+            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]
+            data_out = data_copy[min_cols].copy()
+            if data_out["Mass (g)"].isnull().all():
+                if data_copy["MLR (g/s)"].isnull().all():
+                    if not data_copy["MLRPUA (g/s-m2)"].isnull().all():
+                        data_out["MLRPUA (g/s-m2)"] = data_copy["MLRPUA (g/s-m2)"].copy()
+                else:
+                    data_out["MLR (g/s)"] = data_copy["MLR (g/s)"].copy()
+            if data_out["HRR (kW)"].isnull().all():
+                if not data_copy["HRRPUA (kW/m2)"].isnull().all():
+                    data_out["HRRPUA (kW/m2)"] = data_copy["HRRPUA (kW/m2)"].copy()
+                        # Remove rows where all' values in the selected columns are NaN
+            data_out = data_out.dropna(how= 'all')
             data_out.to_csv(
                 save_path,
                 float_format="%.4e",
@@ -195,4 +200,28 @@ if test_selection:
             with open(metadata_name_map[test_selection], "w") as f:
                 json.dump(test_metadata, f, indent=4)
             
-            
+        if st.checkbox("Modify CSV File"):
+            raw_data = pd.read_csv(test_name_map[test_selection])
+            view = st.data_editor(raw_data)
+            change = st.text_input("Enter Data Correction Performed")
+            if st.button("Save Modified CSV"):
+                if change:
+                    save_path = str(test_name_map[test_selection])
+                    save_dir = Path(save_path).parent
+                    save_dir.mkdir(parents=True, exist_ok=True)
+                    view.to_csv(
+                        save_path,
+                        float_format="%.4e",
+                        index=False,
+                    )
+
+                    st.success(f"Data saved to {save_path}.")
+                    with open(metadata_name_map[test_selection], 'r') as f:
+                        metadata = json.load(f)
+                    test_metadata["Data Corrections"].append(f"{date}: {change}")
+                    test_metadata['Manually Prepared'] = date
+                    with open(metadata_name_map[test_selection], "w") as f:
+                        json.dump(test_metadata, f, indent=4)
+                    st.success(f"Metadata for {test_selection} updated.")
+                else:
+                    st.warning("Please enter the change performed before saving")
