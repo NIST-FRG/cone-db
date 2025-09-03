@@ -57,8 +57,10 @@ if test_selection:
     test_metadata = json.load(open(metadata_name_map[test_selection]))
     ######## Revert data in case it was clipped and you want the full dataframe from parsed back#####################
     if st.sidebar.button("Revert to Parsed Data"):
-        parsed_data = str(test_name_map[test_selection])
-        original_data = parsed_data.replace(str(INPUT_DATA_PATH), str(PARSED_DATA_PATH))
+        mdform = test_metadata["Markdown Format"]
+        explorer_data = str(test_name_map[test_selection])
+        parsed_path = str(PARSED_DATA_PATH) + f"\\md_{mdform}"
+        original_data = explorer_data.replace(str(INPUT_DATA_PATH), parsed_path)
         save_path = str(test_name_map[test_selection])
         shutil.copy(original_data, save_path)
         test_metadata["Data Corrections"].append(f"{date}: Data reverted to original")
@@ -96,7 +98,7 @@ if test_selection:
         df["MLRPUA (g/s-m2)"] = None
     
     test_data = df
-    print(df[-5:])
+
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
@@ -133,8 +135,8 @@ if test_selection:
         st.sidebar.header("Cutoff Values")
         st.sidebar.write("Enter the time range of the data you woulld like to remove. \n Selections are inclusive.")
 
-        cutoff_start = st.sidebar.number_input("Cut Off Data From Time (s)", value = 0)
-        cutoff_end = st.sidebar.number_input("Cut Off Data To Time (s)",value=0)
+        cutoff_start = st.sidebar.number_input("Cut Off Data From Time (s)", value = -1)
+        cutoff_end = st.sidebar.number_input("Cut Off Data To Time (s)",value=-1)
         column_cutoff_ranges = (cutoff_start, cutoff_end)
         # Process the data: replace values after the cutoff with NaN for each column
         data_copy = test_data.copy()  # Make a copy to modify the data
@@ -195,7 +197,7 @@ if test_selection:
             #adjust metadata
             with open(metadata_name_map[test_selection], 'r') as f:
                 metadata = json.load(f)
-            test_metadata["Data Corrections"].append(f"{date}: Data from {cutoff_start} s to {cutoff_end} s was removed")
+            test_metadata["Data Corrections"].append(f"{date}: Data from {cutoff_start}s to {cutoff_end}s was removed")
             test_metadata['Manually Prepared'] = date
             with open(metadata_name_map[test_selection], "w") as f:
                 json.dump(test_metadata, f, indent=4)

@@ -98,7 +98,7 @@ def load_metadata(show_bar=True):
 
 
     for i, test_data in enumerate(all_test_data):
-        if 'HRR (kW)' in test_data.columns:
+        if 'HRRPUA (kW/m2)' not in test_data.columns:
             test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
                 test_data['HRR (kW)'], errors='coerce'
             ) / all_surf_areas[i]  # or * if that's appropriate
@@ -192,8 +192,11 @@ def revert_to_parsed():
     "Pulls in the unmodified, parsed JSON file, undoing any saved and unsaved changes that were made"
     files_to_revert = df[df['** REVERT FILE']].index
     for file in files_to_revert:
+        metadata = json.load(open(metadata_path_map[file]))
+        mdform = metadata["Markdown Format"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
         bad_data = str(metadata_path_map[file])
-        original_data = bad_data.replace(str(INPUT_DATA_PATH), str(PARSED_METADATA_PATH))
+        original_data = bad_data.replace(str(INPUT_DATA_PATH), parsed_path)
         save_path = str(metadata_path_map[file])
         shutil.copy(original_data, save_path)
         st.success(f"Metadata for {file} reverted to parsed")
@@ -206,8 +209,10 @@ def delete_files():
     for file in files_to_delete:
         #tag parsed file as being bad so it is not re-imported
         active_file = metadata_path_map[file]
-        parsed_file = Path(str(active_file).replace(str(INPUT_DATA_PATH), str(PARSED_METADATA_PATH)))
-        print(parsed_file)
+        metadata = json.load(open(active_file))
+        mdform = metadata["Markdown Format"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
+        parsed_file = Path(str(active_file).replace(str(INPUT_DATA_PATH), parsed_path))
         with open(parsed_file, "r", encoding="utf-8") as w:  
             parsed = json.load(w) 
         parsed["Bad Data"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -261,18 +266,33 @@ if len(metadata_path_map)> 0:
         ],
     )
 
+
+    locked = ["Testname", "Original Testname", 'Autoprocessesd', "Preparsed", 
+              "Parsed", "SmURF", "Bas Data", "Auto Prepared", "Manually Prepared", "Manually Reviewed Series",
+               "Pass Review", "Published" ]
+
+    column_config={
+            "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
+                "HRRPUA (kW/m2)",
+                width="medium",
+            )
+        }
+    
+    for col in df.columns:
+        if col in locked:
+            column_config[col] = st.column_config.TextColumn(
+                col,
+                disabled=True  # Lock the column
+            )
+    
     df = st.data_editor(
         df,
         key=st.session_state.editor_key,  
         use_container_width=True,
         #height=650,
         column_order=selected_columns,
-        column_config={
-            "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
-                "HRRPUA (kW/m2)",
-                width="medium",
-            )
-        },
+        column_config=column_config,
+        
     )
 
 
@@ -283,8 +303,9 @@ def export_metadata(df):
     export_indices = df.index[df["** EXPORT FILE"]==True].tolist()
     
     # Remove the ** DELETE FILE, ** EXPORT FILE, HRR columns
-    export_df = st.session_state.reload_df.loc[export_indices]
+    export_df = st.session_state.df.loc[export_indices]
     export = export_df.drop(columns=["** DELETE FILE", "HRRPUA (kW/m2)", "** EXPORT FILE", "** REVERT FILE"])
+    print(export)
     # Delete the existing output directory
     if OUTPUT_DATA_PATH.exists():
         rmtree(OUTPUT_DATA_PATH)
@@ -313,14 +334,21 @@ def export_metadata(df):
         path = metadata_path_map[str(index)]
 
         date = row["Test Date"]
-        dt_obj = datetime.strptime(date, "%d %b %Y")  # Parse the string
+        dt_obj = None
+        formats = ["%d %b %Y","%m/%d/%y","%m/%d/%Y"]
+        for format in formats:
+            try:
+                dt_obj = datetime.strptime(date, format)  # Parse the string
+            except ValueError:
+                continue
+        if dt_obj is None:
+            st.warning(f"Unrecognized date format: {date} in {index}, skipping this export.")
+            continue  # skip this record
         row['Test Date'] = dt_obj.strftime("%Y-%m-%d")  
         row['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-
-        export_path = OUTPUT_DATA_PATH / "md_A"
-        if not export_path.exists():
-            export_path.mkdir(parents=True, exist_ok=True)
+        if not OUTPUT_DATA_PATH.exists():
+            OUTPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
         if not PREPARED_DATA_PATH.exists():
             PREPARED_DATA_PATH.mkdir(parents=True, exist_ok=True)
         if not PREPARED_METADATA_PATH.exists():
@@ -333,7 +361,7 @@ def export_metadata(df):
         filename_parts = [
             material_id,
             str(int(row["Heat Flux (kW/m2)"])),
-            "vert" if row["Orientation"] == "vertical" else "horiz",
+            "vert" if row["Orientation"] == "VERTICAL" else "horiz",
         ]
 
         # if there is a specimen number, include that in the filename
@@ -344,10 +372,9 @@ def export_metadata(df):
         row['Testname'] = "_".join(filename_parts)
         new_filename = "_".join(filename_parts) + ".json"
         old_filename = row["Original Testname"] + '.json'
-        row.pop('Number of Fields')
         neworder = ['Material ID', 'Sample Mass (g)','Specimen Number','Testname', 
                 'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', "SmURF", 'Autoprocessed', 
-                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
+                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Markdown Format", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
                    'Surface Area (m2)','Time to Ignition (s)', 'Residual Mass (g)', 'Residue Yield (g/g)','Mass Consumed', "Soot Average (g/g)",
                    'Peak Heat Release Rate (kW/m2)', 'Peak Mass Loss Rate (g/s-m2)', 'Comments', 'Data Corrections' ]
         reordered_metadata = {key: row[key] for key in neworder}
@@ -355,19 +382,21 @@ def export_metadata(df):
             if key not in neworder:
                 reordered_metadata[key] = row[key]
 
+        mdform = row["Markdown Format"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
         # save the metadata file, including to parsed
-        with open(export_path / new_filename, "w") as f:
+        with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
         with open(PREPARED_METADATA_PATH / new_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
-        with open(PARSED_METADATA_PATH / old_filename, "w") as f:
+        with open(Path(parsed_path) / old_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
         with open(INPUT_DATA_PATH / old_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)
 
         # Get the CSV data file as well and save that in the same folder as the metadata file
         data = pd.read_csv(path.with_suffix(".csv"))
-        data.to_csv(export_path / new_filename.replace(".json", ".csv"), index=False)
+        data.to_csv(OUTPUT_DATA_PATH / new_filename.replace(".json", ".csv"), index=False)
         data.to_csv(PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
  
         # update progress bar & statistics
@@ -384,43 +413,5 @@ st.sidebar.button("Export", on_click=lambda: export_metadata(df), use_container_
 st.sidebar.markdown("Selected files are renamed, and their data and metadata are exported to the prepared stage")
 
 
-
-_ = """selected_columns = 
-st.sidebar.multiselect(
-    "Columns",
-    df.columns.tolist() + ["** DELETE FILE", "material_id", "HRR (kW/m2)"],
-    default=[
-        "** DELETE FILE",
-        "date",
-        "material_id",
-        "specimen_number",
-        "heat_flux_kW/m2",
-        "comments",
-        "material_name",
-        "HRR (kW/m2)",
-        "specimen_description",
-        "specimen_prep",
-        "report_name",
-        "laboratory",
-        "operator",
-        "test_start_time_s",
-        "test_end_time_s",
-        "c_factor",
-    ],
-)
-"""
-
-
-
-
-
 st.divider()
 
-st.markdown("#### Notes")
-st.markdown(
-    """Material ID should be in the following format: `<Material name (replace spaces with underscores)>:<Report identifier>`
-    Exported filenames are in the following format: `<Material ID>-<Heat flux (kW/m2)>-r<Specimen number (if available)>-<Orientation (vert or horiz)>.json`
-    These four parameters, plus the year **must** be unique for each test in order for it to be exported correctly. i.e. if two tests have the exact same material ID, heat flux, specimen number (or both have no specimen number at all), orientation and year, the 2nd test will **overwrite** the first one.
-    *Note that colons are not allowed in Windows filenames, so colons in the material ID will be replaced with dashes.*
-    """
-)
