@@ -12,19 +12,11 @@ import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
 
-INPUT_DIR = Path(r"../data/raw/md_B")
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_B")
-METADATA_DIR = Path(r"../Metadata/preparsed/md_B")###Store here for now, but will be on firedata either sep or together with csvs
+INPUT_DIR = Path(r"../data/raw/md_B")### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_B)
+OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/Box/md_B")
+METADATA_DIR = Path(r"../Metadata/preparsed/Box/md_B")###Store here for now, but will be on firedata either sep or together with csvs
 LOG_FILE = Path(r"..") / "preparse_md_B_log.json"
 
-
-'''
-#Test pathing
-INPUT_DIR = Path(r"../data/raw/test")
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/test")
-METADATA_DIR = Path(r"../metadata/test/preparsed")
-LOG_FILE = Path(r"..") / "test.json"
-'''
 
 
 #region parse_dir
@@ -500,7 +492,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-    metadata_json["Markdown Format"] = "B"
+    metadata_json["Original Source"] = "Box/md_B"
     metadata_json['Data Corrections'] =[]
 
     #update respective test metadata file

@@ -57,9 +57,9 @@ if test_selection:
     test_metadata = json.load(open(metadata_name_map[test_selection]))
     ######## Revert data in case it was clipped and you want the full dataframe from parsed back#####################
     if st.sidebar.button("Revert to Parsed Data"):
-        mdform = test_metadata["Markdown Format"]
+        ogform = test_metadata["Original Source"]
         explorer_data = str(test_name_map[test_selection])
-        parsed_path = str(PARSED_DATA_PATH) + f"\\md_{mdform}"
+        parsed_path = str(PARSED_DATA_PATH) + f"\\{ogform}"
         original_data = explorer_data.replace(str(INPUT_DATA_PATH), parsed_path)
         save_path = str(test_name_map[test_selection])
         shutil.copy(original_data, save_path)

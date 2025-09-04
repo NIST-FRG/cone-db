@@ -11,18 +11,10 @@ import numpy as np
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/md_A") ###This will eventually be on firedata
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A") ###This will eventually be on firedata
-METADATA_DIR = Path(r"../Metadata/preparsed/md_A")###Store here for now, but will be on firedata either sep or together with csvs
+INPUT_DIR = Path(r"../data/raw/md_A") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_A)
+OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/Box/md_A") ###This will eventually be on firedata
+METADATA_DIR = Path(r"../Metadata/preparsed/Box/md_A")###Store here for now, but will be on firedata either sep or together with csvs
 LOG_FILE = Path(r"..") / "preparse_md_A_log.json"
-
-'''
-#Test pathing
-INPUT_DIR = Path(r"../data/raw/md_A_more_columns")
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A_more_columns")
-METADATA_DIR = Path(r"../metadata/md_A_more_columns/preparsed")
-LOG_FILE = Path(r"..") / "preparse_md_A_more_log.json"
-'''
 
 
 #region parse_dir
@@ -329,7 +321,7 @@ def parse_data(data_df,test,file_name):
                 data_df.columns.values[i] = "Mass Loss (kg/m2)"
         elif "HT" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
-        elif "EX" in column:
+        elif "EX" in column and "SUM" not in column:
             data_df.columns.values[i] = "Ex Area (m2/kg)"
         elif "CO2" in column or "C02" in column:
             data_df.columns.values[i] = "CO2 (kg/kg)"
@@ -501,7 +493,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-    metadata_json["Markdown Format"] = "A"
+    metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

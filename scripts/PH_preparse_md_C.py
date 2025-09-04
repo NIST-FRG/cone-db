@@ -11,18 +11,10 @@ import numpy as np
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/md_C") ###This will eventually be on firedata
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_C") ###This will eventually be on firedata
-METADATA_DIR = Path(r"../Metadata/preparsed/md_C")###Store here for now, but will be on firedata either sep or together with csvs
+INPUT_DIR = Path(r"../data/raw/md_C") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_C)
+OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/Box/md_C") ###This will eventually be on firedata
+METADATA_DIR = Path(r"../Metadata/preparsed/Box/md_C")###Store here for now, but will be on firedata either sep or together with csvs
 LOG_FILE = Path(r"..") / "preparse_md_C_log.json"
-
-'''
-#Test pathing
-INPUT_DIR = Path(r"../data/raw/md_A_more_columns")
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/md_A_more_columns")
-METADATA_DIR = Path(r"../metadata/md_A_more_columns/preparsed")
-LOG_FILE = Path(r"..") / "preparse_md_A_more_log.json"
-'''
 
 
 #region parse_dir
@@ -443,7 +435,7 @@ def parse_metadata(input,test_name):
     metadata_json["Manually Reviewed Series"] = None
     metadata_json['Pass Review'] = None
     metadata_json["Published"] = None
-    metadata_json["Markdown Format"] = "C"
+    metadata_json["Original Source"] = "Box/md_C"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

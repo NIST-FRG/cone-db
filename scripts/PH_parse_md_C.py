@@ -6,9 +6,9 @@ import shutil
 import os
 from datetime import datetime
 
-INPUT_DIR = Path(r"../data/pre-parsed/md_C")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_C")
-PREPARSED_META = Path(r"../Metadata/preparsed/md_C")
+INPUT_DIR = Path(r"../data/pre-parsed/Box/md_C")
+OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_C")
+PREPARSED_META = Path(r"../Metadata/preparsed/Box/md_C")
 OUTPUT_META = Path(r"../Metadata/Parsed/md_C")
 
 LOG_FILE = Path(r"..") / "parse_md_C_log.json"
@@ -127,6 +127,7 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
+    df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
     if "CO2 (kg/kg)" not in df.columns:
         df["CO2 (kg/kg)"] = None
     if "CO (kg/kg)" not in df.columns:
