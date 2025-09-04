@@ -5,11 +5,12 @@ import json
 import shutil
 import os
 from datetime import datetime
+import numpy as np
 
-INPUT_DIR = Path(r"../data/pre-parsed/md_A")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_A")
-PREPARSED_META = Path(r"../Metadata/preparsed/md_A")
-OUTPUT_META = Path(r"../Metadata/Parsed/md_A")
+INPUT_DIR = Path(r"../data/pre-parsed/Box/md_A")
+OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_A")
+PREPARSED_META = Path(r"../Metadata/preparsed/Box/md_A")
+OUTPUT_META = Path(r"../Metadata/Parsed/Box/md_A")
 
 LOG_FILE = Path(r"..") / "parse_md_A_log.json"
 
@@ -127,10 +128,25 @@ def parse_data(file_path):
     meta_file = str(file_stem) + ".json"
     with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-    
+
+
     mass = metadata["Sample Mass (g)"]
     surf_area = metadata["Surface Area (m2)"]
     df = pd.read_csv(file_path)
+
+    #Check for time discontinuities
+    last_time = df["Time (s)"].last_valid_index()
+    times =df["Time (s)"].loc[:last_time].values
+    start_0 = np.isclose(times[0], 0)
+    if not start_0:
+        raise Exception(f"Test does not start at 0 seconds, please review preparsed csv file, markdown, and pdf")
+    increments = np.diff(times)
+    expected_step = np.median(increments)
+    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous = np.all((increments >= expected_step *.5) & (increments <= expected_step *2))
+    if not continuous:
+        raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
+
     data = None
     #initialize yield columns
     if "CO2 (kg/kg)" not in df.columns:
@@ -145,7 +161,7 @@ def parse_data(file_path):
         df["H'carbs (kg/kg)"] = None
     if surf_area == None:
         print(colorize(f'Warning: {file_stem} does not have a defined surface area, data is output per unit area', "yellow"))
-        df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
+        df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
         if "Mass Loss (kg/m2)" in df.columns:
             if mass != None:
                 df["MassPUA (g/m2)"] = mass - (df["Mass Loss (kg/m2)"]* 1000) #surface area m2, 1000g/kg
@@ -165,7 +181,7 @@ def parse_data(file_path):
             df["HRR (kW)"] = None
             data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)","MLRPUA (g/s-m2)","HRRPUA (kW/m2)"]]
     else:
-        df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
+        df["HRR (kW)"] = surf_area * abs(df["Q-Dot (kW/m2)"])
         if "Mass Loss (kg/m2)" in df.columns:
             if mass != None:
                 df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg

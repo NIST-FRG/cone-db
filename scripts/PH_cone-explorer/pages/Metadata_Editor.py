@@ -193,8 +193,8 @@ def revert_to_parsed():
     files_to_revert = df[df['** REVERT FILE']].index
     for file in files_to_revert:
         metadata = json.load(open(metadata_path_map[file]))
-        mdform = metadata["Markdown Format"]
-        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
+        ogform = metadata["Original Source"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
         bad_data = str(metadata_path_map[file])
         original_data = bad_data.replace(str(INPUT_DATA_PATH), parsed_path)
         save_path = str(metadata_path_map[file])
@@ -210,8 +210,8 @@ def delete_files():
         #tag parsed file as being bad so it is not re-imported
         active_file = metadata_path_map[file]
         metadata = json.load(open(active_file))
-        mdform = metadata["Markdown Format"]
-        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
+        ogform = metadata["Markdown Format"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
         parsed_file = Path(str(active_file).replace(str(INPUT_DATA_PATH), parsed_path))
         with open(parsed_file, "r", encoding="utf-8") as w:  
             parsed = json.load(w) 
@@ -382,8 +382,8 @@ def export_metadata(df):
             if key not in neworder:
                 reordered_metadata[key] = row[key]
 
-        mdform = row["Markdown Format"]
-        parsed_path = str(PARSED_METADATA_PATH) + f"\\md_{mdform}"
+        ogform = row["Markdown Format"]
+        parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
         # save the metadata file, including to parsed
         with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
             json.dump(reordered_metadata, f, indent=4)

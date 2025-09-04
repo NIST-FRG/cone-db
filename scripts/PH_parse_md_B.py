@@ -5,11 +5,12 @@ import json
 import shutil
 import os
 from datetime import datetime
+import numpy as np
 
-INPUT_DIR = Path(r"../data/pre-parsed/md_B")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/md_B")
-PREPARSED_META = Path(r"../Metadata/preparsed/md_B")
-OUTPUT_META = Path(r"../Metadata/Parsed/md_B")
+INPUT_DIR = Path(r"../data/pre-parsed/Box/md_B")
+OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_B")
+PREPARSED_META = Path(r"../Metadata/preparsed/Box/md_B")
+OUTPUT_META = Path(r"../Metadata/Parsed/Box/md_B")
 
 
 LOG_FILE = Path(r"..") / "parse_md_B_log.json"
@@ -128,7 +129,21 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
-    df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
+    
+    #Check for time discontinuities
+    last_time = df["Time (s)"].last_valid_index()
+    times =df["Time (s)"].loc[:last_time].values
+    start_0 = np.isclose(times[0], 0)
+    if not start_0:
+        raise Exception(f"Test does not start at 0 seconds, please review preparsed csv file, markdown, and pdf")
+    increments = np.diff(times)
+    expected_step = np.median(increments)
+    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous = np.all((increments >= expected_step *.5) & (increments <= expected_step *2))
+    if not continuous:
+        raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
+
+    df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
     if "CO2 (kg/kg)" not in df.columns:
         df["CO2 (kg/kg)"] = None
     if "CO (kg/kg)" not in df.columns:
