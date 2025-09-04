@@ -210,7 +210,7 @@ def delete_files():
         #tag parsed file as being bad so it is not re-imported
         active_file = metadata_path_map[file]
         metadata = json.load(open(active_file))
-        ogform = metadata["Markdown Format"]
+        ogform = metadata["Original Source"]
         parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
         parsed_file = Path(str(active_file).replace(str(INPUT_DATA_PATH), parsed_path))
         with open(parsed_file, "r", encoding="utf-8") as w:  
@@ -374,7 +374,7 @@ def export_metadata(df):
         old_filename = row["Original Testname"] + '.json'
         neworder = ['Material ID', 'Sample Mass (g)','Specimen Number','Testname', 
                 'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', "SmURF", 'Autoprocessed', 
-                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Markdown Format", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
+                    'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Original Source", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
                    'Surface Area (m2)','Time to Ignition (s)', 'Residual Mass (g)', 'Residue Yield (g/g)','Mass Consumed', "Soot Average (g/g)",
                    'Peak Heat Release Rate (kW/m2)', 'Peak Mass Loss Rate (g/s-m2)', 'Comments', 'Data Corrections' ]
         reordered_metadata = {key: row[key] for key in neworder}
@@ -382,7 +382,7 @@ def export_metadata(df):
             if key not in neworder:
                 reordered_metadata[key] = row[key]
 
-        ogform = row["Markdown Format"]
+        ogform = row["Original Source"]
         parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
         # save the metadata file, including to parsed
         with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
