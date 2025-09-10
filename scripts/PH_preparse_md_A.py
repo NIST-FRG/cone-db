@@ -9,6 +9,7 @@ from dateutil import parser
 import os
 import numpy as np
 import shutil
+import traceback
 from utils import calculate_HRR, calculate_MFR, colorize
 
 INPUT_DIR = Path(r"../data/raw/md_A") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_A)
@@ -97,11 +98,13 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
+            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
+            location = f"{tb.filename}:{tb.lineno} ({tb.name})"
             # log error in md_A_log
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                f"{file_path.name}-{test}": str(e)
+                 f"{file_path.name}-{test}": f"{e} @ {location}"
             })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
@@ -321,8 +324,8 @@ def parse_data(data_df,test,file_name):
                 data_df.columns.values[i] = "Mass Loss (kg/m2)"
         elif "HT" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
-        elif "EX" in column and "SUM" not in column:
-            data_df.columns.values[i] = "Ex Area (m2/kg)"
+        elif "EX" in column and "COEFF" not in column:
+            data_df.columns.values[i] = "Extinction Area (m2/kg)"
         elif "CO2" in column or "C02" in column:
             data_df.columns.values[i] = "CO2 (kg/kg)"
         elif ("CO" in column or "C0" in column) and "2" not in column:
@@ -335,16 +338,16 @@ def parse_data(data_df,test,file_name):
         elif "HCL" in column:
             data_df.columns.values[i] = "HCl (kg/kg)"
         elif "EPSILON" in column:
-            if "Epsilon One" not in data_df.columns.values:
-                data_df.columns.values[i] = "Epsilon One"
+            if "Epsilon One (kg/kg)" not in data_df.columns.values:
+                data_df.columns.values[i] = "Epsilon One (kg/kg)"
             else:
-                data_df.columns.values[i] = "Epsilon Two"
+                data_df.columns.values[i] = "Epsilon Two (kg/kg)"
         elif "TEOM" in column: 
             data_df.columns.values[i] = "TEOM (g/s)"
         elif "KS" in str(column.replace(" ", "")):
-            data_df.columns.values[i] = "K s (m2/g)"
+            data_df.columns.values[i] = "Mass Smoke Extinction Area (m2/g)"
         elif "EXTCOEFF" in column:
-            data_df.columns.values[i] = "EXT Coeff (1/m)"
+            data_df.columns.values[i] = "K Smoke (1/m)"
         else:
             msg = f'Illegal Column Detected: {column}'
             raise Exception(msg)

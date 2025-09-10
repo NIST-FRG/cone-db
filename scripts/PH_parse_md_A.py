@@ -143,7 +143,7 @@ def parse_data(file_path):
     increments = np.diff(times)
     expected_step = np.median(increments)
     #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
-    continuous = np.all((increments >= expected_step *.5) & (increments <= expected_step *2))
+    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
     if not continuous:
         raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
 
@@ -159,6 +159,8 @@ def parse_data(file_path):
         df["HCl (kg/kg)"] = None
     if "H'carbs (kg/kg)" not in df.columns:
         df["H'carbs (kg/kg)"] = None
+    if "K Smoke (1/m)" not in df.columns:
+        df["K Smoke (1/m)"] = None
     if surf_area == None:
         print(colorize(f'Warning: {file_stem} does not have a defined surface area, data is output per unit area', "yellow"))
         df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
@@ -167,35 +169,41 @@ def parse_data(file_path):
                 df["MassPUA (g/m2)"] = mass - (df["Mass Loss (kg/m2)"]* 1000) #surface area m2, 1000g/kg
                 df["Mass (g)"] = None
                 df["HRR (kW)"] = None
-                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "MassPUA (g/m2)","HRRPUA (kW/m2)"]]
+                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                            "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "MassPUA (g/m2)","HRRPUA (kW/m2)"]]
             else: 
                 print(colorize(f'Warning: {file_stem} is missing sample mass, mass loss is output', "yellow"))
                 df["Mass LossPUA (g/m2)"] = (df["Mass Loss (kg/m2)"]* 1000)
                 df["Mass (g)"] = None
                 df["HRR (kW)"] = None
-                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)","Mass LossPUA (g/m2)","HRRPUA (kW/m2)"]]
+                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                            "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)","Mass LossPUA (g/m2)","HRRPUA (kW/m2)"]]
         else:
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
             df["MLRPUA (g/s-m2)"] = df["M-Dot (g/s-m2)"]
             df["Mass (g)"] = None
             df["HRR (kW)"] = None
-            data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)","MLRPUA (g/s-m2)","HRRPUA (kW/m2)"]]
+            data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                        "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)","MLRPUA (g/s-m2)","HRRPUA (kW/m2)"]]
     else:
         df["HRR (kW)"] = surf_area * abs(df["Q-Dot (kW/m2)"])
         if "Mass Loss (kg/m2)" in df.columns:
             if mass != None:
                 df["Mass (g)"] = mass - (df["Mass Loss (kg/m2)"] * surf_area * 1000) #surface area m2, 1000g/kg
-                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)",]]
+                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", 
+                           "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)"]]
             else:
                 print(colorize(f'Warning: {file_stem} is missing sample mass, mass loss is output', "yellow"))
                 df["Mass Loss (g)"] = (df["Mass Loss (kg/m2)"] * surf_area * 1000)
                 df["Mass (g)"] = None
-                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)","Mass Loss (g)"]]
+                data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                            "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)","Mass Loss (g)"]]
         else:
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
             df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area
             df["Mass (g)"] = None
-            data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)","MLR (g/s)"]]
+            data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                        "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)","MLR (g/s)"]]
 
 
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)

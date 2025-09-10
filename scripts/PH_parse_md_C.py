@@ -4,7 +4,8 @@ import pandas as pd
 import json
 import shutil
 import os
-from datetime import datetime
+from datetime import datetime 
+import numpy as np
 
 INPUT_DIR = Path(r"../data/pre-parsed/Box/md_C")
 OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_C")
@@ -54,7 +55,7 @@ def parse_dir(input_dir):
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                    str(path.name)[0:8:1] : "Parsing Issue: " + str(e)
+                    str(path.name) : "Parsing Issue: " + str(e)
                 })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
@@ -127,6 +128,18 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
+     #Check for time discontinuities
+    last_time = df["Time (s)"].last_valid_index()
+    times =df["Time (s)"].loc[:last_time].values
+    start_0 = np.isclose(times[0], 0)
+    if not start_0:
+        raise Exception(f"Test does not start at 0 seconds, please review preparsed csv file, markdown, and pdf")
+    increments = np.diff(times)
+    expected_step = np.median(increments)
+    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
+    if not continuous:
+        raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
     df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
     if "CO2 (kg/kg)" not in df.columns:
         df["CO2 (kg/kg)"] = None
@@ -138,21 +151,26 @@ def parse_data(file_path):
         df["HCl (kg/kg)"] = None
     if "H'carbs (kg/kg)" not in df.columns:
         df["H'carbs (kg/kg)"] = None
+    df["K Smoke (1/m)"] = None
+    df["Extinction Area (m2/kg)"] = None
 
     if "Mass (kg)" in df.columns:
         df["Mass (g)"] = df["Mass (kg)"] * 1000
         df["HRR (kW)"] = None
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", 
+                   "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
     elif "MLR (g/s)" in df.columns:
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "MLR (g/s)", "HRRPUA (kW/m2)"]]
+        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                           "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "MLR (g/s)", "HRRPUA (kW/m2)"]]
     else:
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
+                    "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)

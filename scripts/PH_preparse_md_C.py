@@ -8,6 +8,7 @@ from datetime import datetime
 from dateutil import parser
 import os
 import numpy as np
+import traceback
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
@@ -37,7 +38,7 @@ def parse_dir(input_dir):
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
-        elif pct == 0:
+        elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
             out_path = Path(str(path).replace('md_C', 'md_C_bad'))
         else:
@@ -46,9 +47,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_C', 'md_C_partial'))
 
         # If output path is set, ensure the directory exists and move
-        if out_path:
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(path, out_path)
+        #if out_path:
+         #   out_path.parent.mkdir(parents=True, exist_ok=True)
+          #  shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -80,9 +81,20 @@ def parse_file(file_path):
        # print(lines)
 
     # separating tests within the file
-    tests = get_tests(lines)
-    numtests = len(tests)
-    parsed = 0
+    try: 
+        tests = get_tests(lines)
+        numtests = len(tests)
+        parsed = 0
+    except Exception as e:
+        with open(LOG_FILE, "r", encoding="utf-8") as w:  
+            logfile = json.load(w)
+        logfile.update({
+              f"{file_path.name}": f"{e}"
+        })
+        with open(LOG_FILE, "w", encoding="utf-8") as f:
+	        f.write(json.dumps(logfile, indent=4))
+        print(colorize(f" - Error parsing {file_path.name}: {e}\n", "red"))
+        return
     for test in tests:
         try:
             # for each test, separate data from metadata
@@ -97,11 +109,13 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
+            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
+            location = f"{tb.lineno} ({tb.name})"
             # log error in md_A_log
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                f"{file_path.name}-{test}": str(e)
+                 f"{file_path.name}-{test}": f"{e} @ {location}"
             })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
@@ -115,56 +129,231 @@ def parse_file(file_path):
 ####### separate tests in file #######
 #region get_tests
 # splits file in list of tests, stores as {tests} <key=test_number>
-
 def is_metadata_line(line):
-    """Detect if a line contains metadata (date-number; e.g. 9/30/82-198)."""
-    return re.search(r'\d{1,2}/\d{1,2}/\d{2}-(\d{1,4})', line)
+    """
+    Detect if a line contains metadata:
+    - If "date-number" (e.g. 9/30/82-198): return (date, number)
+    - If just "date" (e.g. 9/30/82): return (date, "unk#")
+    - Else, return None
+    """
+    match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:-(\d{1,4}))?', line)
+    return match
+
+'''''
+def get_tests(lines):
+    """
+    Returns: dict {test_key: [lines]}
+    - Metadata marks the start of a test.
+    - Gather all lines after metadata until next metadata or header line.
+    - If a header line is hit, those and any following lines are 'preamble'
+      for the next test (to be appended after its metadata).
+    """
+    tests = {}
+    preamble = []
+    test_key = None
+    current_test_lines = []
+    last_delim = None
+    addtocurrent = False
+
+    def is_table_header_line(line):
+        return line.replace(" ", "").startswith("|TIME") and not any(
+            bad in line.upper() for bad in ('INDEX', 'VALUE', 'COLUMN', "YEAR", "PRESSURE", "WIND", "TEMPERATURE"))
+
+    for line in lines:
+        print(line)
+        meta_match = is_metadata_line(line)
+        if meta_match:
+           # print(line)
+            if last_delim == None:
+                print(last_delim)
+                print("extmeta")
+                # Metadata the first delimiter, start new test
+                test_number = meta_match.group(1)
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'ext_meta'
+                addtocurrent = True
+            elif last_delim == "ext_meta":
+                #SHOULD NEVER HAPPEN
+                pass
+            elif last_delim == "int_meta" or last_delim == "int_head":
+                #Previous delimter was internal metadata, so this is external for following test, order btwn tests flipped
+                #Or previous delimiter was an internal header, so this is external for the following test, order between tests consistent
+                print(last_delim)
+                print("extmeta")
+                tests[test_key] = current_test_lines
+                test_number = meta_match.group(1)
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'ext_meta'
+                addtocurrent = True 
+            elif last_delim == "ext_head":
+                #Previous delimiter was an external header, so this is an internal metadata
+                print(last_delim)
+                print("intmeta")
+                test_number = meta_match.group(1)
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'int_meta'
+                addtocurrent = True
+
+           
+        elif is_table_header_line(line):
+           #print(line)
+            if last_delim == None:
+                print(last_delim)
+                print("exthead")
+                ###Data first
+                preamble.append(line)
+                addtocurrent = False
+                last_delim = 'ext_head'
+            elif last_delim == 'ext_meta':
+                print(last_delim)
+                print("inthead")
+                #Previous delimiter was external metadata, so this is internal table header
+                current_test_lines.append(line)
+                last_delim = 'int_head'
+            elif last_delim == 'int_meta' or last_delim =='int_head':
+                print(last_delim)
+                print("exthead")
+                #Previous delimiter was internal metadata, so this is external header, same order btwn tests
+                tests[test_key] = current_test_lines
+                current_test_lines = []
+                addtocurrent = False
+                last_delim = 'ext_head'
+                preamble.append(line)
+            elif last_delim =='ext_head':
+                #SHOULD NEVER HAPPEN
+                pass
+                 
+        else:
+            if addtocurrent:
+                current_test_lines.append(line)
+            else:
+                preamble.append(line)
+
+    # Save last test if any
+    if test_key is not None and current_test_lines:
+        tests[test_key] = current_test_lines
+    elif preamble:
+        # If something is left over and not assigned, call it unlabeled
+        tests['UNLABELED'] = preamble
+    print(tests.keys())
+    return tests
+
+    '''
 
 def get_tests(lines):
     """
     Returns: dict {test_key: [lines]}
-    * Preamble lines before first test are added after first test's metadata.
-    * Keys are 'testXXX' where XXX is the number after the hyphen.
+    - Metadata marks the start of a test.
+    - Gather all lines after metadata until next metadata or header line.
+    - If a header line is hit, those and any following lines are 'preamble'
+      for the next test (to be appended after its metadata).
     """
     tests = {}
-    current_test_lines = []
-    preamble_lines = []
-    metadata_buffer = []
+    preamble = []
     test_key = None
-    found_first_test = False
+    current_test_lines = []
+    last_delim = None
+    addtocurrent = False
+
+    def is_table_header_line(line):
+        return line.replace(" ", "").startswith("|TIME") and not any(
+            bad in line.upper() for bad in ('INDEX', 'VALUE', 'COLUMN', "YEAR", "PRESSURE", "WIND", "TEMPERATURE"))
 
     for line in lines:
         meta_match = is_metadata_line(line)
+
         if meta_match:
-            # Save previous test
-            if test_key is not None:
-                # Attach buffered metadata
-                block_lines = metadata_buffer + current_test_lines
-                tests[test_key] = block_lines
-            # Start new test: key = testXXX
-            number = meta_match.group(1)
-            test_key = f"test{number}"
-            metadata_buffer = [line]
-            current_test_lines = []
-            if not found_first_test and preamble_lines:
-                # Insert preamble lines right after metadata
-                metadata_buffer += preamble_lines
-                preamble_lines = []  # clear preamble
-            found_first_test = True
-        else:
-            if not found_first_test:
-                preamble_lines.append(line)
-            else:
+            print(meta_match.group(0))
+            print(meta_match.group(1))
+            print(meta_match.group(2))
+            if last_delim == None:
+                # Metadata the first delimiter, start new test
+                test_number = meta_match.group(2)
+                if test_number == None:
+                    test_number = "UNK"
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'ext_meta'
+                addtocurrent = True
+            elif last_delim == "ext_meta":
+                #SHOULD NEVER HAPPEN UNLESS DUPLICATE
+                pass
+            elif last_delim == "int_meta" or last_delim == "int_head":
+                #Previous delimter was internal metadata, so this is external for following test, order btwn tests flipped
+                #Or previous delimiter was an internal header, so this is external for the following test, order between tests consistent
+                tests[test_key] = current_test_lines
+                test_number = meta_match.group(2)
+                if test_number == None:
+                    test_number = "UNK"
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'ext_meta'
+                addtocurrent = True 
+            elif last_delim == "ext_head":
+                #Previous delimiter was an external header, so this is an internal metadata
+                test_number = meta_match.group(2)
+                if test_number == None:
+                    test_number = "UNK"
+                test_key = f"test{test_number}"
+                # Insert preamble if we have it
+                current_test_lines = [line] + preamble
+                preamble = []
+                last_delim = 'int_meta'
+                addtocurrent = True
+
+           
+        elif is_table_header_line(line):
+           #print(line)
+            if last_delim == None:
+                ###Data first
+                preamble.append(line)
+                addtocurrent = False
+                last_delim = 'ext_head'
+            elif last_delim == 'ext_meta':
+                #Previous delimiter was external metadata, so this is internal table header
                 current_test_lines.append(line)
-    # Save last test
-    if test_key is not None:
-        block_lines = metadata_buffer + current_test_lines
-        tests[test_key] = block_lines
-    elif preamble_lines:
-        tests['UNLABELED'] = preamble_lines
+                last_delim = 'int_head'
+            elif last_delim == 'int_meta' or last_delim =='int_head':
+                #Previous delimiter was internal metadata, so this is external header, same order btwn tests
+                tests[test_key] = current_test_lines
+                current_test_lines = []
+                addtocurrent = False
+                last_delim = 'ext_head'
+                preamble.append(line)
+            elif last_delim =='ext_head':
+                #SHOULD NEVER HAPPEN
+                pass
+                 
+        else:
+            if addtocurrent:
+                current_test_lines.append(line)
+            else:
+                preamble.append(line)
+
+    # Save last test if any
+    if test_key is not None and current_test_lines:
+        tests[test_key] = current_test_lines
+    elif preamble:
+        # If something is left over and not assigned, call it unlabeled
+        tests['UNLABELED'] = preamble
     print(tests.keys())
+    if 'UNLABELED' in tests.keys():
+        raise Exception("Incongruent number of tables and metadata fields, please review the pdf and markdown and correct the markdown")
     return tests
-    
+
 
 ####### separate metadata from test data #######
 #region get_data
@@ -377,11 +566,13 @@ def parse_metadata(input,test_name):
         metadata_json["Orientation"] = "VERTICAL"
     if orient_idx:
         metadata_json["Material Name"] = metadata[:orient_idx-1]
-    date_testnum =re.search(r'\d{1,2}/\d{1,2}/\d{2}-(\d{1,4})', metadata)
+    
+    date_testnum =re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:-(\d{1,4}))?', metadata)
     dateidx = date_testnum.start()
-    if date_testnum:
-        metadata_json["Test Date"] = date_testnum.group(0).split("-")[0]
-        metadata_json['Specimen Number'] = int(date_testnum.group(0).split("-")[1])
+    if date_testnum:     
+        metadata_json["Test Date"] = date_testnum.group(1)        
+        specnum =  date_testnum.group(2)             
+        metadata_json['Specimen Number'] = specnum
     if "/M2" in metadata:
         slash_idx = metadata.find("/M2")
         flux_str = metadata[slash_idx - 6: slash_idx + 3]
