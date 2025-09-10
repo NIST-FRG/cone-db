@@ -139,7 +139,7 @@ def parse_data(file_path):
     increments = np.diff(times)
     expected_step = np.median(increments)
     #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
-    continuous = np.all((increments >= expected_step *.5) & (increments <= expected_step *2))
+    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
     if not continuous:
         raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
 
@@ -154,8 +154,12 @@ def parse_data(file_path):
         df["HCl (kg/kg)"] = None
     if "H'carbs (kg/kg)" not in df.columns:
         df["H'carbs (kg/kg)"] = None
+    df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
+    #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s)
+    df["K Smoke (1/m)"] = (df["MLR (g/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
     df["HRR (kW)"] = None
-    data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "HRRPUA (kW/m2)"]]
+    data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", 
+               "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
 
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)

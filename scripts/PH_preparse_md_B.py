@@ -8,6 +8,7 @@ from datetime import datetime
 from dateutil import parser
 import os
 import numpy as np
+import traceback
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
@@ -114,11 +115,13 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
+            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
+            location = f"{tb.filename}:{tb.lineno} ({tb.name})"
             # log error in md_A_log
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                f"{file_path.name}-{test}": str(e)
+                 f"{file_path.name}-{test}": f"{e} @ {location}"
             })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
@@ -332,7 +335,7 @@ def parse_data(data_df,test,file_name):
     for i, column in enumerate(data_df.columns):
         if "TIME" in column:
             data_df.columns.values[i] = "Time (s)"
-        elif "Q-DOT" in column:
+        elif "DOT" in column:
             data_df.columns.values[i] = "Q-Dot (kW/m2)"
         elif "SUM Q" in column:
             data_df.columns.values[i] = "Sum Q (MJ/m2)"
@@ -340,6 +343,8 @@ def parse_data(data_df,test,file_name):
             data_df.columns.values[i] = "Mass (g)"
         elif "M" in column and "LOSS" in column:
             data_df.columns.values[i] = "MLR (g/s)"
+        elif "AIR" in  column:
+            data_df.columns.values[i] = "M-Duct (kg/s)"
         elif "COMB" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "CO2" in column or "C02" in column:
@@ -354,15 +359,19 @@ def parse_data(data_df,test,file_name):
         elif "HCL" in column:
             data_df.columns.values[i] = "HCl (kg/kg)"
         elif "M-DUCT" in column:
-            data_df.columns.values[i] = "M-Duct (kg/s)"
+            if "M-Duct (kg/s)" not in data_df.columns.values:
+                data_df.columns.values[i] = "M-Duct (kg/s)"
+            else:
+                #some cases where have air flow (kg/s), M-duct listed with (m3/s) indicating volumetric flow
+                data_df.columns.values[i] = "V-Duct (m3/s)"
         elif "V-DUCT" in column: 
             data_df.columns.values[i] = "V-Duct (m3/s)"
         elif "SOOT" in column:
             data_df.columns.values[i] = "Soot (kg/kg)"
         elif "AREA" in column and "SUM" not in column:
-            data_df.columns.values[i] = "Ex Area (m2/kg)"
+            data_df.columns.values[i] = "Extinction Area (m2/kg)"
         elif ("AREA" in column and "SUM" in column) or ("TOTALSMOKE" in str(column.replace(" ", ""))):
-            data_df.columns.values[i] = "Sum Ex Area (m2/kg)"
+            data_df.columns.values[i] = "Total Smoke (m2/kg)"
         elif "SAMPTEMP" in str(column.replace(" ", "")):
             data_df.columns.values[i] = "Sample Temperature (Deg C)"
         else:
