@@ -55,7 +55,7 @@ def parse_dir(input_dir):
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
-        elif pct == 0:
+        elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
             out_path = Path(str(path).replace('md_B', 'md_B_bad'))
         else:
@@ -98,9 +98,20 @@ def parse_file(file_path):
        # print(lines)
 
     # separating tests within the file
-    tests = get_tests(lines)
-    numtests = len(tests)
-    parsed = 0
+    try: 
+        tests = get_tests(lines)
+        numtests = len(tests)
+        parsed = 0
+    except Exception as e:
+        with open(LOG_FILE, "r", encoding="utf-8") as w:  
+            logfile = json.load(w)
+        logfile.update({
+              f"{file_path.name}": f"{e}"
+        })
+        with open(LOG_FILE, "w", encoding="utf-8") as f:
+	        f.write(json.dumps(logfile, indent=4))
+        print(colorize(f" - Error parsing {file_path.name}: {e}\n", "red"))
+        return
     for test in tests:
         try:
             # for each test, separate data from metadata
@@ -115,8 +126,16 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
-            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
-            location = f"{tb.filename}:{tb.lineno} ({tb.name})"
+            tb_list = traceback.extract_tb(e.__traceback__)
+            fail = None
+            for tb in reversed(tb_list):
+                if "PH_preparse_md_B" in tb.filename and "get_number" not in tb.name:
+                    fail = tb
+                    break
+            if not fail:
+                print(tb_list)
+                fail = tb_list[0] 
+            location = f"{fail.filename.split("\\")[-1]}:{fail.lineno} ({fail.name})"
             # log error in md_A_log
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
@@ -138,6 +157,7 @@ def parse_file(file_path):
 def get_tests(file_contents):
     test_number = -1
     tests = {}
+    first_inst = False
     for i in range(len(file_contents) - 2):  # Stop at len - 2 to allow i+2 access
         line = str(file_contents[i]).upper().strip()
         test_match = re.search(r"\((\d{3,4})\)", line)
@@ -146,11 +166,14 @@ def get_tests(file_contents):
 
             max_test = re.search(r"MAX", line_after_two)
             param_test = re.search(r"PARAMETER", line_after_two)
-            
+            raw = test_match.group(1)
             # ensure this is a new test
             if (max_test is not None) or (param_test is not None):
-                test_number = f"Test {test_match.group(1)}"
+                test_number = f"Test {raw.zfill(4)}"
                 # print(f"Match on line {i}: {line}")
+            #if not a new test make sure the same number
+            elif f"Test {raw.zfill(4)}" != test_number:
+                raise Exception("Likley typo in test numbers exist, please correct the markdown file.")
 
         # adding lines to respective test/key
         if test_number != -1:
@@ -438,15 +461,16 @@ def parse_metadata(input,test_name):
             name = item.split("(", 1)[0].strip()
             metadata_json["Material Name"] = name
         if "Heat Flux (kW/m2)" not in metadata_json:
+            match = None
             if "KW/M2" in item:
                 match = re.search(r'(\d+\s*KW/M2)', item)
-            if match:
-                substring = match.group(1)
-            else:
-                # Alternative: get all characters (digits, possibly units and spaces) just before KW/M2
-                match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
-                substring = match.group(1) if match else None
-            metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
+                if match:
+                    substring = match.group(1)
+                else:
+                    # Alternative: get all characters (digits, possibly units and spaces) just before KW/M2
+                    match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
+                    substring = match.group(1) if match else None
+                metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
         elif "MAX HEAT RELEASE" in item:
             metadata_json["Peak Heat Release Rate (kW/m2)"] = get_number(item, "flt")
         elif "HOR" in item:

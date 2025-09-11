@@ -47,9 +47,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_C', 'md_C_partial'))
 
         # If output path is set, ensure the directory exists and move
-        #if out_path:
-         #   out_path.parent.mkdir(parents=True, exist_ok=True)
-          #  shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -109,9 +109,16 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
-            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
-            location = f"{tb.lineno} ({tb.name})"
-            # log error in md_A_log
+            tb_list = traceback.extract_tb(e.__traceback__)
+            fail = None
+            for tb in reversed(tb_list):
+                if "PH_preparse_md_C" in tb.filename and "get_number" not in tb.name:
+                    fail = tb
+                    break
+            if not fail:
+                print(tb_list)
+                fail = tb_list[0] 
+            location = f"{fail.filename.split("\\")[-1]}:{fail.lineno} ({fail.name})"
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
@@ -136,7 +143,7 @@ def is_metadata_line(line):
     - If just "date" (e.g. 9/30/82): return (date, "unk#")
     - Else, return None
     """
-    match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:-(\d{1,4}))?', line)
+    match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{1,4})(?:-(\d{1,4}))?', line)
     return match
 
 '''''
@@ -272,15 +279,14 @@ def get_tests(lines):
         meta_match = is_metadata_line(line)
 
         if meta_match:
-            print(meta_match.group(0))
-            print(meta_match.group(1))
-            print(meta_match.group(2))
             if last_delim == None:
                 # Metadata the first delimiter, start new test
                 test_number = meta_match.group(2)
                 if test_number == None:
                     test_number = "UNK"
-                test_key = f"test{test_number}"
+                else:
+                    test_number = test_number.zfill(4)
+                test_key = f"Test {test_number}"
                 # Insert preamble if we have it
                 current_test_lines = [line] + preamble
                 preamble = []
@@ -296,7 +302,9 @@ def get_tests(lines):
                 test_number = meta_match.group(2)
                 if test_number == None:
                     test_number = "UNK"
-                test_key = f"test{test_number}"
+                else:
+                    test_number = test_number.zfill(4)
+                test_key = f"Test {test_number}"
                 # Insert preamble if we have it
                 current_test_lines = [line] + preamble
                 preamble = []
@@ -304,10 +312,12 @@ def get_tests(lines):
                 addtocurrent = True 
             elif last_delim == "ext_head":
                 #Previous delimiter was an external header, so this is an internal metadata
-                test_number = meta_match.group(2)
-                if test_number == None:
+                raw = meta_match.group(2)
+                if raw == None:
                     test_number = "UNK"
-                test_key = f"test{test_number}"
+                else:
+                    test_number = test_number.zfill(4)
+                test_key = f"Test {test_number}"
                 # Insert preamble if we have it
                 current_test_lines = [line] + preamble
                 preamble = []
@@ -350,8 +360,8 @@ def get_tests(lines):
         # If something is left over and not assigned, call it unlabeled
         tests['UNLABELED'] = preamble
     print(tests.keys())
-    if 'UNLABELED' in tests.keys():
-        raise Exception("Incongruent number of tables and metadata fields, please review the pdf and markdown and correct the markdown")
+    if 'UNLABELED' in tests.keys() or "UNK" in tests.keys():
+        raise Exception("Likley typo in test numbers exist, please correct the markdown file.")
     return tests
 
 
@@ -582,6 +592,9 @@ def parse_metadata(input,test_name):
         flux_str = metadata[slash_idx - 6: slash_idx + 3]
         small_flux = get_number(flux_str, "flt")
         metadata_json["Heat Flux (kW/m2)"] = int(small_flux * 10)
+    elif "0FLUX" or "NOEXTERNALFLUX" in metadata.replace(" ", ""):
+        slash_idx = metadata.find("UX")
+        metadata_json["Heat Flux (kW/m2)"] = 0
     potential_mass_str =  metadata[slash_idx +4: dateidx]
     mass = get_number(potential_mass_str, "flt")
     if mass == None:

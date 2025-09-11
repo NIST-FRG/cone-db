@@ -38,7 +38,7 @@ def parse_dir(input_dir):
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
-        elif pct == 0:
+        elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
             out_path = Path(str(path).replace('md_A', 'md_A_bad'))
         else:
@@ -79,11 +79,21 @@ def parse_file(file_path):
         lines = file.readlines()
         print(f"Read {len(lines)} lines from file")
        # print(lines)
-
     # separating tests within the file
-    tests = get_tests(lines)
-    numtests = len(tests)
-    parsed = 0
+    try: 
+        tests = get_tests(lines)
+        numtests = len(tests)
+        parsed = 0
+    except Exception as e:
+        with open(LOG_FILE, "r", encoding="utf-8") as w:  
+            logfile = json.load(w)
+        logfile.update({
+              f"{file_path.name}": f"{e}"
+        })
+        with open(LOG_FILE, "w", encoding="utf-8") as f:
+	        f.write(json.dumps(logfile, indent=4))
+        print(colorize(f" - Error parsing {file_path.name}: {e}\n", "red"))
+        return
     for test in tests:
         try:
             # for each test, separate data from metadata
@@ -98,9 +108,16 @@ def parse_file(file_path):
             print(colorize(f"Generated {output_path}", "blue"))
             parsed += 1
         except Exception as e:
-            tb = traceback.extract_tb(e.__traceback__)[-1] # Last frame: where the exception occurred
-            location = f"{tb.filename}:{tb.lineno} ({tb.name})"
-            # log error in md_A_log
+            tb_list = traceback.extract_tb(e.__traceback__)
+            fail = None
+            for tb in reversed(tb_list):
+                if "PH_preparse_md_A" in tb.filename and "get_number" not in tb.name:
+                    fail = tb
+                    break
+            if not fail:
+                print(tb_list)
+                fail = tb_list[0] 
+            location = f"{fail.filename.split("\\")[-1]}:{fail.lineno} ({fail.name})"
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
@@ -121,6 +138,7 @@ def parse_file(file_path):
 def get_tests(file_contents):
     test_number = -1
     tests = {}
+    prevkeys = []
     # Use while loop for lookahead and test detection
     for line in file_contents:
         line = str(line).upper().strip()
@@ -133,7 +151,11 @@ def get_tests(file_contents):
             real_test_number = re.sub(r"\s+", " ", test_number_str)
             # Only update if changed:
             if real_test_number != test_number:
-                test_number = real_test_number
+                if real_test_number in prevkeys:
+                    raise Exception("Likley typo in test numbers exist, please correct the markdown file.")
+                else:
+                    prevkeys.append(test_number)
+                    test_number = real_test_number
 
         if test_number != -1:
             if test_number in tests:
