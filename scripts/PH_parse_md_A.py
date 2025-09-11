@@ -56,7 +56,7 @@ def parse_dir(input_dir):
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                    str(path.name)[0:8:1] : "Parsing Issue: " + str(e)
+                    str(path.name) : "Parsing Issue: " + str(e)
                 })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
