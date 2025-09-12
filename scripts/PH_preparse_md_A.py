@@ -12,9 +12,8 @@ import shutil
 import traceback
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/md_A") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_A)
-OUTPUT_DIR_CSV = Path(r"../data/pre-parsed/Box/md_A") ###This will eventually be on firedata
-METADATA_DIR = Path(r"../Metadata/preparsed/Box/md_A")###Store here for now, but will be on firedata either sep or together with csvs
+INPUT_DIR = Path(r"../data/raw/Box/md_A") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_A)
+OUTPUT_DIR = Path(r"../data/pre-parsed/Box/md_A") ###This will eventually be on firedata
 LOG_FILE = Path(r"..") / "preparse_md_A_log.json"
 
 
@@ -47,9 +46,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_A', 'md_A_partial'))
 
         # If output path is set, ensure the directory exists and move
-        if out_path:
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(path, out_path)
+        #if out_path:
+         #   out_path.parent.mkdir(parents=True, exist_ok=True)
+          #  shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -101,12 +100,15 @@ def parse_file(file_path):
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
             # parse through and generate metadata json file
-            parse_metadata(metadata,test_filename)
-            test_name = f"{test_filename}.csv"
-            output_path = OUTPUT_DIR_CSV / test_name
-            data_df.to_csv(output_path, index=False)
-            print(colorize(f"Generated {output_path}", "blue"))
-            parsed += 1
+            status = parse_metadata(metadata,test_filename)
+            if status == None:
+                test_name = f"{test_filename}.csv"
+                output_path = OUTPUT_DIR / test_name
+                data_df.to_csv(output_path, index=False)
+                print(colorize(f"Generated {output_path}", "blue"))
+                parsed += 1
+            elif status == "SmURF" or status == "Bad":
+                parsed +=1
         except Exception as e:
             tb_list = traceback.extract_tb(e.__traceback__)
             fail = None
@@ -299,7 +301,7 @@ def parse_data(data_df,test,file_name):
         if any('TIME' in str(cell) for cell in row) and column_head != row[col_idx]:
     '''
 
-    OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     #generate test data csv name
     test_name = test.casefold()
@@ -377,7 +379,20 @@ def parse_data(data_df,test,file_name):
 
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
-
+    data_df = data_df.apply(pd.to_numeric, errors = 'coerce').astype(float)
+    data_df.columns = data_df.columns.astype(str) # make all column headers strings
+    
+    last_time = data_df['Time (s)'].last_valid_index()
+    times =data_df['Time (s)'].loc[:last_time].values
+    start_0 = np.isclose(times[0], 0)
+    if not start_0:
+        raise Exception(f"Test does not start at 0 seconds, please review markdown and pdf")
+    increments = np.diff(times)
+    expected_step = np.median(increments)
+    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
+    if not continuous:
+        raise Exception("Test does not have continuous time data, please review markdown and pdf")
     return data_df, test_filename
 
 
@@ -386,17 +401,27 @@ def parse_data(data_df,test,file_name):
 # clean and output metadata as json
 def parse_metadata(input,test_name):
     meta_filename = test_name + ".json"
-    meta_path = METADATA_DIR / meta_filename
+    meta_path = OUTPUT_DIR / meta_filename
     metadata_json = {}
     metadata = []
 
-    METADATA_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # checking for existing test metadata file 
-    #if meta_path.exists():
-     #   with open(meta_path, "r", encoding="utf-8") as w:  
-      #      metadata_json = json.load(w)
-
+    if meta_path.exists():
+        with open(meta_path, "r", encoding="utf-8") as w:  
+            metadata_json = json.load(w)
+        if metadata_json['SmURF'] is not None:
+                    files_SmURFed += 1
+                    oldname = metadata_json['Original Testname']
+                    newname = metadata_json['Testname']
+                    print(colorize(f'{oldname} has already been SmURFed to {newname} on {metadata_json["SmURF"]}. Skipping Preparsing','blue'))
+                    return 'Smurf'
+        elif metadata_json["Bad Data"] is not None:
+                    bad_files += 1
+                    oldname = metadata_json['Original Testname']
+                    print(colorize(f'{oldname} was deemed bad on {metadata_json["Bad Data"]}. Skipping Preparsing','purple'))
+                    return 'Bad'
     for line in input:
         # Preprocess line to remove excessive whitespace after '='
         line = re.sub(r'=\s*', '= ', line)  # Replace '=' followed by whitespace with '= '
@@ -524,7 +549,7 @@ def parse_metadata(input,test_name):
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4)) 
     print(colorize(f"Generated {meta_path}", "blue"))
-
+    return None
 
 #region helpers
 #get number(int,float,exponent,)

@@ -4,10 +4,10 @@ import re
 import json
 import shutil
 
-INPUT_DIR = Path(r"../data/raw/Legacy")
-OUTPUT_DIR_A = Path(r"../data/raw/md_A")
-OUTPUT_DIR_B = Path(r"../data/raw/md_B")
-OUTPUT_DIR_C = Path(r"../data/raw/md_C")
+INPUT_DIR = Path(r"../data/raw/Box/Unsorted")
+OUTPUT_DIR_A = Path(r"../data/raw/Box/md_A")
+OUTPUT_DIR_B = Path(r"../data/raw/Box/md_B")
+OUTPUT_DIR_C = Path(r"../data/raw/Box/md_C")
 LOG_FILE = Path(r"..") / "detect_log.json"
 
 #region detect_dir

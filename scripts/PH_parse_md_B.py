@@ -9,10 +9,7 @@ import numpy as np
 
 INPUT_DIR = Path(r"../data/pre-parsed/Box/md_B")
 OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_B")
-PREPARSED_META = Path(r"../Metadata/preparsed/Box/md_B")
 OUTPUT_META = Path(r"../Metadata/Parsed/Box/md_B")
-
-
 LOG_FILE = Path(r"..") / "parse_md_B_log.json"
 
 #region parse_dir
@@ -30,8 +27,8 @@ def parse_dir(input_dir):
     bad_files = 0
     # track and print parsing success rate
     for path in paths:
-        output_meta = Path(str(path).replace(str(INPUT_DIR), str(OUTPUT_META))).with_suffix('.json')
-        input_meta = Path(str(output_meta).replace(str(OUTPUT_META),str(PREPARSED_META)))
+        input_meta = path.with_suffix('.json')
+        output_meta = Path(str(input_meta).replace(str(INPUT_DIR), str(OUTPUT_META)))
         if output_meta.exists():
             with open(output_meta, "r") as f:
                 metadata = json.load(f)
@@ -66,7 +63,7 @@ def parse_dir(input_dir):
         print(colorize(f"Parsed {path} successfully\n", "green"))
         files_parsed_successfully += 1
 
-    print(colorize(f"Copied all metadata files from {PREPARSED_META} to {OUTPUT_META}\n", "green"))
+    print(colorize(f"Copied all metadata files from {INPUT_DIR} to {OUTPUT_META}\n", "green"))
     print(colorize(f"Bad Files:{bad_files}/{total_files} ({((bad_files)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files previously SmURFed:{files_SmURFed}/{total_files} ({((files_SmURFed)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files parsed successfully: {files_parsed_successfully}/{files_parsed} ({((files_parsed_successfully)/files_parsed) * 100}%)", "blue"))
@@ -124,24 +121,10 @@ def parse_file(file_path):
 def parse_data(file_path):
     # extract heat flux from current test
     file_stem = file_path.stem
-    meta_file = str(file_stem) + ".json"
-    with open(PREPARSED_META / meta_file, encoding="utf-8") as w:
+    meta_file = file_path.with_suffix('.json')
+    with open(meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-
     df = pd.read_csv(file_path)
-    
-    #Check for time discontinuities
-    last_time = df["Time (s)"].last_valid_index()
-    times =df["Time (s)"].loc[:last_time].values
-    start_0 = np.isclose(times[0], 0)
-    if not start_0:
-        raise Exception(f"Test does not start at 0 seconds, please review preparsed csv file, markdown, and pdf")
-    increments = np.diff(times)
-    expected_step = np.median(increments)
-    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
-    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
-    if not continuous:
-        raise Exception("Test does not have continuous time data, please review preparsed csv file, markdown, and pdf")
 
     df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
     if "CO2 (kg/kg)" not in df.columns:
