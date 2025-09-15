@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import datetime
 from shutil import rmtree
 import os
-
+import re
 import pandas as pd
 import json
 import zipfile
@@ -42,6 +42,8 @@ if st.checkbox('SmURF Filter'):
 
 if "metadata_loaded_once" not in st.session_state:
     st.session_state.metadata_loaded_once = False
+st.checkbox("Sort by Markdown File Number", key = "mdsort")
+   
 # region load_metadata
 # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
 @st.cache_data(show_spinner=False)
@@ -122,7 +124,15 @@ def load_metadata(show_bar=True):
     if bar:
         bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
 
-    return df.sort_values(by=["Test Date"])
+    if st.session_state["mdsort"]:
+        def get_markdown_number(key):
+            # Example key: "test0477_0857_001"
+            match = re.search(r'_(\d+)_\d+', key)
+            return int(match.group(1)) if match else 0
+        sorted_index = sorted(df.index, key=get_markdown_number)
+        return df.loc[sorted_index]
+    else:
+        return df
 
 
 # region save_metadata
@@ -335,7 +345,7 @@ def export_metadata(df):
 
         date = row["Test Date"]
         dt_obj = None
-        formats = ["%d %b %Y","%m/%d/%y","%m/%d/%Y"]
+        formats = ["%d %b %Y","%d %b %y","%m/%d/%y","%m/%d/%Y","%Y-%m-%d"]
         for format in formats:
             try:
                 dt_obj = datetime.strptime(date, format)  # Parse the string
@@ -396,8 +406,33 @@ def export_metadata(df):
 
         # Get the CSV data file as well and save that in the same folder as the metadata file
         data = pd.read_csv(path.with_suffix(".csv"))
-        data.to_csv(OUTPUT_DATA_PATH / new_filename.replace(".json", ".csv"), index=False)
-        data.to_csv(PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
+
+        #Create minimum columns if they can be made (ex: found the surface area of a test)
+        if "HRRPUA (kW/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
+            data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * reordered_metadata["Surface Area (m2)"]
+            data.drop("HRRPUA (kW/m2)", inplace=True, axis = 1)
+        if "MassPUA (g/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
+            data["Mass (g)"] = data["MassPUA (g/m2)"] * reordered_metadata["Surface Area (m2)"]
+            data.drop("MassPUA (g/m2)", inplace=True, axis = 1)
+        elif "Mass LossPUA (g/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
+            data["Mass Loss (g)"] = data["Mass LossPUA (g/m2)"] * reordered_metadata["Surface Area (m2)"]
+            data.drop("Mass LossPUA (g/m2)", inplace=True, axis = 1)
+        elif "MLRPUA (g/s-m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
+            data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * reordered_metadata["Surface Area (m2)"]
+            data.drop("MLRPUA (g/s-m2)", inplace=True, axis = 1)
+        if "Mass Loss (g)" in data.columns and reordered_metadata["Sample Mass (g)"]:
+            data["Mass (g)"] = reordered_metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
+            data.drop("Mass Loss (g)", inplace=True, axis = 1)
+        
+        max_column_order = ["Time (s)", "Mass (g)", "HRR (kW)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)",
+                            "K Smoke (1/m)", "Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA(g/s-m2)",
+                            "HRRPUA (kW/m2)"]
+        reordered_data = pd.DataFrame()
+        for c in max_column_order:
+            if c in data.columns:
+                reordered_data[c] = data[c] 
+        reordered_data.to_csv(OUTPUT_DATA_PATH / new_filename.replace(".json", ".csv"), index=False)
+        reordered_data.to_csv(PREPARED_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
  
         # update progress bar & statistics
         files_exported += 1
