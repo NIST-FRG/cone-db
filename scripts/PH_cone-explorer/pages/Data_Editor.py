@@ -43,12 +43,23 @@ if st.checkbox('SmURF Filter'):
     metadata_name_map = {test: metadata_name_map[test] for test in filtered_tests if test in metadata_name_map}
     test_name_map = {test: metadata_name_map[test].with_suffix('.csv') for test in filtered_tests}
 
+def get_markdown_number(key):
+    # Example key: "test0477_0857_001"
+    match = re.search(r'_(\d+)_\d+', key)
+    return int(match.group(1)) if match else 0
 
 
-test_selection = st.selectbox(
-    "Select a test to view and edit:",
-    options=test_name_map.keys(),
-)
+if st.checkbox("Sort by Markdown File Number"):
+    sortedkeys = sorted(test_name_map.keys(), key = get_markdown_number)
+    test_selection = st.selectbox(
+        "Select a test to view and edit:",
+        options=sortedkeys,
+    )
+else:
+    test_selection = st.selectbox(
+        "Select a test to view and edit:",
+        options=test_name_map.keys(),
+    ) 
 #########################################################################################################
 
 ###################### Generate Dataframe to Plot from Each Test Selected####################################      
@@ -103,16 +114,18 @@ if test_selection:
 
 ############################################### Generate Plot #########################################################                 
 
-    if st.checkbox("Normalize Data Per Unit Area"):
+    if st.checkbox("Normalize Mass and Heat Release Data Per Unit Area"):
         columns_to_graph = st.multiselect(
         "Select data to graph across tests",
-        options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)"]
+        options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)", 
+                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
     )
     else:     
         # Select which column(s) to graph
         columns_to_graph = st.multiselect(
             "Select data to graph across tests",
-            options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)"]
+            options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)", 
+                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
         )
     
     if len(columns_to_graph) != 0:
