@@ -4,11 +4,17 @@ import re
 import json
 import shutil
 
-INPUT_DIR = Path(r"../data/raw/Box/Unsorted")
-OUTPUT_DIR_A = Path(r"../data/raw/Box/md_A")
-OUTPUT_DIR_B = Path(r"../data/raw/Box/md_B")
-OUTPUT_DIR_C = Path(r"../data/raw/Box/md_C")
-LOG_FILE = Path(r"..") / "detect_log.json"
+
+#Path Handling: Relative to this script's location
+SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
+PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
+
+INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "Unsorted"
+OUTPUT_DIR_A = PROJECT_ROOT / "data" / "raw" / "Box" / "md_A"
+OUTPUT_DIR_B = PROJECT_ROOT / "data" / "raw" / "Box" / "md_B"
+OUTPUT_DIR_C = PROJECT_ROOT / "data" / "raw" / "Box" / "md_C"
+LOG_FILE = PROJECT_ROOT / "detect_log.json"
+
 
 #region detect_dir
 def detect_dir(input_dir):

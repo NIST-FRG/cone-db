@@ -12,10 +12,13 @@ import traceback
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
+#Path Handling: Relative to this script's location
+SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
+PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR = Path(r"../data/raw/Box/md_B")### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_B)
-OUTPUT_DIR = Path(r"../data/pre-parsed/Box/md_B")
-LOG_FILE = Path(r"..") / "preparse_md_B_log.json"
+INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "md_B"### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_B)
+OUTPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_B"
+LOG_FILE = PROJECT_ROOT / "preparse_md_B_log.json"
 
 
 
@@ -160,12 +163,27 @@ def get_tests(file_contents):
     test_number = -1
     tests = {}
     first_inst = False
-    for i in range(len(file_contents) - 2):  # Stop at len - 2 to allow i+2 access
+    for i in range(len(file_contents) - 2):
         line = str(file_contents[i]).upper().strip()
         test_match = re.search(r"\((\d{3,4})\)", line)
         if test_match is not None:
-            line_after_two = file_contents[i + 2].upper().strip()
+            raw = test_match.group(1)
+            # Check next 10 lines until hit a break criterion
+            for j in range(1, 11):  # lines i+1 to i+10
+                idx = i + j
+                if idx >= len(file_contents):
+                    break
+                line_after = file_contents[idx].upper().strip()
+                if "MAX" in line_after or "PARAMETER" in line_after:
+                    test_number = f"Test {raw.zfill(4)}"
+                    break
+                elif  "PAGE" in line_after or ";" in line_after:
+                    break
 
+
+
+            ''''
+            line_after_two = file_contents[i + 2].upper().strip()
             max_test = re.search(r"MAX", line_after_two)
             param_test = re.search(r"PARAMETER", line_after_two)
             raw = test_match.group(1)
@@ -176,7 +194,7 @@ def get_tests(file_contents):
             #if not a new test make sure the same number
             elif f"Test {raw.zfill(4)}" != test_number:
                 raise Exception("Likley typo in test numbers exist, please correct the markdown file.")
-
+            '''''
         # adding lines to respective test/key
         if test_number != -1:
             if test_number in tests:
@@ -260,6 +278,7 @@ def get_data(data):
 #region parse_data
 def parse_data(data_df,test,file_name):
     data_df = data_df.iloc[:, 1:-1]
+    
 
     # extract indices of separate datatables
     new_table_start = 0
@@ -294,8 +313,14 @@ def parse_data(data_df,test,file_name):
 
     # remove new table(s) at original location
     data_df.iloc[table_idx_list[0]:,:] = np.nan
-    
-
+    print('-------------------------------------------------------')
+    df = data_df.copy()
+    query = 'AREA'
+    mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False, na=False).any(), axis=1)
+    matching_rows = df[mask]
+    print(matching_rows)   
+    print(df[110:150])
+    print('-------------------------------------------------------------------')
     def delete_cells(col):
         # Convert to string, strip whitespace
         col_stripped = col.astype(str).str.strip()
@@ -358,7 +383,6 @@ def parse_data(data_df,test,file_name):
 
      #Renaming Column Headers
     for i, column in enumerate(data_df.columns):
-        print(column)
         if "TIME" in column:
             data_df.columns.values[i] = "Time (s)"
         elif "DOT" in column:
