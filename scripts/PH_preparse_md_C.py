@@ -12,9 +12,13 @@ import traceback
 import shutil
 from utils import calculate_HRR, calculate_MFR, colorize
 
-INPUT_DIR = Path(r"../data/raw/Box/md_C") ###### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/raw/Box/md_C)
-OUTPUT_DIR = Path(r"../data/pre-parsed/Box/md_C") ###This will eventually be on firedata
-LOG_FILE = Path(r"..") / "preparse_md_C_log.json"
+#Path Handling: Relative to this script's location
+SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
+PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
+
+INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "md_C"### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_B)
+OUTPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
+LOG_FILE = PROJECT_ROOT / "preparse_md_C_log.json"
 
 
 #region parse_dir
@@ -541,6 +545,10 @@ def parse_data(data_df,test,file_name):
     continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
     if not continuous:
         raise Exception("Test does not have continuous time data, please review markdown and pdf")
+    for c in data_df.columns:
+        data = data_df[c].loc[:data_df[c].last_valid_index()].values
+        if len(data) > len(times):
+            raise Exception(f"Column {c} exceeds the length of time in the test, please review markdown and pdf")
     return data_df, test_filename
 
 

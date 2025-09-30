@@ -7,11 +7,13 @@ import os
 from datetime import datetime
 import numpy as np
 
-INPUT_DIR = Path(r"../data/pre-parsed/Box/md_A")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_A")
-OUTPUT_META = Path(r"../Metadata/Parsed/Box/md_A")
-LOG_FILE = Path(r"..") / "parse_md_A_log.json"
+SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
+PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
+INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_A"
+OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_A"
+OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_A"
+LOG_FILE = PROJECT_ROOT / "parse_md_A_log.json"
 
 #region parse_dir
 # Find/load the pre-parsed CSV files

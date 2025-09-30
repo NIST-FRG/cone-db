@@ -7,10 +7,14 @@ import os
 from datetime import datetime 
 import numpy as np
 
-INPUT_DIR = Path(r"../data/pre-parsed/Box/md_C")
-OUTPUT_DIR_CSV = Path(r"../Exp-Data_Parsed/Box/md_C")
-OUTPUT_META = Path(r"../Metadata/Parsed/md_C")
-LOG_FILE = Path(r"..") / "parse_md_C_log.json"
+SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
+PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
+
+INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
+OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_C"
+OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_C"
+LOG_FILE = PROJECT_ROOT / "parse_md_C_log.json"
+
 
 #region parse_dir
 # Find/load the pre-parsed CSV files
@@ -127,6 +131,7 @@ def parse_data(file_path):
 
     df = pd.read_csv(file_path)
     df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
+    df["O2 (kg/kg)"] = None
     if "CO2 (kg/kg)" not in df.columns:
         df["CO2 (kg/kg)"] = None
     if "CO (kg/kg)" not in df.columns:
@@ -173,7 +178,6 @@ def parse_metadata(input_meta, output_meta):
     with open(output_meta, "r") as f:
         metadata = json.load(f)
     #parsed tag
-    print
     metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(output_meta, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata, indent=4))
