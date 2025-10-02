@@ -43,7 +43,12 @@ if st.checkbox('SmURF Filter'):
 if "metadata_loaded_once" not in st.session_state:
     st.session_state.metadata_loaded_once = False
 st.checkbox("Sort by Markdown File Number", key = "mdsort")
-   
+if st.checkbox("Select Specific Tests"):
+    selected_tests = st.multiselect("Choose Tests to Edit:", options= metadata_path_map)
+    test_selection = {k: metadata_path_map[k] for k in selected_tests}
+else: 
+    test_selection = metadata_path_map
+
 # region load_metadata
 # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
 @st.cache_data(show_spinner=False)
@@ -58,7 +63,7 @@ def load_metadata(show_bar=True):
     all_metadata = []
     all_surf_areas = []
     metadata_loaded = 0
-    for metadata_path in metadata_path_map.values():
+    for metadata_path in test_selection.values():
         one_metadata = json.load(open(metadata_path))
         surf_area = one_metadata["Surface Area (m2)"]
         all_surf_areas.append(surf_area)
@@ -66,15 +71,15 @@ def load_metadata(show_bar=True):
         metadata_loaded += 1
         if bar:
             bar.progress(
-                metadata_loaded / len(metadata_path_map),
-                f"({metadata_loaded}/{len(metadata_path_map)}) Loading metadata for {metadata_path.stem}",
+                metadata_loaded / len(test_selection),
+                f"({metadata_loaded}/{len(test_selection)}) Loading metadata for {metadata_path.stem}",
             )
 
     if len(all_metadata) == 0:
         st.error("No tests found.")
         return pd.DataFrame()
 
-    df = pd.DataFrame(all_metadata, index=list(metadata_path_map.keys()))
+    df = pd.DataFrame(all_metadata, index=list(test_selection.keys()))
     df["** DELETE FILE"] = False
     df["** EXPORT FILE"] = False
     df["** REVERT FILE"] = False
@@ -87,15 +92,15 @@ def load_metadata(show_bar=True):
 
     all_test_data = []
     tests_loaded = 0
-    for metadata_path in metadata_path_map.values():
+    for metadata_path in test_selection.values():
         test_path = metadata_path.with_suffix(".csv")
         with open(test_path) as f:
             all_test_data.append(pd.read_csv(f))
             tests_loaded += 1
             if bar:
                 bar.progress(
-                    tests_loaded / len(metadata_path_map),
-                    f"({tests_loaded}/{len(metadata_path_map)}) Loading test data for {test_path.stem}",
+                    tests_loaded / len(test_selection),
+                    f"({tests_loaded}/{len(test_selection)}) Loading test data for {test_path.stem}",
                 )
 
 
@@ -110,17 +115,14 @@ def load_metadata(show_bar=True):
             )
     if len(all_test_data) > 1:
         hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
-        hrr.columns = metadata_path_map.keys()
+        hrr.columns = test_selection.keys()
         hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
         hrr = pd.Series(hrr.squeeze())
         df.insert(0, "HRRPUA (kW/m2)", hrr.values)
     else:
         #HRR curve still not displaying properly if one test present only, come back to this
-        hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
-        hrr.columns = metadata_path_map.keys()
-        hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
-        hrr = pd.Series(hrr.squeeze())
-        df.insert(0, "HRRPUA (kW/m2)", [hrr])
+        hrr = all_test_data[0]["HRRPUA (kW/m2)"].dropna().to_list()
+        df.insert(0, "HRRPUA (kW/m2)", [hrr]) 
     if bar:
         bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
 
@@ -148,7 +150,7 @@ def save_metadata(df):
     # Go through the dataframe row by row & save each file
     for index, row in df.iterrows():
         # Get the path to the metadata file
-        path = metadata_path_map[str(index)]
+        path = test_selection[str(index)]
         # Convert the dataframe row to a dictionary
         row = row.to_dict()
         # Save the dictionary as JSON
@@ -156,7 +158,7 @@ def save_metadata(df):
             json.dump(row, f, indent=4)
         files_saved += 1
         bar.progress(
-            files_saved / len(metadata_path_map),
+            files_saved / len(test_selection),
             f"Saving metadata for {path.stem}",
         )
     bar.progress(1.0, "Metadata saved")
@@ -202,12 +204,12 @@ def revert_to_parsed():
     "Pulls in the unmodified, parsed JSON file, undoing any saved and unsaved changes that were made"
     files_to_revert = df[df['** REVERT FILE']].index
     for file in files_to_revert:
-        metadata = json.load(open(metadata_path_map[file]))
+        metadata = json.load(open(test_selection[file]))
         ogform = metadata["Original Source"]
         parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
-        bad_data = str(metadata_path_map[file])
+        bad_data = str(test_selection[file])
         original_data = bad_data.replace(str(INPUT_DATA_PATH), parsed_path)
-        save_path = str(metadata_path_map[file])
+        save_path = str(test_selection[file])
         shutil.copy(original_data, save_path)
         st.success(f"Metadata for {file} reverted to parsed")
 
@@ -218,7 +220,7 @@ def delete_files():
     # delete the metadata files as well as their corresponding csv files
     for file in files_to_delete:
         #tag parsed file as being bad so it is not re-imported
-        active_file = metadata_path_map[file]
+        active_file = test_selection[file]
         metadata = json.load(open(active_file))
         ogform = metadata["Original Source"]
         parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
@@ -256,7 +258,7 @@ st.divider()
 st.sidebar.markdown("### Select columns \nLeave blank to view all columns.")
 # adjusted for format md_A
 
-if len(metadata_path_map)> 0:
+if len(test_selection)> 0:
     selected_columns = st.sidebar.multiselect(
         "Columns",
         df.columns.tolist() ,
@@ -341,7 +343,7 @@ def export_metadata(df):
             continue
 
         # find the path to the metadata file & include the old filename in the metadata
-        path = metadata_path_map[str(index)]
+        path = test_selection[str(index)]
 
         date = row["Test Date"]
         dt_obj = None

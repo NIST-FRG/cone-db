@@ -131,37 +131,30 @@ def parse_data(file_path):
 
     df = pd.read_csv(file_path)
     df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
-    df["O2 (kg/kg)"] = None
-    if "CO2 (kg/kg)" not in df.columns:
-        df["CO2 (kg/kg)"] = None
-    if "CO (kg/kg)" not in df.columns:
-        df["CO (kg/kg)"] = None
-    if "H2O (kg/kg)" not in df.columns:
-        df["H2O (kg/kg)"] = None
-    if "HCl (kg/kg)" not in df.columns:
-        df["HCl (kg/kg)"] = None
-    if "H'carbs (kg/kg)" not in df.columns:
-        df["H'carbs (kg/kg)"] = None
+    df["O2 (Vol fr)"] = None
+    df["CO2 (Vol fr)"] = None
+    df["CO (Vol fr)"] = None
+    df["MFR (kg/s)"] = None
     df["K Smoke (1/m)"] = None
     df["Extinction Area (m2/kg)"] = None
 
     if "Mass (kg)" in df.columns:
         df["Mass (g)"] = df["Mass (kg)"] * 1000
         df["HRR (kW)"] = None
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", 
-                   "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                           "K Smoke (1/m)","Extinction Area (m2/kg)""HRRPUA (kW/m2)"]]
     elif "MLR (g/s)" in df.columns:
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
-                           "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "MLR (g/s)", "HRRPUA (kW/m2)"]]
+        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                           "K Smoke (1/m)","Extinction Area (m2/kg)","MLR (g/s)", "HRRPUA (kW/m2)"]]
     else:
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)",
-                    "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
+        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                    "K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)

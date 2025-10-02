@@ -131,22 +131,16 @@ def parse_data(file_path):
     df = pd.read_csv(file_path)
 
     df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
-    if "CO2 (kg/kg)" not in df.columns:
-        df["CO2 (kg/kg)"] = None
-    if "CO (kg/kg)" not in df.columns:
-        df["CO (kg/kg)"] = None
-    if "H2O (kg/kg)" not in df.columns:
-        df["H2O (kg/kg)"] = None
-    if "HCl (kg/kg)" not in df.columns:
-        df["HCl (kg/kg)"] = None
-    if "H'carbs (kg/kg)" not in df.columns:
-        df["H'carbs (kg/kg)"] = None
+    df["O2 (Vol fr)"] = None
+    df["CO2 (Vol fr)"] = None
+    df["CO (Vol fr)"] = None
+    df["MFR (kg/s)"] = None
     df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
     #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s)
-    df["K Smoke (1/m)"] = (df["MLR (g/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
+    df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
     df["HRR (kW)"] = None
-    data = df[["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", 
-               "H'carbs (kg/kg)","K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
+    data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                "K Smoke (1/m)","Extinction Area (m2/kg)""HRRPUA (kW/m2)"]]
 
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)

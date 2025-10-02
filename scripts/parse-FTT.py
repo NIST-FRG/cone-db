@@ -40,14 +40,22 @@ def parse_dir(input_dir):
     OUTPUT_DIR = None
     META_DIR = None
     LOG_FILE = None
+    color = None
     if "White" in str(input_dir):
         OUTPUT_DIR = OUTPUT_DIR1
         META_DIR = META_DIR1
         LOG_FILE = LOG_FILE1
+        color = "White"
     elif "Black" in str(input_dir):
         OUTPUT_DIR = OUTPUT_DIR2
         META_DIR = META_DIR2
         LOG_FILE = LOG_FILE2
+        color = 'Black'
+    logfile = {}
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        f.write(json.dumps(logfile, indent=4))
+    print(f"✅ parse_FTT-{color}.json created.")
+    
     # read all CSV files in directory
     paths = Path(input_dir).glob("**/*.CSV")
     
@@ -330,10 +338,10 @@ def parse_data(df, metadata):
         [
             "Time (s)",
             "Mass (g)",
+            "HRR (kW)",
             "O2 (Vol fr)",
             "CO2 (Vol fr)",
             "CO (Vol fr)",
-            "HRRPUA (kW/m2)",
             "MFR (kg/s)",
             "K Smoke (1/m)"
         ]
@@ -417,7 +425,7 @@ def process_data(data, metadata):
     data["MFR (kg/s)"] = data.apply(get_MFR, axis=1)
     
     data["K Smoke (1/m)"] = (1/duct_length) * np.log(data["PDC (-)"]/data["PDM (-)"])
-
+    data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * area
 
     return data
 
