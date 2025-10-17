@@ -33,7 +33,7 @@ The general workflow for SmURFing is as follows:
 
 ## Tools
 
-### Plot
+### Compare Tests
 
 ##### Overview
 Grants the user the ability to view and compare the data from multiple tests.

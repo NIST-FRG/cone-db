@@ -140,7 +140,7 @@ def parse_data(file_path):
     df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
     df["HRR (kW)"] = None
     data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                "K Smoke (1/m)","Extinction Area (m2/kg)""HRRPUA (kW/m2)"]]
+                "K Smoke (1/m)","Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
 
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
