@@ -10,7 +10,7 @@ import numpy as np
 
 import streamlit as st
 import shutil
-from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PREPARED_DATA_PATH, PREPARED_METADATA_PATH
+from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PREPARED_DATA_PATH, PREPARED_METADATA_PATH, SCRIPT_DIR
 
 ################################ Title of Page #####################################################
 st.set_page_config(page_title="Metadata Editor", page_icon="📊", layout="wide")
@@ -451,4 +451,31 @@ st.sidebar.markdown("Selected files are renamed, and their data and metadata are
 
 
 st.divider()
+
+
+st.markdown("#### Notes")
+readme = SCRIPT_DIR / "README.md"
+section_title = "### Metadata Editor"
+
+# Read the README file
+with open(readme, "r", encoding="utf-8") as f:
+    lines = f.readlines()
+
+# Find start and end indices for the subsection
+start_idx, end_idx = None, None
+for i, line in enumerate(lines):
+    if line.strip() == section_title:
+        start_idx = i +1
+        break
+
+if start_idx is not None:
+    for j in range(start_idx + 1, len(lines)):
+        if lines[j].startswith("### ") or lines[j].startswith("## "):
+            end_idx = j
+            break
+    # If no further section, use end of file
+    if end_idx is None:
+        end_idx = len(lines)
+    subsection = "".join(lines[start_idx:end_idx])
+    st.markdown(subsection)
 

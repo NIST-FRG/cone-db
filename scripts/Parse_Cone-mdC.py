@@ -142,7 +142,7 @@ def parse_data(file_path):
         df["Mass (g)"] = df["Mass (kg)"] * 1000
         df["HRR (kW)"] = None
         data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                           "K Smoke (1/m)","Extinction Area (m2/kg)""HRRPUA (kW/m2)"]]
+                           "K Smoke (1/m)","Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
     elif "MLR (g/s)" in df.columns:
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
