@@ -3,12 +3,22 @@ import re
 import shutil
 from datetime import datetime
 from pathlib import Path
-
+import sys
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
-from const import INPUT_DATA_PATH, PARSED_DATA_PATH
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH,
+    PARSED_DATA_PATH
+)
+
+#from const import INPUT_DATA_PATH, PARSED_DATA_PATH
 from scipy.signal import savgol_filter
 
 ################################ Title of Page #####################################################
