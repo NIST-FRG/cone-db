@@ -1,15 +1,19 @@
 import json
 from pathlib import Path
-
 import pandas as pd
-
 import streamlit as st
 from st_keyup import st_keyup
-
 import plotly.express as px
 import plotly.graph_objects as go
+import sys
 
-from const import INPUT_DATA_PATH, SCRIPT_DIR
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH,
+    SCRIPT_DIR
+)
 
 st.set_page_config(page_title="Cone Metadata Search", page_icon="🔎", layout="wide")
 

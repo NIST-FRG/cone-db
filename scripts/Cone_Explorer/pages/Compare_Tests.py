@@ -1,14 +1,21 @@
 import json
-
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import re
 import streamlit as st
-
+import sys
 import plotly.express as px
 import plotly.graph_objects as go
 
-from const import INPUT_DATA_PATH, SCRIPT_DIR
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH, SCRIPT_DIR
+)
+
 
 
 ################################ Title of Page #####################################################

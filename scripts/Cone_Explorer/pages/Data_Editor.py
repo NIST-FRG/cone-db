@@ -3,13 +3,23 @@ import re
 import shutil
 from datetime import datetime
 from pathlib import Path
-
+import sys
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
-from const import INPUT_DATA_PATH, PARSED_DATA_PATH, SCRIPT_DIR
 from scipy.signal import savgol_filter
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH,
+    PARSED_DATA_PATH, 
+    SCRIPT_DIR
+)
+
+
 
 ################################ Title of Page #####################################################
 st.set_page_config(page_title="Cone Data Editor", page_icon="📈", layout="wide")

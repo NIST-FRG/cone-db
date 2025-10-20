@@ -7,11 +7,21 @@ import pandas as pd
 import json
 import zipfile
 import numpy as np
-
+import sys
 import streamlit as st
 import shutil
-from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PREPARED_DATA_PATH, PREPARED_METADATA_PATH, SCRIPT_DIR
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH,
+     OUTPUT_DATA_PATH, 
+     PARSED_METADATA_PATH, 
+     PREPARED_DATA_PATH, 
+     PREPARED_METADATA_PATH, 
+     SCRIPT_DIR
+)
 ################################ Title of Page #####################################################
 st.set_page_config(page_title="Metadata Editor", page_icon="📊", layout="wide")
 st.title("Bulk Metadata Editor")
