@@ -1,9 +1,19 @@
 import streamlit as st
-from const import INPUT_DATA_PATH, OUTPUT_DATA_PATH, PARSED_METADATA_PATH, PARSED_DATA_PATH, PREPARED_DATA_PATH
 import json
 import shutil
 import os
 from pathlib import Path
+import sys
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+print(PROJECT_ROOT)
+sys.path.append(str(PROJECT_ROOT))
+from Cone_Explorer.const import (
+    INPUT_DATA_PATH, PARSED_METADATA_PATH, 
+    PARSED_DATA_PATH, PREPARED_DATA_PATH
+)
+
+
 st.set_page_config(page_title="NIST Cone Data Explorer", page_icon="🔬")
 
 st.title("NIST Cone Data Explorer")
@@ -50,7 +60,11 @@ if st.button("Import Data To Explorer"):
             shutil.copy(src_csv_path, new_file.with_suffix(".csv"))
 
     st.success("Data and Metadata imported successfully")
-with open ('README.md', 'r') as f:
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+readme_path = SCRIPT_DIR / "README.md"
+with open (readme_path, 'r') as f:
     st.markdown(f.read())
 # Make sure the INPUT_DATA_PATH and OUTPUT_DATA_PATH exist, if not create them
 if not INPUT_DATA_PATH.exists():
