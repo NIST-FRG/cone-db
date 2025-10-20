@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import sys
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+PROJECT_ROOT = Path(__file__).resolve().parents[1]  # .../Scripts
 print(PROJECT_ROOT)
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
