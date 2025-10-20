@@ -4,16 +4,16 @@ import pandas as pd
 import json
 import shutil
 import os
-from datetime import datetime 
+from datetime import datetime
 import numpy as np
 
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
-OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_C"
-OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_C"
-LOG_FILE = PROJECT_ROOT / "parse_md_C_log.json"
+INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_B"
+OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_B"
+OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_B"
+LOG_FILE = PROJECT_ROOT / "parse_md_B_log.json"
 
 
 #region parse_dir
@@ -57,7 +57,7 @@ def parse_dir(input_dir):
             with open(LOG_FILE, "r", encoding="utf-8") as w:  
                 logfile = json.load(w)
             logfile.update({
-                    str(path.name) : "Parsing Issue: " + str(e)
+                    str(path.name): "Parsing Issue: " + str(e)
                 })
             with open(LOG_FILE, "w", encoding="utf-8") as f:
 	            f.write(json.dumps(logfile, indent=4))
@@ -122,39 +122,26 @@ def parse_file(file_path):
 '''
     
 #region parse_plot_data
-def parse_data(file_path):    
+def parse_data(file_path):
     # extract heat flux from current test
     file_stem = file_path.stem
     meta_file = file_path.with_suffix('.json')
     with open(meta_file, encoding="utf-8") as w:
         metadata = json.load(w)
-
     df = pd.read_csv(file_path)
-    df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
+
+    df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
     df["O2 (Vol fr)"] = None
     df["CO2 (Vol fr)"] = None
     df["CO (Vol fr)"] = None
     df["MFR (kg/s)"] = None
-    df["K Smoke (1/m)"] = None
-    df["Extinction Area (m2/kg)"] = None
+    df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
+    #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s)
+    df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
+    df["HRR (kW)"] = None
+    data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                "K Smoke (1/m)","Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
 
-    if "Mass (kg)" in df.columns:
-        df["Mass (g)"] = df["Mass (kg)"] * 1000
-        df["HRR (kW)"] = None
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                           "K Smoke (1/m)","Extinction Area (m2/kg)""HRRPUA (kW/m2)"]]
-    elif "MLR (g/s)" in df.columns:
-        df["Mass (g)"] = None
-        df["HRR (kW)"] = None
-        print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                           "K Smoke (1/m)","Extinction Area (m2/kg)","MLR (g/s)", "HRRPUA (kW/m2)"]]
-    else:
-        df["Mass (g)"] = None
-        df["HRR (kW)"] = None
-        print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                    "K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
         
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
@@ -184,6 +171,6 @@ if __name__ == "__main__":
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
-    print("✅ parse_md_C_log.json created.")
+    print("✅ parse_md_B_log.json created.")
     parse_dir(INPUT_DIR)
     

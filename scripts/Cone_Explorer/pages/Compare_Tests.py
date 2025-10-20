@@ -8,12 +8,14 @@ import sys
 import plotly.express as px
 import plotly.graph_objects as go
 
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
 print(PROJECT_ROOT)
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    INPUT_DATA_PATH,
+    INPUT_DATA_PATH, SCRIPT_DIR
 )
+
 
 
 ################################ Title of Page #####################################################
@@ -108,6 +110,10 @@ if len(test_selection) != 0:
             df["MLR (g/s)"] = None
             df["MLRPUA (g/s-m2)"] = None
 
+
+        if "Extinction Area (m2/kg)" not in df:
+            df["Extinction Area (m2/kg)"] = None
+
         test_data.append(df)
 ######################################################################################################################################################
 
@@ -121,14 +127,14 @@ if len(test_selection) != 0:
         y_axis_columns = st.multiselect(
         "Select data to graph across tests",
         options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)", 
-                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+                  "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
     )
     else:     
         # Select which column(s) to graph
         y_axis_columns = st.multiselect(
             "Select data to graph across tests",
             options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)", 
-                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+                 "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
     )
         
 
@@ -154,3 +160,30 @@ if len(test_selection) != 0:
             
             st.markdown(f"#### {y_column} vs {x_axis_column}")
             st.plotly_chart(fig)
+
+
+    st.markdown("#### Notes")
+    readme = SCRIPT_DIR / "README.md"
+    section_title = "### Compare Tests"
+
+    # Read the README file
+    with open(readme, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    # Find start and end indices for the subsection
+    start_idx, end_idx = None, None
+    for i, line in enumerate(lines):
+        if line.strip() == section_title:
+            start_idx = i +1
+            break
+
+    if start_idx is not None:
+        for j in range(start_idx + 1, len(lines)):
+            if lines[j].startswith("### ") or lines[j].startswith("## "):
+                end_idx = j
+                break
+        # If no further section, use end of file
+        if end_idx is None:
+            end_idx = len(lines)
+        subsection = "".join(lines[start_idx:end_idx])
+        st.markdown(subsection)

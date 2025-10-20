@@ -339,10 +339,10 @@ def parse_data(df, metadata):
             "Time (s)",
             "Mass (g)",
             "HRR (kW)",
+            "MFR (kg/s)",
             "O2 (Vol fr)",
             "CO2 (Vol fr)",
             "CO (Vol fr)",
-            "MFR (kg/s)",
             "K Smoke (1/m)"
         ]
     ]

@@ -8,18 +8,18 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
-
+from scipy.signal import savgol_filter
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
 print(PROJECT_ROOT)
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
     INPUT_DATA_PATH,
-    PARSED_DATA_PATH
+    PARSED_DATA_PATH, 
+    SCRIPT_DIR
 )
 
-#from const import INPUT_DATA_PATH, PARSED_DATA_PATH
-from scipy.signal import savgol_filter
+
 
 ################################ Title of Page #####################################################
 st.set_page_config(page_title="Cone Data Editor", page_icon="📈", layout="wide")
@@ -117,26 +117,28 @@ if test_selection:
         df["MassPUA (g/m2)"] = None
         df["MLR (g/s)"] = None
         df["MLRPUA (g/s-m2)"] = None
-    
+    if "Extinction Area (m2/kg)" not in df:
+        df["Extinction Area (m2/kg)"] = None
+
     test_data = df
 
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
 
-    if st.checkbox("Normalize Mass and Heat Release Data Per Unit Area"):
+    if st.checkbox("Normalize Data Per Unit Area"):
         columns_to_graph = st.multiselect(
         "Select data to graph across tests",
         options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)", 
-                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+                  "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
     )
     else:     
         # Select which column(s) to graph
         columns_to_graph = st.multiselect(
             "Select data to graph across tests",
             options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)", 
-                  'CO2 (kg/kg)', 'CO (kg/kg)', 'H2O (kg/kg)', "HCl (kg/kg)", "H'carbs (kg/kg)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
-        )
+                 "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+    )
     
     if len(columns_to_graph) != 0:
         # Add number inputs for x- and y-axis limits
@@ -197,7 +199,7 @@ if test_selection:
             save_path = str(test_name_map[test_selection])
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "CO2 (kg/kg)","CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]
+            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)"]
             data_out = data_copy[min_cols].copy()
             if data_out["Mass (g)"].isnull().all():
                 if data_copy["MLR (g/s)"].isnull().all():
@@ -209,7 +211,7 @@ if test_selection:
                 if not data_copy["HRRPUA (kW/m2)"].isnull().all():
                     data_out["HRRPUA (kW/m2)"] = data_copy["HRRPUA (kW/m2)"].copy()
                         # Remove rows where all' values in the selected columns are NaN
-            data_out = data_out.dropna(how= 'all')
+
             data_out.to_csv(
                 save_path,
                 float_format="%.4e",
@@ -250,3 +252,28 @@ if test_selection:
                     st.success(f"Metadata for {test_selection} updated.")
                 else:
                     st.warning("Please enter the change performed before saving")
+    st.markdown("#### Notes")
+    readme = SCRIPT_DIR / "README.md"
+    section_title = "### Data Editor"
+
+    # Read the README file
+    with open(readme, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    # Find start and end indices for the subsection
+    start_idx, end_idx = None, None
+    for i, line in enumerate(lines):
+        if line.strip() == section_title:
+            start_idx = i +1
+            break
+
+    if start_idx is not None:
+        for j in range(start_idx + 1, len(lines)):
+            if lines[j].startswith("### ") or lines[j].startswith("## "):
+                end_idx = j
+                break
+        # If no further section, use end of file
+        if end_idx is None:
+            end_idx = len(lines)
+        subsection = "".join(lines[start_idx:end_idx])
+        st.markdown(subsection)
