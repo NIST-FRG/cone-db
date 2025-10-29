@@ -4,8 +4,7 @@
 
 ## Setup
 Prior to opening the explorer, preparsing and parsing of data should have been performed. Please run these scripts if this is not the case, or pull down the data from GitHub. Upon opening the explorer (see Usage), click the import data button on the `Main` page to pull in Parsed data.
-The import button will look at the Parsed metadata folder, pulling new or newly SmURFed data (as obtained from the GitHub directory). Any files labled as bad (i.e. calibration checks, no data, etc...) will be removed from the directory. In the case that files have been modified and saved locally in the explorer, but not yet exported to the repo, an error will be raised asking the user to export or discard these changes. 
-
+T
 ## Usage
 From the root of the repository, run the following command:
 
@@ -56,18 +55,13 @@ Axis Range Controls in the sidebar allow you to exactly control the axes. Defaul
 ### Data Editor
 
 ##### Overview
-Grants the user the ability to view, crop, and modify data from a single cone test. This page is used during the SmURF process to ensure no errouneous data points were created during parsing and to clip unneeded data at the ends of tests.
-
-##### Filter Options
-Select `SmURF Filter` to split tests up based on whether they have been SmURFed or not.
+Grants the user the ability to view, crop, and modify data from a single cone test. This page is intended to be used of cone tests that already have the poper naming convention. Data modifcations for tests needing to be SmURFed are performed in the SmURF Editor
 
 ##### Selecting Tests to View
-Type out the specimen number of the test you would like to view and/or select them it the dropdown list
+Type out the name of the test you would like to view and/or select them it the dropdown list
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). Y-axis data include sample mass (g), mass loss rate (g/s), heat release rate (kW), and total heat release (MJ). There is also an option to normalize these data per unit area (/m2). Note that some tests may only have raw or mass normalized data or only mass loss rate data depending on the raw printout and available metadata. In the ideal case, the csv file contains mass (g) and heat release (kW).
-CO2, CO, H2O, HCl, and Total Hydrocarbon (H'carb) yields can be viewed on an mass fraction basis (kg/kg). K-smoke (1/m) and Specific Extinction Area on a mass pyrolyzed basis (m2/kg) are also available to be plotted.
-
+For editing cone data, plots have an x-axis of time (s). Y-axis data include sample mass (g), mass loss rate (g/s), heat release rate (kW), and total heat release (MJ). There is also an option to normalize these data per unit area (/m2). Note that some tests may only have raw or mass normalized data or only mass loss rate data depending on the raw printout and available metadata. Volume fractions of O2, CO2, and CO in the duct, as well as mas flow rathe through the duct (kg/s), K-smoke (1/m), and Specific Extinction Area on a mass pyrolyzed basis (m2/kg) are also available to be plotted.
 
 Plots can zoom in and out, pan, and save the plot as a .png file.
 
@@ -81,24 +75,40 @@ Several cone calorimeter tests may have erroneous or irrelevant data that needs 
 
 Use the `Save Clipped Data` button to save this selection and clip data from all fields between the selected times (to clip ends of data, set beginning or end cut off time to a value outside the datarange). The local copy of the parsed csv file is modified to reflect this change. A note is added to the metadata json file, under data corrections. In the case that additional metadata has been added (i.e. surface area), this button will also regenerate the csv file with the more minimal column (MLRPUA to MLR, HRRPUA to HRR, etc...)
 
+
+
+### SmURF Editor
+
+##### Overview
+This is the page where SmURFing will be perfomed. Upon opening the explorer, click "Import Data to Explorer" to pull in local copies of the data files. The import button will look at the Parsed metadata folder, pulling new or newly SmURFed data (as obtained from the GitHub directory). Any files labled as bad (i.e. calibration checks, no data, etc...) will be removed from the directory. In the case that files have been modified and saved locally in the explorer, but not yet exported to the repo, an error will be raised asking the user to export or discard these changes. 
+
+Type the name of the test you would like to SmURF into the dropdown menu to select it.
+
+The SmURF Editor is broken up into two functionalities: Data Modification and Metadata Adjustments
+
+#### Data Modification
+##### Revert Data Modifications
+Use the `Revert Data Modifications` button to revert any changes made back to the original data (pulled from the Exp-Data_Parsed folder). A note is added to the test metadata file , under data corrections, indicating that the data was reverted back to its original state.
+
+###### Data Clipping
+Several cone calorimeter tests may have erroneous or irrelevant data that needs to be removed. In the relevant sidebar boxes, enter the temperature range you would like to remove from the data. The plot will preview this change, but data will not yet be altered. Cutoff values are inclusive and default to -1s so all data is initially visible.
+
+Use the `Save Clipped Data` button to save this selection and clip data from all fields between the selected times (to clip ends of data, set beginning or end cut off time to a value outside the datarange). The local copy of the parsed csv file is modified to reflect this change. A note is added to the metadata json file, under data corrections. In the case that additional metadata has been added (i.e. surface area), this button will also regenerate the csv file with the more minimal column (MLRPUA to MLR, HRRPUA to HRR, etc...)
+
 ###### CSV Modification
 Data transfer is not always perfect from pdf to markdown to csv file. The major types of errors that may occur are typos in individual values (pay close attention to the time columns or clear outliers), duplicated columns, missing data (pulled into metadata or another test during preparsing), and excess data (either from another test or different column of the same test). It is usually visually apparent when these errors occur, and most of these issues are filtered out during preparsing and parsing, but it is good practice to give a cursory look at the csv values if something seems off.
 
 Click the `Modify CSV File` checkbox to open an editable view of the csv file currently in your explorer. Perform data corrections as nescessary (adding, moving, removing, editing cells), and write a note of what was done in the textbox provided. Click `Save Modified CSV` to save these changes to your explorer.
 
-
-
-### Metadata Editor
-
-##### Overview
-This is the main page where SmURFing will be perfomed. The metadata editor loads metadata from the local `data` folder within your explorer.
-An editable spreadsheet/table-like interface is generated, with each row representing the metadata for a single test.
-When modifying a test, the first step is to ensure all possible metadata fields are populated correctly. Preparsing and parsing scripts generally do a good job at this, but there are cases where a field that should have been populated was not recognized and added to the comments or missplaced in a different field. There are also cases where additional metadata may be found in the report being attached to a test. For each test SmURFed, ensure the metadata is filled out as comprehesivley as possible. Some columns related to the processing stage of a file are not editable.
+#### Metadata Adjustments
+The SmURF editor loads metadata from the local `data` folder within your explorer.
+An editable spreadsheet/table-like interface is generated, with each row representing a metadata attribute.
+When modifying a test, the first step is to ensure all possible metadata fields are populated correctly. Preparsing and parsing scripts generally do a good job at this, but there are cases where a field that should have been populated was not recognized and added to the comments or missplaced in a different field. There are also cases where additional metadata may be found in the report being attached to a test. For each test SmURFed, ensure the metadata is filled out as comprehesivley as possible.
 
 - Material IDs should use the format `<material_name>-<report_identifier>`. Spaces in a material name should be removed. For example, the material ID for a material named "Material A" with a report identifier of "smith2015characterization" would be `MaterialA-smith2015characterization`.
 
 ##### Buttons/Actions
-`Reload Page`: Discards any changes that are currently in the active editor and reloads all metadata from the json files located in your local explorer. This the equivalent of moving to a different page in the explorer and coming back.
+`Reload Metadata`: Discards any changes that are currently in the active editor and reloads all metadata from the json files located in your local explorer. This the equivalent of moving to a different page in the explorer and coming back.
 
 `Save Metadata`: Saves the active editor to the json files within your explorer. This should be used as you are editing fields in a test during SmURFing, but before you are ready to fully export the file (i.e. you went to lunch).
 
@@ -106,10 +116,11 @@ When modifying a test, the first step is to ensure all possible metadata fields 
 
 `Delete Files`: For selected tests, the local copies of the json and csv files are deleted from the explorer. The parsed metadata file on the GitHub has its "Bad Data" key updated with a time stamp of the deletion, preventing the test from being brought into the viewer. Tests should only be deleted if they are clear calibration checks (i.e. burner calibration) or have no usable data. In the latter case, please review the pdf and markdown files to ensure the data is actually bad, and was not just copied incorrectly.
 
-`Export` This button should only be used for tests that have gone through a full SmURF review (both data and metadata), been attached to a report, and had their material ID generated. Before exporting, ensure the material ID and heat flux metadata items are correct and that the test date item is in the format 12 MAY 1987, 12 MAY 87, 5/12/87, or 5/12/1987. For selected tests, the export button will generate the Prepared-Final versions of the data and metadata files, passing them both to a local prepared folder within the explorer and their resepctive folders on the GitHub repo. The data file may be modified if its data can be reduced (i.e HRRPUA is converted to HRR if the sample surface area was added to the metadata. Testname is generated as Mat-ID_flux_orient_specicmen#. The test date is also turned into a datetime object for uniform tracking, the SmURF attribute is given a timestamp. and the metadata is re-ordered. The version controlled Parsed metadata file is also updated to reflect these changes and prevent re-SmURFing.
+`Export` This button should only be used for tests that have gone through a full SmURF review (both data and metadata), been attached to a report, and had their material ID generated. Before exporting, ensure the material ID and heat flux metadata items are correct and that the test date item is in the format 12 MAY 1987, 12 MAY 87, 5/12/87, 5/12/1987 or the iso standard 1987-05-12T12:46:00. For selected tests, the export button will generate the Prepared-Final versions of the data and metadata files, passing them both to a local prepared folder within the explorer and their resepctive folders on the GitHub repo. The data file may be modified if its data can be reduced (i.e HRRPUA is converted to HRR if the sample surface area was added to the metadata. Testname is generated as Mat-ID_flux_orient_specicmen#. The test date is also turned into a datetime object for uniform tracking, the SmURF attribute is given a timestamp. and the metadata is re-ordered. The version controlled Parsed metadata file is also updated to reflect these changes and prevent re-SmURFing.
 
 
 ### Metadata Search
 
 ##### Overview
-This page acts as a lookup system for all availblle TGA metadata within the repo. Type in a search term to find matching metadata.
+This page acts as a lookup system for all availblle Cone metadata within the repo. Type in a search term to find matching metadata.
+This page should be used when looking for tests to connect to a report.

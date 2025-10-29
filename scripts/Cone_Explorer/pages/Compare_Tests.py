@@ -10,10 +10,15 @@ import plotly.graph_objects as go
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
-print(PROJECT_ROOT)
+
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    INPUT_DATA_PATH, SCRIPT_DIR
+    INPUT_DATA_PATH,
+    PARSED_METADATA_PATH,
+    PREPARED_METADATA_PATH,
+    SCRIPT_DIR, 
+    PARSED_DATA_PATH,
+    PREPARED_DATA_PATH
 )
 
 
@@ -25,50 +30,25 @@ st.title("Cone Data Viewer")
 #####################################################################################################
 
 ################### Get test files, select by material, then material id, then test #################
-# Get the paths to all the test files
-test_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
 
-# Get the paths to all the metadata files
-metadata_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
-
-if st.checkbox('SmURF Filter'):
-    st.write("Select the test status you would like to view")
-    test_types = ['SmURFed', "Not SmURFed"]
-    selected_type = st.selectbox("Choose SmURF status", test_types)
-    # Filter tests based on selected types
-    filtered_tests = []
-    if selected_type == 'SmURFed':
-        for test_name, test_value in metadata_name_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] != None:
-                filtered_tests.append(test_name)
-    else:
-        for test_name, test_value in metadata_name_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] == None:
-                filtered_tests.append(test_name)
-    metadata_name_map = {test: metadata_name_map[test] for test in filtered_tests if test in metadata_name_map}
-    test_name_map = {test: metadata_name_map[test].with_suffix('.csv') for test in filtered_tests}
-
-def get_markdown_number(key):
-    # Example key: "test0477_0857_001"
-    match = re.search(r'_(\d+)_\d+', key)
-    return int(match.group(1)) if match else 0
-
-
-if st.checkbox("Sort by Markdown File Number"):
-    sortedkeys = sorted(test_name_map.keys(), key = get_markdown_number)
-    test_selection = st.multiselect(
-        "Select a test to view and edit:",
-        options=sortedkeys,
-    )
+st.write("Select the test status you would like to view")
+test_types = ['SmURFed', "Not SmURFed"]
+selected_type = st.selectbox("Choose SmURF status", test_types)
+if selected_type == "Not SmURFed":
+    # Get the paths to all the test metadata files
+    metadata_name_map = {p.stem: p for p in list(PARSED_METADATA_PATH.rglob("*.json"))}
+    test_name_map = {p.stem: p for p in list(PARSED_DATA_PATH.rglob("*.csv"))}
 else:
-    test_selection = st.multiselect(
-        "Select a test to view and edit:",
-        options=test_name_map.keys(),
-    ) 
+    # Get the paths to all the test metadata files
+    metadata_name_map = {p.stem: p for p in list(PREPARED_METADATA_PATH.rglob("*.json"))}
+    test_name_map = {p.stem: p for p in list(PREPARED_DATA_PATH.rglob("*.csv"))}
+
+
+
+test_selection = st.multiselect(
+    "Select a test to view and edit:",
+    options=test_name_map.keys(),
+) 
 ##########################################################################################################
         
 ################### Generate Dataframe to Plot from Each Test Selected####################################      

@@ -6,16 +6,17 @@ from pathlib import Path
 import sys
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
+ 
 import streamlit as st
 from scipy.signal import savgol_filter
+import plotly.graph_objects as go
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
 print(PROJECT_ROOT)
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    INPUT_DATA_PATH,
-    PARSED_DATA_PATH, 
+    PREPARED_DATA_PATH,
+    PREPARED_METADATA_PATH,
     SCRIPT_DIR
 )
 
@@ -27,49 +28,13 @@ st.title("Cone Data Editor")
 
 #####################################################################################################
 ############################## Get test files, select by material, then material id, then test #################
-# Get the paths to all the test files
-test_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
-# Get the paths to all the metadata files
-metadata_name_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
+metadata_name_map = {p.stem: p for p in list(PREPARED_METADATA_PATH.rglob("*.json"))}
+test_name_map = {p.stem: p for p in list(PREPARED_DATA_PATH.rglob("*.csv"))}
 
-if st.checkbox('SmURF Filter'):
-    st.write("Select the test status you would like to view")
-    test_types = ['SmURFed', "Not SmURFed"]
-    selected_type = st.selectbox("Choose SmURF status", test_types)
-    # Filter tests based on selected types
-    filtered_tests = []
-    if selected_type == 'SmURFed':
-        for test_name, test_value in metadata_name_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] != None:
-                filtered_tests.append(test_name)
-    else:
-        for test_name, test_value in metadata_name_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] == None:
-                filtered_tests.append(test_name)
-    metadata_name_map = {test: metadata_name_map[test] for test in filtered_tests if test in metadata_name_map}
-    test_name_map = {test: metadata_name_map[test].with_suffix('.csv') for test in filtered_tests}
-
-def get_markdown_number(key):
-    # Example key: "test0477_0857_001"
-    match = re.search(r'_(\d+)_\d+', key)
-    return int(match.group(1)) if match else 0
-
-
-if st.checkbox("Sort by Markdown File Number"):
-    sortedkeys = sorted(test_name_map.keys(), key = get_markdown_number)
-    test_selection = st.selectbox(
-        "Select a test to view and edit:",
-        options=sortedkeys,
-    )
-else:
-    test_selection = st.selectbox(
-        "Select a test to view and edit:",
-        options=test_name_map.keys(),
-    ) 
+test_selection = st.selectbox(
+    "Select a test to view and edit:",
+    options=test_name_map.keys(),
+) 
 #########################################################################################################
 
 ###################### Generate Dataframe to Plot from Each Test Selected####################################      
@@ -78,10 +43,10 @@ if test_selection:
     test_metadata = json.load(open(metadata_name_map[test_selection]))
     ######## Revert data in case it was clipped and you want the full dataframe from parsed back#####################
     if st.sidebar.button("Revert to Parsed Data"):
-        ogform = test_metadata["Original Source"]
-        explorer_data = str(test_name_map[test_selection])
-        parsed_path = str(PARSED_DATA_PATH) + f"\\{ogform}"
-        original_data = explorer_data.replace(str(INPUT_DATA_PATH), parsed_path)
+        prepared_data = str(test_name_map[test_selection])
+        og_name = test_metadata["Original Testname"]
+        name = test_metadata["Testname"]
+        original_data = prepared_data.replace("Exp-Data_Prepared-Final", "Exp-Data_Parsed").replace(name,og_name)
         save_path = str(test_name_map[test_selection])
         shutil.copy(original_data, save_path)
         test_metadata["Data Corrections"].append(f"{date}: Data reverted to original")
@@ -211,7 +176,7 @@ if test_selection:
                 if not data_copy["HRRPUA (kW/m2)"].isnull().all():
                     data_out["HRRPUA (kW/m2)"] = data_copy["HRRPUA (kW/m2)"].copy()
                         # Remove rows where all' values in the selected columns are NaN
-
+            data_out = data_out.dropna()
             data_out.to_csv(
                 save_path,
                 float_format="%.4e",
@@ -227,31 +192,7 @@ if test_selection:
             with open(metadata_name_map[test_selection], "w") as f:
                 json.dump(test_metadata, f, indent=4)
             
-        if st.checkbox("Modify CSV File"):
-            raw_data = pd.read_csv(test_name_map[test_selection])
-            view = st.data_editor(raw_data)
-            change = st.text_input("Enter Data Correction Performed")
-            if st.button("Save Modified CSV"):
-                if change:
-                    save_path = str(test_name_map[test_selection])
-                    save_dir = Path(save_path).parent
-                    save_dir.mkdir(parents=True, exist_ok=True)
-                    view.to_csv(
-                        save_path,
-                        float_format="%.4e",
-                        index=False,
-                    )
-
-                    st.success(f"Data saved to {save_path}.")
-                    with open(metadata_name_map[test_selection], 'r') as f:
-                        metadata = json.load(f)
-                    test_metadata["Data Corrections"].append(f"{date}: {change}")
-                    test_metadata['Manually Prepared'] = date
-                    with open(metadata_name_map[test_selection], "w") as f:
-                        json.dump(test_metadata, f, indent=4)
-                    st.success(f"Metadata for {test_selection} updated.")
-                else:
-                    st.warning("Please enter the change performed before saving")
+ 
     st.markdown("#### Notes")
     readme = SCRIPT_DIR / "README.md"
     section_title = "### Data Editor"
