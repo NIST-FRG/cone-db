@@ -76,24 +76,13 @@ if st.button("Import Data To Explorer"):
 # maps the filename stem to the full path of the metadata file
 metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 data_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
-if st.checkbox('SmURF Filter'):
-    st.write("Select the test status you would like to view")
-    test_types = ['SmURFed', "Not SmURFed"]
-    selected_type = st.selectbox("Choose SmURF status", test_types)
-    # Filter tests based on selected types
+if not st.checkbox('Include Smurfed Tests'):
     filtered_tests = []
-    if selected_type == 'SmURFed':
-        for test_name, test_value in metadata_path_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] != None:
-                filtered_tests.append(test_name)
-    else:
-        for test_name, test_value in metadata_path_map.items():     
-            with open(test_value, 'r') as f:
-                metadata = json.load(f)
-            if metadata["SmURF"] == None:
-                filtered_tests.append(test_name)
+    for test_name, test_value in metadata_path_map.items():     
+        with open(test_value, 'r') as f:
+            metadata = json.load(f)
+        if metadata["SmURF"] == None:
+            filtered_tests.append(test_name)
     metadata_path_map = {test: metadata_path_map[test] for test in filtered_tests if test in metadata_path_map}
     data_path_map = {test: metadata_path_map[test].with_suffix('.csv') for test in filtered_tests}
 
@@ -487,7 +476,6 @@ st.button("Delete files", on_click=delete_files, use_container_width=True)
 
 # region export_metadata
 def export_metadata(df, original_metadata):
-    print('indafunction')
     row =  restore_types(df,original_metadata)
     with open(test_selection,'r') as f:
         metadata = json.load(f)

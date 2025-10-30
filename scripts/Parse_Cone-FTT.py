@@ -21,12 +21,12 @@ if len(args) > 2:
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR1 = Path(r"\\firedata\FLAMMABILITY_DATA\DATA\Cone\FTT-White\Data")
+INPUT_DIR1 = Path(r"C:\Users\rtg4\Desktop\FTTCone\FTT-White")
 OUTPUT_DIR1 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-White"
 META_DIR1 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-White"
 LOG_FILE1 = PROJECT_ROOT/ "parse_FTT-White_log.json"
 
-INPUT_DIR2 = Path(r"\\firedata\FLAMMABILITY_DATA\DATA\Cone\FTT-Black\Data")
+INPUT_DIR2 = Path(r"C:\Users\rtg4\Desktop\FTTCone\FTT-Black")
 OUTPUT_DIR2 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-Black"
 META_DIR2 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-Black"
 LOG_FILE2 = PROJECT_ROOT / "parse_FTT-Black_log.json"
@@ -207,19 +207,19 @@ def parse_metadata(df,file_path, meta):
     metadata["Report Name"] = raw_metadata["Report name"]
 
     # pre-test and post-test comments are combined into one "comments" field
-    comments = ""
-    if raw_metadata['Pre-test comments'] == raw_metadata["Pre-test comments"]:
-        comments += f"Pre-test: {raw_metadata['Pre-test comments']}\n"
-    if raw_metadata["After-test comments"] == raw_metadata["After-test comments"]:
-        comments += f"Post-test: {raw_metadata["After-test comments"]}\n"
+    comments = []
+    if raw_metadata.get('Pre-test comments'):
+        comments.append(f"Pre-test: {raw_metadata['Pre-test comments']}")
+    if raw_metadata.get('After-test comments'):
+        comments.append(f"Post-test: {raw_metadata['After-test comments']}")
     metadata["Comments"] = comments
 
     metadata["Grid"] = get_bool("Grid?")
-    metadata["Mounting_type"] = "Edge frame" if get_bool("Edge frame?") else None
+    metadata["Mounting Type"] = "Edge frame" if get_bool("Edge frame?") else None
 
-    metadata["Heat flux (kW/m2)"] = get_number("Heat flux (kW/m²)")
+    metadata["Heat Flux (kW/m2)"] = get_number("Heat flux (kW/m²)")
     metadata["Separation (mm)"] = get_number("Separation (mm)")
-
+    
     metadata["Manufacturer"] = raw_metadata["Manufacturer"]
     metadata["Material Name"] = raw_metadata["Material name/ID"]
     metadata["Sample Description"] = raw_metadata["Sample description"]
@@ -238,7 +238,7 @@ def parse_metadata(df,file_path, meta):
     metadata["MLR EOT Mass (g/m2)"] = get_number("MLR EOT mass (g/m²)")
     metadata["End of test criterion"] = get_number("End of test criterion")
 
-    metadata["E (MJ/kg)"] = get_number("E (MJ/kg)")
+    metadata["Conversion Factor (MJ/kg)"] = get_number("E (MJ/kg)")
     metadata["OD Correction Factor"] = get_number("OD correction factor")
 
     metadata["Sample Mass (g)"] = get_number("Initial mass (g)")
@@ -262,23 +262,34 @@ def parse_metadata(df,file_path, meta):
     metadata["Sampling Interval (s)"] = get_number("Sampling interval (s)")
 
     expected_keys = [
+        "Material ID",
         "Institution",
         "Heat Flux (kW/m2)",
         "Material Name",
         "Orientation",
         "C Factor",
+        "Specimen Number",
+        "Test Date",
+        "Conversion Factor",
         "Sample Mass (g)",
         "Residual Mass (g)",
         "Surface Area (m2)",
         "Soot Average (g/g)",
         "Mass Consumed",
-        "Conversion Factor",
-        "Time to Ignition (s)",
-        "Peak Heat Release Rate (kW/m2)",
-        "Peak Mass Loss Rate (g/s-m2)",
-        "Specimen Number",
-        "Test Date",
-        "Residue Yield (g/g)"
+        'Time to Ignition (s)', 'Time to Ignition Outlier',
+        'Peak Heat Release Rate (kW/m2)', 'Peak Heat Release Rate Outlier',
+        'Peak Mass Loss Rate (g/s-m2)', 'Peak Mass Loss Rate Outlier',
+        'Residue Yield (g/g)', 'Residue Yield Outlier',
+        'Average HRR 60s (kW/m2)', 'Average HRR 60s Outlier',
+        'Average HRR 180s (kW/m2)', 'Average HRR 180s Outlier',
+        'Average HRR 300s (kW/m2)', 'Average HRR 300s Outlier',
+        'Steady Burning MLR (g/s-m2)', 'Steady Burning MLR Outlier',
+        'Time to Peak (s)', 'Time to Peak Outlier',
+        'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
+        'Average Heat of Combustion', 'Average Heat of Combustion Outlier',
+        'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+        'Sample Mass Loss (g/m2)', 'Sample Mass Loss Outlier',
+        'Time to Flameout (s)', 'Time to Flameout Outlier'
     ]
     cone = "White" if "White" in str(meta) else "Black"
     for key in expected_keys:
@@ -296,8 +307,11 @@ def parse_metadata(df,file_path, meta):
     metadata["Manually Reviewed Series"] = None
     metadata['Pass Review'] = None
     metadata["Published"] = None
-    metadata["Original Source"] = f"FTT-{cone}"
+    metadata["Original Source"] = f"FTT-{cone}/{date.year}"
     metadata['Data Corrections'] =[]
+    metadata['Average HRR 60s (kW/m2)'] = None
+    metadata['Average HRR 180s (kW/m2)'] = None
+    metadata['Average HRR 300s (kW/m2)'] = None
 
 
 
@@ -359,7 +373,7 @@ def process_data(data, metadata):
     co_delay = int(metadata["CO Delay Time (s)"] or 0)
     area = metadata["Surface Area (m2)"] or .0001  # cm2
     c_factor = metadata["C Factor"]
-    e = metadata["E (MJ/kg)"]
+    e = metadata["Conversion Factor (MJ/kg)"]
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
 
     #region delay, baselines
