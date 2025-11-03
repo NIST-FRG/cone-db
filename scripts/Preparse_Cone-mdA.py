@@ -465,11 +465,84 @@ def parse_metadata(input,test_name):
 
     
     ############ finding metadata fields ############
+    expected_keys = [
+    "Material ID",
+    "Material Name",
+    "Sample Mass (g)",
+    "Residual Mass (g)",
+    "Specimen Number",
+    "Original Testname",
+    "Testname",
+    "Thickness (mm)",
+    "Sample Descritpion",
+    "Specimen Prep",
+    "Instrument",
+    "Test Date",
+    "Test Time",
+    "Operator",
+    "Director",
+    "Sponsor",
+    "Institution",
+    "Report Name",
+    "Original Source",
+    "Preparsed",
+    "Parsed",
+    "Auto Prepared",
+    "Manally Prepared",
+    "SmURF", 
+    "Bad Data",
+    "Autoprocessed",
+    "Manually Reviewed Series",
+    "Pass Review",
+    "Published",
+    "Heat Flux (kW/m2)",
+    "Orientation",
+    "C Factor",
+    "Surface Area (m2)",
+    "Grid",
+    "Edge Frame",
+    "Separation (mm)",
+    "Test Start Time (s)",
+    "Test End Time (s)",
+    "MLR EOT Mass (g/m2)",
+    "End of test criterion",
+    "Heat of Combustion O2 (MJ/kg)",
+    "OD Correction Factor",
+    "Substrate",
+    "Non-scrubbed",
+    "Duct Diameter (m)",
+    "O2 Delay Time (s)",
+    "CO2 Delay Time (s)",
+    "CO Delay Time (s)",
+    "Ambient Temperature (°C)",
+    "Barometric Pressure (Pa)",
+    "Relative Humidity (%)",
+    't_ignition (s)', 't_ignition Outlier',
+    't_peak (s)', 't_peak Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
+    'Peak MLRPUA (g/s-m2)', 'Peak MLRPUA Outlier',
+    'Residue Yield (%)', 'Residue Yield Outlier',
+    'Average HRRPUA 60s (kW/m2)', 'Average HRRPUA 60s Outlier',
+    'Average HRRPUA 180s (kW/m2)', 'Average HRRPUA 180s Outlier',
+    'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
+    "t_sustainedflaming (s)", 't_sustainedflaming  Outlier',
+    'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
+    'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
+    'Average HoC (MJ/kg)', 'Average HoC Outlier',
+    'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+    'Y_Soot (g/g)', 'Y_Soot Outlier',
+    'Y_CO2 (g/g)', 'Y_CO2 Outlier',
+    'Y_CO (g/g)', 'Y_CO Outlier',
+    't_flameout (s)', 't_flameout Outlier',
+    'Comments', 'Data Corrections'
+        ]
+    for key in expected_keys:
+        metadata_json.setdefault(key, None)
+
     metadata_json["Comments"] = []
     prev_item = None
-    metadata_json["Material ID"] = None
     for item in metadata:
-        #print(metadata.index(item),item)
+        print(metadata.index(item),item)
         if metadata.index(item) == 0:
             metadata_json["Institution"] = item
         elif "IRRADIANCE" in item:
@@ -490,21 +563,13 @@ def parse_metadata(input,test_name):
             #print('area')
             metadata_json["Surface Area (m2)"] = get_number(item,"flt")
         elif "SOOT AVERAGE" in item:
-            metadata_json["Soot Average (g/g)"] = get_number(item,"exp")
-        elif "MASS CONSUMED" in item:
-            metadata_json["Mass Consumed"] = get_field(item)
+            metadata_json["Y_Soot (g/g)"] = get_number(item,"flt")
         elif item.find("CONVERSION FACTOR") == 0:
-            metadata_json["Conversion Factor"] = get_field(item)
+            hoc_o2_kJkg = get_number(item,"int")
+            hoc = hoc_o2_kJkg / 1000
+            metadata_json["Heat of Combustion O2 (MJ/kg)"] = hoc
         elif "TIME TO IGNITION" in item:
-            metadata_json["Time to Ignition (s)"] = get_number(item,"int")
-        elif "PEAK Q-DOT" in item:
-            match = re.search(r'(\d+)\s+KW', item)
-            if match:
-                metadata_json["Peak Heat Release Rate (kW/m2)"] = int(match.group(1))
-        elif "PEAK M-DOT" in item:
-            match = re.search(r'(\d+\.\d+)\s+G', item)
-            if match:
-                metadata_json["Peak Mass Loss Rate (g/s-m2)"] = float(match.group(1))
+            metadata_json["t_ignition (s)"] = get_number(item,"int")
         elif "TEST" in item:
             match = re.search(r'TEST\s+(\d{4})', item)
             if match:
@@ -513,45 +578,13 @@ def parse_metadata(input,test_name):
             metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
         elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
             metadata_json["Test Date"] = item
-        else:
-            metadata_json["Comments"].append(item)
+        
+        metadata_json["Comments"].append(item)
         prev_item = item
 
-    expected_keys = [
-        "Institution",
-        "Heat Flux (kW/m2)",
-        "Material Name",
-        "Orientation",
-        "C Factor",
-        "Sample Mass (g)",
-        "Residual Mass (g)",
-        "Surface Area (m2)",
-        "Soot Average (g/g)",
-        "Mass Consumed",
-        "Conversion Factor",
-        "Time to Ignition (s)",
-        "Peak Heat Release Rate (kW/m2)",
-        "Peak Mass Loss Rate (g/s-m2)",
-        "Specimen Number",
-        "Test Date",
-        "Residue Yield (g/g)"
-    ]
-
-    for key in expected_keys:
-        metadata_json.setdefault(key, None)
     metadata_json['Original Testname'] = test_name
-    metadata_json ['Testname'] = None
     metadata_json['Instrument'] = "NBS Cone Calorimeter"
-    metadata_json['Autoprocessed'] = None
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    metadata_json['Parsed'] = None
-    metadata_json['SmURF'] = None
-    metadata_json['Bad Data'] = None
-    metadata_json["Auto Prepared"] = None
-    metadata_json["Manually Prepared"] = None
-    metadata_json["Manually Reviewed Series"] = None
-    metadata_json['Pass Review'] = None
-    metadata_json["Published"] = None
     metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file

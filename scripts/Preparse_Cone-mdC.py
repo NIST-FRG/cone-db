@@ -560,7 +560,7 @@ def parse_metadata(input,test_name):
     meta_path = OUTPUT_DIR / meta_filename
     metadata_json = {}
     metadata = None
-    metadata_json["Comments"] = []
+    comments = []
     #First item in metadata being used to get info we can get, parse string, also add to comments incase something doesnt parse SmURF can fix
     #all subsequent, mostly useless, appeneded to comments
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -583,16 +583,90 @@ def parse_metadata(input,test_name):
     for i,line in enumerate(input):
         if i == 0:
             metadata = line
-            metadata_json["Comments"].append(line)
+            comments.append(line)
         elif (line.strip().replace('-', '').replace('|', '').replace(' ', '').replace(r'\n','') != ''):
-            metadata_json["Comments"].append(line)
+            comments.append(line)
 
     # metadata = list of metadata blocks as str
     #print(metadata)
 
     
     ############ finding metadata fields ############
-    metadata_json["Material ID"] = None
+    expected_keys = [
+    "Material ID",
+    "Material Name",
+    "Sample Mass (g)",
+    "Residual Mass (g)",
+    "Specimen Number",
+    "Original Testname",
+    "Testname",
+    "Thickness (mm)",
+    "Sample Descritpion",
+    "Specimen Prep",
+    "Instrument",
+    "Test Date",
+    "Test Time",
+    "Operator",
+    "Director",
+    "Sponsor",
+    "Institution",
+    "Report Name",
+    "Original Source",
+    "Preparsed",
+    "Parsed",
+    "Auto Prepared",
+    "Manally Prepared",
+    "SmURF", 
+    "Bad Data",
+    "Autoprocessed",
+    "Manually Reviewed Series",
+    "Pass Review",
+    "Published",
+    "Heat Flux (kW/m2)",
+    "Orientation",
+    "C Factor",
+    "Surface Area (m2)",
+    "Grid",
+    "Edge Frame",
+    "Separation (mm)",
+    "Test Start Time (s)",
+    "Test End Time (s)",
+    "MLR EOT Mass (g/m2)",
+    "End of test criterion",
+    "Heat of Combustion O2 (MJ/kg)",
+    "OD Correction Factor",
+    "Substrate",
+    "Non-scrubbed",
+    "Duct Diameter (m)",
+    "O2 Delay Time (s)",
+    "CO2 Delay Time (s)",
+    "CO Delay Time (s)",
+    "Ambient Temperature (°C)",
+    "Barometric Pressure (Pa)",
+    "Relative Humidity (%)",
+    't_ignition (s)', 't_ignition Outlier',
+    't_peak (s)', 't_peak Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
+    'Peak MLRPUA (g/s-m2)', 'Peak MLRPUA Outlier',
+    'Residue Yield (%)', 'Residue Yield Outlier',
+    'Average HRRPUA 60s (kW/m2)', 'Average HRRPUA 60s Outlier',
+    'Average HRRPUA 180s (kW/m2)', 'Average HRRPUA 180s Outlier',
+    'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
+    "t_sustainedflaming (s)", 't_sustainedflaming  Outlier',
+    'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
+    'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
+    'Average HoC (MJ/kg)', 'Average HoC Outlier',
+    'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+    'Y_Soot (g/g)', 'Y_Soot Outlier',
+    'Y_CO2 (g/g)', 'Y_CO2 Outlier',
+    'Y_CO (g/g)', 'Y_CO Outlier',
+    't_flameout (s)', 't_flameout Outlier',
+    'Comments', 'Data Corrections'
+        ]
+
+    for key in expected_keys:
+        metadata_json.setdefault(key, None)
+    metadata_json["Comments"] = comments
     orient_idx = None
     slash_idx = None
     if "HOR" in metadata:
@@ -631,41 +705,9 @@ def parse_metadata(input,test_name):
     metadata_json["Sample Mass (g)"] = mass
         
 
-    expected_keys = [
-        "Institution",
-        "Heat Flux (kW/m2)",
-        "Material Name",
-        "Orientation",
-        "C Factor",
-        "Sample Mass (g)",
-        "Residual Mass (g)",
-        "Surface Area (m2)",
-        "Soot Average (g/g)",
-        "Mass Consumed",
-        "Conversion Factor",
-        "Time to Ignition (s)",
-        "Peak Heat Release Rate (kW/m2)",
-        "Peak Mass Loss Rate (g/s-m2)",
-        "Specimen Number",
-        "Test Date",
-        "Residue Yield (g/g)"
-    ]
-
-    for key in expected_keys:
-        metadata_json.setdefault(key, None)
     metadata_json['Original Testname'] = test_name
-    metadata_json ['Testname'] = None
     metadata_json['Instrument'] = "NBS Cone Calorimeter"
-    metadata_json['Autoprocessed'] = None
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    metadata_json['Parsed'] = None
-    metadata_json['SmURF'] = None
-    metadata_json['Bad Data'] = None
-    metadata_json["Auto Prepared"] = None
-    metadata_json["Manually Prepared"] = None
-    metadata_json["Manually Reviewed Series"] = None
-    metadata_json['Pass Review'] = None
-    metadata_json["Published"] = None
     metadata_json["Original Source"] = "Box/md_C"
     metadata_json['Data Corrections'] =[]
     #update respective test metadata file
