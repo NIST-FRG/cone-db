@@ -1,3 +1,4 @@
+
 import pandas as pd
 from pathlib import Path
 import json
@@ -167,6 +168,80 @@ def parse_metadata(df,file_path, meta):
     raw_metadata = {k: v[0] if len(v) > 0 else None for k, v in raw_metadata.items()}
 
     metadata = {}
+    expected_keys = [
+    "Material ID",
+    "Material Name"
+    "Sample Mass (g)",
+    "Residual Mass (g)",
+    "Specimen Number",
+    "Original Testname",
+    "Testname",
+    "Thickness (mm)",
+    "Sample Descritpion",
+    "Specimen Prep",
+    "Instrument",
+    "Test Date",
+    "Test Time",
+    "Operator",
+    "Director",
+    "Sponsor",
+    "Institution",
+    "Report Name",
+    "Original Source",
+    "Parsed",
+    "Auto Prepared",
+    "Manally Prepared",
+    "SmURF", 
+    "Bad Data",
+    "Autoprocessed",
+    "Manually Reviewed Series",
+    "Pass Review",
+    "Published",
+    "Heat Flux (kW/m2)",
+    "Orientation",
+    "C Factor",
+    "Surface Area (m2)",
+    "Grid",
+    "Edge Frame",
+    "Separation (mm)",
+    "Test Start Time (s)",
+    "Test End Time (s)",
+    "MLR EOT Mass (g/m2)",
+    "End of test criterion",
+    "Heat of Combustion O2 (MJ/kg)",
+    "OD Correction Factor",
+    "Substrate",
+    "Non-scrubbed",
+    "Duct Diameter (m)",
+    "O2 Delay Time (s)",
+    "CO2 Delay Time (s)",
+    "CO Delay Time (s)",
+    "Ambient Temperature (°C)",
+    "Barometric Pressure (Pa)",
+    "Relative Humidity (%)",
+    't_ignition (s)', 't_ignition Outlier',
+    't_peak (s)', 't_peak Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
+    'Peak MLRPUA (g/s-m2)', 'Peak MLRPUA Outlier',
+    'Residue Yield (%)', 'Residue Yield Outlier',
+    'Average HRRPUA 60s (kW/m2)', 'Average HRRPUA 60s Outlier',
+    'Average HRRPUA 180s (kW/m2)', 'Average HRRPUA 180s Outlier',
+    'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
+    "t_sustainedflaming (s)", 't_sustainedflaming  Outlier',
+    'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
+    'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
+    'Average HoC (MJ/kg)', 'Average HoC Outlier',
+    'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+    'Y_Soot (g/g)', 'Y_Soot Outlier',
+    'Y_CO2 (g/g)', 'Y_CO2 Outlier',
+    'Y_CO (g/g)', 'Y_CO Outlier',
+    't_flameout (s)', 't_flameout Outlier',
+    'Comments', 'Data Corrections'
+        ]
+    cone = "White" if "White" in str(meta) else "Black"
+    for key in expected_keys:
+        metadata.setdefault(key, None)
+
 
     # helper functions to extract values from the metadata dictionary
 
@@ -189,20 +264,21 @@ def parse_metadata(df,file_path, meta):
     # Date parsing
     raw_date = raw_metadata["Date of test"]
     raw_time = raw_metadata["Time of test"]
-    
+
     # Remove seconds from time string
-    raw_time_rounded = raw_time[:5]  # Get only the first 5 characters (HH:MM)
+    raw_time_rounded = raw_time[:5]  # e.g., "16:23:45" -> "16:23"
 
-    # Combine date and time into one string
-    datetime_string = f"{raw_date} {raw_time_rounded}"
+    # Parse date
+    test_date = datetime.strptime(raw_date, "%d/%m/%Y").date()
+    # Parse time (ignoring seconds)
+    test_time = datetime.strptime(raw_time_rounded, "%H:%M").time()
 
-    # Parse without seconds
-    date = datetime.strptime(datetime_string, "%d/%m/%Y %H:%M")
-
-    metadata["Test Date"] = date.isoformat()
+    # Assign to metadata
+    metadata["Test Date"] = test_date.isoformat()  # e.g., "2024-06-07"
+    metadata["Test Time"] = test_time.strftime("%H:%M")  # e.g., "16:23"
 
     # Process other metadata
-    metadata["Insitituion"] = raw_metadata["Laboratory name"]
+    metadata["Instituion"] = raw_metadata["Laboratory name"]
     metadata["Operator"] = raw_metadata["Operator"]
     metadata["Report Name"] = raw_metadata["Report name"]
 
@@ -215,7 +291,7 @@ def parse_metadata(df,file_path, meta):
     metadata["Comments"] = comments
 
     metadata["Grid"] = get_bool("Grid?")
-    metadata["Mounting Type"] = "Edge frame" if get_bool("Edge frame?") else None
+    metadata["Edge Frame"] = get_bool("Edge frame?") 
 
     metadata["Heat Flux (kW/m2)"] = get_number("Heat flux (kW/m²)")
     metadata["Separation (mm)"] = get_number("Separation (mm)")
@@ -230,15 +306,15 @@ def parse_metadata(df,file_path, meta):
     metadata["Thickness (mm)"] = get_number("Thickness (mm)")
     metadata["Surface Area (m2)"] = get_number("Surface area (cm²)") * 0.0001
 
-    metadata["Time to Ignition (s)"] = get_number("Time to ignition (s)")
-    metadata["Time to Flameout (s)"] = get_number("Time to flameout (s)")
+    metadata["t_ignition (s)"] = get_number("Time to ignition (s)")
+    metadata["t_flameout (s)"] = get_number("Time to flameout (s)")
     metadata["Test Start Time (s)"] = get_number("Test start time (s)")
     metadata["Test End Time (s)"] = get_number("User EOT time (s)")
 
     metadata["MLR EOT Mass (g/m2)"] = get_number("MLR EOT mass (g/m²)")
     metadata["End of test criterion"] = get_number("End of test criterion")
 
-    metadata["Conversion Factor (MJ/kg)"] = get_number("E (MJ/kg)")
+    metadata["Heat of Combustion O2 (MJ/kg)"] = get_number("E (MJ/kg)")
     metadata["OD Correction Factor"] = get_number("OD correction factor")
 
     metadata["Sample Mass (g)"] = get_number("Initial mass (g)")
@@ -259,59 +335,13 @@ def parse_metadata(df,file_path, meta):
     metadata["Barometric Pressure (Pa)"] = get_number("Barometric pressure (Pa)")
     metadata["Relative Humidity (%)"] = get_number("Relative humidity (%)")
 
-    metadata["Sampling Interval (s)"] = get_number("Sampling interval (s)")
 
-    expected_keys = [
-        "Material ID",
-        "Institution",
-        "Heat Flux (kW/m2)",
-        "Material Name",
-        "Orientation",
-        "C Factor",
-        "Specimen Number",
-        "Test Date",
-        "Conversion Factor",
-        "Sample Mass (g)",
-        "Residual Mass (g)",
-        "Surface Area (m2)",
-        "Soot Average (g/g)",
-        "Mass Consumed",
-        'Time to Ignition (s)', 'Time to Ignition Outlier',
-        'Peak Heat Release Rate (kW/m2)', 'Peak Heat Release Rate Outlier',
-        'Peak Mass Loss Rate (g/s-m2)', 'Peak Mass Loss Rate Outlier',
-        'Residue Yield (g/g)', 'Residue Yield Outlier',
-        'Average HRR 60s (kW/m2)', 'Average HRR 60s Outlier',
-        'Average HRR 180s (kW/m2)', 'Average HRR 180s Outlier',
-        'Average HRR 300s (kW/m2)', 'Average HRR 300s Outlier',
-        'Steady Burning MLR (g/s-m2)', 'Steady Burning MLR Outlier',
-        'Time to Peak (s)', 'Time to Peak Outlier',
-        'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
-        'Average Heat of Combustion', 'Average Heat of Combustion Outlier',
-        'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
-        'Sample Mass Loss (g/m2)', 'Sample Mass Loss Outlier',
-        'Time to Flameout (s)', 'Time to Flameout Outlier'
-    ]
-    cone = "White" if "White" in str(meta) else "Black"
-    for key in expected_keys:
-        metadata.setdefault(key, None)
     metadata['Original Testname'] = file_path.stem
-    metadata ['Testname'] = None
     metadata['Instrument'] = f"{cone} FTT Cone Calorimeter"
-    metadata['Autoprocessed'] = None
     metadata['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    metadata['Parsed'] = None
-    metadata['SmURF'] = None
-    metadata['Bad Data'] = None
-    metadata["Auto Prepared"] = None
-    metadata["Manually Prepared"] = None
-    metadata["Manually Reviewed Series"] = None
-    metadata['Pass Review'] = None
-    metadata["Published"] = None
-    metadata["Original Source"] = f"FTT-{cone}/{date.year}"
+    metadata["Original Source"] = f"FTT-{cone}/{test_date.year}"
     metadata['Data Corrections'] =[]
-    metadata['Average HRR 60s (kW/m2)'] = None
-    metadata['Average HRR 180s (kW/m2)'] = None
-    metadata['Average HRR 300s (kW/m2)'] = None
+
 
 
 
@@ -373,7 +403,7 @@ def process_data(data, metadata):
     co_delay = int(metadata["CO Delay Time (s)"] or 0)
     area = metadata["Surface Area (m2)"] or .0001  # cm2
     c_factor = metadata["C Factor"]
-    e = metadata["Conversion Factor (MJ/kg)"]
+    e = metadata["Heat of Combustion O2 (MJ/kg)"]
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
 
     #region delay, baselines
