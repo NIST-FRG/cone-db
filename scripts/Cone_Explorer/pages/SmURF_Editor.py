@@ -142,18 +142,36 @@ if test_selection:
         data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
         data["MassPUA (g/m2)"] = None
     elif not data["Mass (g)"].isnull().all():
-        data['MLR (g/s)'] = abs(np.gradient(data["Mass (g)"])) # COME BACK TO THIS
+        data['MLR (g/s)'] = None
+        m = data["Mass (g)"]
+        for i in range(len(data)):
+            if i == 0:
+                data.loc[i,"MLR (g/s)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*data['dt'].iloc[i])
+            elif i == 1:
+                data.loc[i,"MLR (g/s)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*data['dt'].iloc[i])
+            elif i ==len(data) -2:
+                data.loc[i,"MLR (g/s)"] = (-3*m[i+1] - 10*m[i] + 18*m[i-1] - 6*m[i-2] + m[i-3])/(12*data['dt'].iloc[i])
+            elif i == len(data)-1:
+                data.loc[i,"MLR (g/s)"] = (-25*m[i] + 48*m[i-1] - 36*m[i-2] + 16*m[i-3] - 3*m[i-4])/(12*data['dt'].iloc[i])
+            else:
+                data.loc[i,"MLR (g/s)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*data['dt'].iloc[i])
+
         data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None 
         data["MassPUA (g/m2)"] = data["Mass (g)"]  / surf_area if surf_area is not None else None 
     else: 
         data["MassPUA (g/m2)"] = None
         data["MLR (g/s)"] = None
         data["MLRPUA (g/s-m2)"] = None
-    if "Extinction Area (m2/kg)" not in data.columns:
+
+    if "Extinction Area (m2/kg)" not in data:
         data["Extinction Area (m2/kg)"] = None
 
-    test_data = data
+    data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
+    for i in range(len(data)):
+        if data.loc[i, "HoC (MJ/kg)"] <0 or data.loc[i, "HoC (MJ/kg)"] > 100:
+            data.loc[i, "HoC (MJ/kg)"] = 0
 
+    test_data = data
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
@@ -162,7 +180,7 @@ if test_selection:
         options = [
             'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
             "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", "Extinction Area (m2/kg)"
+            "K Smoke (1/m)", "Extinction Area (m2/kg)","HoC (MJ/kg)"
         ]
         default_value = 'HRRPUA (kW/m2)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -175,7 +193,7 @@ if test_selection:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
             "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", "Extinction Area (m2/kg)"
+            "K Smoke (1/m)", "Extinction Area (m2/kg)","HoC (MJ/kg)"
         ]
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -534,51 +552,42 @@ def export_metadata(df, original_metadata):
 
     # if there is a specimen number, include that in the filename
     if metadata.get("Specimen Number") is not None and metadata.get("Specimen Number") != "":
-        filename_parts.insert(3, f"{metadata['Specimen Number']}")
+        filename_parts.insert(3, f"R{metadata['Specimen Number']}")
     
     # join all the filename parts together with a dash & add the file extension (.json)
     metadata['Testname'] = "_".join(filename_parts)
     new_filename = "_".join(filename_parts) + ".json"
     old_filename = metadata["Original Testname"] + '.json'
-    neworder = ['Material ID', 'Sample Mass (g)','Specimen Number','Testname', 
-            'Instrument', 'Test Date', 'Institution','Preparsed','Parsed','Auto Prepared', 'Manually Prepared', "SmURF", 'Autoprocessed', 
-                'Manually Reviewed Series','Pass Review', 'Published', "Original Testname", "Bad Data", "Original Source", "Heat Flux (kW/m2)", 'Orientation', 'Material Name','Conversion Factor', 'C Factor',
-                'Surface Area (m2)','Time to Ignition (s)', 'Residual Mass (g)', 'Residue Yield (g/g)','Mass Consumed', "Soot Average (g/g)",
-                'Peak Heat Release Rate (kW/m2)', 'Peak Mass Loss Rate (g/s-m2)', 'Comments', 'Data Corrections' ]
-    reordered_metadata = {key: metadata[key] for key in neworder}
-    for key in metadata:
-        if key not in neworder:
-            reordered_metadata[key] = metadata[key]
 
     
     # save the metadata file, including to parsed
     with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
-        json.dump(reordered_metadata, f, indent=4)
+        json.dump(metadata, f, indent=4)
     with open(Path(prepared_path) / new_filename, "w") as f:
-        json.dump(reordered_metadata, f, indent=4)
+        json.dump(metadata, f, indent=4)
     with open(Path(parsed_path) / old_filename, "w") as f:
-        json.dump(reordered_metadata, f, indent=4)
+        json.dump(metadata, f, indent=4)
     with open(INPUT_DATA_PATH / old_filename, "w") as f:
-        json.dump(reordered_metadata, f, indent=4)
+        json.dump(metadata, f, indent=4)
 
             # Get the CSV data file as well and save that in the same folder as the metadata file
     data = pd.read_csv(data_selection)
 
     #Create minimum columns if they can be made (ex: found the surface area of a test)
-    if "HRRPUA (kW/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
-        data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * reordered_metadata["Surface Area (m2)"]
+    if "HRRPUA (kW/m2)" in data.columns and metadata["Surface Area (m2)"]:
+        data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * metadata["Surface Area (m2)"]
         data.drop("HRRPUA (kW/m2)", inplace=True, axis = 1)
-    if "MassPUA (g/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
-        data["Mass (g)"] = data["MassPUA (g/m2)"] * reordered_metadata["Surface Area (m2)"]
+    if "MassPUA (g/m2)" in data.columns and metadata["Surface Area (m2)"]:
+        data["Mass (g)"] = data["MassPUA (g/m2)"] * metadata["Surface Area (m2)"]
         data.drop("MassPUA (g/m2)", inplace=True, axis = 1)
-    elif "Mass LossPUA (g/m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
-        data["Mass Loss (g)"] = data["Mass LossPUA (g/m2)"] * reordered_metadata["Surface Area (m2)"]
+    elif "Mass LossPUA (g/m2)" in data.columns and metadata["Surface Area (m2)"]:
+        data["Mass Loss (g)"] = data["Mass LossPUA (g/m2)"] * metadata["Surface Area (m2)"]
         data.drop("Mass LossPUA (g/m2)", inplace=True, axis = 1)
-    elif "MLRPUA (g/s-m2)" in data.columns and reordered_metadata["Surface Area (m2)"]:
-        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * reordered_metadata["Surface Area (m2)"]
+    elif "MLRPUA (g/s-m2)" in data.columns and metadata["Surface Area (m2)"]:
+        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * metadata["Surface Area (m2)"]
         data.drop("MLRPUA (g/s-m2)", inplace=True, axis = 1)
-    if "Mass Loss (g)" in data.columns and reordered_metadata["Sample Mass (g)"]:
-        data["Mass (g)"] = reordered_metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
+    if "Mass Loss (g)" in data.columns and metadata["Sample Mass (g)"]:
+        data["Mass (g)"] = metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
         data.drop("Mass Loss (g)", inplace=True, axis = 1)
     
     max_column_order = ["Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",

@@ -65,6 +65,8 @@ if len(test_selection) != 0:
         else:
             df["t * EHF (kJ/m2)"] = None
         df['dt'] = df["Time (s)"].diff()
+        df.loc[0,'dt'] = df['dt'].iloc[1] 
+
         #Normal and area adjusted HRR and THR generation
         if "HRRPUA (kW/m2)" not in df.columns:
             df["HRRPUA (kW/m2)"] = df["HRR (kW)"] / surf_area if surf_area is not None else None
@@ -82,7 +84,21 @@ if len(test_selection) != 0:
             df["MLR (g/s)"] = df["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
             df["MassPUA (g/m2)"] = None
         elif not df["Mass (g)"].isnull().all():
-            df['MLR (g/s)'] = abs(np.gradient(df["Mass (g)"])) # COME BACK TO THIS
+            df['MLR (g/s)'] = None
+            m = df["Mass (g)"]
+            for i in range(len(df)):
+                if i == 0:
+                    df.loc[i,"MLR (g/s)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*df['dt'].iloc[i])
+                elif i == 1:
+                    df.loc[i,"MLR (g/s)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*df['dt'].iloc[i])
+                elif i ==len(df) -2:
+                    df.loc[i,"MLR (g/s)"] = (-3*m[i+1] - 10*m[i] + 18*m[i-1] - 6*m[i-2] + m[i-3])/(12*df['dt'].iloc[i])
+                elif i == len(df)-1:
+                    df.loc[i,"MLR (g/s)"] = (-25*m[i] + 48*m[i-1] - 36*m[i-2] + 16*m[i-3] - 3*m[i-4])/(12*df['dt'].iloc[i])
+                else:
+                    df.loc[i,"MLR (g/s)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*df['dt'].iloc[i])
+
+           
             df["MLRPUA (g/s-m2)"] = df["MLR (g/s)"] / surf_area if surf_area is not None else None 
             df["MassPUA (g/m2)"] = df["Mass (g)"]  / surf_area if surf_area is not None else None 
         else: 
@@ -93,6 +109,11 @@ if len(test_selection) != 0:
 
         if "Extinction Area (m2/kg)" not in df:
             df["Extinction Area (m2/kg)"] = None
+        
+        df["HoC (MJ/kg)"] = df["HRRPUA (kW/m2)"] / df["MLRPUA (g/s-m2)"]
+        for i in range(len(df)):
+            if df.loc[i, "HoC (MJ/kg)"] <0 or df.loc[i, "HoC (MJ/kg)"] > 100:
+                df.loc[i, "HoC (MJ/kg)"] = 0
 
         test_data.append(df)
 ######################################################################################################################################################
@@ -107,14 +128,14 @@ if len(test_selection) != 0:
         y_axis_columns = st.multiselect(
         "Select data to graph across tests",
         options= ['MassPUA (g/m2)',"MLRPUA (g/s-m2)",'HRRPUA (kW/m2)', "THRPUA (MJ/m2)", 
-                  "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+                  "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)", "HoC (MJ/kg)"]
     )
     else:     
         # Select which column(s) to graph
         y_axis_columns = st.multiselect(
             "Select data to graph across tests",
             options= ['Mass (g)',"MLR (g/s)",'HRR (kW)',"THR (MJ)", 
-                 "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)"]
+                 "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)", "K Smoke (1/m)", "Extinction Area (m2/kg)", "HoC (MJ/kg)"]
     )
         
 
