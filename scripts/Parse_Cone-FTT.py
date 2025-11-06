@@ -3,11 +3,14 @@ import pandas as pd
 from pathlib import Path
 import json
 import sys
+import os
 from datetime import datetime
 from dateutil import parser
 import numpy as np
 import sys
 from utils import calculate_HRR, calculate_MFR, colorize
+from scipy.interpolate import UnivariateSpline
+import matplotlib.pyplot as plt
 
 # first argument is the input directory, 2nd argument is the output directory
 args = sys.argv[1:]
@@ -127,9 +130,9 @@ def parse_file(file_path, output, meta):
 
     # TODO
     df = df.dropna(how="all")
-
     metadata = parse_metadata(df,file_path, meta)
-
+    RawMod = os.path.getmtime(file_path)
+    RawMod = datetime.fromtimestamp(RawMod).strftime('%Y-%m-%d %H:%M:%S')
     data = parse_data(df, metadata)
 
     # If there's less than 20 data points, just skip the file
@@ -144,6 +147,12 @@ def parse_file(file_path, output, meta):
     Path(meta/ str(test_year)).mkdir(parents=True, exist_ok=True)
     data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"
     metadata_output_path = Path(meta) / str(test_year) / f"{Path(file_path).stem}.json"
+    if os.path.exists(metadata_output_path):
+        with open(metadata_output_path, "r") as f:
+            existing_meta = json.load(f)
+        if existing_meta["Parsed"] > RawMod:
+            print(colorize(f"Files for already exist and are up to date.", 'yellow'))
+            return
 
     with open(metadata_output_path, "w+") as f:
         json.dump(metadata, f, indent=4)
@@ -170,7 +179,7 @@ def parse_metadata(df,file_path, meta):
     metadata = {}
     expected_keys = [
     "Material ID",
-    "Material Name"
+    "Material Name",
     "Sample Mass (g)",
     "Residual Mass (g)",
     "Specimen Number",
@@ -220,22 +229,23 @@ def parse_metadata(df,file_path, meta):
     "Barometric Pressure (Pa)",
     "Relative Humidity (%)",
     't_ignition (s)', 't_ignition Outlier',
-    't_peak (s)', 't_peak Outlier',
-    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
-    'Peak MLRPUA (g/s-m2)', 'Peak MLRPUA Outlier',
     'Residue Yield (%)', 'Residue Yield Outlier',
-    'Average HRRPUA 60s (kW/m2)', 'Average HRRPUA 60s Outlier',
-    'Average HRRPUA 180s (kW/m2)', 'Average HRRPUA 180s Outlier',
-    'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
-    "t_sustainedflaming (s)", 't_sustainedflaming  Outlier',
+    'Average HRRPUA 60s (kW/m2)',
+    'Average HRRPUA 180s (kW/m2)',
+    'Average HRRPUA 300s (kW/m2)',
+    "t_sustainedflaming (s)","Mass at Sustained Flaming",
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
+    'Peak MLRPUA (g/s-m2)'
+    'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
+    'Peak HRRPUA (kW/m2)'
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
-    'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+    'Average Extinction Coefficient (m2/kg)', 'Average Extinction Coefficient Outlier',
     'Y_Soot (g/g)', 'Y_Soot Outlier',
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
-    't_flameout (s)', 't_flameout Outlier',
+    'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier'
+    't_flameout (s)',
     'Comments', 'Data Corrections'
         ]
     cone = "White" if "White" in str(meta) else "Black"
@@ -325,7 +335,7 @@ def parse_metadata(df,file_path, meta):
     metadata["Orientation"] = raw_metadata["Orientation"]
 
     metadata["C Factor"] = get_number("C-factor (SI units)")
-    metadata["Duct Diameter (m)"] = raw_metadata["Duct diameter (m)"]
+    metadata["Duct Diameter (m)"] = get_number("Duct diameter (m)")
 
     metadata["O2 Delay Time (s)"] = get_number("O2 delay time (s)")
     metadata["CO2 Delay Time (s)"] = get_number("CO2 delay time (s)")
@@ -338,7 +348,7 @@ def parse_metadata(df,file_path, meta):
 
     metadata['Original Testname'] = file_path.stem
     metadata['Instrument'] = f"{cone} FTT Cone Calorimeter"
-    metadata['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata["Original Source"] = f"FTT-{cone}/{test_date.year}"
     metadata['Data Corrections'] =[]
 
@@ -355,7 +365,8 @@ def parse_data(df, metadata):
 
     # data is found in the remaining columns of the dataframe (column 3 onwards)
     data = df[df.columns[2:]]
-
+    mass_shift = data.loc[0, "Mass (g)"] - metadata["Sample Mass (g)"]
+    data.loc[:, "Mass (g)"] - mass_shift
     # convert O2, CO2, and CO into vol fr
     data.loc[:, "O2 (%)"] /= 100
     data.loc[:, "CO2 (%)"] /= 100
@@ -397,7 +408,12 @@ def parse_data(df, metadata):
 def process_data(data, metadata):
 
     # test parameters used for calculations
-    start_time = int(metadata.get("Test Start Time (s)", 0))
+    start_time = int(metadata.get("Test Start Time (s)", -1))
+    if start_time == -1: #Find start of test where mass not stable
+        delta = data["Mass (g)"].diff().abs()
+        test_start_index = delta[delta > 1e-3].index[0] 
+        start_time = data.loc[test_start_index, "Time (s)"]
+    end_time = data['Time (s)'].iloc[-30] ############    COME BACK TO THIS###############
     o2_delay = int(metadata["O2 Delay Time (s)"] or 0)
     co2_delay = int(metadata["CO2 Delay Time (s)"] or 0)
     co_delay = int(metadata["CO Delay Time (s)"] or 0)
@@ -405,16 +421,70 @@ def process_data(data, metadata):
     c_factor = metadata["C Factor"]
     e = metadata["Heat of Combustion O2 (MJ/kg)"]
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
+    amb_temp = float(metadata["Ambient Temperature (°C)"])
+    rel_humid = float(metadata['Relative Humidity (%)'])
+    amb_pressure = float(metadata["Barometric Pressure (Pa)"])
 
     #region delay, baselines
 
-    # if start-time is not defined, just use the first 30 secs for baseline
-    baseline_end = int(start_time if start_time > 0 else 30)
+    # calculate initial values by using the data up to test start time
+    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean()  # / 100
+    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()  # / 100
+    X_CO_initial = data["CO (Vol fr)"][:start_time].mean()  # / 100
 
-    # calculate baseline values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"][:baseline_end].mean()  # / 100
-    X_CO2_initial = data["CO2 (Vol fr)"][:baseline_end].mean()  # / 100
-    X_CO_initial = data["CO (Vol fr)"][:baseline_end].mean()  # / 100
+    #generate baseline for gas signals
+    baseline_mask = (data["Time (s)"] < start_time) | (data["Time (s)"] > end_time)
+    baseline_times = data.loc[baseline_mask, "Time (s)"]
+    baseline_O2_pts = data.loc[baseline_mask, "O2 (Vol fr)"]
+    baseline_CO2_pts = data.loc[baseline_mask, "CO2 (Vol fr)"]
+    baseline_CO_pts = data.loc[baseline_mask, "CO (Vol fr)"]
+
+    spline_O2 = UnivariateSpline(baseline_times, baseline_O2_pts, s=100)     
+    spline_CO2 = UnivariateSpline(baseline_times, baseline_CO2_pts, s=100)    
+    spline_CO = UnivariateSpline(baseline_times, baseline_CO_pts, s=100)    
+
+    data['O2_Baseline'] = spline_O2(data['Time (s)'])
+    data['CO2_Baseline'] = spline_CO2(data['Time (s)'])
+    data['CO_Baseline'] = spline_CO(data['Time (s)'])
+    
+
+        # O2
+    plt.figure(figsize=(8, 4))
+    plt.plot(data['Time (s)'], data['O2 (Vol fr)'], label='O2 Raw')
+    plt.plot(data['Time (s)'], data['O2_Baseline'], label='O2 Baseline', linestyle='--')
+    plt.xlabel('Time (s)')
+    plt.ylabel('O2 (Vol fr)')
+    plt.legend()
+    plt.title('O₂ Raw Signal and Baseline')
+    plt.tight_layout()
+    plt.show()
+
+    # CO2
+    plt.figure(figsize=(8, 4))
+    plt.plot(data['Time (s)'], data['CO2 (Vol fr)'], label='CO2 Raw')
+    plt.plot(data['Time (s)'], data['CO2_Baseline'], label='CO2 Baseline', linestyle='--')
+    plt.xlabel('Time (s)')
+    plt.ylabel('CO2 (Vol fr)')
+    plt.legend()
+    plt.title('CO₂ Raw Signal and Baseline')
+    plt.tight_layout()
+    plt.show()
+
+    # CO
+    plt.figure(figsize=(8, 4))
+    plt.plot(data['Time (s)'], data['CO (Vol fr)'], label='CO Raw')
+    plt.plot(data['Time (s)'], data['CO_Baseline'], label='CO Baseline', linestyle='--')
+    plt.xlabel('Time (s)')
+    plt.ylabel('CO (Vol fr)')
+    plt.legend()
+    plt.title('CO Raw Signal and Baseline')
+    plt.tight_layout()
+    plt.show()
+
+
+    data['O2 (Vol fr)'] = data['O2 (Vol fr)'] - data['O2_Baseline']
+    data['CO2 (Vol fr)'] = data['CO2 (Vol fr)'] - data['CO2_Baseline']
+    data['CO (Vol fr)'] = data['CO (Vol fr)'] - data['CO_Baseline']
 
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
@@ -433,6 +503,11 @@ def process_data(data, metadata):
 
     #region calc. HRR & MFR
 
+    # Calculate ambient XO2 following ASTM 1354 A.1.4.5
+    p_sat_water = 6.1078 * 10**((7.5*amb_temp)/(237.3 + amb_temp)) * 100 #saturation pressure in pa, Magnus approx
+    p_h2o = rel_humid/100 * p_sat_water
+    X_H2O_initial = p_h2o / amb_pressure
+
     # Calculate HRR by row
 
     def get_HRR(row):
@@ -449,6 +524,7 @@ def process_data(data, metadata):
             X_CO,
             X_O2_initial,
             X_CO2_initial,
+            X_H2O_initial,
             delta_P,
             T_e,
             c_factor,
@@ -475,6 +551,6 @@ def process_data(data, metadata):
 
 
 if __name__ == "__main__":
-    parse_dir(INPUT_DIR1)
+    #parse_dir(INPUT_DIR1)
     parse_dir(INPUT_DIR2)
     # parse_file("./DATA/FTT/24030001.csv")
