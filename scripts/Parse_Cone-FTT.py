@@ -118,7 +118,7 @@ def parse_dir(input_dir):
 
 #region parse_file
 def parse_file(file_path, output, meta):
-    print(f"Parsing: {file_path}")
+    print(f"Parsing: {Path(file_path).stem}")
 
     # read in CSV file as pandas dataframe
     # note the csv files are encoded in cp1252 NOT utf-8...
@@ -134,6 +134,10 @@ def parse_file(file_path, output, meta):
     RawMod = os.path.getmtime(file_path)
     RawMod = datetime.fromtimestamp(RawMod).strftime('%Y-%m-%d %H:%M:%S')
     data = parse_data(df, metadata)
+
+    #Final mass into the metadata : MAY NEED TO ADJUST THIS SINCE SOME TESTS GO NEGATIVE
+    metadata["Residual Mass (g)"] = data['Mass (g)'].iloc[-1]
+
 
     # If there's less than 20 data points, just skip the file
     if len(data) < 20:
@@ -432,60 +436,48 @@ def process_data(data, metadata):
     X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()  # / 100
     X_CO_initial = data["CO (Vol fr)"][:start_time].mean()  # / 100
 
-    #generate baseline for gas signals
+    # --- Your original setup ---
     baseline_mask = (data["Time (s)"] < start_time) | (data["Time (s)"] > end_time)
     baseline_times = data.loc[baseline_mask, "Time (s)"]
     baseline_O2_pts = data.loc[baseline_mask, "O2 (Vol fr)"]
     baseline_CO2_pts = data.loc[baseline_mask, "CO2 (Vol fr)"]
     baseline_CO_pts = data.loc[baseline_mask, "CO (Vol fr)"]
 
-    spline_O2 = UnivariateSpline(baseline_times, baseline_O2_pts, s=100)     
-    spline_CO2 = UnivariateSpline(baseline_times, baseline_CO2_pts, s=100)    
-    spline_CO = UnivariateSpline(baseline_times, baseline_CO_pts, s=100)    
+    # --- Linear fit to full baseline region ---
+    coef_O2_full = np.polyfit(baseline_times, baseline_O2_pts, 1)
+    coef_CO2_full = np.polyfit(baseline_times, baseline_CO2_pts, 1)
+    coef_CO_full = np.polyfit(baseline_times, baseline_CO_pts, 1)
+    fit_O2_full = np.poly1d(coef_O2_full)
+    fit_CO2_full = np.poly1d(coef_CO2_full)
+    fit_CO_full = np.poly1d(coef_CO_full)
+    data['O2_Baseline_full'] = fit_O2_full(data['Time (s)'])
+    data['CO2_Baseline_full'] = fit_CO2_full(data['Time (s)'])
+    data['CO_Baseline_full'] = fit_CO_full(data['Time (s)'])
 
-    data['O2_Baseline'] = spline_O2(data['Time (s)'])
-    data['CO2_Baseline'] = spline_CO2(data['Time (s)'])
-    data['CO_Baseline'] = spline_CO(data['Time (s)'])
-    
+    # --- Linear fit to initial N points in dataset ---
+    N = start_time  # Or set as desired
+    init_times = data["Time (s)"].iloc[:N]
+    init_O2_pts = data["O2 (Vol fr)"].iloc[:N]
+    init_CO2_pts = data["CO2 (Vol fr)"].iloc[:N]
+    init_CO_pts = data["CO (Vol fr)"].iloc[:N]
 
-        # O2
-    plt.figure(figsize=(8, 4))
-    plt.plot(data['Time (s)'], data['O2 (Vol fr)'], label='O2 Raw')
-    plt.plot(data['Time (s)'], data['O2_Baseline'], label='O2 Baseline', linestyle='--')
-    plt.xlabel('Time (s)')
-    plt.ylabel('O2 (Vol fr)')
-    plt.legend()
-    plt.title('O₂ Raw Signal and Baseline')
-    plt.tight_layout()
-    plt.show()
+    coef_O2_init = np.polyfit(init_times, init_O2_pts, 1)
+    coef_CO2_init = np.polyfit(init_times, init_CO2_pts, 1)
+    coef_CO_init = np.polyfit(init_times, init_CO_pts, 1)
+    fit_O2_init = np.poly1d(coef_O2_init)
+    fit_CO2_init = np.poly1d(coef_CO2_init)
+    fit_CO_init = np.poly1d(coef_CO_init)
+    data['O2_Baseline_init'] = fit_O2_init(data['Time (s)'])
+    data['CO2_Baseline_init'] = fit_CO2_init(data['Time (s)'])
+    data['CO_Baseline_init'] = fit_CO_init(data['Time (s)'])
 
-    # CO2
-    plt.figure(figsize=(8, 4))
-    plt.plot(data['Time (s)'], data['CO2 (Vol fr)'], label='CO2 Raw')
-    plt.plot(data['Time (s)'], data['CO2_Baseline'], label='CO2 Baseline', linestyle='--')
-    plt.xlabel('Time (s)')
-    plt.ylabel('CO2 (Vol fr)')
-    plt.legend()
-    plt.title('CO₂ Raw Signal and Baseline')
-    plt.tight_layout()
-    plt.show()
-
-    # CO
-    plt.figure(figsize=(8, 4))
-    plt.plot(data['Time (s)'], data['CO (Vol fr)'], label='CO Raw')
-    plt.plot(data['Time (s)'], data['CO_Baseline'], label='CO Baseline', linestyle='--')
-    plt.xlabel('Time (s)')
-    plt.ylabel('CO (Vol fr)')
-    plt.legend()
-    plt.title('CO Raw Signal and Baseline')
-    plt.tight_layout()
-    plt.show()
-
-
-    data['O2 (Vol fr)'] = data['O2 (Vol fr)'] - data['O2_Baseline']
-    data['CO2 (Vol fr)'] = data['CO2 (Vol fr)'] - data['CO2_Baseline']
-    data['CO (Vol fr)'] = data['CO (Vol fr)'] - data['CO_Baseline']
-
+    #calculate signal drift using
+    data['O2 drift'] = data['O2_Baseline_init'] - X_O2_initial
+    data['CO2 drift'] =data['CO2_Baseline_init'] -  X_CO2_initial
+    data['CO drift'] = data['CO_Baseline_init'] - X_CO_initial  
+    data['O2 (Vol fr)'] =  data['O2 (Vol fr)'] - data['O2 drift']
+    data['CO2 (Vol fr)'] =  data['CO2 (Vol fr)'] - data['CO2 drift']
+    data['CO (Vol fr)'] = data['CO (Vol fr)'] - data['CO drift']
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
     data.drop(data.tail(start_time).index, inplace=True)
