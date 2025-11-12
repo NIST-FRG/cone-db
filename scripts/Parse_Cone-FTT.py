@@ -9,8 +9,7 @@ from dateutil import parser
 import numpy as np
 import sys
 from utils import calculate_HRR, calculate_MFR, colorize
-from scipy.interpolate import UnivariateSpline
-import matplotlib.pyplot as plt
+
 
 # first argument is the input directory, 2nd argument is the output directory
 args = sys.argv[1:]
@@ -133,7 +132,7 @@ def parse_file(file_path, output, meta):
     metadata = parse_metadata(df,file_path, meta)
     RawMod = os.path.getmtime(file_path)
     RawMod = datetime.fromtimestamp(RawMod).strftime('%Y-%m-%d %H:%M:%S')
-    data = parse_data(df, metadata)
+    data, metadata = parse_data(df, metadata)
 
     #Final mass into the metadata : MAY NEED TO ADJUST THIS SINCE SOME TESTS GO NEGATIVE
     metadata["Residual Mass (g)"] = data['Mass (g)'].iloc[-1]
@@ -190,7 +189,7 @@ def parse_metadata(df,file_path, meta):
     "Original Testname",
     "Testname",
     "Thickness (mm)",
-    "Sample Descritpion",
+    "Sample Description",
     "Specimen Prep",
     "Instrument",
     "Test Date",
@@ -232,6 +231,7 @@ def parse_metadata(df,file_path, meta):
     "Ambient Temperature (°C)",
     "Barometric Pressure (Pa)",
     "Relative Humidity (%)",
+    "X_O2 Initial", "X_CO2 Initial", 'X_CO Initial',
     't_ignition (s)', 't_ignition Outlier',
     'Residue Yield (%)', 'Residue Yield Outlier',
     'Average HRRPUA 60s (kW/m2)',
@@ -239,17 +239,17 @@ def parse_metadata(df,file_path, meta):
     'Average HRRPUA 300s (kW/m2)',
     "t_sustainedflaming (s)","Mass at Sustained Flaming",
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
-    'Peak MLRPUA (g/s-m2)'
+    'Peak MLRPUA (g/s-m2)',
     'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
-    'Peak HRRPUA (kW/m2)'
+    'Peak HRRPUA (kW/m2)',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
     'Average Extinction Coefficient (m2/kg)', 'Average Extinction Coefficient Outlier',
     'Y_Soot (g/g)', 'Y_Soot Outlier',
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
-    'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier'
-    't_flameout (s)',
+    'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
+    "t_flameout (s)",
     'Comments', 'Data Corrections'
         ]
     cone = "White" if "White" in str(meta) else "Black"
@@ -292,7 +292,7 @@ def parse_metadata(df,file_path, meta):
     metadata["Test Time"] = test_time.strftime("%H:%M")  # e.g., "16:23"
 
     # Process other metadata
-    metadata["Instituion"] = raw_metadata["Laboratory name"]
+    metadata["Institution"] = raw_metadata["Laboratory name"]
     metadata["Operator"] = raw_metadata["Operator"]
     metadata["Report Name"] = raw_metadata["Report name"]
 
@@ -310,7 +310,6 @@ def parse_metadata(df,file_path, meta):
     metadata["Heat Flux (kW/m2)"] = get_number("Heat flux (kW/m²)")
     metadata["Separation (mm)"] = get_number("Separation (mm)")
     
-    metadata["Manufacturer"] = raw_metadata["Manufacturer"]
     metadata["Material Name"] = raw_metadata["Material name/ID"]
     metadata["Sample Description"] = raw_metadata["Sample description"]
     metadata["Specimen Number"] = raw_metadata["Specimen number"]
@@ -391,7 +390,7 @@ def parse_data(df, metadata):
     if data["Time (s)"].diff().max() > 1:
         raise Exception("Time increments are not 1 second")
     # get metadata required for HRR calculations
-    data = process_data(data, metadata)
+    data, metadata = process_data(data, metadata)
     # selected columns to keep
     data = data[
         [
@@ -402,11 +401,12 @@ def parse_data(df, metadata):
             "O2 (Vol fr)",
             "CO2 (Vol fr)",
             "CO (Vol fr)",
-            "K Smoke (1/m)"
+            "K Smoke (1/m)",
+            "V Duct (m3/s)"
         ]
     ]
 
-    return data
+    return data, metadata
 
 #region process_data
 def process_data(data, metadata):
@@ -435,6 +435,12 @@ def process_data(data, metadata):
     X_O2_initial = data["O2 (Vol fr)"][:start_time].mean()  # / 100
     X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()  # / 100
     X_CO_initial = data["CO (Vol fr)"][:start_time].mean()  # / 100
+
+    metadata['X_O2 Initial'] = X_O2_initial
+
+    metadata['X_CO2 Initial'] = X_CO2_initial
+
+    metadata['X_CO Initial'] = X_CO_initial
 
     # --- Your original setup ---
     baseline_mask = (data["Time (s)"] < start_time) | (data["Time (s)"] > end_time)
@@ -538,8 +544,14 @@ def process_data(data, metadata):
     
     data["K Smoke (1/m)"] = (1/duct_length) * np.log(data["PDC (-)"]/data["PDM (-)"])
     data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * area
+    #Needed for calculating yields/extinction coeff, have to either carry this or
+    #weigt air taken from 2077, this publication also used ambient pressure in the building, so will I
+    W_dryair = 28.963
+    W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
 
-    return data
+    data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['Te (K)'])
+    data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
+    return data, metadata
 
 
 if __name__ == "__main__":
