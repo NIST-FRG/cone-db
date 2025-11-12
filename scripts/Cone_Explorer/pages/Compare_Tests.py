@@ -67,6 +67,11 @@ if len(test_selection) != 0:
         amb_temp = test_metadata.get("Ambient Temperature (°C)")
         amb_pressure = test_metadata.get("Barometric Pressure (Pa)")
         duct_diam = test_metadata.get("Duct Diameter (m)")
+        flux = test_metadata.get("Heat Flux (kW/m2)")
+        if flux != None :
+            data["t * EHF (kJ/m2)"] = data["Time (s)"] * flux
+        else:
+            data["t * EHF (kJ/m2)"] = None
         data['dt'] = data["Time (s)"].diff()
         # Normal and area adjusted HRR and THR generation
         if "HRRPUA (kW/m2)" not in data.columns:
