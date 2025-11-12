@@ -125,6 +125,13 @@ if test_selection:
     data = pd.read_csv(data_selection)
     surf_area = test_metadata.get("Surface Area (m2)")
     mass = test_metadata.get("Sample Mass (g)")
+    X_O2_i = test_metadata.get("X_O2 Initial")
+    X_CO2_i = test_metadata.get("X_CO2 Initial")
+    X_CO_i = test_metadata.get("X_CO Initial")
+    rel_humid = test_metadata.get('Relative Humidity (%)')
+    amb_temp = test_metadata.get("Ambient Temperature (°C)")
+    amb_pressure = test_metadata.get("Barometric Pressure (Pa)")
+    duct_diam = test_metadata.get("Duct Diameter (m)")
     data['dt'] = data["Time (s)"].diff()
     # Normal and area adjusted HRR and THR generation
     if "HRRPUA (kW/m2)" not in data.columns:
@@ -163,24 +170,51 @@ if test_selection:
         data["MLR (g/s)"] = None
         data["MLRPUA (g/s-m2)"] = None
 
-    if "Extinction Area (m2/kg)" not in data:
-        data["Extinction Area (m2/kg)"] = None
-
+    
+    data["Extinction Area (m2/kg)"] = (data['V Duct (m3/s)'] * data['K Smoke (1/m)']) / (data['MLR (g/s)']/1000)
+    #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
+    #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
+    data['Soot Production (g/s)'] = 1/8.7 * data["K Smoke (1/m)"] * data['V Duct (m3/s)']
     data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
-    for i in range(len(data)):
-        if data.loc[i, "HoC (MJ/kg)"] <0 or data.loc[i, "HoC (MJ/kg)"] > 100:
-            data.loc[i, "HoC (MJ/kg)"] = 0
+    # Grab values
+    HoC_values = data["HoC (MJ/kg)"].to_numpy()
 
+    # Compute z-scores, handling NaNs as needed
+    HOCmean = np.nanmean(HoC_values)
+    HOCstd = np.nanstd(HoC_values)
+    HOCz = (HoC_values - HOCmean) / HOCstd
+
+    # Build mask for outliers or negatives
+    mask = (HoC_values < 0) | (np.abs(HOCz) > 2)
+
+    # Assign zero where mask is True
+    data.loc[mask, "HoC (MJ/kg)"] = 0
+
+    ## Gas Production and Yield
+    # Calculate ambient XO2 following ASTM 1354 A.1.4.5
+    p_sat_water = 6.1078 * 10**((7.5*amb_temp)/(237.3 + amb_temp)) * 100 #saturation pressure in pa, Magnus approx
+    p_h2o = rel_humid/100 * p_sat_water
+    X_H2O_initial = p_h2o / amb_pressure
+    #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
+    W_dryair = 28.963
+    W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
+    W_CO2 = 44.01
+    W_CO = 28.01
+    W_O2 = 32
+    #Production and yields calculated by following FCD user guide
+    data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
+    data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
+    data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
     test_data = data
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
 
-    if st.checkbox("Normalize Data Per Unit Area"):
+    if st.checkbox("View Additional Calculated Properties"):
         options = [
             'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-            "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", "Extinction Area (m2/kg)","HoC (MJ/kg)"
+             "Extinction Area (m2/kg)","HoC (MJ/kg)", "CO2 Production (g/s)", 
+             "CO Production (g/s)", "O2 Consumption (g/s)", "Soot Production (g/s)"
         ]
         default_value = 'HRRPUA (kW/m2)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -193,7 +227,7 @@ if test_selection:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
             "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", "Extinction Area (m2/kg)","HoC (MJ/kg)"
+            "K Smoke (1/m)", 'V Duct (m3/s)'
         ]
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -202,7 +236,7 @@ if test_selection:
             options=options,
             index=0
         )
-        
+    st.caption('Legacy Data May Be Missing Several Data Columns')
     if len(columns_to_graph) != 0:
         # Add number inputs for x- and y-axis limits
 
@@ -253,7 +287,7 @@ if test_selection:
             save_path = str(data_selection)
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)"]
+            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)", "V Duct (m3/s)"]
             data_out = data_copy[min_cols].copy()
             if data_out["Mass (g)"].isnull().all():
                 if data_copy["MLR (g/s)"].isnull().all():
@@ -530,7 +564,12 @@ def export_metadata(df, original_metadata):
     if dt_obj is None:
         st.warning(f"Export Aborted: Unrecognized date format: {date}.")
         return
-
+    try :
+        metadata['Specimen Number'] = int(metadata.get('Specimen Number'))
+        
+    except TypeError:
+        st.warning(f"Export Aborted: Please enter an Heat Flux")
+        return
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
     metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
@@ -591,7 +630,7 @@ def export_metadata(df, original_metadata):
         data.drop("Mass Loss (g)", inplace=True, axis = 1)
     
     max_column_order = ["Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                        "K Smoke (1/m)","Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA(g/s-m2)",
+                        "K Smoke (1/m)","V Duct (m3/s)","Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA(g/s-m2)",
                         "HRRPUA (kW/m2)"]
     reordered_data = pd.DataFrame()
     for c in max_column_order:
