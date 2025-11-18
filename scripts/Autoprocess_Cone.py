@@ -33,7 +33,6 @@ if __name__ == "__main__":
     # Set up command-line arguments
     SCRIPT_DIR = Path(__file__).parent
     PROJECT_ROOT = SCRIPT_DIR.parent
-    
     parser = argparse.ArgumentParser(description='Process all Cone series that need updating')
     parser.add_argument('--root', type=str, default=str(PROJECT_ROOT),
                         help='Project root directory')
@@ -110,7 +109,7 @@ if __name__ == "__main__":
                 processed_successfully_count += 1
                 print(colorize("Autoprocessed successfully\n", "green"))
         else:
-            print(f"  [DRY RUN] Would run: python Autoprocess_Cone_Series.py {test}")
+            print(f"  [DRY RUN] Would run: python Autoprocess_Cone_IndSeries.py {test}")
             processed_successfully_count += 1
     
     if processed_count != 0:

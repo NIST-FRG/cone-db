@@ -13,20 +13,19 @@ import shutil
 from scipy.signal import savgol_filter
 import plotly.graph_objects as go
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
-print(PROJECT_ROOT)
-sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
 
      PREPARED_DATA_PATH,
      PREPARED_DATA_PATH, 
      PREPARED_METADATA_PATH, 
-     SCRIPT_DIR
+     SCRIPT_DIR, 
+     PROJECT_ROOT
 )
+sys.path.append(str(PROJECT_ROOT))
 
 
 ################################ Title of Page #####################################################
-st.set_page_config(page_title=" Cone Metadata Editor", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Cone Metadata Editor", page_icon="📊", layout="wide")
 st.title("Cone Metadata Editor")
 
 
@@ -127,7 +126,10 @@ if material_selection:
             "Select tests to compare:",
             options=test_options,
                 )
-
+    try:
+        test_selection_map = {k: metadata_path_map[k] for k in test_selection}
+    except NameError:
+        test_selection_map = None
     # region load_metadata
     # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
     @st.cache_data(show_spinner=False)
@@ -139,18 +141,23 @@ if material_selection:
 
         # create a list of the contents of all the metadata files, as dicts
         all_metadata = []
+        all_surf_areas = []
         metadata_loaded = 0
         try:
-            for i, test_stem in enumerate(test_selection):
-                all_metadata.append(json.load(open(metadata_name_map[test_stem])))
+            for metadata_path in test_selection_map.values():
+                one_metadata = json.load(open(metadata_path))
+                surf_area = one_metadata["Surface Area (m2)"]
+                all_surf_areas.append(surf_area)
+                all_metadata.append(one_metadata)
                 metadata_loaded += 1
-                bar.progress(
-                    metadata_loaded / len(test_selection),
-                    f"({metadata_loaded}/{len(test_selection)}) Loading metadata for {test_stem}",
-                )
+                if bar:
+                    bar.progress(
+                        metadata_loaded / len(test_selection_map),
+                        f"({metadata_loaded}/{len(test_selection_map)}) Loading metadata for {metadata_path.stem}",
+                    )
 
             if len(all_metadata) == 0:
-                st.error("Please select at least one test to view.")
+                st.error("No tests found.")
                 return pd.DataFrame()
             # create a dataframe from the list of dicts, and sort it by date (ascending)
             df = pd.DataFrame(all_metadata).set_index("Testname")
@@ -162,28 +169,56 @@ if material_selection:
 
             bar.progress(1.0, "Metadata loaded")
 
-            bar.progress(0, "Loading TGA data ...")
+            bar.progress(0, "Loading Cone data ...")
 
             # load in the test data
             tests_loaded = 0
             all_test_data = []
-            for i, test_stem in enumerate(test_selection):
-                test_path = test_name_map[test_stem]
+            for key in test_selection_map.keys():
+                test_path = test_name_map[key]
                 with open(test_path) as f:
                     all_test_data.append(pd.read_csv(f))
                     tests_loaded += 1
-                    bar.progress(
-                        tests_loaded / len(test_selection),
-                        f"({tests_loaded}/{len(test_selection)}) Loading test data for {test_stem}",
-                    )
+                    if bar:
+                        bar.progress(
+                            tests_loaded / len(test_selection),
+                            f"({tests_loaded}/{len(test_selection)}) Loading test data for {test_path.stem}",
+                        )
 
+
+            for i, test_data in enumerate(all_test_data):
+                    if 'HRRPUA (kW/m2)' not in test_data.columns:
+                        test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
+                            test_data['HRR (kW)'], errors='coerce'
+                        ) / all_surf_areas[i]  # or * if that's appropriate
+                    else:
+                        test_data['HRRPUA (kW/m2)'] = pd.to_numeric(
+                            test_data['HRRPUA (kW/m2)'], errors='coerce'
+                        )
+            if len(all_test_data) > 1:
+                hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
+                hrr.columns = test_selection_map.keys()
+                hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
+                hrr = pd.Series(hrr.squeeze())
+                df.insert(0, "HRRPUA (kW/m2)", hrr.values)
+            else:
+                #HRR curve still not displaying properly if one test present only, come back to this
+                hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
+                hrr.columns = metadata_path_map.keys()
+                hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
+                hrr = pd.Series(hrr.squeeze())
+                df.insert(0, "HRRPUA (kW/m2)", [hrr])
+            if bar:
+                bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
+            
+            
             bar.progress(
                 1.0,
                 f"Loaded {len(all_test_data)} tests",
             )
 
             return df.sort_values(by=["Material ID"])
-        except NameError:
+        except AttributeError:
             st.error(f"Please select a version of {material_selection} to view.")
             return pd.DataFrame()
     ##################################################################################################################################################
@@ -234,10 +269,10 @@ if material_selection:
     def reautoprocess(scriptname):
         '''''
         Function activated when the user clicks the "Reautoprocess" button.
-        This function will go up one level to the STA scripts, run the autoprocessing script 
+        This function will go up one level to the Cone scripts, run the autoprocessing script 
         which should only autoprocess changed/reviewed datasets, then jumps back into the explorer directory
         '''
-        script_dir = PROJECT_ROOT / "Scripts" / "STA" 
+        script_dir = PROJECT_ROOT / "scripts" 
         str_script_dir = str(script_dir.as_posix())
         script = script_dir / scriptname
         if str_script_dir not in sys.path:
@@ -298,7 +333,7 @@ if material_selection:
     st.sidebar.markdown("#### Select columns \nLeave blank to use defaults.")
 
     unlocked_columns = ["Passed Manual Review", "Failed Manual Review", "** DELETE FILE", "Comments", "Data Corrections",
-                        "Institution", "Operator", "Director"]
+                        "Institution", "Operator", "Director", "HRRPUA (kW/m2)"]
     default_unlocked = [col for col in unlocked_columns if col in df.columns]
     selected_columns = st.sidebar.multiselect(
         "Columns",
@@ -311,13 +346,13 @@ if material_selection:
     st.sidebar.markdown("#### Save Metadata")
     st.sidebar.button("Save", on_click=lambda: save_metadata(df), use_container_width=True)
     st.sidebar.markdown("#### Reautoprocess Data")
-    st.sidebar.button('Autoprocess', on_click=lambda: reautoprocess('Autoprocess_TGA.py'), use_container_width=True)    
+    st.sidebar.button('Autoprocess', on_click=lambda: reautoprocess('Autoprocess_Cone.py'), use_container_width=True)    
 
     st.divider()
    
     column_config={
-        "HRR (kW/m2)": st.column_config.LineChartColumn(
-            "HRR (kW/m2)",
+        "HRRPUA (kW/m2)": st.column_config.LineChartColumn(
+            "HRRPUA (kW/m2)",
             width="medium",)
         }
   

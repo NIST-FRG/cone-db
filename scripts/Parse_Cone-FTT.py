@@ -6,8 +6,10 @@ import sys
 import os
 from datetime import datetime
 from dateutil import parser
+import matplotlib.pyplot as plt
 import numpy as np
 import sys
+from scipy.signal import savgol_filter
 from utils import calculate_HRR, calculate_MFR, colorize
 
 
@@ -127,7 +129,6 @@ def parse_file(file_path, output, meta):
     if df.iloc[1].isnull().all():
         df = df.drop(1)
 
-    # TODO
     df = df.dropna(how="all")
     metadata = parse_metadata(df,file_path, meta)
     RawMod = os.path.getmtime(file_path)
@@ -233,26 +234,31 @@ def parse_metadata(df,file_path, meta):
     "Relative Humidity (%)",
     "X_O2 Initial", "X_CO2 Initial", 'X_CO Initial',
     't_ignition (s)', 't_ignition Outlier',
+    'm_ignition (g)', 'm_ignition Outlier'
     'Residue Yield (%)', 'Residue Yield Outlier',
-    'Average HRRPUA 60s (kW/m2)',
-    'Average HRRPUA 180s (kW/m2)',
-    'Average HRRPUA 300s (kW/m2)',
-    "t_sustainedflaming (s)","Mass at Sustained Flaming",
+    'Heat Release Rate Outlier',
+    'Average HRRPUA 60s (kW/m2)','Average HRRPUA 60s Outlier',
+    'Average HRRPUA 180s (kW/m2)','Average HRRPUA 180s Outlier',
+    'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
-    'Peak MLRPUA (g/s-m2)',
+    'Peak MLRPUA (g/s-m2)','Peak MLRPUA Outlier',
     'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
-    'Peak HRRPUA (kW/m2)',
+    'Peak HRRPUA (kW/m2)', 'Peak MLRPUA Outlier',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
-    'Average Extinction Coefficient (m2/kg)', 'Average Extinction Coefficient Outlier',
+    'Average Specific Extinction Area (m2/kg)', 'Average Specific Extinction Area Outlier',
+    'Smoke Production Pre-ignition (m2/m2)','Smoke Production Pre-ignition Outlier',
+    'Smoke Production Post-ignition (m2/m2)','Smoke Production Post-ignition Outlier',
+    'Smoke Production Total (m2/m2)','Smoke Production Total Outlier',
     'Y_Soot (g/g)', 'Y_Soot Outlier',
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
     'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
-    "t_flameout (s)",
+    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier'
+    "t_flameout (s)","t_flameout outlier",
     'Comments', 'Data Corrections'
         ]
-    cone = "White" if "White" in str(meta) else "Black"
+    cone = "White" if "White" in str(meta) else "Black" if "Black" in str(meta) else "Test"
     for key in expected_keys:
         metadata.setdefault(key, None)
 
@@ -355,9 +361,6 @@ def parse_metadata(df,file_path, meta):
     metadata["Original Source"] = f"FTT-{cone}/{test_date.year}"
     metadata['Data Corrections'] =[]
 
-
-
-
     # replace all NaN values with None (which turns into null when serialized) to fit JSON spec (and get rid of red underlines)
     metadata = {k: v if v == v else None for k, v in metadata.items()}
 
@@ -383,6 +386,7 @@ def parse_data(df, metadata):
             "CO2 (%)": "CO2 (Vol fr)",
             "CO (%)": "CO (Vol fr)",
             "Stack TC (K)": "Te (K)",
+            "Smoke TC (K)": "T Duct (K)"
         }
     )
 
@@ -393,16 +397,16 @@ def parse_data(df, metadata):
     data, metadata = process_data(data, metadata)
     # selected columns to keep
     data = data[
-        [
-            "Time (s)",
+       [
+           "Time (s)",
             "Mass (g)",
             "HRR (kW)",
             "MFR (kg/s)",
+            "T Duct (K)",
             "O2 (Vol fr)",
             "CO2 (Vol fr)",
             "CO (Vol fr)",
             "K Smoke (1/m)",
-            "V Duct (m3/s)"
         ]
     ]
 
@@ -410,18 +414,23 @@ def parse_data(df, metadata):
 
 #region process_data
 def process_data(data, metadata):
-
     # test parameters used for calculations
     start_time = int(metadata.get("Test Start Time (s)", -1))
     if start_time == -1: #Find start of test where mass not stable
         delta = data["Mass (g)"].diff().abs()
         test_start_index = delta[delta > 1e-3].index[0] 
         start_time = data.loc[test_start_index, "Time (s)"]
-    end_time = data['Time (s)'].iloc[-30] ############    COME BACK TO THIS###############
+    
+    # calculate initial values by using the data up to test start time
+    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean() 
+    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()  
+    X_CO_initial = data["CO (Vol fr)"][:start_time].mean()  
+    
+    
     o2_delay = int(metadata["O2 Delay Time (s)"] or 0)
     co2_delay = int(metadata["CO2 Delay Time (s)"] or 0)
     co_delay = int(metadata["CO Delay Time (s)"] or 0)
-    area = metadata["Surface Area (m2)"] or .0001  # cm2
+    area = metadata["Surface Area (m2)"] or .0001 
     c_factor = metadata["C Factor"]
     e = metadata["Heat of Combustion O2 (MJ/kg)"]
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
@@ -431,59 +440,12 @@ def process_data(data, metadata):
 
     #region delay, baselines
 
-    # calculate initial values by using the data up to test start time
-    X_O2_initial = data["O2 (Vol fr)"][:start_time].mean()  # / 100
-    X_CO2_initial = data["CO2 (Vol fr)"][:start_time].mean()  # / 100
-    X_CO_initial = data["CO (Vol fr)"][:start_time].mean()  # / 100
-
     metadata['X_O2 Initial'] = X_O2_initial
-
     metadata['X_CO2 Initial'] = X_CO2_initial
-
     metadata['X_CO Initial'] = X_CO_initial
 
-    # --- Your original setup ---
-    baseline_mask = (data["Time (s)"] < start_time) | (data["Time (s)"] > end_time)
-    baseline_times = data.loc[baseline_mask, "Time (s)"]
-    baseline_O2_pts = data.loc[baseline_mask, "O2 (Vol fr)"]
-    baseline_CO2_pts = data.loc[baseline_mask, "CO2 (Vol fr)"]
-    baseline_CO_pts = data.loc[baseline_mask, "CO (Vol fr)"]
-
-    # --- Linear fit to full baseline region ---
-    coef_O2_full = np.polyfit(baseline_times, baseline_O2_pts, 1)
-    coef_CO2_full = np.polyfit(baseline_times, baseline_CO2_pts, 1)
-    coef_CO_full = np.polyfit(baseline_times, baseline_CO_pts, 1)
-    fit_O2_full = np.poly1d(coef_O2_full)
-    fit_CO2_full = np.poly1d(coef_CO2_full)
-    fit_CO_full = np.poly1d(coef_CO_full)
-    data['O2_Baseline_full'] = fit_O2_full(data['Time (s)'])
-    data['CO2_Baseline_full'] = fit_CO2_full(data['Time (s)'])
-    data['CO_Baseline_full'] = fit_CO_full(data['Time (s)'])
-
-    # --- Linear fit to initial N points in dataset ---
-    N = start_time  # Or set as desired
-    init_times = data["Time (s)"].iloc[:N]
-    init_O2_pts = data["O2 (Vol fr)"].iloc[:N]
-    init_CO2_pts = data["CO2 (Vol fr)"].iloc[:N]
-    init_CO_pts = data["CO (Vol fr)"].iloc[:N]
-
-    coef_O2_init = np.polyfit(init_times, init_O2_pts, 1)
-    coef_CO2_init = np.polyfit(init_times, init_CO2_pts, 1)
-    coef_CO_init = np.polyfit(init_times, init_CO_pts, 1)
-    fit_O2_init = np.poly1d(coef_O2_init)
-    fit_CO2_init = np.poly1d(coef_CO2_init)
-    fit_CO_init = np.poly1d(coef_CO_init)
-    data['O2_Baseline_init'] = fit_O2_init(data['Time (s)'])
-    data['CO2_Baseline_init'] = fit_CO2_init(data['Time (s)'])
-    data['CO_Baseline_init'] = fit_CO_init(data['Time (s)'])
 
     #calculate signal drift using
-    data['O2 drift'] = data['O2_Baseline_init'] - X_O2_initial
-    data['CO2 drift'] =data['CO2_Baseline_init'] -  X_CO2_initial
-    data['CO drift'] = data['CO_Baseline_init'] - X_CO_initial  
-    data['O2 (Vol fr)'] =  data['O2 (Vol fr)'] - data['O2 drift']
-    data['CO2 (Vol fr)'] =  data['CO2 (Vol fr)'] - data['CO2 drift']
-    data['CO (Vol fr)'] = data['CO (Vol fr)'] - data['CO drift']
     # shift entire dataframe up to start time
     data = data.shift(-start_time)
     data.drop(data.tail(start_time).index, inplace=True)
@@ -509,9 +471,9 @@ def process_data(data, metadata):
     # Calculate HRR by row
 
     def get_HRR(row):
-        X_O2 = row["O2 (Vol fr)"]  # / 100
-        X_CO2 = row["CO2 (Vol fr)"]  # / 100
-        X_CO = row["CO (Vol fr)"]  # / 100
+        X_O2 = row["O2 (Vol fr)"] 
+        X_CO2 = row["CO2 (Vol fr)"]  
+        X_CO = row["CO (Vol fr)"]  
 
         delta_P = row["DPT (Pa)"]
         T_e = row["Te (K)"]
@@ -544,17 +506,11 @@ def process_data(data, metadata):
     
     data["K Smoke (1/m)"] = (1/duct_length) * np.log(data["PDC (-)"]/data["PDM (-)"])
     data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * area
-    #Needed for calculating yields/extinction coeff, have to either carry this or
-    #weigt air taken from 2077, this publication also used ambient pressure in the building, so will I
-    W_dryair = 28.963
-    W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
 
-    data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['Te (K)'])
-    data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
     return data, metadata
 
 
 if __name__ == "__main__":
-    #parse_dir(INPUT_DIR1)
+    parse_dir(INPUT_DIR1)
     parse_dir(INPUT_DIR2)
     # parse_file("./DATA/FTT/24030001.csv")

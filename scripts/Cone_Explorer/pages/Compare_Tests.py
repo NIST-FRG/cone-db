@@ -68,11 +68,13 @@ if len(test_selection) != 0:
         amb_pressure = test_metadata.get("Barometric Pressure (Pa)")
         duct_diam = test_metadata.get("Duct Diameter (m)")
         flux = test_metadata.get("Heat Flux (kW/m2)")
+
         if flux != None :
-            data["t * EHF (kJ/m2)"] = data["Time (s)"] * flux
+            data["t * EHF (MJ/m2)"] = (data["Time (s)"] * flux)/1000
         else:
-            data["t * EHF (kJ/m2)"] = None
+            data["t * EHF (MJ/m2)"] = None
         data['dt'] = data["Time (s)"].diff()
+        
         # Normal and area adjusted HRR and THR generation
         if "HRRPUA (kW/m2)" not in data.columns:
             data["HRRPUA (kW/m2)"] = data["HRR (kW)"] / surf_area if surf_area is not None else None
@@ -110,11 +112,16 @@ if len(test_selection) != 0:
             data["MLR (g/s)"] = None
             data["MLRPUA (g/s-m2)"] = None
 
-        
+        #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
+        W_air = 28.97
+        data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+        data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
         data["Extinction Area (m2/kg)"] = (data['V Duct (m3/s)'] * data['K Smoke (1/m)']) / (data['MLR (g/s)']/1000)
         #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
         #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
-        data['Soot Production (g/s)'] = 1/8.7 * data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+        data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+        data['Soot Production (g/s)'] = 1/8.7 * data['Smoke Production (m2/s)']
+
         data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
         # Grab values
         HoC_values = data["HoC (MJ/kg)"].to_numpy()
@@ -131,13 +138,6 @@ if len(test_selection) != 0:
         data.loc[mask, "HoC (MJ/kg)"] = 0
 
         ## Gas Production and Yield
-        # Calculate ambient XO2 following ASTM 1354 A.1.4.5
-        p_sat_water = 6.1078 * 10**((7.5*amb_temp)/(237.3 + amb_temp)) * 100 #saturation pressure in pa, Magnus approx
-        p_h2o = rel_humid/100 * p_sat_water
-        X_H2O_initial = p_h2o / amb_pressure
-        #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
-        W_dryair = 28.963
-        W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
         W_CO2 = 44.01
         W_CO = 28.01
         W_O2 = 32
@@ -145,21 +145,38 @@ if len(test_selection) != 0:
         data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
         data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
         data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
+        
+        #Not using right now, but keep the code if we ever want it
+        data['O2'] = (data['O2 Consumption (g/s)'] * data['dt'])
+        data['Total O2'] = data['O2'].cumsum()
+        # For CO
+        data['CO'] = data['CO Production (g/s)'] * data['dt']
+        data['Total CO'] = data['CO'].cumsum()
 
+        # For CO2
+        data['CO2'] = data['CO2 Production (g/s)'] * data['dt']
+        data['Total CO2'] = data['CO2'].cumsum()
+
+        # For Soot
+        data['Soot'] = data['Soot Production (g/s)'] * data['dt']
+        data['Total Soot'] = data['Soot'].cumsum()
+
+        data['Smoke'] = data['Smoke Production (m2/s)'] * data['dt']
+        data['Total Smoke'] = data['Smoke'].cumsum()
         test_data.append(data)
 ######################################################################################################################################################
 
 ########################################### Generate Plots ###################################################################################      
     x_axis_column = st.selectbox(
         "Select the column for the x-axis",
-        options=['Time (s)', 't * EHF (kJ/m2)'],
+        options=['Time (s)', 't * EHF (MJ/m2)'],
     )
         
     if st.checkbox("View Additional Calculated Properties"):
         options = [
             'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-             "Extinction Area (m2/kg)","HoC (MJ/kg)", "CO2 Production (g/s)", 
-             "CO Production (g/s)", "O2 Consumption (g/s)", "Soot Production (g/s)"
+           "CO2 Production (g/s)", "CO Production (g/s)", "O2 Consumption (g/s)", 
+           "Soot Production (g/s)", "K Smoke (1/m)","MFR (kg/s)",'V Duct (m3/s)'
         ]
         default_value = 'HRRPUA (kW/m2)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -170,8 +187,8 @@ if len(test_selection) != 0:
     else:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-            "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", 'V Duct (m3/s)'
+             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 'Smoke Production (m2/s)'
+            
         ]
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
