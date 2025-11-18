@@ -45,7 +45,7 @@ Select `Sort by Markdown File Number` to have the tests appear in order of markd
 Type out the specimen number of the test(s) you would like to view and/or select them from the dropdown list
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s total heat release (MJ), mass flow rate through the duct (kg/s), gaseous species volume fractions (O2, CO2, CO), k smoke (1/m), and volumetric flow rate through the duct (m3/s). There is also an option to view additional parameters derived from the base data. These include the first four options of base data on a per unit area basis, specific extinction area (σ_f, m2/kg), effective heat of combustion (MJ/kg), gasoues species production/consumption rates (g/s), and soot production rate (g/s)
+For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
 
 Plots can zoom in and out, pan, and save the plot as a .png file.
 
@@ -60,7 +60,7 @@ Grants the user the ability to view, crop, and modify data from a single cone te
 Type out the name of the test you would like to view and/or select them it the dropdown list
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s total heat release (MJ), mass flow rate through the duct (kg/s), gaseous species volume fractions (O2, CO2, CO), k smoke (1/m), and volumetric flow rate through the duct (m3/s). There is also an option to view additional parameters derived from the base data. These include the first four options of base data on a per unit area basis, specific extinction area (σ_f, m2/kg), effective heat of combustion (MJ/kg), gasoues species production/consumption rates (g/s), and soot production rate (g/s)
+For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
 
 Plots can zoom in and out, pan, and save the plot as a .png file.
 
@@ -88,7 +88,8 @@ The SmURF Editor is broken up into two functionalities: Data Modification and Me
 #### Data Modification
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s total heat release (MJ), mass flow rate through the duct (kg/s), gaseous species volume fractions (O2, CO2, CO), k smoke (1/m), and volumetric flow rate through the duct (m3/s). There is also an option to view additional parameters derived from the base data. These include the first four options of base data on a per unit area basis, specific extinction area (σ_f, m2/kg), effective heat of combustion (MJ/kg), gasoues species production/consumption rates (g/s), and soot production rate (g/s)
+For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
+
 ##### Revert Data Modifications
 Use the `Revert Data Modifications` button to revert any changes made back to the original data (pulled from the Exp-Data_Parsed folder). A note is added to the test metadata file , under data corrections, indicating that the data was reverted back to its original state.
 

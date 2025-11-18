@@ -102,11 +102,16 @@ if test_selection:
         data["MLR (g/s)"] = None
         data["MLRPUA (g/s-m2)"] = None
 
-    
+    #weight air taken from 2077, this publication also used ambient pressure in the building, so will I: combustion products/humidty negligable
+    W_air = 28.97
+    data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+    data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
     data["Extinction Area (m2/kg)"] = (data['V Duct (m3/s)'] * data['K Smoke (1/m)']) / (data['MLR (g/s)']/1000)
     #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
     #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
     data['Soot Production (g/s)'] = 1/8.7 * data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+    data['Smoke Production (m2/s)'] = data['K Smoke (1/m)'] * data['V Duct (m3/s)']
+    
     data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
     # Grab values
     HoC_values = data["HoC (MJ/kg)"].to_numpy()
@@ -123,13 +128,6 @@ if test_selection:
     data.loc[mask, "HoC (MJ/kg)"] = 0
 
     ## Gas Production and Yield
-    # Calculate ambient XO2 following ASTM 1354 A.1.4.5
-    p_sat_water = 6.1078 * 10**((7.5*amb_temp)/(237.3 + amb_temp)) * 100 #saturation pressure in pa, Magnus approx
-    p_h2o = rel_humid/100 * p_sat_water
-    X_H2O_initial = p_h2o / amb_pressure
-    #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
-    W_dryair = 28.963
-    W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
     W_CO2 = 44.01
     W_CO = 28.01
     W_O2 = 32
@@ -146,9 +144,8 @@ if test_selection:
     if st.checkbox("View Additional Calculated Properties"):
         options = [
             'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-             "Extinction Area (m2/kg)","HoC (MJ/kg)", "CO2 Production (g/s)", 
-             "CO Production (g/s)", "O2 Consumption (g/s)", "Soot Production (g/s)"
-        ]
+           "CO2 Production (g/s)", "CO Production (g/s)", "O2 Consumption (g/s)", 
+           "Soot Production (g/s)", "K Smoke (1/m)","MFR (kg/s)",'V Duct (m3/s)' ]
         default_value = 'HRRPUA (kW/m2)'
         default_index = options.index(default_value) if default_value in options else 0
         columns_to_graph = st.selectbox(
@@ -159,9 +156,8 @@ if test_selection:
     else:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-            "MFR (kg/s)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 
-            "K Smoke (1/m)", 'V Duct (m3/s)'
-        ]
+             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 'Smoke Production (m2/s)']
+        
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
         columns_to_graph = st.selectbox(
@@ -220,7 +216,7 @@ if test_selection:
             save_path = str(test_name_map[test_selection])
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)", "V Duct (m3/s)"]
+            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)"]
             data_out = data_copy[min_cols].copy()
             if data_out["Mass (g)"].isnull().all():
                 if data_copy["MLR (g/s)"].isnull().all():
