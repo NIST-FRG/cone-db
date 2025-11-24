@@ -14,6 +14,7 @@ INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
 OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_C"
 OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_C"
 LOG_FILE = PROJECT_ROOT / "parse_md_C_log.json"
+LOG2 = PROJECT_ROOT / "parse_md_C_TYPES_log.JSON"
 
 
 #region parse_dir
@@ -66,7 +67,21 @@ def parse_dir(input_dir):
             continue
         print(colorize(f"Parsed {path} successfully\n", "green"))
         files_parsed_successfully += 1
+    from collections import Counter
 
+    summary = Counter()
+    with open(LOG2, "r") as logf:
+        for line in logf:
+            parts = line.strip().split(',')
+            if len(parts) >= 3:
+                route = parts[2]
+                summary[route] += 1
+
+    # Append the summary to the log file
+    with open(LOG2, "a") as logf:
+        logf.write("\nSUMMARY OF ROUTE COUNTS:\n")
+        for route, count in summary.items():
+            logf.write(f"{route},{count}\n")
     print(colorize(f"Copied all metadata files from {INPUT_DIR} to {OUTPUT_META}\n", "green"))
     print(colorize(f"Bad Files:{bad_files}/{total_files} ({((bad_files)/total_files) * 100}%)", "blue"))
     print(colorize(f"Files previously SmURFed:{files_SmURFed}/{total_files} ({((files_SmURFed)/total_files) * 100}%)", "blue"))
@@ -130,32 +145,66 @@ def parse_data(file_path):
         metadata = json.load(w)
 
     df = pd.read_csv(file_path)
-    df["HRRPUA (kW/m2)"] = abs(df["HRRPUA (kW/m2)"])
     df["O2 (Vol fr)"] = None
     df["CO2 (Vol fr)"] = None
     df["CO (Vol fr)"] = None
     df["MFR (kg/s)"] = None
     df["K Smoke (1/m)"] = None
-    df["Extinction Area (m2/kg)"] = None
-
+    df['T Duct (K)'] = None
+    route = None
     if "Mass (kg)" in df.columns:
+        #genuinley one test in this tree
+        df['MLR (g/s)'] = None
         df["Mass (g)"] = df["Mass (kg)"] * 1000
         df["HRR (kW)"] = None
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                           "K Smoke (1/m)","Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
+        if not "CO2 (kg/kg)" in df.columns:
+            route = "Mass/noyield"
+            print(colorize(f'Warning: {file_stem} does not contain CO2 or CO production data', "yellow"))
+            data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                        "K Smoke (1/m)","HRRPUA (kW/m2)"]].copy()
+        #NO FILES IN THIS PATTERN BUT KEEP TO BE SAFE
+        #else:  
+        #    route = "Mass/yield"
+        #    data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)", "T Duct (K)", "O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+         #                   "K Smoke (1/m)","HRRPUA (kW/m2)","CO2 (kg/kg)", "CO (kg/kg)"]].copy()
     elif "MLR (g/s)" in df.columns:
+        #Majority of tests in this tree
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
         print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-        data = data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                           "K Smoke (1/m)","Extinction Area (m2/kg)","MLR (g/s)", "HRRPUA (kW/m2)"]]
+        if "CO2 (kg/kg)" in df.columns:
+            route = "MLR/yield"
+            data =  df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                            "K Smoke (1/m)","MLR (g/s)", "HRRPUA (kW/m2)", "CO2 (kg/kg)", "CO (kg/kg)"]].copy()
+        else:
+            route = "MLR/noyield"
+            print(colorize(f'Warning: {file_stem} does not contain CO2 or CO production data', "yellow"))
+            data =  df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                "K Smoke (1/m)","MLR (g/s)", "HRRPUA (kW/m2)"]].copy()
     else:
+        #Earliest test in this tree
         df["Mass (g)"] = None
         df["HRR (kW)"] = None
-        print(colorize(f'Warning: {file_stem} only contains heat relase data', "yellow"))
-        data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                    "K Smoke (1/m)","Extinction Area (m2/kg)", "HRRPUA (kW/m2)"]]
+        print(colorize(f'Warning: {file_stem} only contains heat relase data, mass loss rate generated from heat of combustion', "yellow"))
+        df['MLRPUA (g/s-m2)'] = df['HRRPUA (kW/m2)'] / df['HT Comb (MJ/kg)']
+        if not 'CO2 (kg/kg)' in df.columns:
+            route = "HRRPUA/noyield"
+            print(colorize(f'Warning: {file_stem} does not contain CO2 or CO production data', "yellow"))
+            data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                        "K Smoke (1/m)", "MLRPUA (g/s-m2)", "HRRPUA (kW/m2)"]].copy()
         
+
+        #else:
+         #   route = "HRRPUA/yield"
+          #  df['CO2 ProductionPUA (g/s-m2)'] = df['CO2 (kg/kg)'] * df['MLRPUA (g/s-m2)']
+           # df['CO ProductionPUA (g/s-m2)'] = df['CO (kg/kg)'] * df['MLRPUA (g/s-m2)'] 
+            #data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+             #       "K Smoke (1/m)", "HRRPUA (kW/m2)", "MLRPUA (g/s-m2)", 'CO2 ProductionPUA (g/s-m2)', 'CO ProductionPUA (g/s-m2)']].copy()
+
+
+    with open(LOG2, "a") as logf:
+        logf.write(f"{datetime.now().isoformat()},{file_path.name},{route}\n")
+
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 
