@@ -130,19 +130,23 @@ def parse_data(file_path):
         metadata = json.load(w)
     df = pd.read_csv(file_path)
 
-    df["HRRPUA (kW/m2)"] = abs(df["Q-Dot (kW/m2)"])
+    df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
     df["O2 (Vol fr)"] = None
     df["CO2 (Vol fr)"] = None
     df["CO (Vol fr)"] = None
-    df["MFR (kg/s)"] = None
+    df['K Smoke (1/m)'] = None
+    df['T Duct (K)'] = None
     df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
-    #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s)
-    df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V-Duct (m3/s)"]
+    #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s), dont ppull out
+    #df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V Duct (m3/s)"]
     df["HRR (kW)"] = None
-    data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                "K Smoke (1/m)","Extinction Area (m2/kg)","HRRPUA (kW/m2)"]]
-
-        
+    data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
+                "K Smoke (1/m)", "Extinction Area (m2/kg)","HRRPUA (kW/m2)"]].copy()
+    
+    for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"]:
+        if gas in df.columns:
+            data.loc[:, gas] = df[gas]
+            
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 

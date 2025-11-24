@@ -474,7 +474,7 @@ def parse_metadata(input,test_name):
     "Original Testname",
     "Testname",
     "Thickness (mm)",
-    "Sample Descritpion",
+    "Sample Description",
     "Specimen Prep",
     "Instrument",
     "Test Date",
@@ -485,7 +485,7 @@ def parse_metadata(input,test_name):
     "Institution",
     "Report Name",
     "Original Source",
-    "Preparsed",
+    'Preparsed',
     "Parsed",
     "Auto Prepared",
     "Manally Prepared",
@@ -517,23 +517,30 @@ def parse_metadata(input,test_name):
     "Ambient Temperature (°C)",
     "Barometric Pressure (Pa)",
     "Relative Humidity (%)",
+    "X_O2 Initial", "X_CO2 Initial", 'X_CO Initial',
     't_ignition (s)', 't_ignition Outlier',
-    't_peak (s)', 't_peak Outlier',
-    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
-    'Peak MLRPUA (g/s-m2)', 'Peak MLRPUA Outlier',
+    'm_ignition (g)', 'm_ignition Outlier'
     'Residue Yield (%)', 'Residue Yield Outlier',
-    'Average HRRPUA 60s (kW/m2)', 'Average HRRPUA 60s Outlier',
-    'Average HRRPUA 180s (kW/m2)', 'Average HRRPUA 180s Outlier',
+    'Heat Release Rate Outlier',
+    'Average HRRPUA 60s (kW/m2)','Average HRRPUA 60s Outlier',
+    'Average HRRPUA 180s (kW/m2)','Average HRRPUA 180s Outlier',
     'Average HRRPUA 300s (kW/m2)', 'Average HRRPUA 300s Outlier',
-    "t_sustainedflaming (s)", 't_sustainedflaming  Outlier',
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
+    'Peak MLRPUA (g/s-m2)','Peak MLRPUA Outlier',
+    'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak MLRPUA Outlier',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
-    'Average Extinction Coefficient', 'Average Extinction Coefficient Outlier',
+    'Average Specific Extinction Area (m2/kg)', 'Average Specific Extinction Area Outlier',
+    'Smoke Production Pre-ignition (m2/m2)','Smoke Production Pre-ignition Outlier',
+    'Smoke Production Post-ignition (m2/m2)','Smoke Production Post-ignition Outlier',
+    'Smoke Production Total (m2/m2)','Smoke Production Total Outlier',
     'Y_Soot (g/g)', 'Y_Soot Outlier',
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
-    't_flameout (s)', 't_flameout Outlier',
+    'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
+    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier'
+    "t_flameout (s)","t_flameout outlier",
     'Comments', 'Data Corrections'
         ]
     for key in expected_keys:
@@ -542,7 +549,6 @@ def parse_metadata(input,test_name):
     metadata_json["Comments"] = []
     prev_item = None
     for item in metadata:
-        print(metadata.index(item),item)
         if metadata.index(item) == 0:
             metadata_json["Institution"] = item
         elif "IRRADIANCE" in item:
