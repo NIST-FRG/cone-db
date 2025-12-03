@@ -202,12 +202,11 @@ if material_selection:
                 hrr = pd.Series(hrr.squeeze())
                 df.insert(0, "HRRPUA (kW/m2)", hrr.values)
             else:
-                #HRR curve still not displaying properly if one test present only, come back to this
-                hrr = pd.concat([test_data["HRRPUA (kW/m2)"] for test_data in all_test_data], axis=1)
-                hrr.columns = metadata_path_map.keys()
-                hrr = hrr.apply(lambda x: x.dropna().to_list(), axis=0)
-                hrr = pd.Series(hrr.squeeze())
-                df.insert(0, "HRRPUA (kW/m2)", [hrr])
+                test = all_test_data[0]
+                hrr_curve = test["HRRPUA (kW/m2)"].dropna().tolist()
+                # Insert as a single cell containing a list
+                df.insert(0, "HRRPUA (kW/m2)", [hrr_curve])
+
             if bar:
                 bar.progress(1.0, f"Loaded {len(all_test_data)} test(s)")
             
@@ -333,7 +332,13 @@ if material_selection:
     st.sidebar.markdown("#### Select columns \nLeave blank to use defaults.")
 
     unlocked_columns = ["Passed Manual Review", "Failed Manual Review", "** DELETE FILE", "Comments", "Data Corrections",
-                        "Institution", "Operator", "Director", "HRRPUA (kW/m2)"]
+                        "Institution", "Operator", "Director", "HRRPUA (kW/m2)", "Specimen Number", "Thickness (mm)","Sample Description",
+                        "Specimen Prep", "Sponsor", "Report Name", "Grid", "Edge Frame", "Seperation (mm)", "End of test criterion",
+                        'Substrate', "Non-scrubbed"]
+    
+    for col in df.columns:
+        if "Outlier" in col and col not in unlocked_columns:
+            unlocked_columns.append(col)
     default_unlocked = [col for col in unlocked_columns if col in df.columns]
     selected_columns = st.sidebar.multiselect(
         "Columns",

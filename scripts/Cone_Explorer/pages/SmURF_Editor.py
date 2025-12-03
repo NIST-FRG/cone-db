@@ -133,9 +133,12 @@ if test_selection:
     amb_pressure = test_metadata.get("Barometric Pressure (Pa)")
     duct_diam = test_metadata.get("Duct Diameter (m)")
     data['dt'] = data["Time (s)"].diff()
+    
     # Normal and area adjusted HRR and THR generation
     if "HRRPUA (kW/m2)" not in data.columns:
         data["HRRPUA (kW/m2)"] = data["HRR (kW)"] / surf_area if surf_area is not None else None
+    else:
+        data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * surf_area if surf_area is not None else None
     data["QPUA (MJ/m2)"] = (data['HRRPUA (kW/m2)'] * data['dt']) / 1000
     data["THRPUA (MJ/m2)"] = data["QPUA (MJ/m2)"].cumsum()
     data['Q (MJ)'] = (data['HRR (kW)'] * data['dt']) / 1000
@@ -145,10 +148,26 @@ if test_selection:
     if "MLR (g/s)" in data.columns:
         data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None
         data["MassPUA (g/m2)"] = None
+        data['Mass Loss (g)'] = None
+        data['Mass LossPUA (g/m2)'] = None
     elif "MLRPUA (g/s-m2)" in data.columns:
-        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
+        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * surf_area if surf_area is not None else None
         data["MassPUA (g/m2)"] = None
-    elif not data["Mass (g)"].isnull().all():
+        data['Mass Loss (g)'] = None
+        data['Mass LossPUA (g/m2)'] = None
+    elif "Mass Loss (g)" in data.columns:
+        data['Mass (g)'] = (mass - data["Mass Loss (g)"]) if mass is not None else None
+        data['MLR (g/s)'] = None
+        data['MLRPUA (g/s-m2)'] = None
+        data["MassPUA (g/m2)"] = data['Mass (g)'] / surf_area if surf_area is not None else None
+    elif "Mass LossPUA (g/m2)" in data.columns:
+        data["MassPUA (g/m2)"] = mass - (data["Mass LossPUA (g/m2)"]) if mass is not None else None
+        data['Mass (g)'] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
+        data['Mass Loss (g)'] = data["Mass LossPUA (g/m2)"] * surf_area if surf_area is not None else None
+        data['MLR (g/s)'] = None
+        data['MLRPUA (g/s-m2)'] = None
+    
+    if not data["Mass (g)"].isnull().all():
         data['MLR (g/s)'] = None
         m = data["Mass (g)"]
         for i in range(len(data)):
@@ -164,78 +183,179 @@ if test_selection:
                 data.loc[i,"MLR (g/s)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*data['dt'].iloc[i])
 
         data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None 
-        data["MassPUA (g/m2)"] = data["Mass (g)"]  / surf_area if surf_area is not None else None 
-    else: 
-        data["MassPUA (g/m2)"] = None
-        data["MLR (g/s)"] = None
-        data["MLRPUA (g/s-m2)"] = None
+        data["MassPUA (g/m2)"] = data["Mass (g)"]  / surf_area if surf_area is not None else None
+        data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
+        data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
+    elif not data['MassPUA (g/m2)'].isnull().all():
+        data['MLRPUA (g/s-m2)'] = None
+        m = data["MassPUA (g/m2)"]
+        for i in range(len(data)):
+            if i == 0:
+                data.loc[i,"MLRPUA (g/s-m2)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*data['dt'].iloc[i])
+            elif i == 1:
+                data.loc[i,"MLRPUA (g/s-m2)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*data['dt'].iloc[i])
+            elif i ==len(data) -2:
+                data.loc[i,"MLRPUA (g/s-m2)"] = (-3*m[i+1] - 10*m[i] + 18*m[i-1] - 6*m[i-2] + m[i-3])/(12*data['dt'].iloc[i])
+            elif i == len(data)-1:
+                data.loc[i,"MLRPUA (g/s-m2)"] = (-25*m[i] + 48*m[i-1] - 36*m[i-2] + 16*m[i-3] - 3*m[i-4])/(12*data['dt'].iloc[i])
+            else:
+                data.loc[i,"MLRPUA (g/s-m2)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*data['dt'].iloc[i])
 
-    #weight air taken from 2077, this publication also used ambient pressure in the building, so will I: combustion products/humidty negligable
+        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * surf_area if surf_area is not None else None 
+        data["Mass (g)"] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
+        data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
+        data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
+
+
+
+
+
+
+    #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
     W_air = 28.97
-    data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+    if amb_pressure:
+        data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+    else:
+        data['Rho_Air (kg/m3)'] = None
     data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
-    data["Extinction Area (m2/kg)"] = (data['V Duct (m3/s)'] * data['K Smoke (1/m)']) / (data['MLR (g/s)']/1000)
+    
+    if 'Extinction Area (m2/kg)' not in data.columns:
+        data["Extinction Area (m2/kg)"] = np.divide(
+            (data['V Duct (m3/s)'].astype(float) * data['K Smoke (1/m)'].astype(float)).values,
+            (data['MLR (g/s)'].astype(float) / 1000).values,
+            out=np.zeros(data.shape[0], dtype=float),
+            where=(data['MLR (g/s)'].astype(float).values != 0)
+        )
     #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
     #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
-    data['Soot Production (g/s)'] = 1/8.7 * data["K Smoke (1/m)"] * data['V Duct (m3/s)']
-    data['Smoke Production (m2/s)'] = data['K Smoke (1/m)'] * data['V Duct (m3/s)']
-    
+    data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+    data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
+    data['Soot Production (g/s)'] = 1/8.7 * data['Smoke Production (m2/s)']
+    data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
     data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
-    # Grab values
-    HoC_values = data["HoC (MJ/kg)"].to_numpy()
 
-    # Compute z-scores, handling NaNs as needed
-    HOCmean = np.nanmean(HoC_values)
-    HOCstd = np.nanstd(HoC_values)
-    HOCz = (HoC_values - HOCmean) / HOCstd
-
-    # Build mask for outliers or negatives
-    mask = (HoC_values < 0) | (np.abs(HOCz) > 2)
-
-    # Assign zero where mask is True
-    data.loc[mask, "HoC (MJ/kg)"] = 0
 
     ## Gas Production and Yield
     W_CO2 = 44.01
     W_CO = 28.01
     W_O2 = 32
-    #Production and yields calculated by following FCD user guide
-    data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
-    data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
-    data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
-    test_data = data
+    if X_O2_i: #FTT Data and Hopefully other good data (ie Netzch)
+        #Production and yields calculated by following FCD user guide
+        data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
+        data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
+        data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
+        data['CO ProductionPUA (g/s-m2)'] = data['CO Production (g/s)'] / surf_area if surf_area is not None else None
+        data['CO2 ProductionPUA (g/s-m2)'] = data['CO2 Production (g/s)'] / surf_area if surf_area is not None else None
+        data['O2 ConsumptionPUA (g/s-m2)'] = data['O2 Consumption (g/s)'] / surf_area if surf_area is not None else None
+        
+        #Not using right now, but keep the code if we ever want it
+        data['O2'] = (data['O2 Consumption (g/s)'] * data['dt'])
+        data['Total O2'] = data['O2'].cumsum()
+        # For CO
+        data['CO'] = data['CO Production (g/s)'] * data['dt']
+        data['Total CO'] = data['CO'].cumsum()
+
+        # For CO2
+        data['CO2'] = data['CO2 Production (g/s)'] * data['dt']
+        data['Total CO2'] = data['CO2'].cumsum()
+
+        # Yields
+        data['CO2 (kg/kg)'] = np.divide(
+            data['CO2 Production (g/s)'].astype(float).values,
+            data['MLR (g/s)'].astype(float).values,
+            out=np.zeros(data.shape[0], dtype=float),
+            where=(data['MLR (g/s)'].astype(float).values != 0)
+        )
+        data['CO (kg/kg)'] = np.divide(
+            data['CO Production (g/s)'].astype(float).values,
+            data['MLR (g/s)'].astype(float).values,
+            out=np.zeros(data.shape[0], dtype=float),
+            where=(data['MLR (g/s)'].astype(float).values != 0)
+        )
+
+
+    else:
+        data['CO2 Production (g/s)'] = None
+        data['CO Production (g/s)'] = None
+        data['O2 Consumption (g/s)'] = None
+        data['CO2 ProductionPUA (g/s-m2)'] = None
+        data['CO ProductionPUA (g/s-m2)'] = None
+        data['O2 ConsumptionPUA (g/s-m2)'] = None
+
+    # For Soot
+    data['Soot'] = data['Soot Production (g/s)'] * data['dt']
+    data['Total Soot'] = data['Soot'].cumsum()
+
+    data['Smoke'] = data['Smoke Production (m2/s)'] * data['dt']
+    data['Total Smoke'] = data['Smoke'].cumsum()
+
+
+    #Remaining gasses if they don't exist
+    for gas in ["H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
+        if gas not in data.columns:
+            data[gas] = None
+    test_data = data.copy()
 ######################################################################################################################################################################
 
 ############################################### Generate Plot #########################################################                 
-
-    if st.checkbox("View Additional Calculated Properties"):
-        options = [
-            'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-           "CO2 Production (g/s)", "CO Production (g/s)", "O2 Consumption (g/s)", 
-           "Soot Production (g/s)", "K Smoke (1/m)","MFR (kg/s)",'V Duct (m3/s)' ]
-        default_value = 'HRRPUA (kW/m2)'
-        default_index = options.index(default_value) if default_value in options else 0
-        columns_to_graph = st.selectbox(
-            "Select data to graph across tests",
-            options=options,
-            index=0
-        )
-    else:
+    normalize = st.checkbox("Normalize Y-Axis Data by Surface Area (m2)")
+    additional = st.checkbox("View Additional Calculated Properties")
+    if not normalize and not additional:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 'Smoke Production (m2/s)']
-        
+             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+            
+        ]
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
         columns_to_graph = st.selectbox(
             "Select data to graph across tests",
             options=options,
-            index=0
+            index=default_index
+        )
+    elif normalize and not additional:
+        options = [
+            'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
+           "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+        ] 
+        default_value = 'HRRPUA (kW/m2)'
+        default_index = options.index(default_value) if default_value in options else 0
+        columns_to_graph = st.selectbox(
+            "Select data to graph across tests",
+            options=options,
+            index=default_index
+        )
+    elif not normalize and additional:
+        options = [
+            'Mass Loss (g)',
+           "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (kg/kg)",
+           "HCl (kg/kg)", "H'carbs (kg/kg)",
+           "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+        ]
+        default_value = 'Mass Loss (g)'
+        default_index = options.index(default_value) if default_value in options else 0
+        columns_to_graph = st.selectbox(
+            "Select data to graph across tests",
+            options=options,
+            index=default_index
+        )
+    else:
+        options = [
+            'Mass LossPUA (g/m2)',
+           "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)", "H2O (kg/kg)",
+           "HCl (kg/kg)", "H'carbs (kg/kg)",
+           "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+        ]
+        default_value = 'Mass LossPUA (g/m2)'
+        default_index = options.index(default_value) if default_value in options else 0
+        columns_to_graph = st.selectbox(
+            "Select data to graph across tests",
+            options=options,
+            index=default_index
         )
     st.caption('Legacy Data May Be Missing Several Data Columns')
-    if len(columns_to_graph) != 0:
+    if not test_data[columns_to_graph].isnull().all():
         # Add number inputs for x- and y-axis limits
-
         x_min = 0
         x_max = np.max(test_data['Time (s)'])
         y_min = np.min(test_data[columns_to_graph])
@@ -274,43 +394,35 @@ if test_selection:
             yaxis_range=[y_min, y_max]
         )
         st.plotly_chart(fig)
-######################################################################################################
-    
-################################################ Saving Adjusted/ Clipped Data ########################################################################
-        # Save the adjusted data to a specified path
+                # Save the adjusted data to a specified path
         st.sidebar.markdown("This button only saves data clipping, csv file modifications are saved seperatley")
         if st.sidebar.button("Save Clipped Data"):
             save_path = str(data_selection)
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)"]
-            data_out = data_copy[min_cols].copy()
-            if data_out["Mass (g)"].isnull().all():
-                if data_copy["MLR (g/s)"].isnull().all():
-                    if not data_copy["MLRPUA (g/s-m2)"].isnull().all():
-                        data_out["MLRPUA (g/s-m2)"] = data_copy["MLRPUA (g/s-m2)"].copy()
-                else:
-                    data_out["MLR (g/s)"] = data_copy["MLR (g/s)"].copy()
-            if data_out["HRR (kW)"].isnull().all():
-                if not data_copy["HRRPUA (kW/m2)"].isnull().all():
-                    data_out["HRRPUA (kW/m2)"] = data_copy["HRRPUA (kW/m2)"].copy()
-                        # Remove rows where all' values in the selected columns are NaN
-
+            columns = pd.read_csv(data_selection, nrows=0).columns.tolist()
+            data_out = data_copy[columns].copy()
+            data_out.dropna(how='all', inplace=True)
             data_out.to_csv(
                 save_path,
-                float_format="%.4e",
                 index=False,
             )
 
-            st.sidebar.success(f"Data saved to {save_path}.")
+            
             #adjust metadata
-            with open(test_selection, 'r') as f:
-                metadata = json.load(f)
-            if cutoff_start != -1 and cutoff_end !=-1:
+            if cutoff_start != -1 or cutoff_end !=-1:
                 test_metadata["Data Corrections"].append(f"{date}: Data from {cutoff_start}s to {cutoff_end}s was removed")
                 test_metadata['Manually Prepared'] = date
                 with open(test_selection, "w") as f:
                     json.dump(test_metadata, f, indent=4)
+
+            st.sidebar.success(f"Data saved to {save_path}.")
+    else:
+        st.caption(f"⚠️ Warning: **{test_selection.stem}** does not contain **{columns_to_graph}** data.")
+######################################################################################################
+    
+################################################ Saving Adjusted/ Clipped Data ########################################################################
+
             
         if st.checkbox("Modify CSV File"):
             raw_data = pd.read_csv(data_selection)
@@ -342,6 +454,7 @@ if test_selection:
 
 st.sidebar.divider()
 st.divider()
+
 st.subheader("Metadata Adjustment")
 # region load_metadata
 # cache the metadata for faster loading (see here: https://docs.streamlit.io/get-started/fundamentals/advanced-concepts#caching)
@@ -365,6 +478,7 @@ def load_metadata(show_bar=False):
 def restore_types(edited_df, original_metadata):
     restored = {}
     edited_metadata = df.iloc[:, 0].to_dict()
+    error = False
     for key in edited_metadata:
         original_val = original_metadata.get(key)
         edited_val = edited_metadata.get(key)
@@ -373,24 +487,44 @@ def restore_types(edited_df, original_metadata):
         # Handle None/null
         if original_val is None:
             # If edited value is empty string or looks like "None", treat as None
-            if edited_val in ["", None, "None", "null"]:
+            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"]:
                 restored[key] = None
+            elif key in ["Sample Mass (g)", "Residual Mass (g)", "Thickness (mm)", "C Factor","Surface Area (m2)", "Seperation (mm)", 
+                         "Heat of Combustion O2 (MJ/kg)", "OD Correction Factor", "Duct Diameter (m)", "Ambient Temperature (°C)", 
+                         "Barometric Pressure (Pa)", "Relative Humidity (%)"]:
+                try:
+                    restored[key] = float(edited_val)
+                except Exception:
+                    st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
+            elif key in ["Specimen Number", "Heat Flux (kW/m2)", "Test Start Time (s)", "Test End Time (s)",
+                         "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)", "t_ign (s)" ]:
+                try:
+                    restored[key] = int(edited_val)
+                except Exception:
+                    st.error(f"Input Error: Value for {key} must be convertible to an integer. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
             else:
                 restored[key] = edited_val
-
         # Integer
         elif orig_type is int:
             try:
                 restored[key] = int(edited_val)
             except Exception:
-                restored[key] = edited_val
+                st.error(f"Input Error: Value for {key} must be convertible to an integer. Please change this field or press **Reload** to remove input.")
+                error = True
+                break
 
         # Float
         elif orig_type is float:
             try:
                 restored[key] = float(edited_val)
             except Exception:
-                restored[key] = edited_val
+                st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
+                error = True
+                break
 
         # Boolean
         elif orig_type is bool:
@@ -402,7 +536,9 @@ def restore_types(edited_df, original_metadata):
             elif str(edited_val).lower() in ['false', '0']:
                 restored[key] = False
             else:
-                restored[key] = edited_val
+                st.error(f"Input Error: Value for {key} must be convertible to a boolean. Please change this field or press **Reload** to remove input.")
+                error = True
+                break
 
         # List
         elif orig_type is list:
@@ -415,7 +551,9 @@ def restore_types(edited_df, original_metadata):
                     import ast
                     restored[key] = ast.literal_eval(edited_val)
                 except:
-                    restored[key] = edited_val  # fallback
+                    st.error(f"Input Error: Value for {key} must be convertible to a list. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
 
         # (Add more types as needed, e.g., dict)
 
@@ -423,11 +561,14 @@ def restore_types(edited_df, original_metadata):
         else:
             restored[key] = str(edited_val)
 
-    return restored
+    return restored, error
 
 # region save_metadata
 def save_metadata(df, original_metadata):
-    metadata_save = restore_types(df,original_metadata)
+    metadata_save, error = restore_types(df,original_metadata)
+    if error:
+        return
+    st.success('Metadata Saved to Local Explorer')
     with open(test_selection, 'w') as f:
         json.dump(metadata_save, f, indent=4)
 
@@ -524,11 +665,13 @@ st.button("Delete files", on_click=delete_files, use_container_width=True)
 
 # region export_metadata
 def export_metadata(df, original_metadata):
-    row =  restore_types(df,original_metadata)
+    row, error =  restore_types(df,original_metadata)
+    if error:
+        return
     with open(test_selection,'r') as f:
         metadata = json.load(f)
 
-        # Find any difference (value mismatch) between the input and restored row
+    # Find any difference (value mismatch) between the input and restored row
     for key in metadata:
         v1 = metadata.get(key)
         v2 = row.get(key)
@@ -636,7 +779,7 @@ def export_metadata(df, original_metadata):
     
     reordered_data.to_csv(Path(prepared_data) / new_filename.replace(".json", ".csv"), index=False)
     reordered_data.to_csv(OUTPUT_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
-    st.success(f"Data and Metadata for {new_filename}")
+    st.success(f"Data and Metadata for {new_filename} Exported Successfully")
  
 
 
