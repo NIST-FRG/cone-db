@@ -315,7 +315,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     df_values.loc['uncertainty'] = [0] * df_values.shape[1]
     for key in columns:
         df_values[key]['outlier',]  = ph.parameter_outliers(df_values[key][:-4], df_values[key]['mean'], df_values[key]['std'])
-        df_values[key]['uncertainty'] = np.sqrt((df_values[key]['std']/df_values[key]['mean'])**2)*df_values[key]['mean']
+        df_values[key]['uncertainty'] = np.sqrt((df_values[key]['std']/df_values[key]['mean'])**2)*df_values[key]['mean'] if df_values[key]['mean'] !=0 else 0
     # Match column names with metadata entries
     df_values = df_values.rename(columns={
                                 't_ign': "t_ignition (s)",    

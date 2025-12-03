@@ -68,6 +68,7 @@ if len(test_selection) != 0:
         amb_pressure = test_metadata.get("Barometric Pressure (Pa)")
         duct_diam = test_metadata.get("Duct Diameter (m)")
         flux = test_metadata.get("Heat Flux (kW/m2)")
+        source = test_metadata.get("Original Source")
 
         if flux != None :
             data["t * EHF (MJ/m2)"] = (data["Time (s)"] * flux)/1000
@@ -78,6 +79,8 @@ if len(test_selection) != 0:
         # Normal and area adjusted HRR and THR generation
         if "HRRPUA (kW/m2)" not in data.columns:
             data["HRRPUA (kW/m2)"] = data["HRR (kW)"] / surf_area if surf_area is not None else None
+        else:
+            data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * surf_area if surf_area is not None else None
         data["QPUA (MJ/m2)"] = (data['HRRPUA (kW/m2)'] * data['dt']) / 1000
         data["THRPUA (MJ/m2)"] = data["QPUA (MJ/m2)"].cumsum()
         data['Q (MJ)'] = (data['HRR (kW)'] * data['dt']) / 1000
@@ -87,10 +90,26 @@ if len(test_selection) != 0:
         if "MLR (g/s)" in data.columns:
             data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None
             data["MassPUA (g/m2)"] = None
+            data['Mass Loss (g)'] = None
+            data['Mass LossPUA (g/m2)'] = None
         elif "MLRPUA (g/s-m2)" in data.columns:
-            data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] / surf_area if surf_area is not None else None
+            data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * surf_area if surf_area is not None else None
             data["MassPUA (g/m2)"] = None
-        elif not data["Mass (g)"].isnull().all():
+            data['Mass Loss (g)'] = None
+            data['Mass LossPUA (g/m2)'] = None
+        elif "Mass Loss (g)" in data.columns:
+            data['Mass (g)'] = (mass - data["Mass Loss (g)"]) if mass is not None else None
+            data['MLR (g/s)'] = None
+            data['MLRPUA (g/s-m2)'] = None
+            data["MassPUA (g/m2)"] = data['Mass (g)'] / surf_area if surf_area is not None else None
+        elif "Mass LossPUA (g/m2)" in data.columns:
+            data["MassPUA (g/m2)"] = mass - (data["Mass LossPUA (g/m2)"]) if mass is not None else None
+            data['Mass (g)'] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
+            data['Mass Loss (g)'] = data["Mass LossPUA (g/m2)"] * surf_area if surf_area is not None else None
+            data['MLR (g/s)'] = None
+            data['MLRPUA (g/s-m2)'] = None
+        
+        if not data["Mass (g)"].isnull().all():
             data['MLR (g/s)'] = None
             m = data["Mass (g)"]
             for i in range(len(data)):
@@ -106,56 +125,104 @@ if len(test_selection) != 0:
                     data.loc[i,"MLR (g/s)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*data['dt'].iloc[i])
 
             data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None 
-            data["MassPUA (g/m2)"] = data["Mass (g)"]  / surf_area if surf_area is not None else None 
-        else: 
-            data["MassPUA (g/m2)"] = None
-            data["MLR (g/s)"] = None
-            data["MLRPUA (g/s-m2)"] = None
+            data["MassPUA (g/m2)"] = data["Mass (g)"]  / surf_area if surf_area is not None else None
+            data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
+            data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
+        elif not data['MassPUA (g/m2)'].isnull().all():
+            data['MLRPUA (g/s-m2)'] = None
+            m = data["MassPUA (g/m2)"]
+            for i in range(len(data)):
+                if i == 0:
+                    data.loc[i,"MLRPUA (g/s-m2)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*data['dt'].iloc[i])
+                elif i == 1:
+                    data.loc[i,"MLRPUA (g/s-m2)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*data['dt'].iloc[i])
+                elif i ==len(data) -2:
+                    data.loc[i,"MLRPUA (g/s-m2)"] = (-3*m[i+1] - 10*m[i] + 18*m[i-1] - 6*m[i-2] + m[i-3])/(12*data['dt'].iloc[i])
+                elif i == len(data)-1:
+                    data.loc[i,"MLRPUA (g/s-m2)"] = (-25*m[i] + 48*m[i-1] - 36*m[i-2] + 16*m[i-3] - 3*m[i-4])/(12*data['dt'].iloc[i])
+                else:
+                    data.loc[i,"MLRPUA (g/s-m2)"] = (-m[i-2]+ 8*m[i-1]- 8*m[i+1]+m[i+2])/(12*data['dt'].iloc[i])
+
+            data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * surf_area if surf_area is not None else None 
+            data["Mass (g)"] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
+            data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
+            data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
+
+
+
+
+
 
         #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
         W_air = 28.97
-        data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+        if amb_pressure:
+            data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
+        else:
+            data['Rho_Air (kg/m3)'] = None
         data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
-        data["Extinction Area (m2/kg)"] = (data['V Duct (m3/s)'] * data['K Smoke (1/m)']) / (data['MLR (g/s)']/1000)
+        
+        if 'Extinction Area (m2/kg)' not in data.columns:
+            data["Extinction Area (m2/kg)"] = np.divide(
+                (data['V Duct (m3/s)'].astype(float) * data['K Smoke (1/m)'].astype(float)).values,
+                (data['MLR (g/s)'].astype(float) / 1000).values,
+                out=np.zeros(data.shape[0], dtype=float),
+                where=(data['MLR (g/s)'].astype(float).values != 0)
+            )
         #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
         #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
         data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+        data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
         data['Soot Production (g/s)'] = 1/8.7 * data['Smoke Production (m2/s)']
-
+        data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
         data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
-        # Grab values
-        HoC_values = data["HoC (MJ/kg)"].to_numpy()
 
-        # Compute z-scores, handling NaNs as needed
-        HOCmean = np.nanmean(HoC_values)
-        HOCstd = np.nanstd(HoC_values)
-        HOCz = (HoC_values - HOCmean) / HOCstd
-
-        # Build mask for outliers or negatives
-        mask = (HoC_values < 0) | (np.abs(HOCz) > 2)
-
-        # Assign zero where mask is True
-        data.loc[mask, "HoC (MJ/kg)"] = 0
 
         ## Gas Production and Yield
         W_CO2 = 44.01
         W_CO = 28.01
         W_O2 = 32
-        #Production and yields calculated by following FCD user guide
-        data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
-        data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
-        data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
-        
-        #Not using right now, but keep the code if we ever want it
-        data['O2'] = (data['O2 Consumption (g/s)'] * data['dt'])
-        data['Total O2'] = data['O2'].cumsum()
-        # For CO
-        data['CO'] = data['CO Production (g/s)'] * data['dt']
-        data['Total CO'] = data['CO'].cumsum()
+        if X_O2_i: #FTT Data and Hopefully other good data (ie Netzch)
+            #Production and yields calculated by following FCD user guide
+            data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
+            data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
+            data['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_i - data['O2 (Vol fr)'] ) * data['MFR (kg/s)'] *1000
+            data['CO ProductionPUA (g/s-m2)'] = data['CO Production (g/s)'] / surf_area if surf_area is not None else None
+            data['CO2 ProductionPUA (g/s-m2)'] = data['CO2 Production (g/s)'] / surf_area if surf_area is not None else None
+            data['O2 ConsumptionPUA (g/s-m2)'] = data['O2 Consumption (g/s)'] / surf_area if surf_area is not None else None
+            
+            #Not using right now, but keep the code if we ever want it
+            data['O2'] = (data['O2 Consumption (g/s)'] * data['dt'])
+            data['Total O2'] = data['O2'].cumsum()
+            # For CO
+            data['CO'] = data['CO Production (g/s)'] * data['dt']
+            data['Total CO'] = data['CO'].cumsum()
 
-        # For CO2
-        data['CO2'] = data['CO2 Production (g/s)'] * data['dt']
-        data['Total CO2'] = data['CO2'].cumsum()
+            # For CO2
+            data['CO2'] = data['CO2 Production (g/s)'] * data['dt']
+            data['Total CO2'] = data['CO2'].cumsum()
+
+            # Yields
+            data['CO2 (kg/kg)'] = np.divide(
+                data['CO2 Production (g/s)'].astype(float).values,
+                data['MLR (g/s)'].astype(float).values,
+                out=np.zeros(data.shape[0], dtype=float),
+                where=(data['MLR (g/s)'].astype(float).values != 0)
+            )
+            data['CO (kg/kg)'] = np.divide(
+                data['CO Production (g/s)'].astype(float).values,
+                data['MLR (g/s)'].astype(float).values,
+                out=np.zeros(data.shape[0], dtype=float),
+                where=(data['MLR (g/s)'].astype(float).values != 0)
+            )
+
+
+        else:
+            data['CO2 Production (g/s)'] = None
+            data['CO Production (g/s)'] = None
+            data['O2 Consumption (g/s)'] = None
+            data['CO2 ProductionPUA (g/s-m2)'] = None
+            data['CO ProductionPUA (g/s-m2)'] = None
+            data['O2 ConsumptionPUA (g/s-m2)'] = None
 
         # For Soot
         data['Soot'] = data['Soot Production (g/s)'] * data['dt']
@@ -163,6 +230,12 @@ if len(test_selection) != 0:
 
         data['Smoke'] = data['Smoke Production (m2/s)'] * data['dt']
         data['Total Smoke'] = data['Smoke'].cumsum()
+
+
+        #Remaining gasses if they don't exist
+        for gas in ["H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
+            if gas not in data.columns:
+                data[gas] = None
         test_data.append(data)
 ######################################################################################################################################################
 
@@ -171,23 +244,14 @@ if len(test_selection) != 0:
         "Select the column for the x-axis",
         options=['Time (s)', 't * EHF (MJ/m2)'],
     )
-        
-    if st.checkbox("View Additional Calculated Properties"):
-        options = [
-            'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-           "CO2 Production (g/s)", "CO Production (g/s)", "O2 Consumption (g/s)", 
-           "Soot Production (g/s)", "K Smoke (1/m)","MFR (kg/s)",'V Duct (m3/s)'
-        ]
-        default_value = 'HRRPUA (kW/m2)'
-        default_index = options.index(default_value) if default_value in options else 0
-        y_axis_columns = st.multiselect(
-            "Select data to graph across tests",
-            options=options,
-        )
-    else:
+    
+    normalize = st.checkbox("Normalize Y-Axis Data by Surface Area (m2)")
+    additional = st.checkbox("View Additional Calculated Properties")
+
+    if not normalize and not additional:
         options = [
             'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", 'Smoke Production (m2/s)'
+             "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
             
         ]
         default_value = 'HRR (kW)'
@@ -196,6 +260,44 @@ if len(test_selection) != 0:
             "Select data to graph across tests",
             options=options,
         )
+    elif normalize and not additional:
+        options = [
+            'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
+           "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+        ]
+        default_value = 'HRRPUA (kW/m2)'
+        default_index = options.index(default_value) if default_value in options else 0
+        y_axis_columns = st.multiselect(
+            "Select data to graph across tests",
+            options=options,
+        )
+    elif not normalize and additional:
+        options = [
+            'Mass Loss (g)',
+           "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (kg/kg)",
+           "HCl (kg/kg)", "H'carbs (kg/kg)",
+           "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+        ]
+        default_value = 'Mass Loss (g)'
+        default_index = options.index(default_value) if default_value in options else 0
+        y_axis_columns = st.multiselect(
+            "Select data to graph across tests",
+            options=options,
+        )
+        
+    else:
+        options = [
+            'Mass LossPUA (g/m2)',
+           "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)", "H2O (kg/kg)",
+           "HCl (kg/kg)", "H'carbs (kg/kg)",
+           "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+        ]
+        default_value = 'Mass LossPUA (g/m2)'
+        default_index = options.index(default_value) if default_value in options else 0
+        y_axis_columns = st.multiselect(
+            "Select data to graph across tests",
+            options=options,)
+        
     st.caption('Legacy Data May Be Missing Several Data Columns')
         
 
@@ -203,24 +305,39 @@ if len(test_selection) != 0:
     if x_axis_column and y_axis_columns:
         for y_column in y_axis_columns:
             fig = go.Figure()
-            # Add additional traces for each test
+            missing_data_messages = []
+            traces = 0
             for i in range(len(test_data)):
-                fig.add_trace(
-                    go.Scatter(
-                        x=test_data[i][x_axis_column],  # Use selected x-axis column
-                        y=test_data[i][y_column],  # Use the current y-axis column
-                        name=test_selection[i],
+                df = test_data[i]
+                x_data = df[x_axis_column]
+                y_data = df[y_column]
+
+                # Plot only if both have at least one non-null value
+                if not y_data.isnull().all() and not x_data.isnull().all():
+                    fig.add_trace(
+                        go.Scatter(
+                            x=x_data,
+                            y=y_data,
+                            name=test_selection[i],
+                        )
                     )
+                    traces+=1
+                else:
+                    missing_data_messages.append(
+                        f"⚠️ Warning: **{test_selection[i]}** does not contain **{y_column}** data."
+                    )
+
+            
+            if traces > 0:
+                fig.update_layout(
+                    yaxis_title=y_column,
+                    xaxis_title=x_axis_column,
                 )
-            
-            # Update layout for the current figure
-            fig.update_layout(
-                yaxis_title=y_column,
-                xaxis_title=x_axis_column,
-            )
-            
-            st.markdown(f"#### {y_column} vs {x_axis_column}")
-            st.plotly_chart(fig)
+                st.markdown(f"#### {y_column} vs {x_axis_column}")
+                st.plotly_chart(fig)
+
+            for msg in missing_data_messages:
+                st.caption(msg)
 
 
     st.markdown("#### Notes")
