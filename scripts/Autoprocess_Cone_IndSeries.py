@@ -38,7 +38,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     Flux = int(re.search(r'(\d+)', str(series_name).split('_')[1]).group(1))
     Folder = paths[0].parent
     Dataframes_Whole = []
-    Dataframes_HRR = [] 
+    Dataframes_HRRPUA = [] 
     masses = []
     rep =  []
     surf_areas = []
@@ -70,9 +70,9 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             logger.info(f"Reautoprocessing {filename}, passed manual review")
         else:
             logger.info(f"Autprocessing {filename}") 
-        sample_mass = float(data["Sample Mass (g)"])
-        res_mass = float(data['Residual Mass (g)'])
-        sa = float(data['Surface Area (m2)'])
+        sample_mass = float(data.get("Sample Mass (g)")) if data.get("Sample Mass (g)") else None
+        res_mass = float(data.get('Residual Mass (g)')) if data.get('Residual Mass (g)') else None
+        sa = float(data.get('Surface Area (m2)'))if data.get('Surface Area (m2)') else None
         X_O2_i = data.get("X_O2 Initial")
         X_CO2_i = data.get("X_CO2 Initial")
         X_CO_i = data.get("X_CO Initial")
@@ -89,8 +89,8 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         X_CO2_initials.append(X_CO2_i)
         X_CO_initials.append(X_CO_i)
         X_O2_initials.append(X_O2_i)
-        ignition_times.append(int(data.get('t_ignition (s)')))
-        flameout_times.append(int(data.get('t_flameout (s)')))
+        ignition_times.append(int(data.get('t_ignition (s)')) if data.get('t_ignition (s)') else None)
+        flameout_times.append(int(data.get('t_flameout (s)')) if data.get('t_flameout (s)') else None)
     # Remove all tests that failed manual review from the list of paths
     for path in badpaths:   
         paths.remove(path)
@@ -111,97 +111,114 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         rel_humid = humidities[i]
         amb_temp = ambient_temperatures[i]
         amb_pressure = ambient_pressures[i]
-        df = pd.read_csv(path)
-        df['Time (s)'] = df['Time (s)'].astype(int)
+        df = pd.read_csv(path).dropna(how='all').reset_index(drop=True)
+        df['Time (s)'] = df['Time (s)'].astype(float)
         df['dt'] = df["Time (s)"].diff()
         df['t*EHF (MJ/m2)'] = (df['Time (s)'] * Flux)/1000
-        m = df["Mass (g)"]
-        for j in range(len(df)):
-            if j == 0:
-                df.loc[j,"MLR (g/s)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*df['dt'].iloc[j])
-            elif j == 1:
-                df.loc[j,"MLR (g/s)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*df['dt'].iloc[j])
-            elif j == len(df)-2:
-                df.loc[j,"MLR (g/s)"] = (-3*m[j+1] - 10*m[j] + 18*m[j-1] - 6*m[j-2] + m[j-3])/(12*df['dt'].iloc[j])
-            elif j == len(df)-1:
-                df.loc[j,"MLR (g/s)"] = (-25*m[j] + 48*m[j-1] - 36*m[j-2] + 16*m[j-3] - 3*m[j-4])/(12*df['dt'].iloc[j])
-            else:
-                df.loc[j,"MLR (g/s)"] = (-m[j-2]+ 8*m[j-1]- 8*m[j+1]+m[j+2])/(12*df['dt'].iloc[j])
-                
-        df['Mass Loss (g)'] = sample_mass - df['Mass (g)']
         
-            #Needed for calculating yields/extinction coeff, have to either carry this or
+        
+        #Mass and MLR calculations
+        if not df["Mass (g)"].isnull().all():
+            m = df["Mass (g)"]
+            for j in range(len(df)):
+                if j == 0:
+                    df.loc[j,"MLR (g/s)"] = (25*m[0] - 48*m[1] + 36*m[2] - 16*m[3] + 3*m[4])/(12*df['dt'].iloc[j])
+                elif j == 1:
+                    df.loc[j,"MLR (g/s)"] = (3*m[0] + 10*m[1] - 18*m[2] + 6*m[3] - m[4])/(12*df['dt'].iloc[j])
+                elif j == len(df)-2:
+                    df.loc[j,"MLR (g/s)"] = (-3*m[j+1] - 10*m[j] + 18*m[j-1] - 6*m[j-2] + m[j-3])/(12*df['dt'].iloc[j])
+                elif j == len(df)-1:
+                    df.loc[j,"MLR (g/s)"] = (-25*m[j] + 48*m[j-1] - 36*m[j-2] + 16*m[j-3] - 3*m[j-4])/(12*df['dt'].iloc[j])
+                else:
+                    df.loc[j,"MLR (g/s)"] = (-m[j-2]+ 8*m[j-1]- 8*m[j+1]+m[j+2])/(12*df['dt'].iloc[j])
+                    
+            df['Mass Loss (g)'] = sample_mass - df['Mass (g)']
+            df['Mass LossPUA (g/m2)'] = df['Mass Loss (g)'] / sa if sa else None
+            df['MLRPUA (g/s-m2)'] = df['MLR (g/s)'] / sa if sa else None
+        elif "MLR (g/s)" in df.columns:
+            df['Mass Loss (g)'] = (df['MLR (g/s)'] * df['dt']).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
+            df['MLRPUA (g/s-m2)'] = df['MLR (g/s)'] / sa if sa else None
+        elif "MLRPUA (g/s-m2)" in df.columns:
+            df['Mass LossPUA (g/m2)'] = (df['MLRPUA (g/s-m2)'] * df['dt']).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
+            df['Mass Loss (g)'] = df['Mass LossPUA (g/m2)'] * sa if sa else None
+            df['MLR (g/s)'] = df['MLRPUA (g/s-m2)'] * sa if sa else None
+        
+        #Heat Release Calculations
+        if "HRRPUA (kW/m2)" not in df.columns:
+            df["HRRPUA (kW/m2)"] = df["HRR (kW)"] / sa if sa is not None else None
+        else:
+            df["HRR (kW)"] = df["HRRPUA (kW/m2)"] * sa if sa is not None else None
+        df['Q (MJ)'] = (df['HRR (kW)'] * df['dt']) / 1000
+        df['QPUA (MJ/m2)'] = (df['HRRPUA (kW/m2)'] * df['dt']) / 1000
+        df['Combustability'] = (df['QPUA (MJ/m2)'].cumsum()/df['t*EHF (MJ/m2)'])
+
+
+        #Smoke and Gas Production Calculations
+        #Needed for calculating yields/extinction coeff, have to either carry this or
         #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
         W_air = 28.97
-        df['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air) / (8.314 * df['T Duct (K)'])
+        df['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air) / (8.314 * df['T Duct (K)']) if amb_pressure else None
         # Volumetric flow rate (m^3/s)
         df["V Duct (m3/s)"]   = df['MFR (kg/s)'] / df["Rho_Air (kg/m3)"]
 
-        df['Q (MJ)'] = (df['HRR (kW)'] * df['dt']) / 1000
-        df['QPUA (MJ/m2)'] = df['Q (MJ)'] / sa
-        df['MLRPUA (g/s-m2)'] = df['MLR (g/s)'] /sa
-        df['HRRPUA (kW/m2)'] = df['HRR (kW)'] / sa
+
         #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
         #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
         df['Soot Production (g/s)'] = 1/8.7 * df["K Smoke (1/m)"] * df['V Duct (m3/s)']
         df['Smoke Production (m2/s)'] = df['K Smoke (1/m)'] * df['V Duct (m3/s)']
         ## Gas Production and Yield
-        # Calculate ambient XO2 following ASTM 1354 A.1.4.5
-        p_sat_water = 6.1078 * 10**((7.5*amb_temp)/(237.3 + amb_temp)) * 100 #saturation pressure in pa, Magnus approx
-        p_h2o = rel_humid/100 * p_sat_water
-        X_H2O_initial = p_h2o / amb_pressure
-        #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
-        W_dryair = 28.97
-        W_air = X_H2O_initial * 18.02 + (1-X_H2O_initial) * W_dryair
+
         W_CO2 = 44.01
         W_CO = 28.01
         W_O2 = 32
-        #Production and yields calculated by following FCD user guide
-        df['CO2 Production (g/s)'] = (W_CO2/W_air) * (df['CO2 (Vol fr)'] - X_CO2_initials[i]) * df['MFR (kg/s)'] * 1000
-        df['CO Production (g/s)'] = (W_CO/W_air) * (df['CO (Vol fr)'] - X_CO_initials[i]) * df['MFR (kg/s)'] * 1000
-        df['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_initials[i] - df['O2 (Vol fr)']) * df['MFR (kg/s)'] * 1000
-        df['Total O2 (g)'] = (df['O2 Consumption (g/s)'] * df['dt']).cumsum()
-        df['Total CO2 (g)'] = (df['CO2 Production (g/s)'] * df['dt']).cumsum()
-        df['Total CO (g)'] = (df['CO Production (g/s)'] * df['dt']).cumsum()
-        df['Total Soot (g)'] = (df['Soot Production (g/s)'] * df['dt']).cumsum()
-        df['Combustability'] = (df['QPUA (MJ/m2)'].cumsum()/df['t*EHF (MJ/m2)'])
+        
+        if X_O2_i:
+            #Production and yields calculated by following FCD user guide
+            df['CO2 Production (g/s)'] = (W_CO2/W_air) * (df['CO2 (Vol fr)'] - X_CO2_initials[i]) * df['MFR (kg/s)'] * 1000
+            df['CO Production (g/s)'] = (W_CO/W_air) * (df['CO (Vol fr)'] - X_CO_initials[i]) * df['MFR (kg/s)'] * 1000
+            df['O2 Consumption (g/s)'] = (W_O2/W_air) * (X_O2_initials[i] - df['O2 (Vol fr)']) * df['MFR (kg/s)'] * 1000
+            df['Total O2 (g)'] = (df['O2 Consumption (g/s)'] * df['dt']).cumsum()
+            df['Total CO2 (g)'] = (df['CO2 Production (g/s)'] * df['dt']).cumsum()
+            df['Total CO (g)'] = (df['CO Production (g/s)'] * df['dt']).cumsum()
+            df['Total Soot (g)'] = (df['Soot Production (g/s)'] * df['dt']).cumsum()
+        
+
 
         Dataframes_Whole.append(df)
-        df_HRR = df[['Time (s)', 'HRR (kW)']].copy()
-        Dataframes_HRR.append(df_HRR)
+        df_HRRPUA = df[['Time (s)', 'HRRPUA (kW/m2)']].copy()
+        Dataframes_HRRPUA.append(df_HRRPUA)
 
     #Merge HRR curves for whole curve statistics, rest will just be key features.
 
-    merged_HRR = Dataframes_HRR[0].copy()
-    for data in Dataframes_HRR[1:]:
-        merged_HRR = pd.merge(merged_HRR, data, on='Time (s)', how='outer', suffixes=('', f' {len(merged_HRR.columns)}'))
-    merged_HRR.rename(columns={'HRR (kW)': 'HRR (kW) 1'}, inplace=True)
-
+    merged_HRRPUA = Dataframes_HRRPUA[0].copy()
+    for data in Dataframes_HRRPUA[1:]:
+        merged_HRRPUA = pd.merge(merged_HRRPUA, data, on='Time (s)', how='outer', suffixes=('', f' {len(merged_HRRPUA.columns)}'))
+    merged_HRRPUA.rename(columns={'HRRPUA (kW/m2)': 'HRRPUA (kW/m2) 1'}, inplace=True)
 
     # Number of good experiments
-    N_exp = len(merged_HRR.columns)-1
+    N_exp = len(merged_HRRPUA.columns)-1
     #------------------------------------------------------  
     # Average/STD
     #------------------------------------------------------ 
     # Compute the average HRR, MLR for the series, ignoring NaN values
-    Average_HRR = merged_HRR.iloc[:, 1:].mean(axis=1, skipna=True)
-    Std_HRR = merged_HRR.iloc[:, 1:].std(axis=1, skipna=True)
-    Stdm_HRR = Std_HRR / math.sqrt(N_exp)
+    Average_HRRPUA = merged_HRRPUA.iloc[:, 1:].mean(axis=1, skipna=True)
+    Std_HRRPUA = merged_HRRPUA.iloc[:, 1:].std(axis=1, skipna=True)
+    Stdm_HRRPUA = Std_HRRPUA / math.sqrt(N_exp)
 
     # Need to add more parameters
-    Unc_HRR = np.sqrt((Std_HRR/Average_HRR)**2) * Average_HRR
+    Unc_HRRPUA = np.sqrt((Std_HRRPUA/Average_HRRPUA)**2) * Average_HRRPUA
     
     # Average df
-    Average_df = pd.DataFrame({'Time (s)': merged_HRR['Time (s)'],
-                               'HRR (kW)': Average_HRR,
-                              'Uc HRR (kW)': Unc_HRR})
+    Average_df = pd.DataFrame({'Time (s)': merged_HRRPUA['Time (s)'],
+                               'HRRPUA (kW/m2)': Average_HRRPUA,
+                              'Uc HRRPUA (kW/m2)': Unc_HRRPUA})
     
     #------------------------------------------------------  
     # Statistics and outliers
     #------------------------------------------------------ 
     if N_exp >= 3:
         print(colorize(f"{N_exp} good tests found, performing statistical analysis", "green"))
-        HRR_out = ph.outlier(merged_HRR, Average_HRR, Std_HRR)
+        HRR_out = ph.outlier(merged_HRRPUA, Average_HRRPUA, Std_HRRPUA)
         Output_file = str(Folder /series_name)+'_Average.csv'
         Average_df.to_csv(Output_file, index=False)
         print(colorize(f"Averaged data saved to: {Output_file}", "green"))
@@ -236,45 +253,129 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         amb_pressure = ambient_pressures[i]
         
         ###Bounds Set Up
+        peak_HRR = df_tot['HRRPUA (kW/m2)'].max()
+        peak_idx = df_tot['HRRPUA (kW/m2)'].idxmax()
+        peak_MLR = df_tot['MLRPUA (g/s-m2)'].max()
         t_ign = ignition_times[i]
         t_out = flameout_times[i]
-        m_ign = df_tot['Mass (g)'].iloc[t_ign] if t_ign else None
-        r_yield = (res_mass/sample_mass) * 100
-        total_mass_loss = df_tot['Mass Loss (g)'].iloc[-1]
-        ml_10 = .1 * total_mass_loss
-        ml_90 = .9 * total_mass_loss
-        t_10 = (df_tot['Mass Loss (g)'] - ml_10).abs().idxmin()
-        t_90 = (df_tot['Mass Loss (g)'] - ml_90).abs().idxmin()
-        m_10 = df['Mass (g)'].iloc[t_10]
-        m_90 = df['Mass (g)'].iloc[t_90]
+        i_ign = (
+            abs(df_tot['Time (s)'] - t_ign).idxmin()
+            if t_ign is not None
+            else None
+        )
+        i_out = (
+            abs(df_tot['Time (s)'] - t_out).idxmin()
+            if t_out is not None
+            else None
+        )
+        totalmassloss = sample_mass - res_mass if sample_mass and res_mass else None
+        m_ign = df_tot['Mass (g)'].iloc[i_ign] if i_ign is not None else None
+        r_yield = (res_mass/sample_mass) * 100 if res_mass and sample_mass else None
+        if df_tot['Mass Loss (g)'].isnull().all() and not df_tot['Mass LossPUA (g/m2)'].isnull().all():
+            ml_10 = .1 * (df_tot['Mass LossPUA (g/m2)'].iloc[-1])
+            ml_90 = .9 * (df_tot['Mass LossPUA (g/m2)'].iloc[-1])
+            t_10 = (df_tot['Mass LossPUA (g/m2)'] - ml_10).abs().idxmin()
+            t_90 = (df_tot['Mass LossPUA (g/m2)'] - ml_90).abs().idxmin()
+        elif not df_tot['Mass Loss (g)'].isnull().all():
+            ml_10 = .1 * (df_tot['Mass Loss (g)'].iloc[-1])
+            ml_90 = .9 * (df_tot['Mass Loss (g)'].iloc[-1])
+            t_10 = (df_tot['Mass Loss (g)'] - ml_10).abs().idxmin()
+            t_90 = (df_tot['Mass Loss (g)'] - ml_90).abs().idxmin()
+        i_10 = df_tot.index.get_loc(t_10)
+        i_90 = df_tot.index.get_loc(t_90)
+        m_10 = df_tot['Mass (g)'].iloc[i_10]
+        m_90 = df_tot['Mass (g)'].iloc[i_90]
+        print(t_10, t_90)
         test_length = df_tot['Time (s)'].iloc[-1]
-        hrr_negatives = (df_tot['HRRPUA (kW/m2)'][df_tot['HRRPUA (kW/m2)'] < 0])
+        hrr_negatives = df_tot['HRRPUA (kW/m2)'].iloc[:peak_idx]
+        hrr_negatives = hrr_negatives[hrr_negatives < 0]
         if len(hrr_negatives) > 0:
-            t_afterneg = hrr_negatives.index[-1]+1
+            i_afterneg = hrr_negatives.index[-1]+1
+            t_afterneg = df_tot["Time (s)"].iloc[i_afterneg]
         else:
-            t_afterneg = 0 #If not negative HRR, integrate the whole thing
+            i_afterneg = 0 #If not negative HRR, integrate the whole thing
+            t_afterneg = df_tot["Time (s)"].iloc[0]
 
         ##HRR/MLR Quantities
-        peak_MLR = df_tot['MLRPUA (g/s-m2)'].max()
-        stdy_MLR = ((m_10 - m_90)/(t_90 - t_10))* (1/sa) #calculated per ISO5660
-        peak_HRR = df_tot['HRRPUA (kW/m2)'].max()
-        stdy_HRR = (df_tot['dt'].mean()/(t_90 - t_10)) *(0.5*df_tot['HRRPUA (kW/m2)'][t_10] + df_tot['HRRPUA (kW/m2)'][t_10+1: t_90].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][t_90]) 
+        
+        if type(m_10) == float and type(m_90) == float and sa:
+            stdy_MLR = ((m_10 - m_90)/(t_90 - t_10))* (1/sa) #calculated per ISO5660
+        else:
+            stdy_MLR = df_tot['MLRPUA (g/s-m2)'][i_10:i_90].mean() #Fallback to mean MLRPUA if no mass data
+        
+        stdy_HRR = (df_tot['dt'].iloc[i_10:i_90].mean()/(t_90 - t_10)) *(0.5*df_tot['HRRPUA (kW/m2)'][i_10] + df_tot['HRRPUA (kW/m2)'][i_10+1: i_90].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][i_90]) 
         ## For HRRPUA over first x seconds from ignition if have, or pt after last neg HRR if do not by ASTM, do we want to note this
         ##Calculate HRR averages using trapezium, as per ISO and ASTM standatds
         if t_ign:
-            low_bound = t_ign
+            low_bound = i_ign
+            low_bound_time = t_ign
+            sixty_sec = low_bound_time + 60
+            oneeighty_sec = low_bound_time + 180
+            threehundred_sec = low_bound_time + 300
+            sixty_idx = abs(df_tot['Time (s)'] - sixty_sec).idxmin()
+            oneeighty_idx = abs(df_tot['Time (s)'] - oneeighty_sec).idxmin()
+            threehundred_idx = abs(df_tot['Time (s)'] - threehundred_sec).idxmin()
         else:
-            low_bound = t_afterneg
-        if test_length >= low_bound + 300:
-            HRR_60 = (df_tot['dt'].mean()/60) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+60].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+60]) 
-            HRR_180 = (df_tot['dt'].mean()/180) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+180].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+180]) 
-            HRR_300 = (df_tot['dt'].mean()/300) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+300].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+300]) 
-        elif test_length >= low_bound + 180:
-            HRR_60 = (df_tot['dt'].mean()/60) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+60].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+60]) 
-            HRR_180 = (df_tot['dt'].mean()/180) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+180].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+180]) 
+            low_bound = i_afterneg
+            low_bound_time = t_afterneg
+            sixty_sec = low_bound_time + 60
+            oneeighty_sec = low_bound_time + 180
+            threehundred_sec = low_bound_time + 300
+            sixty_idx = abs(df_tot['Time (s)'] - sixty_sec).idxmin()
+            oneeighty_idx = abs(df_tot['Time (s)'] - oneeighty_sec).idxmin()
+            threehundred_idx = abs(df_tot['Time (s)'] - threehundred_sec).idxmin()
+        if test_length >= low_bound_time + 300:
+            HRR_60 = (
+                df_tot['dt'].iloc[low_bound:sixty_idx].mean() / 60 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : sixty_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[sixty_idx]
+                )
+            )
+            HRR_180 = (
+                df_tot['dt'].iloc[low_bound:oneeighty_idx].mean() / 180 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : oneeighty_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[oneeighty_idx]
+                )
+            )
+            HRR_300 = (
+                df_tot['dt'].iloc[low_bound:threehundred_idx].mean() / 300 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : threehundred_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[threehundred_idx]
+                )
+            )
+        elif test_length >= low_bound_time + 180:
+            HRR_60 = (
+                df_tot['dt'].iloc[low_bound:sixty_idx].mean() / 60 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : sixty_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[sixty_idx]
+                )
+            )
+            HRR_180 = (
+                df_tot['dt'].iloc[low_bound:oneeighty_idx].mean() / 180 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : oneeighty_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[oneeighty_idx]
+                )
+            )
             HRR_300 = None
-        elif test_length >= low_bound + 60:
-            HRR_60 = (df_tot['dt'].mean()/60) *(0.5*df_tot['HRRPUA (kW/m2)'][low_bound] + df_tot['HRRPUA (kW/m2)'][low_bound+1: low_bound+60].sum() + 0.5*df_tot['HRRPUA (kW/m2)'][low_bound+60]) 
+        elif test_length >= low_bound_time + 60:
+            HRR_60 = (
+                df_tot['dt'].iloc[low_bound:sixty_idx].mean() / 60 *
+                (
+                    0.5 * df_tot['HRRPUA (kW/m2)'].iloc[low_bound]
+                    + df_tot['HRRPUA (kW/m2)'].iloc[low_bound + 1 : sixty_idx].sum()
+                    + 0.5 * df_tot['HRRPUA (kW/m2)'].iloc[sixty_idx]
+                )
+            )
             HRR_180 = None
             HRR_300 = None
         else:
@@ -282,30 +383,41 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             HRR_180 = None
             HRR_300 = None
 
-
         ###Further derived quantities
-        THR = df_tot['QPUA (MJ/m2)'][t_afterneg:].sum()
-        THR_total = df_tot['Q (MJ)'].sum()
-        HoC = THR_total/(total_mass_loss/1000) #MJ/kg
-        ext_area = ((df_tot['V Duct (m3/s)'] * df['K Smoke (1/m)'] * df['dt']).sum())/((total_mass_loss/1000))#m2/kg
+        THR = df_tot['QPUA (MJ/m2)'][i_afterneg:].sum()
+        if totalmassloss:
+            THR_total = df_tot['Q (MJ)'].sum()
+            HoC = THR_total/(totalmassloss/1000) #MJ/kg
+            ext_area = ((df_tot['V Duct (m3/s)'] * df['K Smoke (1/m)'] * df['dt']).sum())/((totalmassloss/1000))#m2/kg
+        else:
+            THR_total = None
+            HoC = None
+            ext_area = None
         if t_ign:
             E_ign_kJ = Flux * t_ign
             E_ign = E_ign_kJ / 1000 #MJ/m2 to the metadata
             #FGP combustability calculated as max slope THRPUA vs t*EHF curve, following Richard Lyon paper, m2/J
             FGP = (1/E_ign_kJ) * (1/1000) * (df_tot['Combustability'].max())
-            pre_smoke =1/sa * (df_tot['Smoke Production (m2/s)'][:t_ign] * df_tot['dt'][:t_ign]).sum()
-            post_smoke =1/sa * (df_tot['Smoke Production (m2/s)'][t_ign:] * df_tot['dt'][t_ign:]).sum()
-            tot_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum()
+            pre_smoke =1/sa * (df_tot['Smoke Production (m2/s)'][:t_ign] * df_tot['dt'][:t_ign]).sum() if sa else None
+            post_smoke =1/sa * (df_tot['Smoke Production (m2/s)'][t_ign:] * df_tot['dt'][t_ign:]).sum() if sa else None
+            tot_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum() if sa else None
         else:
             E_ign = None
             FGP = None
-            pre_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum()
+            pre_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum() if sa else None
             post_smoke = None
-            tot_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum()
+            tot_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum() if sa else None
 
-        Y_soot = ((df['Soot Production (g/s)'] * df['dt']).sum()) / sample_mass
-        Y_CO2 = ((df['CO2 Production (g/s)'] * df['dt']).sum()) / sample_mass
-        Y_CO = ((df['CO Production (g/s)'] * df['dt']).sum()) / sample_mass
+        
+        if 'CO2 Production (g/s)' in columns: #actual data can calculate
+            Y_soot = ((df_tot['Soot Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
+            Y_CO2 = ((df_tot['CO2 Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
+            Y_CO = ((df_tot['CO Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
+        else: #Use the average for given CO2 kg/kg columns
+            Y_soot = None
+            Y_CO = df_tot['CO (kg/kg)'].mean() if 'CO (kg/kg)' in df_tot.columns else None
+            Y_CO2 = df_tot['CO2 (kg/kg)'].mean() if 'CO2 (kg/kg)' in df_tot.columns else None
+
         df_values.loc[len(df_values)]=[t_ign, m_ign, r_yield, HRR_60, HRR_180, HRR_300, stdy_MLR, peak_MLR, stdy_HRR, peak_HRR, THR,
                                         HoC, ext_area, pre_smoke, post_smoke, tot_smoke, Y_soot, Y_CO2, Y_CO, FGP, E_ign, t_out]
     # Average and standard deviation of key values
@@ -401,7 +513,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             for key in df_values.columns:
                 metadata[key] = float(f"{df_values[key][counter]:.4g}")
         
-        metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        #metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if HRR_out[counter] == True:
             metadata['Heat Release Rate Outlier'] = True
         elif HRR_out[counter] == False:
