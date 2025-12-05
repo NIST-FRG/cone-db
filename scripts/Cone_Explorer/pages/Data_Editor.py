@@ -12,7 +12,6 @@ from scipy.signal import savgol_filter
 import plotly.graph_objects as go
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
-print(PROJECT_ROOT)
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
     PREPARED_DATA_PATH,
@@ -137,10 +136,6 @@ if test_selection:
         data["Mass (g)"] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
         data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
         data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
-
-
-
-
 
 
     #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
@@ -334,22 +329,11 @@ if test_selection:
             save_path = str(test_name_map[test_selection])
             save_dir = Path(save_path).parent
             save_dir.mkdir(parents=True, exist_ok=True)
-            min_cols = ["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)","K Smoke (1/m)"]
-            data_out = data_copy[min_cols].copy()
-            if data_out["Mass (g)"].isnull().all():
-                if data_copy["MLR (g/s)"].isnull().all():
-                    if not data_copy["MLRPUA (g/s-m2)"].isnull().all():
-                        data_out["MLRPUA (g/s-m2)"] = data_copy["MLRPUA (g/s-m2)"].copy()
-                else:
-                    data_out["MLR (g/s)"] = data_copy["MLR (g/s)"].copy()
-            if data_out["HRR (kW)"].isnull().all():
-                if not data_copy["HRRPUA (kW/m2)"].isnull().all():
-                    data_out["HRRPUA (kW/m2)"] = data_copy["HRRPUA (kW/m2)"].copy()
-                        # Remove rows where all' values in the selected columns are NaN
-            data_out = data_out.dropna()
+            columns = pd.read_csv(test_name_map[test_selection], nrows=0).columns.tolist()
+            data_out = data_copy[columns].copy()
+            data_out.dropna(how='all', inplace=True)
             data_out.to_csv(
                 save_path,
-                float_format="%.4e",
                 index=False,
             )
 

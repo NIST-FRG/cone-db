@@ -423,32 +423,32 @@ if test_selection:
     
 ################################################ Saving Adjusted/ Clipped Data ########################################################################
 
-            
-        if st.checkbox("Modify CSV File"):
-            raw_data = pd.read_csv(data_selection)
-            view = st.data_editor(raw_data)
-            change = st.text_input("Enter Data Correction Performed")
-            if st.button("Save Modified CSV"):
-                if change:
-                    save_path = str(data_selection)
-                    save_dir = Path(save_path).parent
-                    save_dir.mkdir(parents=True, exist_ok=True)
-                    view.to_csv(
-                        save_path,
-                        float_format="%.4e",
-                        index=False,
-                    )
+        
+    if st.checkbox("Modify CSV File"):
+        raw_data = pd.read_csv(data_selection)
+        view = st.data_editor(raw_data)
+        change = st.text_input("Enter Data Correction Performed")
+        if st.button("Save Modified CSV"):
+            if change:
+                save_path = str(data_selection)
+                save_dir = Path(save_path).parent
+                save_dir.mkdir(parents=True, exist_ok=True)
+                view.to_csv(
+                    save_path,
+                    float_format="%.4e",
+                    index=False,
+                )
 
-                    st.success(f"Data saved to {save_path}.")
-                    with open(test_selection, 'r') as f:
-                        metadata = json.load(f)
-                    test_metadata["Data Corrections"].append(f"{date}: {change}")
-                    test_metadata['Manually Prepared'] = date
-                    with open(test_selection, "w") as f:
-                        json.dump(test_metadata, f, indent=4)
-                    st.success(f"Metadata for {test_selection} updated.")
-                else:
-                    st.warning("Please enter the change performed before saving")
+                st.success(f"Data saved to {save_path}.")
+                with open(test_selection, 'r') as f:
+                    metadata = json.load(f)
+                test_metadata["Data Corrections"].append(f"{date}: {change}")
+                test_metadata['Manually Prepared'] = date
+                with open(test_selection, "w") as f:
+                    json.dump(test_metadata, f, indent=4)
+                st.success(f"Metadata for {test_selection} updated.")
+            else:
+                st.warning("Please enter the change performed before saving")
 
 
 
@@ -684,7 +684,7 @@ def export_metadata(df, original_metadata):
         return
     
     if (metadata.get("Heat Flux (kW/m2)") is None) or metadata.get("Heat Flux (kW/m2)") == "Not found":
-        st.warning(f"Export Aborted: Please enter an Heat Flux")
+        st.warning(f"Export Aborted: Please enter a Heat Flux")
         return
     ogform = metadata["Original Source"]
     date = metadata["Test Date"]
@@ -704,10 +704,10 @@ def export_metadata(df, original_metadata):
         st.warning(f"Export Aborted: Unrecognized date format: {date}.")
         return
     try :
-        metadata['Specimen Number'] = int(metadata.get('Specimen Number'))
-        
+        metadata['Specimen Number'] = int(metadata.get('Specimen Number')) 
+
     except TypeError:
-        st.warning(f"Export Aborted: Please enter an Heat Flux")
+        st.warning(f"Export Aborted: Please enter an integer Specimen Number.")
         return
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
     metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -770,7 +770,7 @@ def export_metadata(df, original_metadata):
     
     max_column_order = ["Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
                         "K Smoke (1/m)","V Duct (m3/s)","Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA(g/s-m2)",
-                        "HRRPUA (kW/m2)"]
+                        "HRRPUA (kW/m2)","CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"]
     
     reordered_data = pd.DataFrame()
     for c in max_column_order:
