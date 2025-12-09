@@ -337,14 +337,14 @@ def parse_data(data_df,test,file_name):
         if "TIME" in column:
             data_df.columns.values[i] = "Time (s)"
         elif "Q-DOT" in column:
-            data_df.columns.values[i] = "Q-Dot (kW/m2)"
+            data_df.columns.values[i] = "HRRPUA (kW/m2)"
         elif "SUM Q" in column:
-            data_df.columns.values[i] = "Sum Q (MJ/m2)"
+            data_df.columns.values[i] = "THRPUA (MJ/m2)"
         elif "M-DOT" in column:
-            data_df.columns.values[i] = "M-Dot (g/s-m2)"
+            data_df.columns.values[i] = "MLRPUA (g/s-m2)"
         elif "MASS" in column and "LOSS" in column:
-            if "M-Dot (g/s-m2)" not in data_df.columns.values:
-                data_df.columns.values[i] = "M-Dot (g/s-m2)"
+            if "MLRPUA (g/s-m2)" not in data_df.columns.values:
+                data_df.columns.values[i] = "MLRPUA (g/s-m2)"
                 #some tests (ex 2227) have m-dot labled as mass loss, no cumulative mass loss stored so this should correct
                 #if this becomes an issue (Mass loss listed before MLR) can switch to check if monotonically inc
             else:

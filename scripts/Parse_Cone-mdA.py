@@ -161,7 +161,6 @@ def parse_data(file_path):
         print(colorize(f'K Smoke data found in {file_stem}, retaining original values', "purple"))
     if surf_area == None:
         print(colorize(f'Warning: {file_stem} does not have a defined surface area, data is output per unit area', "yellow"))
-        df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
         if "Mass Loss (kg/m2)" in df.columns:
             if mass != None:
                 route = "massPUA"
@@ -181,13 +180,12 @@ def parse_data(file_path):
         else:
             route = "MLRPUA"
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-            df["MLRPUA (g/s-m2)"] = df["M-Dot (g/s-m2)"]
             df["Mass (g)"] = None
             df["HRR (kW)"] = None
             data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
                        "K Smoke (1/m)","Extinction Area (m2/kg)","MLRPUA (g/s-m2)","HRRPUA (kW/m2)"]].copy()
     else:
-        df["HRR (kW)"] = surf_area * df["Q-Dot (kW/m2)"]
+        df["HRR (kW)"] = surf_area * df["HRRPUA (kW/m2)"]
         if "Mass Loss (kg/m2)" in df.columns:
             if mass != None:
                 route = "mass"
@@ -204,7 +202,7 @@ def parse_data(file_path):
         else:
             route = "MLR"
             print(colorize(f'Warning: {file_stem} only contains mass loss rate data', "yellow"))
-            df["MLR (g/s)"] = df["M-Dot (g/s-m2)"] * surf_area
+            df["MLR (g/s)"] = df["MLRPUA (g/s-m2)"] * surf_area
             df["Mass (g)"] = None
             data = df[["Time (s)","Mass (g)","HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
                        "K Smoke (1/m)","Extinction Area (m2/kg)","MLR (g/s)"]].copy()

@@ -386,9 +386,9 @@ def parse_data(data_df,test,file_name):
         if "TIME" in column:
             data_df.columns.values[i] = "Time (s)"
         elif "DOT" in column:
-            data_df.columns.values[i] = "Q-Dot (kW/m2)"
+            data_df.columns.values[i] = "HRRPUA (kW/m2)"
         elif "SUM Q" in column:
-            data_df.columns.values[i] = "Sum Q (MJ/m2)"
+            data_df.columns.values[i] = "THRPUA (MJ/m2)"
         elif "MASS" in column:
             data_df.columns.values[i] = "Mass (g)"
         elif "M" in column and "LOSS" in column:
