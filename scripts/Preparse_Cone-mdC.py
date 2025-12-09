@@ -507,7 +507,7 @@ def parse_data(data_df,test,file_name):
         elif ("Q-DOT" in column and "SUM" not in column) or ("HEAT RELEASE" in column and "CUMULATIVE" not in column) :
             data_df.columns.values[i] = "HRRPUA (kW/m2)"
         elif "SUM" in column or "CUMULATIVE" in column:
-            data_df.columns.values[i] = "Sum Q (MJ/m2)"
+            data_df.columns.values[i] = "THRPUA (MJ/m2)"
         elif "MASS" in column:
             # Additional check: Is this column monotonically decreasing?
             col_vals = pd.to_numeric(data_df[column], errors='coerce').dropna()

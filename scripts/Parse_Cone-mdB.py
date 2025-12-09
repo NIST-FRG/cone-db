@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 import numpy as np
 
+
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
@@ -130,7 +131,6 @@ def parse_data(file_path):
         metadata = json.load(w)
     df = pd.read_csv(file_path)
 
-    df["HRRPUA (kW/m2)"] = df["Q-Dot (kW/m2)"]
     df["O2 (Vol fr)"] = None
     df["CO2 (Vol fr)"] = None
     df["CO (Vol fr)"] = None
