@@ -12,9 +12,9 @@ From the root of the repository, run the following command:
 streamlit run scripts/cone-explorer/Main.py 
 ``
 
-(if the above doesn't work, you can also try `python -m streamlit run scripts/cone-explorer/Main.py`)
+(if the above does not work, you can also try `python -m streamlit run scripts/cone-explorer/Main.py`)
 
-If you're running the app for the first time and you get an error about missing packages, you may need to install streamlit again.
+If you are running the app for the first time and you get an error about missing packages, you may need to install streamlit again.
 ```bash
 pip install streamlit
 ```
@@ -38,36 +38,37 @@ The general workflow for SmURFing is as follows:
 Grants the user the ability to view and compare the data from multiple tests.
 
 ##### Filter Options
-Select `SmURF Filter` to split tests up based on whether they have been SmURFed or not.
-Select `Sort by Markdown File Number` to have the tests appear in order of markdown number rather than test number
+`Choose SmURF Status` allows you to view either pre-SmURFed/parsed tests or post-SmURFed/prepared final tests.
 
 ##### Selecting Tests to View
-Type out the specimen number of the test(s) you would like to view and/or select them from the dropdown list
+Type out the specimen number or name of the test(s) you would like to view and/or select them from the dropdown list
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
+Cone data can be viewed with an x axis of time (s) or incident energy (time*EHF, MJ/m2). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and k-smoke (1/m). There is also an option to view additional parameters. These include sample mass loss (g), production/consumption rates (g/s) and instaneous yields (kg/kg) of those same gaseoues species,soot (g/s) and smoke (m2/s) production rates, specific extinction area (m2/kg), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct. Some legacy data also includees instantaneous yields of H2O, HCl, and hydrocarbons (H'carbs). All heat release, mass, and production/conumption rate data can be normalized by the exposed area of the sample.
+
+It is worth noting that many tests will not have all of these data columns. For example, FTT data does not track H2O, HCl, or H'carbs, while legacy box data does not contain gaseous volume fractions. When a test does not contain data for a specific column, a warning will pop up where the plot would be.
 
 Plots can zoom in and out, pan, and save the plot as a .png file.
 
-Axis Range Controls in the sidebar allow you to exactly control the axes. Default values are set to the range of the data.
 
 ### Data Editor
 
 ##### Overview
-Grants the user the ability to view, crop, and modify data from a single cone test. This page is intended to be used of cone tests that already have the poper naming convention. Data modifcations for tests needing to be SmURFed are performed in the SmURF Editor
+Grants the user the ability to view, crop, and modify data from a single cone test. This page is intended to be used of cone tests that already have the proper naming convention. Data modifcations for tests needing to be SmURFed are performed in the SmURF Editor
 
 ##### Selecting Tests to View
 Type out the name of the test you would like to view and/or select them it the dropdown list
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
+For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and k-smoke (1/m). There is also an option to view additional parameters. These include sample mass loss (g), production/consumption rates (g/s) and instaneous yields (kg/kg) of those same gaseoues species,soot (g/s) and smoke (m2/s) production rates, specific extinction area (m2/kg), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct. Some legacy data also includees instantaneous yields of H2O, HCl, and hydrocarbons (H'carbs). All heat release, mass, and production/conumption rate data can be normalized by the exposed area of the sample.
+
+It is worth noting that many tests will not have all of these data columns. For example, FTT data does not track H2O, HCl, or H'carbs, while legacy box data does not contain gaseous volume fractions. When a test does not contain data for a specific column, a warning will pop up where the plot would be.
 
 Plots can zoom in and out, pan, and save the plot as a .png file.
 
-Axis Range Controls in the sidebar allow you to exactly control the axes. Default values are set to the range of the data.
 
 ##### Data Modification
-Use the `Revert to Parsed Data` button to revert any changes made back to the original data (pulled from the Exp-Data_Parsed folder). A note is added to the test metadata file , under data corrections, indicating that the data was reverted back to its original state.
+Use the `Revert to Parsed Data` button to revert any changes made back to the original data (pulled from the Exp-Data_Parsed folder). A note is added to the test metadata file , under data corrections, indicating that the data was reverted back to its original state. For tests that have undergone SmURFing, data is pulled from the associated parsed file with the original filename.
 
 ###### Data Clipping
 Several cone calorimeter tests may have erroneous or irrelevant data that needs to be removed. In the relevant sidebar boxes, enter the temperature range you would like to remove from the data. The plot will preview this change, but data will not yet be altered. Cutoff values are inclusive and default to -1s so all data is initially visible.
@@ -81,14 +82,16 @@ Use the `Save Clipped Data` button to save this selection and clip data from all
 ##### Overview
 This is the page where SmURFing will be perfomed. Upon opening the explorer, click "Import Data to Explorer" to pull in local copies of the data files. The import button will look at the Parsed metadata folder, pulling new or newly SmURFed data (as obtained from the GitHub directory). Any files labled as bad (i.e. calibration checks, no data, etc...) will be removed from the directory. In the case that files have been modified and saved locally in the explorer, but not yet exported to the repo, an error will be raised asking the user to export or discard these changes. 
 
-Type the name of the test you would like to SmURF into the dropdown menu to select it.By Default, only tests that have not undergone SmURFing can be selected; however, the Include SmURFed Tests checkbox allows these tests to be viewed aswell.
+Type the name of the test you would like to SmURF into the dropdown menu to select it. By Default, only tests that have not undergone SmURFing can be selected; however, the Include SmURFed Tests checkbox allows these tests to be viewed aswell. Note that when SmURFed tests are included, they will be found under their original test name.
 
 The SmURF Editor is broken up into two functionalities: Data Modification and Metadata Adjustments
 
 #### Data Modification
 
 ##### Data Plotting Options
-For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and smoke production rate (m2/s). There is also an option to view additional parameters. These include the first four options of base data on a per unit area basis, gasoues species production/consumption rates (g/s), soot production rate (g/s), k smoke (1/m), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct (m3/s).
+For editing cone data, plots have an x-axis of time (s). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and k-smoke (1/m). There is also an option to view additional parameters. These include sample mass loss (g), production/consumption rates (g/s) and instaneous yields (kg/kg) of those same gaseoues species,soot (g/s) and smoke (m2/s) production rates, specific extinction area (m2/kg), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct. Some legacy data also includees instantaneous yields of H2O, HCl, and hydrocarbons (H'carbs). All heat release, mass, and production/conumption rate data can be normalized by the exposed area of the sample.
+
+It is worth noting that many tests will not have all of these data columns. For example, FTT data does not track H2O, HCl, or H'carbs, while legacy box data does not contain gaseous volume fractions. When a test does not contain data for a specific column, a warning will pop up where the plot would be.
 
 ##### Revert Data Modifications
 Use the `Revert Data Modifications` button to revert any changes made back to the original data (pulled from the Exp-Data_Parsed folder). A note is added to the test metadata file , under data corrections, indicating that the data was reverted back to its original state.
@@ -96,7 +99,7 @@ Use the `Revert Data Modifications` button to revert any changes made back to th
 ###### Data Clipping
 Several cone calorimeter tests may have erroneous or irrelevant data that needs to be removed. In the relevant sidebar boxes, enter the temperature range you would like to remove from the data. The plot will preview this change, but data will not yet be altered. Cutoff values are inclusive and default to -1s so all data is initially visible.
 
-Use the `Save Clipped Data` button to save this selection and clip data from all fields between the selected times (to clip ends of data, set beginning or end cut off time to a value outside the datarange). The local copy of the parsed csv file is modified to reflect this change. A note is added to the metadata json file, under data corrections. In the case that additional metadata has been added (i.e. surface area), this button will also regenerate the csv file with the more minimal column (MLRPUA to MLR, HRRPUA to HRR, etc...)
+Use the `Save Clipped Data` button to save this selection and clip data from all fields between the selected times (to clip ends of data, set beginning or end cut off time to a value outside the datarange). The local copy of the parsed csv file is modified to reflect this change. A note is added to the metadata json file, under data corrections.
 
 ###### CSV Modification
 Data transfer is not always perfect from pdf to markdown to csv file. The major types of errors that may occur are typos in individual values (pay close attention to the time columns or clear outliers), duplicated columns, missing data (pulled into metadata or another test during preparsing), and excess data (either from another test or different column of the same test). It is usually visually apparent when these errors occur, and most of these issues are filtered out during preparsing and parsing, but it is good practice to give a cursory look at the csv values if something seems off.
@@ -107,7 +110,7 @@ Click the `Modify CSV File` checkbox to open an editable view of the csv file cu
 The SmURF editor loads metadata from the local `data` folder within your explorer.
 An editable spreadsheet/table-like interface is generated, with each row representing a metadata attribute.
 When modifying a test, the first step is to ensure all possible metadata fields are populated correctly. Preparsing and parsing scripts generally do a good job at this, but there are cases where a field that should have been populated was not recognized and added to the comments or missplaced in a different field. There are also cases where additional metadata may be found in the report being attached to a test. For each test SmURFed, ensure the metadata is filled out as comprehesivley as possible.
-MAKE SURE Heat Flux, Material ID, and Orientation are populated prior to export.                                                                                                                                  
+MAKE SURE Heat Flux, Material ID, Orientation, and Specimen Number are populated prior to export.                                                                                                                                  
 
 - Material IDs should use the format `<material_name>-<report_identifier>`. Spaces in a material name should be removed. For example, the material ID for a material named "Material A" with a report identifier of "smith2015characterization" would be `MaterialA-smith2015characterization`.
 
@@ -118,9 +121,9 @@ MAKE SURE Heat Flux, Material ID, and Orientation are populated prior to export.
 
 `Revert Metadata`: For the selected test, metadata is reverted to the version contained within the Parsed folder of the GitHub Repo. Any changes, saved or not, made to these files will be lost. This should only be used if an errouneous edit was made and needs to be undone.
 
-`Delete Files`: For selected tests, the local copies of the json and csv files are deleted from the explorer. The parsed metadata file on the GitHub has its "Bad Data" key updated with a time stamp of the deletion, preventing the test from being brought into the viewer. Tests should only be deleted if they are clear calibration checks (i.e. burner calibration) or have no usable data. In the latter case, please review the pdf and markdown files to ensure the data is actually bad, and was not just copied incorrectly. A success mesage will be displayed at the top of the page following deletion.
+`Delete Files`: For selected tests, the local copies of the json and csv files are deleted from the explorer. The parsed metadata file on the GitHub has its "Bad Data" key updated with a time stamp of the deletion, preventing the test from being brought into the viewer. Tests should only be deleted if they are clear calibration checks (i.e. burner calibration) or have no usable data. In the latter case, please review the pdf and markdown files (for box data) to ensure the data is actually bad, and was not just copied incorrectly. A success mesage will be displayed at the top of the page following deletion.
 
-`Export Data and Metadata` This button should only be used for tests that have gone through a full SmURF review (both data and metadata), been attached to a report, and had their material ID generated. Before exporting, ensure the material ID and heat flux metadata items are correct and that the test date item is in the format 12 MAY 1987, 12 MAY 87, 5/12/87, 5/12/1987 or the iso standard 1987-05-12T12:46:00. For selected tests, the export button will generate the Prepared-Final versions of the data and metadata files, passing them both to a local prepared folder within the explorer and their resepctive folders on the GitHub repo. The data file may be modified if its data can be reduced (i.e HRRPUA is converted to HRR if the sample surface area was added to the metadata. Testname is generated as Mat-ID_flux_orient_specicmen#. The test date is also turned into a datetime object for uniform tracking, the SmURF attribute is given a timestamp. and the metadata is re-ordered. The version controlled Parsed metadata file is also updated to reflect these changes and prevent re-SmURFing. A success mesage will be displayed at the top of the page following export.
+`Export Data and Metadata` This button should only be used for tests that have gone through a full SmURF review (both data and metadata), been attached to a report, and had their material ID generated. Before exporting, ensure the material ID and heat flux metadata items are correct and that the test date item is in the format 12 MAY 1987, 12 MAY 87, 5/12/87, 5/12/1987 or the iso standard 1987-05-12T12:46:00. For selected tests, the export button will generate the Prepared-Final versions of the data and metadata files, passing them both to a local prepared folder within the explorer and their resepctive folders on the GitHub repo. The data file may be modified if its data can be reduced (i.e HRRPUA is converted to HRR if the sample surface area was added to the metadata). Testname is generated as Mat-ID_flux_orient_specicmen#. The test date is also turned into a datetime object for uniform tracking, the SmURF attribute is given a timestamp. and the metadata is re-ordered. The version controlled Parsed metadata file is also updated to reflect these changes and prevent re-SmURFing. A success mesage will be displayed at the top of the page following export.
 
 
 ### Metadata Editor

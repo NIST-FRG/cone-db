@@ -18,9 +18,9 @@
     "Institution": "FTT Cone - NIST",
     "Report Name": null,
     "Original Source": "FTT-White/2018",
-    "Parsed": "2025-11-24 16:08:00",
+    "Parsed": "2025-12-09 12:26:32",
     "Auto Prepared": null,
-    "Manally Prepared": null,
+    "Manually Prepared": null,
     "SmURF": null,
     "Bad Data": null,
     "Autoprocessed": null,
@@ -55,7 +55,8 @@
     "t_ignition (s)": 26.0,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
-    "m_ignition OutlierResidue Yield (%)": null,
+    "m_ignition Outlier": null,
+    "Residue Yield (%)": null,
     "Residue Yield Outlier": null,
     "Heat Release Rate Outlier": null,
     "Average HRRPUA 60s (kW/m2)": null,
@@ -92,12 +93,12 @@
     "Fire Growth Potential (m2/J)": null,
     "Fire Growth Potential Outlier": null,
     "Ignition Energy (MJ/m2)": null,
-    "Ignition Energy Outliert_flameout (s)": null,
+    "Ignition Energy Outlier": null,
+    "t_flameout (s)": 567.0,
     "t_flameout outlier": null,
     "Comments": [
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": [],
-    "t_flameout (s)": 567.0
+    "Data Corrections": []
 }

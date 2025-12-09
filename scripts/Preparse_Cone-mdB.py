@@ -529,7 +529,7 @@ def parse_metadata(input,test_name):
     'Preparsed',
     "Parsed",
     "Auto Prepared",
-    "Manally Prepared",
+    "Manually Prepared",
     "SmURF", 
     "Bad Data",
     "Autoprocessed",
@@ -560,7 +560,7 @@ def parse_metadata(input,test_name):
     "Relative Humidity (%)",
     "X_O2 Initial", "X_CO2 Initial", 'X_CO Initial',
     't_ignition (s)', 't_ignition Outlier',
-    'm_ignition (g)', 'm_ignition Outlier'
+    'm_ignition (g)', 'm_ignition Outlier',
     'Residue Yield (%)', 'Residue Yield Outlier',
     'Heat Release Rate Outlier',
     'Average HRRPUA 60s (kW/m2)','Average HRRPUA 60s Outlier',
@@ -580,7 +580,7 @@ def parse_metadata(input,test_name):
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
     'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
-    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier'
+    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier',
     "t_flameout (s)","t_flameout outlier",
     'Comments', 'Data Corrections'
         ]
@@ -606,8 +606,6 @@ def parse_metadata(input,test_name):
                     match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
                     substring = match.group(1) if match else None
                 metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
-        elif "MAX HEAT RELEASE" in item:
-            metadata_json["Peak HRRPUA (kW/m2)"] = get_number(item, "flt")
         elif "HOR" in item:
             metadata_json["Orientation"] = "HORIZONTAL"
         elif "VERT" in item:
