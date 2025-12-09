@@ -203,7 +203,7 @@ def parse_metadata(df,file_path, meta):
     "Original Source",
     "Parsed",
     "Auto Prepared",
-    "Manally Prepared",
+    "Manually Prepared",
     "SmURF", 
     "Bad Data",
     "Autoprocessed",
@@ -234,7 +234,7 @@ def parse_metadata(df,file_path, meta):
     "Relative Humidity (%)",
     "X_O2 Initial", "X_CO2 Initial", 'X_CO Initial',
     't_ignition (s)', 't_ignition Outlier',
-    'm_ignition (g)', 'm_ignition Outlier'
+    'm_ignition (g)', 'm_ignition Outlier',
     'Residue Yield (%)', 'Residue Yield Outlier',
     'Heat Release Rate Outlier',
     'Average HRRPUA 60s (kW/m2)','Average HRRPUA 60s Outlier',
@@ -254,7 +254,7 @@ def parse_metadata(df,file_path, meta):
     'Y_CO2 (g/g)', 'Y_CO2 Outlier',
     'Y_CO (g/g)', 'Y_CO Outlier',
     'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
-    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier'
+    'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier',
     "t_flameout (s)","t_flameout outlier",
     'Comments', 'Data Corrections'
         ]
@@ -264,7 +264,6 @@ def parse_metadata(df,file_path, meta):
 
 
     # helper functions to extract values from the metadata dictionary
-
     def get_number(key):
         try:
             return float(raw_metadata[key])
