@@ -144,7 +144,7 @@ To edit the metadata for a test, click on the relevant cell and enter the new va
 
 ##### Approving/Rejecting Tests
 To approve or reject a test during manual review, check off the relevant boolean checkbox `Passed Manual Review` or `Failed Manual Review`. Click `Save Changes` to save the changes to the metadata file(s). When all review is complete, click `Autoprocess` to reautoprocess the reviewed data and generate valid statistics.
-Files can be deleted by checking the `**DELETE FILE` checkbox and then clicking the `Delete files` button in the sidebar.
+Files can be deleted by checking the `**DELETE FILE` checkbox and then clicking the `Delete files` button in the sidebar. Note that deleting files currently only deletes the prepared-final versions of the test data and metadata. The parsed metadata file is given a datetime stamp for the Bad Data attribute.
 
 ### Metadata Search
 
