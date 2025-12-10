@@ -207,10 +207,6 @@ if test_selection:
         data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
 
 
-
-
-
-
     #weight air taken from 2077, this publication also used ambient pressure in the building, so will I
     W_air = 28.97
     if amb_pressure:
@@ -291,7 +287,7 @@ if test_selection:
 
 
     #Remaining gasses if they don't exist
-    for gas in ["H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
+    for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
         if gas not in data.columns:
             data[gas] = None
     test_data = data.copy()
@@ -769,7 +765,7 @@ def export_metadata(df, original_metadata):
         data.drop("Mass Loss (g)", inplace=True, axis = 1)
     
     max_column_order = ["Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)","T Duct (K)","O2 (Vol fr)", "CO2 (Vol fr)","CO (Vol fr)",
-                        "K Smoke (1/m)","V Duct (m3/s)","Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA(g/s-m2)",
+                        "K Smoke (1/m)","V Duct (m3/s)","Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
                         "HRRPUA (kW/m2)","CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"]
     
     reordered_data = pd.DataFrame()
