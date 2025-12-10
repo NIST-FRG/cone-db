@@ -16,8 +16,9 @@ import plotly.graph_objects as go
 from Cone_Explorer.const import (
 
      PREPARED_DATA_PATH,
-     PREPARED_DATA_PATH, 
      PREPARED_METADATA_PATH, 
+     PARSED_METADATA_PATH,
+     PARSED_DATA_PATH,
      SCRIPT_DIR, 
      PROJECT_ROOT
 )
@@ -42,17 +43,9 @@ for avg in avg_tests:
 ############################## Get test files, select by material, then material id #################
 
 # Get the paths to all the test files
-test_material_ids = {p:p.split('_')[0] for p in test_name_map}
-test_materials = {}
-for matid in test_material_ids.values():
-    if "-" in matid:
-        test_materials[matid] = matid.split('-')[0]
-    else:
-        test_materials[matid] = matid
-
 #Date Filtering
 if 'start_date' not in st.session_state:
-    st.session_state.start_date = "2000-01-01"  # Default date as string
+    st.session_state.start_date = "1982-01-01"  # Default date as string
 if 'end_date' not in st.session_state:
     st.session_state.end_date = datetime.today().strftime("%Y-%m-%d")  # Current date as string
 
@@ -82,7 +75,13 @@ if st.checkbox('Filter Tests By Date'):
 
 # Get the paths to all the metadata files
 metadata_name_map = {p.stem: p for p in list(PREPARED_METADATA_PATH.rglob("*.json"))}
-
+test_materials = {}  # Generate a list of base materials
+test_material_ids = {p: p.split("_")[0] for p in test_name_map}
+for matid in test_material_ids.values():
+    if "-" in matid:
+        test_materials[matid] = matid.split("-")[0]
+    else:
+        test_materials[matid] = matid
 # Select material before selecting specific test
 material_selection = st.multiselect(
     "Select a material to view:",
@@ -413,6 +412,17 @@ if material_selection:
         files_to_delete = df[df["** DELETE FILE"]].index
         # delete the metadata files as well as their corresponding csv files
         for file in files_to_delete:
+            meta_file = metadata_path_map[file]
+            file_metadata = json.load(open(meta_file))
+            test_name = file_metadata["Testname"]
+            og_name = file_metadata["Original Testname"]
+            parsed_file_str = str(meta_file).replace(str(PREPARED_METADATA_PATH), str(PARSED_METADATA_PATH)).replace(test_name,og_name)
+            parsed_file = Path(parsed_file_str)
+            with open(parsed_file, "r", encoding="utf-8") as w:  
+                parsed = json.load(w) 
+            parsed["Bad Data"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open (parsed_file, "w", encoding="utf-8") as w:
+                json.dump(parsed, w, indent = 4)
             metadata_path_map[file].unlink()
             test_name_map[file].with_suffix(".csv").unlink()
         # clear the cache so that the metadata files are reloaded
