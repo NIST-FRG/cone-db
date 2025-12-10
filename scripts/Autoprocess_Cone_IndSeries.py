@@ -136,10 +136,20 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             df['Mass LossPUA (g/m2)'] = df['Mass Loss (g)'] / sa if sa else None
             df['MLRPUA (g/s-m2)'] = df['MLR (g/s)'] / sa if sa else None
         elif "MLR (g/s)" in df.columns:
-            df['Mass Loss (g)'] = (df['MLR (g/s)'] * df['dt']).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
+            df['Mass Loss (g)'] = (
+                pd.to_numeric(df['MLR (g/s)'], errors='coerce')
+                .where(lambda x: np.isfinite(x), 0) *
+                pd.to_numeric(df['dt'], errors='coerce')
+                .where(lambda x: np.isfinite(x), 0)
+            ).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
             df['MLRPUA (g/s-m2)'] = df['MLR (g/s)'] / sa if sa else None
         elif "MLRPUA (g/s-m2)" in df.columns:
-            df['Mass LossPUA (g/m2)'] = (df['MLRPUA (g/s-m2)'] * df['dt']).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
+            df['Mass LossPUA (g/m2)'] = (
+                pd.to_numeric(df['MLRPUA (g/s-m2)'], errors='coerce')
+                .where(lambda x: np.isfinite(x), 0) *
+                pd.to_numeric(df['dt'], errors='coerce')
+                .where(lambda x: np.isfinite(x), 0)
+            ).cumsum() #USE THIS ONLY TO FIND THE 10% AND 90% MASS LOSS TIMES
             df['Mass Loss (g)'] = df['Mass LossPUA (g/m2)'] * sa if sa else None
             df['MLR (g/s)'] = df['MLRPUA (g/s-m2)'] * sa if sa else None
         
@@ -285,7 +295,6 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         i_90 = df_tot.index.get_loc(t_90)
         m_10 = df_tot['Mass (g)'].iloc[i_10]
         m_90 = df_tot['Mass (g)'].iloc[i_90]
-        print(t_10, t_90)
         test_length = df_tot['Time (s)'].iloc[-1]
         hrr_negatives = df_tot['HRRPUA (kW/m2)'].iloc[:peak_idx]
         hrr_negatives = hrr_negatives[hrr_negatives < 0]
@@ -450,7 +459,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
                                 'Y_CO2': "Y_CO2 (g/g)",
                                 'Y_CO': "Y_CO (g/g)",
                                 'FGP': "Fire Growth Potential (m2/J)",
-                                'E_ign': "Ignition Energy (kJ)",
+                                'E_ign': "Ignition Energy (MJ/m2)",
                                 't_out': "t_flameout (s)"
                             })
     
@@ -513,7 +522,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             for key in df_values.columns:
                 metadata[key] = float(f"{df_values[key][counter]:.4g}")
         
-        #metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if HRR_out[counter] == True:
             metadata['Heat Release Rate Outlier'] = True
         elif HRR_out[counter] == False:
