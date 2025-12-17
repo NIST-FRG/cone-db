@@ -292,7 +292,7 @@ if material_selection:
 
 
             #Remaining gasses if they don't exist
-            for gas in ["H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
+            for gas in ["CO2 (kg/kg)", "CO (kg/kg)","H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
                 if gas not in data.columns:
                     data[gas] = None
             test_data = data.copy()
