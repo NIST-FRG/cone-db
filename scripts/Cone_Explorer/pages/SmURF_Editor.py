@@ -88,20 +88,43 @@ if not st.checkbox('Include Smurfed Tests'):
 
 if "metadata_loaded_once" not in st.session_state:
     st.session_state.metadata_loaded_once = False
-if len(metadata_path_map) == 0:
-    st.warning("No metadata files found.")
+test_names = list(metadata_path_map.keys())
+n_tests = len(test_names)
+
+# Default test_idx so it's ALWAYS valid
+if n_tests > 0:
+    if "test_idx" not in st.session_state or st.session_state.test_idx >= n_tests or st.session_state.test_idx < 0:
+        st.session_state.test_idx = 0
+else:
+    st.warning("No tests found.")
     st.stop()
 
-# Let them pick a single test to view/edit:
+# Sidebar navigation buttons ONLY
+st.sidebar.markdown("### Navigate Tests")
+prev_btn = st.sidebar.button("⬅️ Previous", disabled=st.session_state.test_idx==0)
+next_btn = st.sidebar.button("Next ➡️", disabled=st.session_state.test_idx==n_tests-1)
+
+# Button actions
+if prev_btn:
+    st.session_state.test_idx = max(0, st.session_state.test_idx-1)
+if next_btn:
+    st.session_state.test_idx = min(n_tests-1, st.session_state.test_idx+1)
+
+# Main area dropdown
 selected_test = st.selectbox(
     "Select a test to view/edit",
-    options=list(metadata_path_map.keys()),
+    options=test_names,
+    index=st.session_state.test_idx,
+    key="test_selectbox",
 )
 
-# Only show this test in the app, and send just this to downstream logic:
+# Sync dropdown and session state index
+if selected_test != test_names[st.session_state.test_idx]:
+    st.session_state.test_idx = test_names.index(selected_test)
+
+# Now your selection is valid!
 test_selection = metadata_path_map[selected_test]
 data_selection = data_path_map[selected_test]
-
 
 #region data editor
 st.divider()
@@ -706,7 +729,7 @@ def export_metadata(df, original_metadata):
         st.warning(f"Export Aborted: Please enter an integer Specimen Number.")
         return
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
-    metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
     parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
     prepared_path = str(PREPARED_METADATA_PATH)+ f"\\{ogform}"
     prepared_data =  str(PREPARED_DATA_PATH)+ f"\\{ogform}"
@@ -720,7 +743,7 @@ def export_metadata(df, original_metadata):
     
     filename_parts = [
         material_id,
-        f"{str(int(metadata["Heat Flux (kW/m2)"]))}kW",
+        f"{int(metadata["Heat Flux (kW/m2)"])}kW",
         "vert" if metadata["Orientation"].upper() == "VERTICAL" else "hor",
     ]
 
@@ -729,10 +752,20 @@ def export_metadata(df, original_metadata):
         filename_parts.insert(3, f"R{metadata['Specimen Number']}")
     
     # join all the filename parts together with a dash & add the file extension (.json)
-    metadata['Testname'] = "_".join(filename_parts)
     new_filename = "_".join(filename_parts) + ".json"
     old_filename = metadata["Original Testname"] + '.json'
-
+    
+    #check if this filename already exists in the prepared folder
+    prep_save = Path(prepared_path) / new_filename
+    if prep_save.exists():
+        existing_json = json.load(open(prep_save))
+        oldname2 = existing_json.get("Original Testname")
+        if oldname2 != metadata["Original Testname"]:
+            st.warning(f"Export Aborted: A test with the filename {new_filename} already exists in the prepared folder. Please adjust the Material ID or Specimen Number to create a unique filename.")
+            return
+    
+    metadata['Testname'] = "_".join(filename_parts)
+    metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     # save the metadata file, including to parsed
     with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
