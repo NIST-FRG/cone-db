@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "RedCedar",
     "Material Name": "Uncoated red cedar No1 50kWm2",
     "Sample Mass (g)": 47.04,
     "Residual Mass (g)": 9.400799,
-    "Specimen Number": null,
+    "Specimen Number": 2,
     "Original Testname": "Uncoated red cedar No1 50kWm2",
-    "Testname": null,
+    "Testname": "RedCedar_50kW_vert_R2",
     "Thickness (mm)": 12.5,
     "Sample Description": "Uncoated red cedar No1 50kWm2",
     "Specimen Prep": null,
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2018",
     "Parsed": "2025-12-12 16:57:45",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 17:48:47",
+    "SmURF": "2025-12-22 17:49:12",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 17:48:47: Data from -1s to 2s was removed"
+    ]
 }

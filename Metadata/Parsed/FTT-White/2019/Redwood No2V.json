@@ -1,13 +1,13 @@
 {
-    "Material ID": null,
-    "Material Name": "Redwood No2",
+    "Material ID": "Redwood",
+    "Material Name": "Redwood No2V",
     "Sample Mass (g)": 63.84,
     "Residual Mass (g)": 41.342415,
-    "Specimen Number": null,
-    "Original Testname": "Redwood No2",
-    "Testname": null,
+    "Specimen Number": 2,
+    "Original Testname": "Redwood No2V",
+    "Testname": "Redwood_20kW_vert_R2",
     "Thickness (mm)": 12.5,
-    "Sample Description": "Redwood No2",
+    "Sample Description": "Redwood No2V",
     "Specimen Prep": null,
     "Instrument": "White FTT Cone Calorimeter",
     "Test Date": "2019-02-06",
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2019",
     "Parsed": "2025-12-09 12:26:31",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 12:43:31",
+    "SmURF": "2025-12-22 12:43:49",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 12:43:31: Data from -1s to 4s was removed"
+    ]
 }

@@ -21,9 +21,19 @@ st.set_page_config(page_title="Cone Metadata Search", page_icon="🔎", layout="
 
 st.title("Cone Metadata Search")
 st.write("Select the test status you would like to view")
-test_types = ['SmURFed', "Not SmURFed"]
+test_types = ['SmURFed', "All (Parsed Versions)", "Not SmURFed"]
 selected_type = st.selectbox("Choose SmURF status", test_types)
 if selected_type == "Not SmURFed":
+    metadata_name_map = {}
+
+    for p in PARSED_METADATA_PATH.rglob("*.json"):
+        with open(p, 'r') as f:
+            metadata = json.load(f)
+        # Check if 'SmURF' is absent, None, or empty string
+        smurf_value = metadata.get('SmURF', None)
+        if not smurf_value:  # Covers None, '', [], {}, etc.
+            metadata_name_map[p.stem] = p
+elif selected_type == "All (Parsed Versions)":
         # Get the paths to all the test metadata files
         metadata_name_map = {p.stem: p for p in list(PARSED_METADATA_PATH.rglob("*.json"))}
 else:

@@ -1,13 +1,13 @@
 {
-    "Material ID": null,
-    "Material Name": "Fir No1",
+    "Material ID": "Fir",
+    "Material Name": "Fir No1V",
     "Sample Mass (g)": 49.5,
     "Residual Mass (g)": 32.057269,
-    "Specimen Number": null,
-    "Original Testname": "Fir No1",
-    "Testname": null,
+    "Specimen Number": 1,
+    "Original Testname": "Fir No1V",
+    "Testname": "Fir_20kW_vert_R1",
     "Thickness (mm)": 12.5,
-    "Sample Description": "Fir No1",
+    "Sample Description": "Fir No1V",
     "Specimen Prep": null,
     "Instrument": "White FTT Cone Calorimeter",
     "Test Date": "2019-02-06",
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2019",
     "Parsed": "2025-12-09 12:26:30",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 12:20:05",
+    "SmURF": "2025-12-22 12:25:45",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 12:20:05: Data from -1s to 4s was removed"
+    ]
 }

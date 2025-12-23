@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "Cypress",
     "Material Name": "Cypress No1",
     "Sample Mass (g)": 56.57,
     "Residual Mass (g)": 11.510186,
-    "Specimen Number": null,
+    "Specimen Number": 1,
     "Original Testname": "Cypress No1",
-    "Testname": null,
+    "Testname": "Cypress_50kW_hor_R1",
     "Thickness (mm)": 12.5,
     "Sample Description": "Cypress No1",
     "Specimen Prep": null,
@@ -18,10 +18,10 @@
     "Institution": "FTT Cone - NIST",
     "Report Name": null,
     "Original Source": "FTT-White/2018",
-    "Parsed": "2025-12-09 12:26:32",
+    "Parsed": "2025-12-22 11:09:53",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 11:39:16",
+    "SmURF": "2025-12-22 11:39:41",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 11:39:16: Data from -1s to 4s was removed"
+    ]
 }
