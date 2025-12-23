@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "Ipe",
     "Material Name": "Smoldering Ipe no1 20 kWm2",
     "Sample Mass (g)": 123.57,
     "Residual Mass (g)": 53.469567,
-    "Specimen Number": null,
+    "Specimen Number": 1,
     "Original Testname": "19010004",
-    "Testname": null,
+    "Testname": "Ipe_20kW_vert_R1",
     "Thickness (mm)": 12.5,
     "Sample Description": "Smoldering Ipe no1 20 kWm2",
     "Specimen Prep": null,
@@ -18,10 +18,10 @@
     "Institution": "FTT Cone - NIST",
     "Report Name": null,
     "Original Source": "FTT-White/2019",
-    "Parsed": "2025-12-09 12:26:20",
+    "Parsed": "2025-12-22 11:34:19",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 11:56:21",
+    "SmURF": "2025-12-22 11:56:31",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 11:56:21: Data from -1s to 4s was removed"
+    ]
 }

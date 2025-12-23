@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "RedCedar",
     "Material Name": "Red cedar No2",
     "Sample Mass (g)": 43.58,
     "Residual Mass (g)": 8.585563,
-    "Specimen Number": null,
+    "Specimen Number": 2,
     "Original Testname": "Red cedar No2",
-    "Testname": null,
+    "Testname": "RedCedar_50kW_hor_R2",
     "Thickness (mm)": 12.5,
     "Sample Description": "Red cedar No2",
     "Specimen Prep": null,
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2018",
     "Parsed": "2025-12-09 12:26:33",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 15:45:27",
+    "SmURF": "2025-12-22 15:45:48",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 15:45:27: Data from -1s to 2s was removed"
+    ]
 }

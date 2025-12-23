@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "Fir",
     "Material Name": "Fir No1",
     "Sample Mass (g)": 48.72,
     "Residual Mass (g)": 11.890093,
-    "Specimen Number": null,
+    "Specimen Number": 1,
     "Original Testname": "Fir No1",
-    "Testname": null,
+    "Testname": "Fir_50kW_hor_R1",
     "Thickness (mm)": 12.5,
     "Sample Description": "Fir No1",
     "Specimen Prep": null,
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2018",
     "Parsed": "2025-12-09 12:26:32",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 12:18:29",
+    "SmURF": "2025-12-22 12:18:54",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 12:18:29: Data from -1s to 2s was removed"
+    ]
 }

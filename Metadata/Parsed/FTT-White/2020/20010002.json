@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "Ipe",
     "Material Name": "Ipe 2 new uncoated",
     "Sample Mass (g)": 113.09,
-    "Residual Mass (g)": -1.375152,
-    "Specimen Number": null,
+    "Residual Mass (g)": 25.240732,
+    "Specimen Number": 5,
     "Original Testname": "20010002",
-    "Testname": null,
+    "Testname": "Ipe_50kW_hor_R5",
     "Thickness (mm)": 12.5,
     "Sample Description": "Ipe 2 new uncoated",
     "Specimen Prep": "Ipe wood",
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2020",
     "Parsed": "2025-12-09 12:26:21",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 12:00:02",
+    "SmURF": "2025-12-22 12:00:39",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 12:00:02: Data from 805s to 1238s was removed"
+    ]
 }

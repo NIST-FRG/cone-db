@@ -115,7 +115,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         df['Time (s)'] = df['Time (s)'].astype(float)
         df['dt'] = df["Time (s)"].diff()
         df['t*EHF (MJ/m2)'] = (df['Time (s)'] * Flux)/1000
-        
+
         
         #Mass and MLR calculations
         if not df["Mass (g)"].isnull().all():
@@ -153,6 +153,16 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             df['Mass Loss (g)'] = df['Mass LossPUA (g/m2)'] * sa if sa else None
             df['MLR (g/s)'] = df['MLRPUA (g/s-m2)'] * sa if sa else None
         
+        if df['Mass (g)'].iloc[0] < 0: #Handle FTT cases with bad mass data
+            df['Mass (g)'] = None
+            
+        if df['Mass (g)'].isnull().all(): #Handle cases with no mass data
+            df['Mass Loss (g)'] = None
+            df['Mass LossPUA (g/m2)'] = None
+            df['MLRPUA (g/s-m2)'] =  None
+        
+
+
         #Heat Release Calculations
         if "HRRPUA (kW/m2)" not in df.columns:
             df["HRRPUA (kW/m2)"] = df["HRR (kW)"] / sa if sa is not None else None
@@ -265,7 +275,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         ###Bounds Set Up
         peak_HRR = df_tot['HRRPUA (kW/m2)'].max()
         peak_idx = df_tot['HRRPUA (kW/m2)'].idxmax()
-        peak_MLR = df_tot['MLRPUA (g/s-m2)'].max()
+        peak_MLR = df_tot['MLRPUA (g/s-m2)'].max() if 'MLRPUA (g/s-m2)' in df_tot.columns else None
         t_ign = ignition_times[i]
         t_out = flameout_times[i]
         i_ign = (
@@ -291,6 +301,12 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             ml_90 = .9 * (df_tot['Mass Loss (g)'].iloc[-1])
             t_10 = (df_tot['Mass Loss (g)'] - ml_10).abs().idxmin()
             t_90 = (df_tot['Mass Loss (g)'] - ml_90).abs().idxmin()
+        else: #Fallback if no mass data, integrate by total heat release
+            thr_10 = .1 * (df_tot['QPUA (MJ/m2)'].iloc[-1])
+            thr_90 = .9 * (df_tot['QPUA (MJ/m2)'].iloc[-1])
+            t_10 = (df_tot['QPUA (MJ/m2)'] - thr_10).abs().idxmin()
+            t_90 = (df_tot['QPUA (MJ/m2)'] - thr_90).abs().idxmin()
+        
         i_10 = df_tot.index.get_loc(t_10)
         i_90 = df_tot.index.get_loc(t_90)
         m_10 = df_tot['Mass (g)'].iloc[i_10]
@@ -506,6 +522,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     for path in paths:
         # Open test metadata
         filename = path.name
+        print(filename)
         match = re.search(r'_R(\d+)\.csv$', filename)
         replicate_number = match.group(1)  # Get the matched number of replicate
         file_meta = next(metadata_dir.rglob(str(Path(filename).with_suffix('.json'))),None)
@@ -523,6 +540,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
                 metadata[key] = float(f"{df_values[key][counter]:.4g}")
         
         metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(metadata["Autoprocessed"])
         if HRR_out[counter] == True:
             metadata['Heat Release Rate Outlier'] = True
         elif HRR_out[counter] == False:
@@ -531,6 +549,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         # replace all NaN values with None (which turns into null when serialized) to fit JSON spec (and get rid of red underlines)
         metadata = {k: v if v == v else None for k, v in metadata.items()}
         
+        print(file_meta)
         # Save test metadata
         with open(file_meta, "w") as w:
             json.dump(metadata, w, indent=4)    

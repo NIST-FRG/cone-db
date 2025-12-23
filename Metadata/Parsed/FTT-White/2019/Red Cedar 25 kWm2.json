@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "RedCedar",
     "Material Name": "Kuldeep Red Cedar 25 kWm2",
     "Sample Mass (g)": 62.23,
     "Residual Mass (g)": 12.487659,
-    "Specimen Number": null,
+    "Specimen Number": 1,
     "Original Testname": "Red Cedar 25 kWm2",
-    "Testname": null,
+    "Testname": "RedCedar_25kW_hor_R1",
     "Thickness (mm)": 20.0,
     "Sample Description": "Kuldeep Red Cedar 25 kWm2",
     "Specimen Prep": null,
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2019",
     "Parsed": "2025-12-12 16:57:46",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 16:20:37",
+    "SmURF": "2025-12-22 16:20:43",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 16:20:37: Data from 17s to 21s was removed"
+    ]
 }

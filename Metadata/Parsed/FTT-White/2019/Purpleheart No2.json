@@ -1,11 +1,11 @@
 {
-    "Material ID": null,
+    "Material ID": "Purpleheart",
     "Material Name": "Purpleheart No2",
     "Sample Mass (g)": 114.11,
     "Residual Mass (g)": 46.268062,
-    "Specimen Number": null,
+    "Specimen Number": 2,
     "Original Testname": "Purpleheart No2",
-    "Testname": null,
+    "Testname": "Purpleheart_20kW_vert_R2",
     "Thickness (mm)": 12.5,
     "Sample Description": "Purpleheart No2",
     "Specimen Prep": null,
@@ -20,8 +20,8 @@
     "Original Source": "FTT-White/2019",
     "Parsed": "2025-12-09 12:26:30",
     "Auto Prepared": null,
-    "Manually Prepared": null,
-    "SmURF": null,
+    "Manually Prepared": "2025-12-22 12:13:12",
+    "SmURF": "2025-12-22 12:13:33",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -100,5 +100,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2025-12-22 12:13:12: Data from -1s to 6s was removed"
+    ]
 }
