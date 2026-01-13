@@ -134,7 +134,7 @@ else:
                 options=test_options, default = test_options[0]
                     )
         try:
-            test_selection_map = {k: metadata_selection_map[k] for k in test_selection}
+            test_selection_map = {k: metadata_name_map[k] for k in test_selection}
         except NameError:
             test_selection_map = None
 
