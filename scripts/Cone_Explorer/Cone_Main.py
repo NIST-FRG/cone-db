@@ -23,6 +23,6 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 readme_path = SCRIPT_DIR / "README.md"
 with open (readme_path, 'r') as f:
     st.markdown(f.read())
-# Make sure the INPUT_DATA_PATH and OUTPUT_DATA_PATH exist, if not create them
+# Make sure the INPUT_DATA_PATH exists, if not create it
 if not INPUT_DATA_PATH.exists():
     INPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)

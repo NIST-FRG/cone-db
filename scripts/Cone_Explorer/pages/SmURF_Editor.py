@@ -16,8 +16,7 @@ import plotly.graph_objects as go
 PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    INPUT_DATA_PATH,
-     OUTPUT_DATA_PATH, 
+    INPUT_DATA_PATH, 
      PARSED_DATA_PATH,
      PREPARED_DATA_PATH,
      PARSED_METADATA_PATH, 
@@ -733,8 +732,6 @@ def export_metadata(df, original_metadata):
     parsed_path = str(PARSED_METADATA_PATH) + f"\\{ogform}"
     prepared_path = str(PREPARED_METADATA_PATH)+ f"\\{ogform}"
     prepared_data =  str(PREPARED_DATA_PATH)+ f"\\{ogform}"
-    if not OUTPUT_DATA_PATH.exists():
-        OUTPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
     if not Path(prepared_path).exists():
         Path(prepared_path).mkdir(parents=True, exist_ok=True)
     if not Path(prepared_data).exists():
@@ -768,8 +765,6 @@ def export_metadata(df, original_metadata):
     metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     # save the metadata file, including to parsed
-    with open(OUTPUT_DATA_PATH / new_filename, "w") as f:
-        json.dump(metadata, f, indent=4)
     with open(Path(prepared_path) / new_filename, "w") as f:
         json.dump(metadata, f, indent=4)
     with open(Path(parsed_path) / old_filename, "w") as f:
@@ -807,7 +802,6 @@ def export_metadata(df, original_metadata):
             reordered_data[c] = data[c]
     
     reordered_data.to_csv(Path(prepared_data) / new_filename.replace(".json", ".csv"), index=False)
-    reordered_data.to_csv(OUTPUT_DATA_PATH/ new_filename.replace(".json", ".csv"), index=False)
     st.success(f"Data and Metadata for {new_filename} Exported Successfully")
  
 
