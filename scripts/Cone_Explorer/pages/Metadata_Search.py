@@ -11,7 +11,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
 
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    INPUT_DATA_PATH,
     PARSED_METADATA_PATH,
     PREPARED_METADATA_PATH,
     SCRIPT_DIR
