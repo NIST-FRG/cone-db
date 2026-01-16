@@ -104,11 +104,20 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            test_name = f"{test_filename}.csv"
+            output_path = OUTPUT_DIR / test_name
+            if output_path.exists():
+                old_df = pd.read_csv(output_path)
+                # Compare old and new dataframes
+                if old_df.equals(data_df):
+                    print(colorize(f"{test_filename} already exists and is identical. Skipping generation.", "blue"))
+                    parsed += 1
+                    continue
+                else:
+                    print(colorize(f"{test_filename} already exists but differs. Overwriting with new data.", "yellow"))
             # parse through and generate metadata json file
             status = parse_metadata(metadata,test_filename)
             if status == None:
-                test_name = f"{test_filename}.csv"
-                output_path = OUTPUT_DIR / test_name
                 data_df.to_csv(output_path, index=False)
                 print(colorize(f"Generated {output_path}", "blue"))
                 parsed += 1

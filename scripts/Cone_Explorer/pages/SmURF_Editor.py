@@ -485,7 +485,7 @@ def load_metadata(show_bar=False):
     fmt_meta = {}
     for key, value in metadata.items():
         if isinstance(value, list):
-            fmt_meta[key] = str(value)
+            fmt_meta[key] = "\n".join(str(x) for x in value)
         else:
             fmt_meta[key] = value  # or ', '.join(map(str, value)) for a cleaner look
     df = pd.DataFrame.from_dict(fmt_meta, orient='index')

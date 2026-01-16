@@ -120,11 +120,24 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            test_name = f"{test_filename}.csv"
+            output_path = OUTPUT_DIR / test_name
+            if output_path.exists():
+                old_df = pd.read_csv(output_path)
+                # Compare old and new dataframes
+                if old_df.equals(data_df):
+                    print(colorize(f"{test_filename} already exists and is identical. Skipping generation.", "blue"))
+                    parsed += 1
+                    continue
+                else:
+                    print(colorize(f"{test_filename} already exists but differs. Overwriting with new data.", "yellow"))
+                    print(old_df.index)
+                    print(old_df.columns)
+                    print(data_df.index)
+                    print(data_df.columns)
             # parse through and generate metadata json file
             status = parse_metadata(metadata,test_filename)
             if status == None:
-                test_name = f"{test_filename}.csv"
-                output_path = OUTPUT_DIR / test_name  
                 data_df.to_csv(output_path, index=False)
                 print(colorize(f"Generated {output_path}", "blue"))
                 parsed += 1
@@ -134,7 +147,7 @@ def parse_file(file_path):
             tb_list = traceback.extract_tb(e.__traceback__)
             fail = None
             for tb in reversed(tb_list):
-                if "PH_preparse_md_B" in tb.filename and "get_number" not in tb.name:
+                if "Preparse_Cone-mdB" in tb.filename and "get_number" not in tb.name:
                     fail = tb
                     break
             if not fail:
@@ -318,8 +331,8 @@ def parse_data(data_df,test,file_name):
     query = 'AREA'
     mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False, na=False).any(), axis=1)
     matching_rows = df[mask]
-    print(matching_rows)   
-    print(df[110:150])
+    #print(matching_rows)   
+    #print(df[110:150])
     print('-------------------------------------------------------------------')
     def delete_cells(col):
         # Convert to string, strip whitespace
@@ -344,7 +357,7 @@ def parse_data(data_df,test,file_name):
 
     # remove all miscellaneous cells
     data_df = data_df.apply(delete_cells)
-
+    print(data_df.columns)
     # remove unnecessary headers
     # data_df = data_df[~data_df.astype(str).apply(lambda row: row.str.contains("TIME", case=False, na=False).any(), axis=1)]
 
@@ -395,11 +408,11 @@ def parse_data(data_df,test,file_name):
             data_df.columns.values[i] = "MLR (g/s)"
         elif "AIR" in  column:
             data_df.columns.values[i] = "MFR (kg/s))"
-        elif "COMB" in column:
+        elif "H" in column and "COM" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "CO2" in column or "C02" in column:
             data_df.columns.values[i] = "CO2 (kg/kg)"
-        elif ("CO" in column or "C0" in column) and "2" not in column:
+        elif ("CO" in column or "C0" in column) and ("2" not in column and "H" not in column and "S" not in column and 'M' not in column):
             data_df.columns.values[i] = "CO (kg/kg)"
         elif "H2" in column:
             #some of the O were seen as 0, H2 to remove error
@@ -428,6 +441,7 @@ def parse_data(data_df,test,file_name):
             msg = f'Illegal Column Detected: {column}'
             raise Exception(msg)
         
+    
     # replacing "*" with NaN
     data_df = data_df.apply(lambda col: col.map(lambda x: np.nan if "*" in str(x) else x))
     data_df = data_df.apply(pd.to_numeric, errors = 'coerce').astype(float)
@@ -632,7 +646,7 @@ def parse_metadata(input,test_name):
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4))
     print(colorize(f"Generated {meta_path}", "blue"))
-
+    return None
     
 
     # metadata table checker
