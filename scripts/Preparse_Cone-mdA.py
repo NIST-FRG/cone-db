@@ -102,11 +102,27 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            test_name = f"{test_filename}.csv"
+            output_path = OUTPUT_DIR / test_name
+            if output_path.exists():
+                old_df = pd.read_csv(output_path)
+                # Compare old and new dataframes
+                if old_df.equals(data_df):
+                    print(colorize(f"{test_filename} already exists and is identical. Skipping generation.", "blue"))
+                    parsed += 1
+                    continue
+                else:
+                    print(colorize(f"{test_filename} already exists but differs. Overwriting with new data.", "yellow"))
+                    # Print DataFrame differences
+                    #diff = old_df.compare(data_df)
+                    #print("Differences:\n", diff)
+                    print(old_df.index)
+                    print(old_df.columns)
+                    print(data_df.index)
+                    print(data_df.columns)
             # parse through and generate metadata json file
             status = parse_metadata(metadata,test_filename)
             if status == None:
-                test_name = f"{test_filename}.csv"
-                output_path = OUTPUT_DIR / test_name
                 data_df.to_csv(output_path, index=False)
                 print(colorize(f"Generated {output_path}", "blue"))
                 parsed += 1
@@ -116,7 +132,7 @@ def parse_file(file_path):
             tb_list = traceback.extract_tb(e.__traceback__)
             fail = None
             for tb in reversed(tb_list):
-                if "PH_preparse_md_A" in tb.filename and "get_number" not in tb.name:
+                if "Preparse_Cone-mdA" in tb.filename and "get_number" not in tb.name:
                     fail = tb
                     break
             if not fail:
@@ -349,13 +365,13 @@ def parse_data(data_df,test,file_name):
                 #if this becomes an issue (Mass loss listed before MLR) can switch to check if monotonically inc
             else:
                 data_df.columns.values[i] = "Mass Loss (kg/m2)"
-        elif "HT" in column:
+        elif "HT" in column or "COM" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "EX" in column and "COEFF" not in column:
             data_df.columns.values[i] = "Extinction Area (m2/kg)"
-        elif "CO2" in column or "C02" in column:
+        elif "CO2" in column or "C02" in column or "COS" in column or "C0S" in column:
             data_df.columns.values[i] = "CO2 (kg/kg)"
-        elif ("CO" in column or "C0" in column) and "2" not in column:
+        elif ("CO" in column or "C0" in column) and ("2" not in column and "H" not in column and "S" not in column):
             data_df.columns.values[i] = "CO (kg/kg)"
         elif "H2" in column:
             #some of the O were seen as 0, H2 to remove error
