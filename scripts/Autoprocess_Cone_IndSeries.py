@@ -37,6 +37,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     badpaths = []
     Flux = int(re.search(r'(\d+)', str(series_name).split('_')[1]).group(1))
     Folder = paths[0].parent
+    metadata_folder = Path(str(Folder).replace("Exp-Data_Prepared-Final", "Metadata/Prepared-Final"))
     Dataframes_Whole = []
     Dataframes_HRRPUA = [] 
     masses = []
@@ -434,7 +435,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             tot_smoke =1/sa * (df_tot['Smoke Production (m2/s)'] * df_tot['dt']).sum() if sa else None
 
         
-        if 'CO2 Production (g/s)' in columns: #actual data can calculate
+        if 'CO2 Production (g/s)' in df_tot.columns: #actual data can calculate
             Y_soot = ((df_tot['Soot Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
             Y_CO2 = ((df_tot['CO2 Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
             Y_CO = ((df_tot['CO Production (g/s)'] * df_tot['dt']).sum()) / sample_mass
@@ -488,7 +489,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     #Onset values seem to be getting incorrectly populated in here, but they are being found correctly in df_values
     mat_ID = series_name.split("_" , 1)[0]
     matl_meta = matl_dir / f"{mat_ID}.json"
-    #if matl_meta.exists():
+    series_meta = metadata_folder / f"{series_name}_Average.json"
     if matl_meta.exists():
         with open(matl_meta, "r") as f:
             matl_data = json.load(f)
@@ -512,8 +513,21 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
             f.write(json.dumps(matl_data, indent=4))
         print(colorize(f"Material metadata updated for {mat_ID}", "green"))
     else:
-        print(colorize(f"Material metadata does not exist for {mat_ID}", "red"))
+        print(colorize(f"Material metadata does not exist for {mat_ID}, generating average series metadata", "red"))
+        matl_data = {}
 
+        testlist = []
+        for path in paths:
+            testlist.append(path.stem)
+        matl_data["Experiments"] = testlist
+
+        for key in df_values.columns:
+            matl_data[key] = float(f"{df_values[key]['mean']:.4g}")
+            unc_key = 'Uc ' + key
+            matl_data[unc_key] = float(f"{df_values[key]['uncertainty']:.4g}")
+
+        with open(series_meta, "w") as f:
+            f.write(json.dumps(matl_data, indent=4))
 
 
     # Updata test metadata
@@ -540,7 +554,6 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
                 metadata[key] = float(f"{df_values[key][counter]:.4g}")
         
         metadata["Autoprocessed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(metadata["Autoprocessed"])
         if HRR_out[counter] == True:
             metadata['Heat Release Rate Outlier'] = True
         elif HRR_out[counter] == False:
@@ -549,7 +562,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         # replace all NaN values with None (which turns into null when serialized) to fit JSON spec (and get rid of red underlines)
         metadata = {k: v if v == v else None for k, v in metadata.items()}
         
-        print(file_meta)
+
         # Save test metadata
         with open(file_meta, "w") as w:
             json.dump(metadata, w, indent=4)    
