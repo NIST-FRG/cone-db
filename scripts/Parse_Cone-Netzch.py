@@ -438,9 +438,7 @@ def process_data(data, metadata):
  
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
     amb_temp = float(metadata["Ambient Temperature (°C)"])
-
     rel_humid = float(metadata['Relative Humidity (%)'])
-    print('check')
     amb_pressure = float(metadata["Barometric Pressure (Pa)"])
 
     #region delay, baselines
