@@ -72,6 +72,7 @@
     "Steady Burning HRRPUA (kW/m2)": 64.45,
     "Steady Burning HRRPUA Outlier": false,
     "Peak HRRPUA (kW/m2)": 176.5,
+    "Peak HRRPUA Outlier": false,
     "Total Heat Release (MJ/m2)": 25.79,
     "Total Heat Release Outlier": false,
     "Average HoC (MJ/kg)": 13.31,
@@ -95,14 +96,12 @@
     "Ignition Energy (MJ/m2)": 0.35,
     "Ignition Energy Outlier": false,
     "t_flameout (s)": 366.0,
-    "t_flameout outlier": null,
+    "t_flameout Outlier": false,
     "Comments": [
         "Pre-test: nan",
         "Post-test: nan"
     ],
     "Data Corrections": [
         "2025-12-22 10:37:04: Data from -1s to 1s was removed"
-    ],
-    "Peak HRRPUA Outlier": false,
-    "t_flameout Outlier": false
+    ]
 }
