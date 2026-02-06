@@ -583,7 +583,7 @@ def parse_metadata(input,test_name):
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
     'Peak MLRPUA (g/s-m2)','Peak MLRPUA Outlier',
     'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
-    'Peak HRRPUA (kW/m2)', 'Peak MLRPUA Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
     'Average Specific Extinction Area (m2/kg)', 'Average Specific Extinction Area Outlier',
@@ -595,7 +595,7 @@ def parse_metadata(input,test_name):
     'Y_CO (g/g)', 'Y_CO Outlier',
     'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
     'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier',
-    "t_flameout (s)","t_flameout outlier",
+    "t_flameout (s)","t_flameout Outlier",
     'Comments', 'Data Corrections'
         ]
 

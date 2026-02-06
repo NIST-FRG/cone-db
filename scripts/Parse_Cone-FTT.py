@@ -26,12 +26,12 @@ if len(args) > 2:
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR1 = Path(r"C:\Users\rtg4\Desktop\FTTCone\FTT-White")
+INPUT_DIR1 = PROJECT_ROOT / "data" / "raw" / "FTTCone" / "FTT-White"
 OUTPUT_DIR1 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-White"
 META_DIR1 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-White"
 LOG_FILE1 = PROJECT_ROOT/ "parse_FTT-White_log.json"
 
-INPUT_DIR2 = Path(r"C:\Users\rtg4\Desktop\FTTCone\FTT-Black")
+INPUT_DIR2 = PROJECT_ROOT / "data" / "raw" / "FTTCone" / "FTT-Black"
 OUTPUT_DIR2 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-Black"
 META_DIR2 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-Black"
 LOG_FILE2 = PROJECT_ROOT / "parse_FTT-Black_log.json"
@@ -243,7 +243,7 @@ def parse_metadata(df,file_path, meta):
     'Steady Burning MLRPUA (g/s-m2)', 'Steady Burning MLRPUA Outlier',
     'Peak MLRPUA (g/s-m2)','Peak MLRPUA Outlier',
     'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
-    'Peak HRRPUA (kW/m2)', 'Peak MLRPUA Outlier',
+    'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
     'Average HoC (MJ/kg)', 'Average HoC Outlier',
     'Average Specific Extinction Area (m2/kg)', 'Average Specific Extinction Area Outlier',
@@ -255,7 +255,7 @@ def parse_metadata(df,file_path, meta):
     'Y_CO (g/g)', 'Y_CO Outlier',
     'Fire Growth Potential (m2/J)', 'Fire Growth Potential Outlier',
     'Ignition Energy (MJ/m2)', 'Ignition Energy Outlier',
-    "t_flameout (s)","t_flameout outlier",
+    "t_flameout (s)","t_flameout Outlier",
     'Comments', 'Data Corrections'
         ]
     cone = "White" if "White" in str(meta) else "Black" if "Black" in str(meta) else "Test"
