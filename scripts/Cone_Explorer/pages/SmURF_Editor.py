@@ -49,12 +49,17 @@ if st.button("Import Data To Explorer"):
 
         # If test is "bad", remove files from explorer if present
         if bad is not None:
+            m = False
+            c = False
             if new_file.exists():
                 new_file.unlink()
+                m = True
             csv_in_explorer = new_file.with_suffix(".csv")
             if csv_in_explorer.exists():
                 csv_in_explorer.unlink()
-            st.sidebar.error(f"{new_file.stem} has been removed from the explorer, as it was deemed a bad test.")
+                c = True
+            if m or c:    
+                st.sidebar.warning(f"{new_file.stem} has been removed from the explorer, as it was deemed a bad test.")
             continue
 
         # Otherwise, check whether file already exists in explorer
@@ -75,15 +80,55 @@ if st.button("Import Data To Explorer"):
 # maps the filename stem to the full path of the metadata file
 metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}
 data_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.csv"))}
-if not st.checkbox('Include Smurfed Tests'):
+# Initialize the queue in session state if it doesn't exist
+if "test_queue" not in st.session_state:
+    st.session_state.test_queue = []
+
+st.sidebar.markdown("### Filter Tests")
+
+# Filter by SmURFed status
+include_smurfed = st.sidebar.checkbox('Include SmURFed Tests', value=False)
+
+# Filter by queue
+use_queue_only = st.sidebar.checkbox(
+    'Show Queued Tests Only', 
+    value=False,
+    disabled=len(st.session_state.test_queue) == 0,
+    help="Select tests on the Metadata Search page to populate the queue"
+)
+
+# Display queue status in sidebar
+if st.session_state.test_queue:
+    st.sidebar.success(f"📋 {len(st.session_state.test_queue)} test(s) in queue")
+    with st.sidebar.expander("View Queue"):
+        for test in st.session_state.test_queue:
+            st.text(f"• {test}")
+        if st.button("Clear Queue", key="sidebar_clear_queue"):
+            st.session_state.test_queue = []
+            st.rerun()
+else:
+    st.sidebar.info("📋 Queue is empty")
+
+# Apply SmURFed filter
+if not include_smurfed:
     filtered_tests = []
     for test_name, test_value in metadata_path_map.items():     
         with open(test_value, 'r') as f:
             metadata = json.load(f)
-        if metadata["SmURF"] == None:
+        if metadata.get("SmURF") is None:
             filtered_tests.append(test_name)
     metadata_path_map = {test: metadata_path_map[test] for test in filtered_tests if test in metadata_path_map}
-    data_path_map = {test: metadata_path_map[test].with_suffix('.csv') for test in filtered_tests}
+    data_path_map = {test: metadata_path_map[test].with_suffix('.csv') for test in filtered_tests if test in metadata_path_map}
+
+# Apply queue filter
+if use_queue_only and st.session_state.test_queue:
+    # Only keep tests that are both in the current metadata_path_map AND in the queue
+    queued_tests = [test for test in st.session_state.test_queue if test in metadata_path_map]
+    metadata_path_map = {test: metadata_path_map[test] for test in queued_tests}
+    data_path_map = {test: metadata_path_map[test].with_suffix('.csv') for test in queued_tests if test in metadata_path_map}
+    
+    if not queued_tests:
+        st.warning("None of the queued tests are available with current filters. Try enabling 'Include SmURFed Tests' or check if tests have been imported.")
 
 if "metadata_loaded_once" not in st.session_state:
     st.session_state.metadata_loaded_once = False
@@ -565,15 +610,10 @@ def restore_types(edited_df, original_metadata):
                 restored[key] = edited_val
             else:
                 # Attempt to convert from string to list
-                try:
-                    import ast
-                    restored[key] = ast.literal_eval(edited_val)
-                except:
-                    st.error(f"Input Error: Value for {key} must be convertible to a list. Please change this field or press **Reload** to remove input.")
-                    error = True
-                    break
-
-        # (Add more types as needed, e.g., dict)
+                if edited_val is None or edited_val == "":
+                    restored[key] = []
+                else:
+                    restored[key] = [item.strip() for item in str(edited_val).split("\n") if item.strip()]
 
         # String (fallback)
         else:
@@ -802,6 +842,8 @@ def export_metadata(df, original_metadata):
             reordered_data[c] = data[c]
     
     reordered_data.to_csv(Path(prepared_data) / new_filename.replace(".json", ".csv"), index=False)
+    if "test_queue" in st.session_state and selected_test in st.session_state.test_queue:
+        st.session_state.test_queue.remove(selected_test)
     st.success(f"Data and Metadata for {new_filename} Exported Successfully")
  
 
