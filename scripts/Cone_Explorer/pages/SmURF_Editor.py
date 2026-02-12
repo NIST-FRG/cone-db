@@ -29,6 +29,14 @@ st.set_page_config(page_title="SmURF Editor", page_icon="📊", layout="wide")
 st.title("SmURF Editor")
 
 #####################################################################################################
+if st.button("Clear Explorer Data"):
+    if INPUT_DATA_PATH.exists():
+        shutil.rmtree(INPUT_DATA_PATH)
+        st.success("Explorer data cleared successfully")
+    else:
+        st.info("Explorer data folder is already empty")
+
+
 if st.button("Import Data To Explorer"):
     INPUT_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -438,9 +446,10 @@ if test_selection:
         data_copy = test_data.copy()  # Make a copy to modify the data
         for column in data_copy.columns:
         # Apply the cutoff for each column separately
-            cutoff_start, cutoff_end = column_cutoff_ranges
-            cutoff_index = ((test_data['Time (s)'] >= cutoff_start) & (test_data['Time (s)'] <= cutoff_end))  
-            data_copy.loc[cutoff_index, column] = float('nan')
+            if column != 'Time (s)':
+                cutoff_start, cutoff_end = column_cutoff_ranges
+                cutoff_index = ((test_data['Time (s)'] >= cutoff_start) & (test_data['Time (s)'] <= cutoff_end))  
+                data_copy.loc[cutoff_index, column] = float('nan')
         # Create plots
         fig = go.Figure()
         fig.add_trace(
@@ -713,9 +722,16 @@ st.button("Reload Metadata", on_click= reload_metadata, use_container_width=True
 if test_selection:
     df = st.data_editor(
         df,
-        key=st.session_state.editor_key,  
+        key=st.session_state.editor_key,
         use_container_width=True,
         num_rows="fixed",
+        column_config={
+            df.columns[0]: st.column_config.TextColumn(
+                "Value",
+                disabled=False,  # Explicitly enable editing
+            ),
+        },
+        disabled=False, 
     )
 
 st.button("Save Metadata", on_click=lambda: save_metadata(df,ogmeta), use_container_width=True)

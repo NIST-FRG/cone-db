@@ -377,9 +377,10 @@ if material_selection:
                 data_copy = test_data.copy()  # Make a copy to modify the data
                 for column in data_copy.columns:
                 # Apply the cutoff for each column separately
-                    cutoff_start, cutoff_end = column_cutoff_ranges
-                    cutoff_index = ((test_data['Time (s)'] >= cutoff_start) & (test_data['Time (s)'] <= cutoff_end))  
-                    data_copy.loc[cutoff_index, column] = float('nan')
+                    if column != 'Time (s)':
+                        cutoff_start, cutoff_end = column_cutoff_ranges
+                        cutoff_index = ((test_data['Time (s)'] >= cutoff_start) & (test_data['Time (s)'] <= cutoff_end))  
+                        data_copy.loc[cutoff_index, column] = float('nan')
                 # Create plots
                 fig = go.Figure()
                 fig.add_trace(
