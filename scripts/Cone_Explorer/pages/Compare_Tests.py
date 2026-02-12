@@ -173,7 +173,6 @@ try:
             else:
                 test_metadata = (json.load(open(metadata_name_map[test_stem])))
                 data = pd.read_csv(test_name_map[test_stem])
-                print(test_name_map[test_stem])
                 surf_area = test_metadata.get("Surface Area (m2)")
                 mass = test_metadata.get("Sample Mass (g)")
                 X_O2_i = test_metadata.get("X_O2 Initial")
