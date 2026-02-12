@@ -715,6 +715,7 @@ if test_selection:
         df,
         key=st.session_state.editor_key,  
         use_container_width=True,
+        num_rows="fixed",
     )
 
 st.button("Save Metadata", on_click=lambda: save_metadata(df,ogmeta), use_container_width=True)
