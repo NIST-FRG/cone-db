@@ -155,7 +155,8 @@ def parse_file(file_path, output, meta):
         with open(metadata_output_path, "r") as f:
             existing_meta = json.load(f)
         if existing_meta["Parsed"] > RawMod:
-            print(colorize(f"Files for already exist and are up to date.", 'yellow'))
+            print(colorize(f"Metadata for {file_path.stem} already exists and is up to date.", 'yellow'))
+            data.to_csv(data_output_path, index=False)
             return
 
     with open(metadata_output_path, "w+") as f:
