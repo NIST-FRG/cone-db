@@ -663,7 +663,7 @@ if 'df_original' not in st.session_state:
     st.session_state.df_original = df.copy()
 st.session_state.df = df
 
-st.button("Reload Metadata", on_click=reload_metadata, use_container_width=True)
+st.button("Reload Metadata", on_click=reload_metadata, width='stretch')
 
 if test_selection:
     edited_df = st.data_editor(
@@ -674,9 +674,9 @@ if test_selection:
         disabled=["Property"],
     )
 
-st.button("Save Metadata", on_click=lambda: save_metadata(edited_df, ogmeta), use_container_width=True)
-st.button("Revert Metadata", on_click=revert_to_parsed, use_container_width=True)
-st.button("Delete files", on_click=delete_files, use_container_width=True)
+st.button("Save Metadata", on_click=lambda: save_metadata(edited_df, ogmeta), width='stretch')
+st.button("Revert Metadata", on_click=revert_to_parsed, width='stretch')
+st.button("Delete files", on_click=delete_files, width='stretch')
 
 
 # region export_metadata
@@ -808,7 +808,7 @@ def export_metadata(edited_df, original_metadata):
     st.success(f"Data and Metadata for {new_filename} Exported Successfully")
 
 
-st.sidebar.button("Export Data and Metadata", on_click=lambda: export_metadata(edited_df, ogmeta), use_container_width=True)
+st.sidebar.button("Export Data and Metadata", on_click=lambda: export_metadata(edited_df, ogmeta), width='stretch')
 st.sidebar.markdown("Selected files are renamed, and their data and metadata are exported to the prepared stage")
 
 st.divider()
