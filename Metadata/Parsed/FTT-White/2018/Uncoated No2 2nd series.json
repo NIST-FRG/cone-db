@@ -3,7 +3,7 @@
     "Material Name": "uncoated red cedar No2",
     "Sample Mass (g)": 45.829,
     "Residual Mass (g)": 5.734084,
-    "Specimen Number": 9,
+    "Replicate": 9,
     "Original Testname": "Uncoated No2 2nd series",
     "Testname": "RedCedar_50kW_hor_R9",
     "Thickness (mm)": 16.0,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18040003) does not match actual filename (Uncoated No2 2nd series)"
+    ]
 }

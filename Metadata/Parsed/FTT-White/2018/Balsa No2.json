@@ -3,7 +3,7 @@
     "Material Name": "Balsa No2",
     "Sample Mass (g)": 21.007,
     "Residual Mass (g)": 3.900651,
-    "Specimen Number": 2,
+    "Replicate": 2,
     "Original Testname": "Balsa No2",
     "Testname": "Balsa_50kW_hor_R2",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070023) does not match actual filename (Balsa No2)"
+    ]
 }

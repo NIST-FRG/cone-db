@@ -187,7 +187,7 @@ def parse_metadata(df,file_path, meta):
     "Material Name",
     "Sample Mass (g)",
     "Residual Mass (g)",
-    "Specimen Number",
+    "Replicate",
     "Original Testname",
     "Testname",
     "Thickness (mm)",
@@ -318,7 +318,7 @@ def parse_metadata(df,file_path, meta):
     
     metadata["Material Name"] = raw_metadata["Material name/ID"]
     metadata["Sample Description"] = raw_metadata["Sample description"]
-    metadata["Specimen Number"] = raw_metadata["Specimen number"]
+    metadata["Replicate"] = raw_metadata["Specimen number"]
     metadata["Specimen Prep"] = raw_metadata["Additional specimen preparation details"]
     metadata["Sponsor"] = raw_metadata["Sponsor"]
 
@@ -360,6 +360,12 @@ def parse_metadata(df,file_path, meta):
     metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata["Original Source"] = f"FTT-{cone}/{test_date.year}"
     metadata['Data Corrections'] =[]
+
+
+    og_testname = Path(raw_metadata.get("Filename")).stem
+    if og_testname != file_path.stem:
+        metadata['Data Corrections'].append(f"Original filename in metadata ({og_testname}) does not match actual filename ({file_path.stem})")
+
 
     # replace all NaN values with None (which turns into null when serialized) to fit JSON spec (and get rid of red underlines)
     metadata = {k: v if v == v else None for k, v in metadata.items()}

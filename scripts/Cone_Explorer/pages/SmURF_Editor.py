@@ -542,7 +542,7 @@ def restore_types(edited_df, original_metadata):
                     st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
                     error = True
                     break
-            elif key in ["Specimen Number", "Heat Flux (kW/m2)", "Test Start Time (s)", "Test End Time (s)",
+            elif key in ["Replicate", "Heat Flux (kW/m2)", "Test Start Time (s)", "Test End Time (s)",
                          "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)", "t_ign (s)"]:
                 try:
                     restored[key] = int(edited_val)
@@ -669,7 +669,7 @@ if test_selection:
     edited_df = st.data_editor(
         df,
         key=st.session_state.editor_key,
-        use_container_width=True,
+        width = 'stretch',
         num_rows="fixed",
         disabled=["Property"],
     )
@@ -722,9 +722,9 @@ def export_metadata(edited_df, original_metadata):
         st.warning(f"Export Aborted: Unrecognized date format: {date}.")
         return
     try:
-        metadata['Specimen Number'] = int(metadata.get('Specimen Number')) 
+        metadata['Replicate'] = int(metadata.get('Replicate')) 
     except TypeError:
-        st.warning(f"Export Aborted: Please enter an integer Specimen Number.")
+        st.warning(f"Export Aborted: Please enter an integer Replicate number.")
         return
     
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
@@ -743,11 +743,14 @@ def export_metadata(edited_df, original_metadata):
     filename_parts = [
         material_id,
         f"{int(metadata['Heat Flux (kW/m2)'])}kW",
-        "vert" if metadata["Orientation"].upper() == "VERTICAL" else "hor",
+        "vert" if "VERT" in metadata["Orientation"].upper() else "hor" if  "HOR" in metadata["Orientation"].upper() else "unkn",
     ]
+    if "unkn" in filename_parts[2]:
+        st.warning(f"Export Aborted: Unrecognized Orientation: {metadata['Orientation']}. Please specify an orientation containing 'vert' or 'hor'")
+        return
 
-    if metadata.get("Specimen Number") is not None and metadata.get("Specimen Number") != "":
-        filename_parts.insert(3, f"R{metadata['Specimen Number']}")
+    if metadata.get("Replicate") is not None and metadata.get("Replicate") != "":
+        filename_parts.insert(3, f"R{metadata['Replicate']}")
     
     new_filename = "_".join(filename_parts) + ".json"
     old_filename = metadata["Original Testname"] + '.json'
@@ -757,7 +760,7 @@ def export_metadata(edited_df, original_metadata):
         existing_json = json.load(open(prep_save))
         oldname2 = existing_json.get("Original Testname")
         if oldname2 != metadata["Original Testname"]:
-            st.warning(f"Export Aborted: A test with the filename {new_filename} already exists in the prepared folder. Please adjust the Material ID or Specimen Number to create a unique filename.")
+            st.warning(f"Export Aborted: A test with the filename {new_filename} already exists in the prepared folder. Please adjust the Material ID or Replicate number to create a unique filename.")
             return
     
     metadata['Testname'] = "_".join(filename_parts)

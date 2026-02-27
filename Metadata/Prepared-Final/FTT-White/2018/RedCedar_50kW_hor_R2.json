@@ -3,7 +3,7 @@
     "Material Name": "Red cedar No2",
     "Sample Mass (g)": 43.58,
     "Residual Mass (g)": 8.585563,
-    "Specimen Number": 2,
+    "Replicate": 2,
     "Original Testname": "Red cedar No2",
     "Testname": "RedCedar_50kW_hor_R2",
     "Thickness (mm)": 12.5,
@@ -102,6 +102,7 @@
         "Post-test: nan"
     ],
     "Data Corrections": [
+        "Original filename in metadata (18070046) does not match actual filename (Red cedar No2)",
         "2025-12-22 15:45:27: Data from -1s to 2s was removed"
     ]
 }

@@ -3,7 +3,7 @@
     "Material Name": "Ebony No3",
     "Sample Mass (g)": 112.03,
     "Residual Mass (g)": 31.318011,
-    "Specimen Number": 3,
+    "Replicate": 3,
     "Original Testname": "Ebony No3",
     "Testname": "Ebony_50kW_hor_R3",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070053) does not match actual filename (Ebony No3)"
+    ]
 }

@@ -235,6 +235,11 @@ def parse_metadata(input_meta, output_meta):
         metadata = json.load(f)
     #parsed tag
     metadata['Parsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if "Specimen Number" in metadata:
+        metadata = {
+            ("Replicate" if k == "Specimen Number" else k): (None if k == "Specimen Number" else v)
+            for k, v in metadata.items()
+        }
     with open(output_meta, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata, indent=4))
     print(colorize(f"Generated {output_meta.name}", "green"))
