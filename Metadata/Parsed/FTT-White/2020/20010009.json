@@ -3,7 +3,7 @@
     "Material Name": "PH 3 uncoated 2.0",
     "Sample Mass (g)": 104.35,
     "Residual Mass (g)": 28.350485,
-    "Replicate": null,
+    "Replicate": 3,
     "Original Testname": "20010009",
     "Testname": "Purpleheart_50kW_hor_R3",
     "Thickness (mm)": 12.5,

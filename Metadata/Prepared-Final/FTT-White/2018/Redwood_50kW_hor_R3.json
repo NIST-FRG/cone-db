@@ -3,7 +3,7 @@
     "Material Name": "Redwood No3",
     "Sample Mass (g)": 54.33,
     "Residual Mass (g)": 12.208959,
-    "Replicate": null,
+    "Replicate": 3,
     "Original Testname": "Redwood No3",
     "Testname": "Redwood_50kW_hor_R3",
     "Thickness (mm)": 12.5,

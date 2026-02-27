@@ -3,7 +3,7 @@
     "Material Name": "Uncoated red cedar 40kWm2",
     "Sample Mass (g)": 40.7,
     "Residual Mass (g)": 9.623574,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Uncoated red cedar 40 kWm2",
     "Testname": "RedCedar_40kW_vert_R1",
     "Thickness (mm)": 12.5,

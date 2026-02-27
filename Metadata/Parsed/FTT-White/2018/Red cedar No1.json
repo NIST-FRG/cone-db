@@ -3,7 +3,7 @@
     "Material Name": "Red cedar No1",
     "Sample Mass (g)": 37.84,
     "Residual Mass (g)": 6.700657,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Red cedar No1",
     "Testname": "RedCedar_50kW_hor_R1",
     "Thickness (mm)": 12.5,

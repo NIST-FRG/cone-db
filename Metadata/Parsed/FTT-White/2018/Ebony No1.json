@@ -3,7 +3,7 @@
     "Material Name": "Ebony No1",
     "Sample Mass (g)": 115.71,
     "Residual Mass (g)": 59.422089,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Ebony No1",
     "Testname": "Ebony_50kW_hor_R1",
     "Thickness (mm)": 12.5,

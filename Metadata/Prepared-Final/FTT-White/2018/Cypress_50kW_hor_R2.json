@@ -3,7 +3,7 @@
     "Material Name": "Cypress No2",
     "Sample Mass (g)": 55.04,
     "Residual Mass (g)": 10.686004,
-    "Replicate": null,
+    "Replicate": 2,
     "Original Testname": "Cypress No2",
     "Testname": "Cypress_50kW_hor_R2",
     "Thickness (mm)": 12.5,

@@ -3,7 +3,7 @@
     "Material Name": "Kuldeep red cedar No1 10kWm2",
     "Sample Mass (g)": 62.26,
     "Residual Mass (g)": 59.837445,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Red cedar 10kWm2",
     "Testname": "RedCedar_10kW_hor_R1",
     "Thickness (mm)": 20.0,

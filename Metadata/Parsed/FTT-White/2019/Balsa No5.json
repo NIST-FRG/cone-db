@@ -3,7 +3,7 @@
     "Material Name": "Balsa No5",
     "Sample Mass (g)": 22.5,
     "Residual Mass (g)": 16.200272,
-    "Replicate": null,
+    "Replicate": 5,
     "Original Testname": "Balsa No5",
     "Testname": "Balsa_20kW_vert_R5",
     "Thickness (mm)": 12.5,

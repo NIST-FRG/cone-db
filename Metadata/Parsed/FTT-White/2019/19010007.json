@@ -3,7 +3,7 @@
     "Material Name": "Smoldering Ipe No2 20 kWm2",
     "Sample Mass (g)": 120.5,
     "Residual Mass (g)": 27.553586,
-    "Replicate": null,
+    "Replicate": 2,
     "Original Testname": "19010007",
     "Testname": "Ipe_20kW_vert_R2",
     "Thickness (mm)": 12.5,

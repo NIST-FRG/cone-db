@@ -3,7 +3,7 @@
     "Material Name": "Balsa No1",
     "Sample Mass (g)": 21.27,
     "Residual Mass (g)": 3.900485,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Balsa No1",
     "Testname": "Balsa_50kW_hor_R1",
     "Thickness (mm)": 12.5,

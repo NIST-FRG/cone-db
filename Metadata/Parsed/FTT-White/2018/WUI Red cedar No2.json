@@ -3,7 +3,7 @@
     "Material Name": "WUI Red cedar No2",
     "Sample Mass (g)": 40.82,
     "Residual Mass (g)": 10.126267,
-    "Replicate": null,
+    "Replicate": 5,
     "Original Testname": "WUI Red cedar No2",
     "Testname": "RedCedar_50kW_hor_R5",
     "Thickness (mm)": 12.5,

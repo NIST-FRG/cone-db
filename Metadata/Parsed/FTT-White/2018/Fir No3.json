@@ -3,7 +3,7 @@
     "Material Name": "Fir No3",
     "Sample Mass (g)": 52.2,
     "Residual Mass (g)": 9.805775,
-    "Replicate": null,
+    "Replicate": 3,
     "Original Testname": "Fir No3",
     "Testname": "Fir_50kW_hor_R3",
     "Thickness (mm)": 12.5,

@@ -3,7 +3,7 @@
     "Material Name": "Fir No1V",
     "Sample Mass (g)": 49.5,
     "Residual Mass (g)": 32.057269,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Fir No1V",
     "Testname": "Fir_20kW_vert_R1",
     "Thickness (mm)": 12.5,

@@ -3,7 +3,7 @@
     "Material Name": "Uncoated red cedar No3",
     "Sample Mass (g)": 42.9388,
     "Residual Mass (g)": 10.005727,
-    "Replicate": null,
+    "Replicate": 10,
     "Original Testname": "Uncoated No3",
     "Testname": "RedCedar_50kW_hor_R10",
     "Thickness (mm)": 16.0,

@@ -3,7 +3,7 @@
     "Material Name": "Redwood No1V",
     "Sample Mass (g)": 60.86,
     "Residual Mass (g)": 41.244057,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Redwood No1V",
     "Testname": "Redwood_20kW_vert_R1",
     "Thickness (mm)": 12.5,

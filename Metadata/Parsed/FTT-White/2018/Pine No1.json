@@ -3,7 +3,7 @@
     "Material Name": "Pine No1",
     "Sample Mass (g)": 46.49,
     "Residual Mass (g)": 9.603959,
-    "Replicate": null,
+    "Replicate": 1,
     "Original Testname": "Pine No1",
     "Testname": "Pine_50kW_hor_R1",
     "Thickness (mm)": 12.5,
