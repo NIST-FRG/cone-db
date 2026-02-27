@@ -3,7 +3,7 @@
     "Material Name": "Fir No1",
     "Sample Mass (g)": 48.72,
     "Residual Mass (g)": 11.890093,
-    "Specimen Number": 1,
+    "Replicate": null,
     "Original Testname": "Fir No1",
     "Testname": "Fir_50kW_hor_R1",
     "Thickness (mm)": 12.5,
@@ -102,6 +102,7 @@
         "Post-test: nan"
     ],
     "Data Corrections": [
+        "Original filename in metadata (18070048) does not match actual filename (Fir No1)",
         "2025-12-22 12:18:29: Data from -1s to 2s was removed"
     ]
 }

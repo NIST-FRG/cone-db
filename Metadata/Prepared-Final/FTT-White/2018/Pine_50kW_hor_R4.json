@@ -3,7 +3,7 @@
     "Material Name": "Untreated Pine No3 1st series 60 mm",
     "Sample Mass (g)": 46.5196,
     "Residual Mass (g)": 9.105282,
-    "Specimen Number": 4,
+    "Replicate": null,
     "Original Testname": "Unterated pine No3 1st series 60 mm",
     "Testname": "Pine_50kW_hor_R4",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18060008) does not match actual filename (Unterated pine No3 1st series 60 mm)"
+    ]
 }

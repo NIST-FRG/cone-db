@@ -3,7 +3,7 @@
     "Material Name": "Kuldeep Red Cedar 25 kWm2",
     "Sample Mass (g)": 62.23,
     "Residual Mass (g)": 12.487659,
-    "Specimen Number": 1,
+    "Replicate": null,
     "Original Testname": "Red Cedar 25 kWm2",
     "Testname": "RedCedar_25kW_hor_R1",
     "Thickness (mm)": 20.0,
@@ -102,6 +102,7 @@
         "Post-test: nan"
     ],
     "Data Corrections": [
+        "Original filename in metadata (19030019) does not match actual filename (Red Cedar 25 kWm2)",
         "2025-12-22 16:20:37: Data from 17s to 21s was removed"
     ]
 }

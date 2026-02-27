@@ -3,7 +3,7 @@
     "Material Name": "Uncoated red cedar 15kWm2",
     "Sample Mass (g)": 38.82,
     "Residual Mass (g)": 31.535204,
-    "Specimen Number": 1,
+    "Replicate": null,
     "Original Testname": "Uncoated red cedar 15 kwm2",
     "Testname": "RedCedar_15kW_vert_R1",
     "Thickness (mm)": 12.5,
@@ -102,6 +102,7 @@
         "Post-test: nan"
     ],
     "Data Corrections": [
+        "Original filename in metadata (18110042) does not match actual filename (Uncoated red cedar 15 kwm2)",
         "2025-12-22 17:44:55: Data from -1s to 5s was removed"
     ]
 }

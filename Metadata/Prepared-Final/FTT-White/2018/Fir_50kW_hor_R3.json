@@ -3,7 +3,7 @@
     "Material Name": "Fir No3",
     "Sample Mass (g)": 52.2,
     "Residual Mass (g)": 9.805775,
-    "Specimen Number": 3,
+    "Replicate": null,
     "Original Testname": "Fir No3",
     "Testname": "Fir_50kW_hor_R3",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070039) does not match actual filename (Fir No3)"
+    ]
 }

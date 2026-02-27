@@ -3,7 +3,7 @@
     "Material Name": "WUI Red cedar No1",
     "Sample Mass (g)": 41.33,
     "Residual Mass (g)": 9.13168,
-    "Specimen Number": 4,
+    "Replicate": null,
     "Original Testname": "WUI red cedar NO1",
     "Testname": "RedCedar_50kW_hor_R4",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18110018) does not match actual filename (WUI red cedar NO1)"
+    ]
 }

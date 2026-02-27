@@ -3,7 +3,7 @@
     "Material Name": "Pine No3",
     "Sample Mass (g)": 49.57,
     "Residual Mass (g)": 9.602349,
-    "Specimen Number": 3,
+    "Replicate": null,
     "Original Testname": "Pine No3",
     "Testname": "Pine_50kW_hor_R3",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070052) does not match actual filename (Pine No3)"
+    ]
 }

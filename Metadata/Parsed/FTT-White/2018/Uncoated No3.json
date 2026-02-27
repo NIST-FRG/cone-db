@@ -3,7 +3,7 @@
     "Material Name": "Uncoated red cedar No3",
     "Sample Mass (g)": 42.9388,
     "Residual Mass (g)": 10.005727,
-    "Specimen Number": 10,
+    "Replicate": null,
     "Original Testname": "Uncoated No3",
     "Testname": "RedCedar_50kW_hor_R10",
     "Thickness (mm)": 16.0,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: start at ignition and not when I remove the shutters + not correct surface area"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18040002) does not match actual filename (Uncoated No3)"
+    ]
 }

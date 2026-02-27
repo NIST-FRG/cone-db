@@ -3,7 +3,7 @@
     "Material Name": "Ipe No2",
     "Sample Mass (g)": 113.45,
     "Residual Mass (g)": 24.215209,
-    "Specimen Number": 2,
+    "Replicate": null,
     "Original Testname": "Ipe No2",
     "Testname": "Ipe_50kW_hor_R2",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070049) does not match actual filename (Ipe No2)"
+    ]
 }

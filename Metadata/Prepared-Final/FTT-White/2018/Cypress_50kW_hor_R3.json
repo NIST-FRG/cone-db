@@ -3,7 +3,7 @@
     "Material Name": "Cypress No3",
     "Sample Mass (g)": 57.88,
     "Residual Mass (g)": 11.404602,
-    "Specimen Number": 3,
+    "Replicate": null,
     "Original Testname": "Cypress No3",
     "Testname": "Cypress_50kW_hor_R3",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18070038) does not match actual filename (Cypress No3)"
+    ]
 }

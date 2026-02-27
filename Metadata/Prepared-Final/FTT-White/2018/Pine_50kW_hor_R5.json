@@ -3,7 +3,7 @@
     "Material Name": "Untreated pine lumber 2 1st series 60 mm",
     "Sample Mass (g)": 46.5987,
     "Residual Mass (g)": 9.818345,
-    "Specimen Number": 5,
+    "Replicate": null,
     "Original Testname": "Untreated pine 2 1st series 60 mm",
     "Testname": "Pine_50kW_hor_R5",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18040012) does not match actual filename (Untreated pine 2 1st series 60 mm)"
+    ]
 }

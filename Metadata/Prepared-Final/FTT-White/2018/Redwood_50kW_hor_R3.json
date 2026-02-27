@@ -3,7 +3,7 @@
     "Material Name": "Redwood No3",
     "Sample Mass (g)": 54.33,
     "Residual Mass (g)": 12.208959,
-    "Specimen Number": 3,
+    "Replicate": null,
     "Original Testname": "Redwood No3",
     "Testname": "Redwood_50kW_hor_R3",
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18080023) does not match actual filename (Redwood No3)"
+    ]
 }

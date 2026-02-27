@@ -3,7 +3,7 @@
     "Material Name": "Uncoated 2 1st series 60mm",
     "Sample Mass (g)": 44.6061,
     "Residual Mass (g)": 8.721236,
-    "Specimen Number": null,
+    "Replicate": null,
     "Original Testname": "Uncoated 2 1st series 60mm",
     "Testname": null,
     "Thickness (mm)": 12.5,
@@ -101,5 +101,7 @@
         "Pre-test: nan",
         "Post-test: nan"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "Original filename in metadata (18050003) does not match actual filename (Uncoated 2 1st series 60mm)"
+    ]
 }
