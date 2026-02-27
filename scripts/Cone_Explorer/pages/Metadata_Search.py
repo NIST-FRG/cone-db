@@ -81,7 +81,7 @@ if test_metadata != []:
 
     # Queue management controls
     st.divider()
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
         st.metric("Currently Displayed", len(metadata_df))
@@ -97,6 +97,8 @@ if test_metadata != []:
         if st.button("Clear Entire Queue", use_container_width=True):
             st.session_state.test_queue = []
             st.rerun()
+    with col5:
+        simplified_view = st.toggle("View Critical Metadata Only", value=False)
 
     # Show all queued tests in expander
     if st.session_state.test_queue:
@@ -116,9 +118,18 @@ if test_metadata != []:
                         st.session_state.test_queue.remove(test)
                         st.rerun()
 
+    # Filter columns for simplified view
+    if simplified_view:
+        simplified_columns = ["Add to Queue", "Material Name", "Test Date", "Heat Flux (kW/m2)", "Orientation", "Comments"]
+        # Only include columns that exist in the dataframe
+        display_columns = [col for col in simplified_columns if col in metadata_df.columns]
+        display_df = metadata_df[display_columns]
+    else:
+        display_df = metadata_df
+
     # Display the editable dataframe with checkboxes
     edited_df = st.data_editor(
-        metadata_df.reset_index(),
+        display_df.reset_index(),
         use_container_width=True,
         column_config={
             "Add to Queue": st.column_config.CheckboxColumn(
@@ -127,7 +138,7 @@ if test_metadata != []:
                 default=False,
             ),
         },
-        disabled=[col for col in metadata_df.reset_index().columns if col != "Add to Queue"],
+        disabled=[col for col in display_df.reset_index().columns if col != "Add to Queue"],
         hide_index=True,
     )
 
