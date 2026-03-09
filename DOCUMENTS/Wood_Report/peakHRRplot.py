@@ -82,6 +82,7 @@ legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor='gray
 ax.legend(handles=legend_elements, loc='upper left', fontsize=14, framealpha=0.95)
 
 plt.tight_layout()
+fig.savefig('peaktiming.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # Print the data for reference

@@ -314,4 +314,9 @@ ax4.tick_params(axis='both', labelsize=12)
 
 fig4.tight_layout()
 
+# Save figures
+fig2.savefig('HRR_Hor_RC.png', dpi=300, bbox_inches='tight')
+fig3.savefig('HRR.png', dpi=300, bbox_inches='tight')
+fig4.savefig('THR.png', dpi=300, bbox_inches='tight')
+
 plt.show()

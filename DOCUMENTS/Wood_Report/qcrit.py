@@ -78,4 +78,5 @@ ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=14)
 
 fig.tight_layout()
 
+fig.savefig('q_crit_RC.png', dpi=300, bbox_inches='tight')
 plt.show()
