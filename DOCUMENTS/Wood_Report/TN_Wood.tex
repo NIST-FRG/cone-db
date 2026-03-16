@@ -1,0 +1,471 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     LaTeX source code to approximate a NIST Technical report
+%	  Instructions for authors: tinyurl.com/techpubsnist 
+%	DOI watermark will be added on final PDF
+% 	Developed by K. Miller, kmm5@nist.gov 
+%	Last updated: 22-January-2021
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}   % if you want the fonts
+\usepackage{amssymb}    % if you want extra symbols
+\usepackage{graphicx}   % need for figures
+\usepackage{xcolor}
+\usepackage{bm}
+\usepackage{secdot}		
+\usepackage{mathptmx}
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage[hang,flushmargin,bottom]{footmisc} % footnote format
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{subcaption}
+
+\usepackage{titlesec}
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{1em}{}	% required for heading numbering style
+\titleformat*{\subsection}{\normalsize\bfseries}
+
+\usepackage{tocloft}	% change typeset, titles, and format list of appendices/figures/tables
+\renewcommand{\cftdot}{}	
+\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}} % for parts
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand\cftbeforesecskip{\setlength{4pt}{}}
+\addtolength{\cftfignumwidth}{1em}
+\renewcommand{\cftfigpresnum}{\figurename\ }
+\addtolength{\cfttabnumwidth}{1em}
+\renewcommand{\cfttabpresnum}{\tablename\ }
+\setlength{\cfttabindent}{0in}    %% adjust as you like
+\setlength{\cftfigindent}{0in} 
+
+\usepackage{enumitem}         % to control spacing between bullets/numbered lists
+
+\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
+\addbibresource{Woodbib.bib}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+	colorlinks = true,
+urlcolor ={blue},
+citecolor = {.},
+linkcolor = {.},
+anchorcolor = {.},
+filecolor = {.},
+menucolor = {.},
+runcolor = {.}
+pdftitle={Cone Calorimeter Report of Test: Wood Species},
+pdfsubject={Cone calorimeter testing of various wood species for WUI fire research},
+pdfauthor={Ryan Greene, Isaac Leventon},
+pdfkeywords={cone calorimeter; wood; wildland urban interface; fire; heat release rate}
+}
+\urlstyle{same}
+
+\usepackage{epstopdf} % converting EPS figure files to PDF
+
+\usepackage{fancyhdr, lastpage}	% formatting document, calculating number of pages, formatting headers
+\setlength{\topmargin}{-0.5in}
+\setlength{\headheight}{39pt}
+\setlength{\oddsidemargin}{0.25in}
+\setlength{\evensidemargin}{0.25in}
+\setlength{\textwidth}{6.0in}
+\setlength{\textheight}{8.5in}
+
+\usepackage{caption} % required for Figure labels
+\captionsetup{font=small,labelfont=bf,figurename=Fig.,labelsep=period,justification=raggedright} 
+
+% Fix for pdfTeX warning of form: … found PDF version <1.6>, but at most version <1.5> allowed
+\pdfminorversion=7
+
+%%%%%%%%%%% METADATA %%%%%%%%%%%%%%
+\newcommand{\pubnumber}{XXXX}
+\newcommand{\DOI}{https://doi.org/10.6028/NIST.TN.XXXX}
+\newcommand{\monthyear}{Month Year}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   	BEGIN DOCUMENT 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+	\urlstyle{rm} % Format style of \url   
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Cover Page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{titlepage}
+		\begin{flushright}
+\LARGE{\textbf{NIST Technical Note \pubnumber}}\\
+\vfill
+\Huge{\textbf{Cone Calorimeter Report of Test: Wood Species}}\\
+\vfill
+\large Ryan Greene\\
+\large Olivia Hernandez\\
+\large Laura Drubrulle\\
+\large Mauro Zammarano\\
+\large Isaac Leventon\\
+\vfill
+\normalsize This publication is available free of charge from:\\
+\DOI\\
+\vfill
+\includegraphics[width=0.3\linewidth]{NIST-Logo-Brand-Black-2022.pdf}\\ 
+\end{flushright}
+\end{titlepage}
+
+\begin{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Title Page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{flushright}
+\LARGE{\textbf{NIST Technical Note \pubnumber}}\\
+\vfill 
+\Huge{\textbf{Cone Calorimeter Report of Test: Wood Species}}\\
+\vfill
+\normalsize Ryan Greene\\
+Olivia Hernandez\\
+Laura Drubulle\\
+Mauro Zammarano\\
+Isaac Leventon\\
+\textit{Fire Research Division}\\
+\textit{Engineering Laboratory}\\
+\vfill
+\normalsize This publication is available free of charge from:\\
+\DOI\\
+\vfill
+\normalsize \monthyear
+\vfill
+\includegraphics[width=0.18\linewidth]{doc-logo-black.pdf}\\ 
+\vfill
+\footnotesize U.S. Department of Commerce\\ 
+\textit{Gina M. Raimondo, Secretary}\\
+\vspace{10pt}
+National Institute of Standards and Technology\\ 
+\hspace*{-3cm}\textit{James K. Olthoff, Performing the Non-Exclusive Functions and Duties of the Under Secretary of Commerce \\
+for Standards and Technology \& Director, National Institute of Standards and Technology} 
+\end{flushright}
+\end{titlepage}
+
+\begin{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Disclaimer/CODEN page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{flushright}
+\footnotesize  Certain commercial entities, equipment, or materials may be identified in this document in order to describe an experimental procedure or concept adequately. Such identification is not intended to imply recommendation or endorsement by the National Institute of Standards and Technology, nor is it intended to imply that the entities, materials, or equipment are necessarily the best available for the purpose.\\ 
+\vfill
+\normalsize \textbf{National Institute of Standards and Technology Technical Note \pubnumber\\ 
+Natl. Inst. Stand. Technol. Tech. Note \pubnumber, \pageref{LastPage} pages (\monthyear)} \\
+\textbf{CODEN: NTNOEF}\\
+\vspace{12pt}
+\textbf{This publication is available free of charge from: \DOI}
+\vfill
+\end{flushright}
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Front matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{roman}
+
+\section*{Abstract}
+\section*{Abstract}
+\pagenumbering{roman}
+This report presents the results of cone calorimeter testing on eight species of wood commonly used in fencing and construction in Wildland Urban Interface (WUI) regions. Testing was conducted at a heat flux of 50~kW/m$^2$ to characterize the fire behavior of these materials, with particular attention to how density affects ignition time, heat release rate (HRR), and total heat release (THR). General burning behavior was relatively consistent across, although time to ignition ($t_{ign}$), time to flameout($t_{flameout}$), and the timing and magnitude of the second HRR peak were all strongly correlated to sample density. The higher average HRR observed in denser samples was determined to be a result of an increased mass loss rate (MLR), rather than being an inherent difference in the fuels themselves — no significant trend was found in the effective heats of combustion (EHC). Fire growth potential ($\lambda$) decreased with increasing density, primarily due to differences in ignition time rather than combustibility. Additionally, Western Red Cedar was tested across multiple heat fluxes (10~kW/m$^2$ to 50~kW/m$^2$) to determine its critical heat flux for ignition, which was found to be 13.7~kW/m$^2$ $\pm$ 3.6~kW/m$^2$. These data provide valuable baseline fire performance metrics for wood species relevant to WUI fire risk assessment and mitigation efforts.
+
+\section*{Key words}
+Cone calorimeter; critical heat flux; fire growth potential; heat release rate; ignition; wildland-urban interface; wood.
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Table of Contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   List of Tables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\listoftables
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   List of Figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\listoffigures
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   List of Acronyms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{
+\renewcommand{\contentsname}{List of Acronyms}
+\noindent\Large\bfseries List of Acronyms\par
+}
+\addcontentsline{toc}{section}{List of Acronyms}
+\vspace{1em}
+
+\noindent
+\begin{tabular}{@{}ll@{}}
+    CO & Carbon monoxide \\
+    CO$_2$ & Carbon dioxide \\
+    EHC & Effective heat of combustion (MJ/kg) \\
+    HRR & Heat release rate (kW/m$^2$) \\
+    MLR & Mass loss rate (g/s-m$^2$) \\
+    THR & Total heat release (MJ/m$^2$) \\
+    $t_{flameout}$ & Time to flame out (s) \\
+    $t_{ign}$ & Time to ignition (s) \\
+    WUI & Wildland-urban interface \\
+\end{tabular}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Body of text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:intro}
+\pagenumbering{arabic}
+The Wildland Urban Interface (WUI) is the region where human communities and development border and intermix with regions of wild vegetation. These areas have grown significantly over the last decades, both in terms of land area (+31~\%) and housing (+47~\%). As of 2020, 9.4~\% of contiguous United States land area was in the WUI, and it contained 32~\% of all domestic housing~\cite{mockrin2023wui}. Furthermore, WUI regions are of particular interest to the fire protection community as they pose a unique potential for significant fire events. Not only are there more human ignitions compared to a pure wildland region, but the proximity of human settlement to wildfire-susceptible areas greatly increases the risk to human life and property should one occur~\cite{tang2024global}. The feedback loop these coupled factors represent has led to numerous large wildfires over the last several decades~\cite{mietkiewicz2020line}.
+
+A major source of ignition and spread of WUI fires are the embers produced by burning vegetation and combustible structural materials (namely commodity plastics and woods). These firebrands can be carried kilometers away from their source by strong winds, often leading to ignition of both unburnt vegetation and human structures~\cite{dubrulle2020effect,manzello2014characterizing,fernandez2017wildland,yang2023experimental}. Specifically, wood fencing has been noted as a key risk for the propagation of WUI fires. These structures can act both as pathways for direct fire spread along their lengths and to adjacent structures, and as significant firebrand generators \cite{dubrulle2020effect,johnsson2016effects}.
+
+The NIST Fire Research Department performed an in-depth study on the use of fire-retardant coatings to mitigate the risk posed by wood based materials. Testing was performed in a cone calorimeter at a nominal heat flux of 50~kW/m$^{2}$ to simulate a wildfire environment\cite{dubrulle2020effect}. While Western Red Cedar (henceforth referred to as Red Cedar) was the only substrate reported in this test, additional cone testing was performed on several untreated woods under the same conditions. This publication serves as a report of test for those experiments, as well as to analyze the role of density (the major physiochemical between wood species) in fire behavior. Additional testing was performed on Red Cedar at varying fluxes to determine the critical heat flux needed for ignition. 
+
+\section{Experimental}
+\label{sec:experimental}
+Unless otherwise stated, uncertainties are reported as two times the standard deviation (2$\sigma$) of the experimental measurements, representing a 95~\% confidence interval.
+
+\subsection{Materials}
+\label{ssec:materials}
+Eight species of wood were analyzed in this study. Manufacturer or distributor of the lumber species used: Red Cedar, Fir and Cypress (The Hardwood Store of NC, Inc.); Purple Heart and Balsa (Exotic Lumber Frederick, Inc.); Pine (The Home Depot); Ebony (Unknown); and Redwood (Unknown).
+
+\subsection{Density and Moisture Determination}
+\label{ssec:density}
+Density was measured according to ASTM D2395~\cite{astm_d2395}. For repeatability, ten samples per species were measured. Moisture content for each species was measured by placing the stabilized samples in an oven for 3~h at 103~°C as per ASTM D4442~\cite{astm_d4442}. 
+
+Note that the densities of Ebony and Redwood were determined at the time of writing by dividing the average sample mass across each test by 125~cm$^{3}$ (the nominal volume of the sample). The uncertainties of these densities were determined in quadrature, accounting for a possible 10~\% variation in sample volume and the uncertainty in sample mass (2$\sigma$).
+
+\subsection{Sample Preparation}
+\label{ssec:sample_prep}
+Cone Calorimeter samples were cut into 10~cm $\times$ 10~cm wide pieces. For cross-species comparative testing, samples had a thickness of 12.5~mm. Samples of Red Cedar tested across heat fluxes in the horizontal configuration had a thickness of 20~mm.
+
+The Cone Calorimeter samples were conditioned at 20~°C $\pm$ 5~°C and relative humidity of 55~\% $\pm$ 0.36~\% for a minimum of 4 days to stabilize before cone calorimeter tests began. Pine was conditioned for three additional days then tested in the cone calorimeter due to its longer stabilization time.
+
+\subsection{Cone Calorimeter Testing}
+\label{ssec:cone_testing}
+A cone calorimeter (Fire Testing Technology, UK) was used to measure ignition characteristics, heat release rate (HRR), total heat release (THR) and sample mass loss according to ASTM E1354~\cite{astm_e1354}. Averaged properties are reported as the average of the individual values calculated for each test, rather than being calculated directly from the average curve.
+
+\subsubsection{Comparative Testing of Lumber Species}
+\label{sssec:comparative}
+Test conditions were the same as those used in NIST Technote 2094~\cite{dubrulle2020effect}. An external heat flux of 50~kW/m$^{2}$ $\pm$ 0.5~kW/m$^{2}$ was applied. An electric spark igniter was used as the ignition source. All samples (nominal dimensions of 100~mm by 100~mm by 12.5~mm) were tested in the horizontal position and wrapped with aluminum foil (except for the exposed surface) and laid on a holder with a ceramic wool blanket. A standard retainer frame, as described by ASTM E1354, was used to contain the samples and reduce unrepresentative edge burning of specimens, resulting in an exposed surface area of 88.4~cm$^{2}$. The distance between sample surface and cone was 60~mm (ASTM E1354) to prevent contact with spark igniter and cone heater throughout testing.
+
+Cone tests were run in accordance with a method previously used for wood samples~\cite{dubrulle2020effect} based on the following scenarios:
+
+\begin{enumerate}
+    \item If no ignition occurred, the spark igniter was kept in for 5 minutes prior to the test being stopped.
+    \item If ignition and flame-out occurred within 60 seconds, the spark igniter was reinserted for 2 minutes. If the sample still did not ignite, then the test was stopped.
+    \item If ignition and flame-out occurred after 60 seconds, the spark igniter was not reinserted. After flameout, the test was continued for an additional 2 minutes before the test was stopped.
+\end{enumerate}
+
+\subsubsection{Red Cedar Testing Across Heat Fluxes}
+\label{sssec:red_cedar}
+The same basic experimental parameters and test procedure were used to analyze the behavior of Red Cedar across several heat fluxes. Test samples had a thickness of 20~mm (to allow for the assumption of a thermally thick sample) and were separated from the heater by 25~mm (no intumescence was expected). These tests did not use a retainer frame, making the exposed surface area 100~cm$^{2}$. Tests were performed once each at 10~kW/m$^{2}$, 25~kW/m$^{2}$, 30~kW/m$^{2}$, 40~kW/m$^{2}$, and 50~kW/m$^{2}$
+
+\section{Results and Discussion}
+\label{sec:results}
+
+\subsection{Comparative Testing of Lumber Species}
+\label{ssec:results_comparative}
+The full, averaged heat release rate (kW/m$^2$) curves from each of the 8 species of wood tested are plotted below in Fig.~\ref{fig:9HRR}, with the shaded region representing the variability across all tests conducted. An accounting of the key flaming events is provided in Table~\ref{tab:cone_results_peaks}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{HRR.png}
+    \caption{Average Heat Release Curves of 8 Wood Species.}
+    \label{fig:9HRR}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Key Heat Release Events for Various Lumber Types.}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}l *{8}{>{\centering\arraybackslash}X}@{}}
+        \toprule
+        Lumber & Density & \# & $t_{ign}$ & $t_{flameout}$ & 1st Peak & 1st Peak & 2nd Peak & 2nd Peak \\
+        & (g/cm$^3$) & Tests & (s) & (s) & HRR (kW/m$^2$) & Time (s) & HRR (kW/m$^2$) & Time (s) \\
+        \midrule
+        Balsa & $0.15 \pm 0.04$ & 3 & $7.0 \pm 2.0$ & $361.3 \pm 27.2$ & $183.9 \pm 14.4$ & $28.0 \pm 4.8$ & $73.3 \pm 8.6$ & $194.3\pm203.0$ \\
+        Red Cedar & $0.34 \pm 0.08$ & 7 & $18.6 \pm 10.0$ & $606.3 \pm 126.8$ & $216.8 \pm 73.8$ & $42.0\pm 15.4$ & $124.3\pm45.2$ & $423.3\pm 126.0$ \\
+        Pine & $0.38 \pm 0.04$ & 6 & $22.3 \pm 5.4$ & $667.8 \pm 33.0$ & $226.0 \pm 13.2$ & $44.3\pm 11.2$ & $142.7 \pm22.0$ & $470.8 \pm64.6$ \\
+        Fir & $0.4 \pm 0.04$ & 3 & $20.7 \pm 9.4$ & $599.7 \pm 68.2$ & $210.5 \pm 27.4$ & $45.0 \pm9.8$ & $177.5\pm47.6$ & $465.7\pm26.6$ \\
+        Cypress & $0.43 \pm 0.02$ & 3 & $28.7 \pm 3.0$ & $685.0 \pm 40.6$ & $183.8 \pm 11.8$ & $53.0 \pm 3.2$ & $171.6 \pm40.8$ & $514.0\pm56.6$ \\
+        Redwood & $0.45 \pm 0.05$ & 3 & $26.7 \pm 14.2$ & $710.7 \pm 52.6$ & $162.2 \pm 82.4$ & $51.3\pm26.2$ & $139.0 \pm 87.4$ & $538.0\pm53.8$ \\
+        Purple Heart & $0.83 \pm 0.08$ & 3 & $42.3 \pm 9.8$ & $838.3 \pm 75.0$ & $187.9\pm42.6$ & $73.0 \pm11.8$ & $241.6 \pm 38.6$ & $626.7\pm50.6$ \\
+        Ebony & $0.88 \pm 0.14$ & 3 & $53.0 \pm 16.0$ & $818.0 \pm 64.8$ & $220.9 \pm 92.0$ & $78.3\pm16.4$ & $292.2 \pm 58.2$ & $636.3 \pm 19.6$ \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:cone_results_peaks}
+\end{table}
+
+A strong linear (R$^2$ = 0.959) trend exists between sample density and ignition time ($t_{ign}$), while flameout times ($t_{flameout}$) show a consistent logarithmic response (R$^2$ = 0.956) to increasing sample density. Generally, each species showed a similar heat release pattern of an initial peak shortly after ignition, followed by a relatively flat period of steady burning. Heat release rate then increased to a secondary peak before falling off to flameout. The magnitude of the first HRR peak is consistent among all wood samples, and while time to the first peak generally increases with density, there does not appear to be a significant trend in the time between ignition and the first peak. Conversely, the magnitude of the secondary peak is linearly correlated to sample density (R$^2$ = 0.927), while the time from ignition to this peak shows a logarithmic trend (R$^2$ = 0.948). These results are visualized in Fig.~\ref{fig:HRRpeak}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{peaktiming.png}
+    \caption{HRR Peaks of 8 Wood Species.}
+    \label{fig:HRRpeak}
+\end{figure}
+
+Following testing, key experimental results were calculated following ASTM E1354~\cite{astm_e1354} instructions unless noted here. The residue yield for each sample tested was calculated as the residual mass at the end of the test divided by the starting sample mass. Average HRR for each sample was determined as the average curve value over the same time period as average mass loss rate (MLR) — between 10~\% and 90~\% total mass loss.  CO$_2$ and CO yields were determined following the NIST Fire Calorimetry Database User Guide~\cite{bundy2020user}. Parameters are tabulated in Table~\ref{tab:residue_combustion_properties}.
+
+\begin{table}[H]
+    \centering
+    \caption{Results of Cone Calorimetry for Various Lumber Types.}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}l *{7}{>{\centering\arraybackslash}X}@{}}
+        \toprule
+        Lumber & Residue & Avg HRR & Avg MLR & THR & EHC & CO$_2$ & CO \\
+        & Yield (\%) & (kW/m$^2$) & (g/s-m$^2$) & (MJ/m$^2$) & (MJ/kg) & Yield (mg/g) & Yield (mg/g) \\
+        \midrule
+        Balsa & $19.1\pm 2.2$ & $65.8\pm8.4$ & $4.9 \pm0.8$ & $26.5\pm1.6$ & $13.3\pm0.2$ & $1079 \pm62.4$ & $56.2 \pm14.4$ \\
+        Red Cedar & $20.8 \pm 4.4$ & $86.9\pm12.0$ & $6.5\pm1.0$ & $53.0 \pm13.6$ & $13.6 \pm0.8$ & $1072 \pm97.2$ & $33.6\pm 8.2$ \\
+        Pine & $20.6 \pm 2.8$ & $87.3 \pm7.4$ & $6.8 \pm0.4$ & $58.1 \pm 4.4$ & $13.4\pm1.2$ & $1050\pm 87.0$ & $33.4 \pm5.6$ \\
+        Fir & $21.5 \pm 5.6$ & $108.9 \pm18.4$ & $8.0 \pm1.0$ & $63.8 \pm11.8$ & $14.0\pm 0.6$ & $1050 \pm103.6$ & $27.5 \pm6.2$ \\
+        Cypress & $19.8 \pm 1.0$ & $102.1 \pm4.8$ & $8.3\pm 0.6$ & $67.5 \pm1.6$ & $13.2\pm0.4$ & $1042\pm23.2$ & $20.6 \pm0.6$ \\
+        Redwood & $25.7 \pm 6.0$ & $80.1 \pm 13.4$ & $6.8\pm0.6$ & $58.0 \pm4.4$ & $12.4 \pm0.6$ & $907.9 \pm112.2$ & $32.6 \pm 11.2$ \\
+        Purple Heart & $28.4 \pm 2.0$ & $118.2\pm 7.4$ & $11.4\pm0.4$ & $91.8 \pm6.2$ & $10.9 \pm 0.4$ & $803.3 \pm 41.0$ & $12.5 \pm4.0$ \\
+        Ebony & $27.5\pm1.9$ & $128.8 \pm14.2$ & $12.6\pm2.0$ & $99.7 \pm5.2$ & $11.1 \pm0.6$ & $811.1 \pm60.6$ & $10.6\pm2.6$ \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:residue_combustion_properties}
+\end{table}
+
+Density was found to be linearly correlated to average MLR (R$^2$ = 0.950), but no trend exists between density and effective heat of combustion (EHC). As a result, the apparent trend of increasing average HRR as a function of density likely stems from the increase in fuel generation. CO$_2$ yields appear relatively consistent and unrelated to specimen density, while CO yields decrease with increasing density. 
+
+In addition to these more straightforward parameters, a body of work has been done to formalize a singular parameter which can be derived from cone calorimeter data and used to quantify the ability of a material to grow a fire~\cite{vahabi2023flame,tewarson1994flammability,quintiere2009inherent}. Specifically, Richard Lyon's fire growth potential ($\lambda$, m$^2$/MJ) couples a material's ignitability and combustibility as shown in Eq.~(\ref{eq:FGP}) below~\cite{lyon2024measuring}:
+
+\begin{equation}
+\lambda = \text{Ignitability} \cdot \text{Combustibility} = \frac{1}{E_{\text{ign}}} \cdot \frac{\Delta Q}{\Delta E_0}
+\label{eq:FGP}
+\end{equation}
+
+The ignitability term is the inverse of the incident energy required for ignition ($E_{\text{ign}}$: the time to ignition multiplied by the external heat flux). The combustibility term, defined as the maximum slope of an incident energy vs total heat release curve, represents the amount of energy produced by combustion per unit energy input.
+
+The fire growth potential, $\lambda$, is only realized as a hazard if the total heat release per unit area is sufficient to sustain flaming. Equation~(\ref{eq:prodfirehazard}) shows the derivation of a unitless product fire hazard ($\Pi$), while the thickness normalized material fire hazard ($\pi$, cm$^{-1}$) is defined in Eq.~(\ref{eq:matfirehazard}), where $b$ represents the thickness of the sample in cm. These parameters are tabulated in Table~\ref{tab:fgp_parameters}. Uncertainties in $\Pi$ and $\pi$ are taken by combining the relative uncertainties of $\lambda$ and THR in quadrature.
+
+\begin{equation}
+\Pi = \lambda \cdot \text{THR}
+\label{eq:prodfirehazard}
+\end{equation}
+
+\begin{equation}
+\pi = \Pi / b
+\label{eq:matfirehazard}
+\end{equation}
+
+\begin{table}[H]
+    \centering
+    \caption{Fire Growth Potential for Various Lumber Types.}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}l *{3}{>{\centering\arraybackslash}X}@{}}
+        \toprule
+        Lumber & $\lambda$ (m$^2$/MJ) & $\Pi$ & $\pi$ (cm$^{-1}$) \\
+        \midrule
+        Balsa & $4.52 \pm 1.06$ & $119.78 \pm 28.76$ & $95.82 \pm 23.00$ \\
+        Red Cedar & $2.00 \pm 1.02$ & $106.21 \pm 60.12$ & $84.97 \pm 48.10$ \\
+        Pine & $1.54 \pm 0.32$ & $89.65 \pm 19.84$ & $71.72 \pm 15.88$ \\
+        Fir & $2.10 \pm 1.08$ & $133.98 \pm 72.76$ & $107.18 \pm 58.22$ \\
+        Cypress & $1.36 \pm 0.16$ & $91.46 \pm 11.10$ & $73.17 \pm 8.88$ \\
+        Redwood & $1.25 \pm 0.94$ & $72.44 \pm 54.46$ & $57.95 \pm 43.56$ \\
+        Purple Heart & $1.06 \pm 0.18$ & $97.12 \pm 18.48$ & $77.70 \pm 14.78$ \\
+        Ebony & $0.91 \pm 0.20$ & $90.88 \pm 19.66$ & $72.70 \pm 15.72$ \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:fgp_parameters}
+\end{table}
+
+Among these wood species, there is a clear trend of decreasing $\lambda$ with increasing densities. As seen in Fig.~\ref{fig:THR}, the slopes of the total heat release curves of these species are fairly similar, indicating this trend largely stems from differences in time to ignition. That being said, localized variability may be attributed to minor differences in the combustibility of the wood. For example, Fir has a relatively high $\lambda$ for its density, aligning with its larger maximum slope in Fig.~\ref{fig:THR}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{THR.png}
+    \caption{Energy Diagram of 8 Wood Species.}
+    \label{fig:THR}
+\end{figure}
+
+\subsection{Red Cedar Testing Across Heat Fluxes}
+\label{ssec:results_red_cedar}
+The heat release rate curves of Red Cedar tested across heat fluxes are shown below in Fig.~\ref{fig:WRC_HRR}. An accounting of the key flaming events is provided in Table~\ref{tab:cone_results_heat_flux}. Note that given only one test was performed at each heat flux under these conditions, no errors are reported.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{HRR_Hor_RC.png}
+    \caption{Heat Release Rate of Red Cedar at Differing Heat Flux.}
+    \label{fig:WRC_HRR}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Key Heat Release Events for Red Cedar at Various Heat Fluxes.}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}l *{6}{>{\centering\arraybackslash}X}@{}}
+        \toprule
+        Heat Flux & $t_{ign}$ & $t_{flameout}$ & 1st Peak & 1st Time & 2nd Peak & 2nd Time \\
+        (kW/m$^2$) & (s) & (s) & HRR (kW/m$^2$) & Peak (s) & HRR (kW/m$^2$) & Peak (s) \\
+        \midrule
+        10 & N/A & N/A & N/A & N/A & N/A & N/A \\
+        25 & 180 & 958 & 180.2 & 207 & 130.2 & 848 \\
+        30 & 72 & 846 & 202.1 & 97 & 132.9 & 685 \\
+        40 & 28 & 713 & 179.8 & 53 & 140.8 & 585 \\
+        50 & 16 & 673 & 224.5 & 40 & 150.0 & 558 \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:cone_results_heat_flux}
+\end{table}
+
+While a lack of replication precludes any formal statistical analysis, a few trends are evident from this data. Time to ignition appears to be strongly dependent on incident heat flux, with the sample exposed to 10~kW/m$^2$ not igniting. Specifically, time to ignition increases to an asymptote with decreasing incident heat flux. Using this information, the critical heat flux for ignition can be determined by plotting $1/\sqrt{t_{ign}}$ across heat fluxes and finding the x-axis intercept~\cite{khan2016combustion}. Figure~\ref{fig:qcrit} shows this relationship.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{q_crit_RC.png}
+    \caption{Determination of the Critical Heat Flux for Red Cedar.}
+    \label{fig:qcrit}
+\end{figure}
+
+Using this method, Red Cedar was found to have a critical heat flux of 13.7~kW/m$^2$ with an expanded uncertainty of 3.6~kW/m$^2$ at the 95~\% confidence level. This uncertainty was calculated by combining the relative errors of the slope and intercept found from the linear regression in quadrature. Once the sample ignited, flaming behavior was fairly consistent, with inter-test variability in peak height and timing post ignition being comparable to the variability amongst individual tests of a given lumber in Sec.~\ref{ssec:results_comparative}. 
+
+Key experimental results (calculated as described in Sec.~\ref{ssec:results_comparative}) are tabulated in Table~\ref{tab:cone_results_heat_flux_combustion}.
+
+\begin{table}[H]
+    \centering
+    \caption{Results of Cone Calorimetry for Red Cedar at Various Heat Fluxes.}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}l *{7}{>{\centering\arraybackslash}X}@{}}
+        \toprule
+        Heat Flux & Residue & Avg HRR & Avg MLR & THR & EHC & CO$_2$ & CO \\
+        (kW/m$^2$) & Yield (\%) & (kW/m$^2$) & (g/s-m$^2$) & (MJ/m$^2$) & (MJ/kg) & Yield (mg/g) & Yield (mg/g) \\
+        \midrule
+        10 & 96.2 & N/A & 0.3 & N/A & N/A & N/A & N/A \\
+        25 & 20.1 & 80.2 & 5.9 & 65.4 & 13.2 & 1062 & 31.5 \\
+        30 & 19.3 & 77.7 & 6.2 & 63.9 & 13.0 & 1032 & 26.5 \\
+        40 & 19.2 & 90.7 & 6.9 & 66.6 & 13.7 & 1117 & 22.7 \\
+        50 & 18.3 & 106.1 & 8.1 & 74.3 & 13.6 & 1065 & 16.3 \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:cone_results_heat_flux_combustion}
+\end{table}
+
+Given samples were conditioned in a relatively humid environment prior to testing, it is likely that the mass loss observed for the 10~kW/m$^2$ test was mostly water. Among the samples which ignited, there does appear to be a trend of increasing average HRR and MLR with increasing heat flux. These factors align with the shortening of time from ignition to flameout. That is to say, samples exposed to a greater heat flux generally pyrolyze faster, releasing more heat per unit time. Furthermore, there is no significant difference in the THR or EHC as a function of incident heat flux, indicating that the total fuel load was the same in each case. 
+
+\section{Conclusions}
+\label{sec:conclusions}
+Density was found to be a significant factor influencing the fire behavior of wood. Strong linear correlations were observed between density and time to ignition (R$^2$ = 0.959), average mass loss rate (R$^2$ = 0.950), and second peak HRR magnitude (R$^2$ = 0.927). Flameout time and time to the second HRR peak showed logarithmic relationships with density (R$^2$ = 0.956 and R$^2$ = 0.948, respectively). Denser woods took longer to ignite but exhibited higher HRR values once burning was established. The EHC remained relatively constant across all species tested indicating that the increased heat release observed in denser woods is attributable to greater fuel mass per unit area rather than differences in chemical composition. While the relationship was not formalized, $\lambda$ was generally found to decrease with increasing density, primarily driven by differences in ignition energy. However, differences in combustibility did cause local shifts in this trend.
+
+Testing of Red Cedar across multiple heat fluxes revealed a strong dependence of ignition time on incident heat flux. By plotting incident heat flux against $1/\sqrt{t_{ign}}$, the critical heat flux for ignition of Red Cedar was determined to be 13.7~kW/m$^2$ $\pm$ 3.6~kW/m$^2$. Post-ignition burning behavior was relatively consistent across heat fluxes, although tests performed at higher fluxes generally showed higher average burning rate.
+
+These results provide baseline cone calorimeter data for wood species commonly used in WUI construction, supporting ongoing efforts to characterize and mitigate fire risk in these vulnerable regions. The strong correlations between density and fire performance metrics suggest that density may serve as a useful screening parameter for assessing the relative fire hazard of different wood species.
+
+\section*{Acknowledgments}
+\addcontentsline{toc}{section}{Acknowledgments}
+\noindent This work was supported by NIST, United States. The authors would like to thank John Shields and Andre Thompson for their assistance with the experiments.
+
+\section*{References}
+\addcontentsline{toc}{section}{References}
+\printbibliography[heading=none]
+\end{document}

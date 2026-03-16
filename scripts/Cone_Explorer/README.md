@@ -32,6 +32,47 @@ The general workflow for SmURFing is as follows:
 
 ## Tools
 
+
+### CFactor Check
+
+#### Overview
+This page allows you to load in an FTT Calibration file and view/adjust the data to visualize the impact on the C-Factor.
+It is meant to be used internally to troubleshoot issues arising in our calibrations.
+
+##### Load Calibration Data
+Data files can be loaded in either through a drag and drop function, or by entering the file path from your computer.
+
+##### Test Metadata
+This section pulls out the metadata from the calibration file. Key values are always dsiplayed, but the "View all metadata" expander displays all values.
+
+#### Sidebar Adjustments
+The sidebar acts as the main control panel for this page, as it allows you to directly modify all inputs used to calculate the C-Factor. For example, if you have gotten a C-Factor that is lower than you expected and you believe the reason may be the methane flow meter, you can tweak the Methane MFM signal (see `Column Adjustments`) to determine if that could be the cause. Click the "Reset to Defaults" button to reload the original data from the file.
+
+##### Steady State Region Selection
+Here, both the start and end times of the baseline (used for initial conditions) and calibration (period over which C-Factor is calculated) regions can be modified. By default, baseline is set from 10s to 5s before the burner is activated, and the calibration period is set from 240s after burner activation to 5s before the burner is turned off.
+
+##### Static Parameters
+Here, the static inputs (ambient conditions, ΔHc/r₀ for methane, and delay times) used in calculating C-Factor can be modified. Default values are pulled from the calirbation files.
+
+##### Column Adjustments
+Here, the input data columns (Mole percents of gasses, differential oriface pressure. stack temperature, and volumetric methane flow rate) can be tuned. Each signal can be scaled (multiplied by a factor) and shifted (tared up or down by a single value).
+
+#### Data Preview
+Select either "Baseline" or "Calibration" to directly view the two regions of data used in calculating the C-Factor. All input data columns, along with HRR of methane (calculated from the methane flow rate and ΔHc of methane) and time resolved C factor can be viewed.
+
+#### Time Series Data
+This section allows you to visualize HRR, Oxygen (%), Oriface Pressure, and Time Resolved C-Factor. The blue shaded region on each graph represents the baseline, while the green represents the calibration region. The green and red dashed lines are the burner on and off points repsectively.
+
+#### Steady State Averages
+Two tables show the average value and standard deviation of the input data columns for both the baseline and calibration regions. Additionaly, methane flow and heat release averages are shown for the calibration region. This section can be used as a quick reference for key values.
+
+#### Calculated C-Factors
+This section outputs the C-Factor calculated following any adjustments to the base data. C-Factor is calculated in two ways. Following ISO 5660-1, all signals are averaged across the calibration region, and those averages are used to calculate a single C-Factor. The mean method specifies calculating a time resolved C-Factor, and taking the average of this value across the calibration region. In this case, baseline values (ex:$X_{O_2}^0$) are still averaged across the baseline region. Values computed in this editor are compared to their counterpart values from the FTT computer, as well as to the accepted C-Factor of the previous calibration (usually a mean value). Here you can see how adjsutments to paramters shift your C-Factor relative to the original values used.
+Click the `View Equations Used` expander to see how C-Factor is calculated. These equations stem from Appendix 1.4 of ASTM E1354.
+
+#### Export Results
+A summary file containing any adjustments made, calcuated C-Factors, parameters used, timing of baseline and calibration regions, and averaged intermediate values used in the calculation can be exported either as a .txt or .json file.
+
 ### Compare Tests
 
 ##### Overview
