@@ -39,7 +39,6 @@ def parse_dir(input_dir):
         output_data = Path(str(path).replace(str(INPUT_DIR), str(OUTPUT_DIR_CSV)))
         if output_meta.exists():
             #IF DOESNT EXIST, CONTINUES. IF DOES, CHECK DATES
-            
             #IF PREPARSED NEWER THAN PARSED, GENERATE CSV AND CLEAR PROCESSING STAGES OF METADATA
             #ADD LOGGING OF THESE ACTIONS TO FRONT OF DATA CORRECTIONS LIST SAYING TO DOUBLE CHECK
             #FOR NOW, KEEP ALL OTHER STUFF FILLED IN
@@ -75,7 +74,16 @@ def parse_dir(input_dir):
                     continue
                 
             else:
-                #IF PREPARSED NEWER THAN PARSED, REGENERATE DATA, CLEAR METADATA PROCESSING STAGES
+                if metadata['SmURF']:
+                    print(colorize(f'{path.stem} has been SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary. Skipping Parsing for now.','yellow'))
+                    logfile.update({
+                                str(path.stem) : "SmURFed: Preparsed data is newer than parsed data, but file has been marked as SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary."
+                            })
+                    with open(LOG_FILE, "w", encoding="utf-8") as f:
+                        f.write(json.dumps(logfile, indent=4))
+                    files_skipped += 1
+                    continue
+                #IF PREPARSED NEWER THAN PARSED, REGENERATE DATA, CLEAR METADATA PROCESSING STAGE
                 print(colorize(f'Data for {path.stem} has been updated since last parse. Re-parsing file.','yellow'))
                 #Data file missing, just generate the csv
                 try:
@@ -152,13 +160,15 @@ def parse_data(file_path):
     for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"]:
         if gas in df.columns:
             data.loc[:, gas] = df[gas]
+
+    data = data.replace([np.inf, -np.inf], np.nan).dropna(how='all')        
             
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
 
     data.to_csv(data_output_path, index=False)
 
-    print(colorize(f"Generated {data_output_path.stem}", "green"))
+    print(colorize(f"Generated {data_output_path.name}", "green"))
 
 #region parse_metadata
 def parse_metadata(input_meta, output_meta):
@@ -176,8 +186,6 @@ def parse_metadata(input_meta, output_meta):
         }
     with open(output_meta, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata, indent=4))
-    print(colorize(f"Generated {output_meta.name}", "green"))
-
     print(colorize(f"Generated {output_meta.name}", "green"))
 
 def clear_metadata(input_meta, output_meta, preparsed_date):

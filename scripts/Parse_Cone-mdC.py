@@ -75,6 +75,15 @@ def parse_dir(input_dir):
                     continue
                 
             else:
+                if metadata['SmURF']:
+                    print(colorize(f'{path.stem} has been SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary. Skipping Parsing for now.','yellow'))
+                    logfile.update({
+                                str(path.stem) : "SmURFed: Preparsed data is newer than parsed data, but file has been marked as SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary."
+                            })
+                    with open(LOG_FILE, "w", encoding="utf-8") as f:
+                        f.write(json.dumps(logfile, indent=4))
+                    files_skipped += 1
+                    continue
                 #IF PREPARSED NEWER THAN PARSED, REGENERATE DATA, CLEAR METADATA PROCESSING STAGES
                 print(colorize(f'Data for {path.stem} has been updated since last parse. Re-parsing file.','yellow'))
                 #Data file missing, just generate the csv
@@ -214,7 +223,7 @@ def parse_data(file_path):
 
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
-
+    data = data.replace([np.inf, -np.inf], np.nan).dropna(how='all')
     data.to_csv(data_output_path, index=False)
 
     print(colorize(f"Generated {data_output_path}", "green"))

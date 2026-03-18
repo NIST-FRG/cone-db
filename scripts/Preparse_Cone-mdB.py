@@ -59,11 +59,11 @@ def parse_dir(input_dir):
             files_parsed_fully += 1
         elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
-            out_path = Path(str(path).replace('md_B', 'md_B_bad'))
+            #out_path = Path(str(path).replace('md_B', 'md_B_bad'))
         else:
             print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
             files_parsed_partial += 1
-            out_path = Path(str(path).replace('md_B', 'md_B_partial'))
+            #out_path = Path(str(path).replace('md_B', 'md_B_partial'))
 
         # If output path is set, ensure the directory exists and copy
         #if out_path:
@@ -120,6 +120,7 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            data_df = data_df.replace([np.inf, -np.inf], np.nan).dropna(how='all')
             test_name = f"{test_filename}.csv"
             output_path = OUTPUT_DIR / test_name
             if output_path.exists():
@@ -131,10 +132,6 @@ def parse_file(file_path):
                     continue
                 else:
                     print(colorize(f"{test_filename} already exists but differs. Overwriting with new data.", "yellow"))
-                    print(old_df.index)
-                    print(old_df.columns)
-                    print(data_df.index)
-                    print(data_df.columns)
             # parse through and generate metadata json file
             status = parse_metadata(metadata,test_filename)
             if status == None:

@@ -102,6 +102,7 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            data_df = data_df.replace([np.inf, -np.inf], np.nan).dropna(how='all')
             test_name = f"{test_filename}.csv"
             output_path = OUTPUT_DIR / test_name
             if output_path.exists():
@@ -113,13 +114,6 @@ def parse_file(file_path):
                     continue
                 else:
                     print(colorize(f"{test_filename} already exists but differs. Overwriting with new data.", "yellow"))
-                    # Print DataFrame differences
-                    #diff = old_df.compare(data_df)
-                    #print("Differences:\n", diff)
-                    print(old_df.index)
-                    print(old_df.columns)
-                    print(data_df.index)
-                    print(data_df.columns)
             # parse through and generate metadata json file
             status = parse_metadata(metadata,test_filename)
             if status == None:

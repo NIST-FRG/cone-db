@@ -50,9 +50,9 @@ def parse_dir(input_dir):
             out_path = Path(str(path).replace('md_C', 'md_C_partial'))
 
         # If output path is set, ensure the directory exists and move
-        #if out_path:
-         #   out_path.parent.mkdir(parents=True, exist_ok=True)
-          #  shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -104,6 +104,7 @@ def parse_file(file_path):
             test_data_df, metadata = get_data(tests[test])
             # generate test data csv
             data_df,test_filename = parse_data(test_data_df,test,file_path.name)
+            data_df = data_df.replace([np.inf, -np.inf], np.nan).dropna(how='all')
             test_name = f"{test_filename}.csv"
             output_path = OUTPUT_DIR / test_name
             if output_path.exists():

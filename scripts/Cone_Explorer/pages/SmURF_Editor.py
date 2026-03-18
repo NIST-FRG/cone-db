@@ -234,39 +234,13 @@ if test_selection:
         data['MLRPUA (g/s-m2)'] = None
     
     if not data["Mass (g)"].isnull().all():
-        data['MLR (g/s)'] = None
-        m = data["Mass (g)"]
-        for i in range(len(data)):
-            if i == 0:
-                data.loc[i, "MLR (g/s)"] = (25 * m[0] - 48 * m[1] + 36 * m[2] - 16 * m[3] + 3 * m[4]) / (12 * data['dt'].iloc[i])
-            elif i == 1:
-                data.loc[i, "MLR (g/s)"] = (3 * m[0] + 10 * m[1] - 18 * m[2] + 6 * m[3] - m[4]) / (12 * data['dt'].iloc[i])
-            elif i == len(data) - 2:
-                data.loc[i, "MLR (g/s)"] = (-3 * m[i + 1] - 10 * m[i] + 18 * m[i - 1] - 6 * m[i - 2] + m[i - 3]) / (12 * data['dt'].iloc[i])
-            elif i == len(data) - 1:
-                data.loc[i, "MLR (g/s)"] = (-25 * m[i] + 48 * m[i - 1] - 36 * m[i - 2] + 16 * m[i - 3] - 3 * m[i - 4]) / (12 * data['dt'].iloc[i])
-            else:
-                data.loc[i, "MLR (g/s)"] = (-m[i - 2] + 8 * m[i - 1] - 8 * m[i + 1] + m[i + 2]) / (12 * data['dt'].iloc[i])
-
+        data['MLR (g/s)'] = savgol_filter((-1)*np.gradient(data['Mass (g)'],data['Time (s)']),53,3)
         data["MLRPUA (g/s-m2)"] = data["MLR (g/s)"] / surf_area if surf_area is not None else None 
         data["MassPUA (g/m2)"] = data["Mass (g)"] / surf_area if surf_area is not None else None
         data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
         data['Mass LossPUA (g/m2)'] = (mass / surf_area) - data["MassPUA (g/m2)"] if mass is not None and surf_area is not None else None
     elif not data['MassPUA (g/m2)'].isnull().all():
-        data['MLRPUA (g/s-m2)'] = None
-        m = data["MassPUA (g/m2)"]
-        for i in range(len(data)):
-            if i == 0:
-                data.loc[i, "MLRPUA (g/s-m2)"] = (25 * m[0] - 48 * m[1] + 36 * m[2] - 16 * m[3] + 3 * m[4]) / (12 * data['dt'].iloc[i])
-            elif i == 1:
-                data.loc[i, "MLRPUA (g/s-m2)"] = (3 * m[0] + 10 * m[1] - 18 * m[2] + 6 * m[3] - m[4]) / (12 * data['dt'].iloc[i])
-            elif i == len(data) - 2:
-                data.loc[i, "MLRPUA (g/s-m2)"] = (-3 * m[i + 1] - 10 * m[i] + 18 * m[i - 1] - 6 * m[i - 2] + m[i - 3]) / (12 * data['dt'].iloc[i])
-            elif i == len(data) - 1:
-                data.loc[i, "MLRPUA (g/s-m2)"] = (-25 * m[i] + 48 * m[i - 1] - 36 * m[i - 2] + 16 * m[i - 3] - 3 * m[i - 4]) / (12 * data['dt'].iloc[i])
-            else:
-                data.loc[i, "MLRPUA (g/s-m2)"] = (-m[i - 2] + 8 * m[i - 1] - 8 * m[i + 1] + m[i + 2]) / (12 * data['dt'].iloc[i])
-
+        data['MLRPUA (g/s-m2)'] = data['MLR (g/s)'] = savgol_filter((-1)*np.gradient(data['MassPUA (g/m2)'],data['Time (s)']),53,3)
         data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * surf_area if surf_area is not None else None 
         data["Mass (g)"] = data["MassPUA (g/m2)"] * surf_area if surf_area is not None else None
         data['Mass Loss (g)'] = mass - data["Mass (g)"] if mass is not None else None
@@ -663,20 +637,20 @@ if 'df_original' not in st.session_state:
     st.session_state.df_original = df.copy()
 st.session_state.df = df
 
-st.button("Reload Metadata", on_click=reload_metadata, width='stretch')
+st.button("Reload Metadata", on_click=reload_metadata, use_container_width=True)
 
 if test_selection:
     edited_df = st.data_editor(
         df,
         key=st.session_state.editor_key,
-        width = 'stretch',
+        use_container_width=True,
         num_rows="fixed",
         disabled=["Property"],
     )
 
-st.button("Save Metadata", on_click=lambda: save_metadata(edited_df, ogmeta), width='stretch')
-st.button("Revert Metadata", on_click=revert_to_parsed, width='stretch')
-st.button("Delete files", on_click=delete_files, width='stretch')
+st.button("Save Metadata", on_click=lambda: save_metadata(edited_df, ogmeta), use_container_width=True)
+st.button("Revert Metadata", on_click=revert_to_parsed, use_container_width=True)
+st.button("Delete files", on_click=delete_files, use_container_width=True)
 
 
 # region export_metadata
@@ -801,7 +775,7 @@ def export_metadata(edited_df, original_metadata):
     for c in max_column_order:
         if c in data.columns:
             reordered_data[c] = data[c]
-    
+    reordered_data.dropna(how='all', inplace=True)
     csv_filename = new_filename.replace(".json", ".csv")
     reordered_data.to_csv(prepared_data_path / csv_filename, index=False)
     
@@ -811,7 +785,7 @@ def export_metadata(edited_df, original_metadata):
     st.success(f"Data and Metadata for {new_filename} Exported Successfully")
 
 
-st.sidebar.button("Export Data and Metadata", on_click=lambda: export_metadata(edited_df, ogmeta), width='stretch')
+st.sidebar.button("Export Data and Metadata", on_click=lambda: export_metadata(edited_df, ogmeta), use_container_width=True)
 st.sidebar.markdown("Selected files are renamed, and their data and metadata are exported to the prepared stage")
 
 st.divider()
