@@ -347,7 +347,8 @@ In addition to these more straightforward parameters, a body of work has been do
 
 The ignitability term is the inverse of the incident energy required for ignition ($E_{\text{ign}}$: the time to ignition multiplied by the external heat flux). The combustibility term, defined as the maximum slope of an incident energy vs total heat release curve, represents the amount of energy produced by combustion per unit energy input.
 
-The fire growth potential, $\lambda$, is only realized as a hazard if the total heat release per unit area is sufficient to sustain flaming. Equation~(\ref{eq:prodfirehazard}) shows the derivation of a unitless product fire hazard ($\Pi$), while the thickness normalized material fire hazard ($\pi$, cm$^{-1}$) is defined in Eq.~(\ref{eq:matfirehazard}), where $b$ represents the thickness of the sample in cm. These parameters are tabulated in Table~\ref{tab:fgp_parameters}. Uncertainties in $\Pi$ and $\pi$ are taken by combining the relative uncertainties of $\lambda$ and THR in quadrature.
+The fire growth potential, $\lambda$, only becomes as a hazard if the total heat release per unit area is sufficient to sustain flaming. That is to say, if the heat released by the sample over a certain area is greater than the energy required to spread a flame over that same area. Thus, 
+equation~(\ref{eq:prodfirehazard}) shows the derivation of a unitless product fire hazard ($\Pi$), while the thickness normalized material fire hazard ($\pi$, cm$^{-1}$) is defined in Eq.~(\ref{eq:matfirehazard}), where $b$ represents the thickness of the sample in cm. These parameters are tabulated in Table~\ref{tab:fgp_parameters}. Uncertainties in $\Pi$ and $\pi$ are taken by combining the relative uncertainties of $\lambda$ and THR in quadrature.
 
 \begin{equation}
 \Pi = \lambda \cdot \text{THR}
@@ -380,7 +381,7 @@ The fire growth potential, $\lambda$, is only realized as a hazard if the total 
     \label{tab:fgp_parameters}
 \end{table}
 
-Among these wood species, there is a clear trend of decreasing $\lambda$ with increasing densities. As seen in Fig.~\ref{fig:THR}, the slopes of the total heat release curves of these species are fairly similar, indicating this trend largely stems from differences in time to ignition. That being said, localized variability may be attributed to minor differences in the combustibility of the wood. For example, Fir has a relatively high $\lambda$ for its density, aligning with its larger maximum slope in Fig.~\ref{fig:THR}.
+Among these wood species, there is a clear trend of decreasing $\lambda$ with increasing densities. As seen in Fig.~\ref{fig:THR}, the slopes of the total heat release curves of these species are fairly similar, indicating this trend largely stems from differences in time to ignition. That being said, localized variability may be attributed to minor differences in the combustibility of the wood. For example, Fir has a relatively high $\lambda$ for its density, aligning with its larger maximum slope in Fig.~\ref{fig:THR}. Trends in $\Pi$ and $\pi$ are less straightforward, given materials with higher $\lambda$ values also tended to show greater total heat release.
 
 \begin{figure}[H]
     \centering
@@ -428,8 +429,7 @@ While a lack of replication precludes any formal statistical analysis, a few tre
     \label{fig:qcrit}
 \end{figure}
 
-Using this method, Red Cedar was found to have a critical heat flux of 13.7~kW/m$^2$ with an expanded uncertainty of 3.6~kW/m$^2$ at the 95~\% confidence level. This uncertainty was calculated by combining the relative errors of the slope and intercept found from the linear regression in quadrature. Once the sample ignited, flaming behavior was fairly consistent, with inter-test variability in peak height and timing post ignition being comparable to the variability amongst individual tests of a given lumber in Sec.~\ref{ssec:results_comparative}. 
-
+Using this method, Red Cedar was found to have a critical heat flux of 13.7~kW/m$^2$ with an expanded uncertainty of 3.7~kW/m$^2$ at the 95~\% confidence level. This uncertainty was calculated by combining the relative errors of the slope and intercept found from the linear regression in quadrature. Once the sample ignited, flaming behavior was fairly consistent, with inter-test variability in peak height and timing post ignition being comparable to the variability among individual tests of a given lumber in Sec.~\ref{ssec:results_comparative}. 
 Key experimental results (calculated as described in Sec.~\ref{ssec:results_comparative}) are tabulated in Table~\ref{tab:cone_results_heat_flux_combustion}.
 
 \begin{table}[H]
@@ -451,7 +451,7 @@ Key experimental results (calculated as described in Sec.~\ref{ssec:results_comp
     \label{tab:cone_results_heat_flux_combustion}
 \end{table}
 
-Given samples were conditioned in a relatively humid environment prior to testing, it is likely that the mass loss observed for the 10~kW/m$^2$ test was mostly water. Among the samples which ignited, there does appear to be a trend of increasing average HRR and MLR with increasing heat flux. These factors align with the shortening of time from ignition to flameout. That is to say, samples exposed to a greater heat flux generally pyrolyze faster, releasing more heat per unit time. Furthermore, there is no significant difference in the THR or EHC as a function of incident heat flux, indicating that the total fuel load was the same in each case. 
+Given samples were conditioned in a relatively humid environment (55~\%) prior to testing, it is likely that the mass loss observed for the 10~kW/m$^2$ test was mostly water. Among the samples which ignited, there does appear to be a trend of increasing average HRR and MLR with increasing heat flux. These factors align with the shortening of time from ignition to flameout. That is to say, samples exposed to a greater heat flux generally pyrolyze faster, releasing more heat per unit time. Furthermore, there is no significant difference in the THR or EHC as a function of incident heat flux, indicating that the total fuel load was the same in each case. 
 
 \section{Conclusions}
 \label{sec:conclusions}
