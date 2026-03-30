@@ -55,12 +55,25 @@ if st.button("Import Data To Explorer"):
 
         smurf = metadata.get("SmURF")
         bad = metadata.get("Bad Data")
-
+        prepared_name = metadata.get("Testname")
+        ogform = metadata["Original Source"]
+        if "FTT" in ogform:
+            parse_script = "Parse_Cone-FTT.py"
+        elif "md_A" in ogform:
+            parse_script = "Parse_Cone-mdA.py"
+        elif "md_B" in ogform:
+            parse_script = "Parse_Cone-mdB.py"
+        elif "md_C" in ogform:
+            parse_script = "Parse_Cone-mdC.py"
         new_file = INPUT_DATA_PATH / file.name
 
-        csv_file = file.with_suffix(".csv").name
-        possible_csv_paths = list(PREPARED_DATA_PATH.rglob(csv_file)) + list(PARSED_DATA_PATH.rglob(csv_file))
-        src_csv_path = possible_csv_paths[0] if possible_csv_paths else None
+        parsed_csv_file = file.with_suffix(".csv").name
+        print(parsed_csv_file)
+        prepared_csv_file = prepared_name + ".csv" if prepared_name else None
+        if prepared_csv_file:
+            src_csv_path = PREPARED_DATA_PATH / ogform /prepared_csv_file
+        else:
+            src_csv_path = PARSED_DATA_PATH / ogform /parsed_csv_file
 
         if bad is not None:
             m = False
@@ -84,10 +97,12 @@ if st.button("Import Data To Explorer"):
                 st.sidebar.error(f"Warning: please export or revert changes to {file.stem}. Difference detected in {badkey}.")
                 continue
 
-        shutil.copy(file, new_file)
-        if src_csv_path:
+        if src_csv_path.exists():
             shutil.copy(src_csv_path, new_file.with_suffix(".csv"))
-
+            shutil.copy(file, new_file)
+        else:
+            st.sidebar.warning(f"CSV file for {file.stem} not found in either prepared or parsed data folders. Please run {parse_script} to generate the csv file for this test.")
+            continue
     st.success("Data and Metadata imported successfully")
 
 metadata_path_map = {p.stem: p for p in list(INPUT_DATA_PATH.rglob("*.json"))}

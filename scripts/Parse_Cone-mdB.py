@@ -76,6 +76,8 @@ def parse_dir(input_dir):
             else:
                 if metadata['SmURF']:
                     print(colorize(f'{path.stem} has been SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary. Skipping Parsing for now.','yellow'))
+                    with open(LOG_FILE, "r", encoding="utf-8") as w:  
+                        logfile = json.load(w)
                     logfile.update({
                                 str(path.stem) : "SmURFed: Preparsed data is newer than parsed data, but file has been marked as SmURFed. Please review data corrections and metadata to determine if re-parsing is necessary."
                             })
