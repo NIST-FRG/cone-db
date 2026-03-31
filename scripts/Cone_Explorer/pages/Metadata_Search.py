@@ -27,6 +27,10 @@ if "test_queue" not in st.session_state:
 st.write("Select the test status you would like to view")
 test_types = ['SmURFed', "All (Parsed Versions)", "Not SmURFed"]
 selected_type = st.selectbox("Choose SmURF status", test_types)
+
+# Track the mapping from display name to original name
+display_to_original_map = {}
+
 if selected_type == "Not SmURFed":
     metadata_name_map = {}
     for p in PARSED_METADATA_PATH.rglob("*.json"):
@@ -36,19 +40,33 @@ if selected_type == "Not SmURFed":
         smurf_value = metadata.get('SmURF', None)
         if not smurf_value:  # Covers None, '', [], {}, etc.
             metadata_name_map[p.stem] = p
+            display_to_original_map[p.stem] = p.stem
 elif selected_type == "All (Parsed Versions)":
-        # Get the paths to all the test metadata files
-        metadata_name_map = {p.stem: p for p in list(PARSED_METADATA_PATH.rglob("*.json"))}
-else:
     # Get the paths to all the test metadata files
-    metadata_name_map = {p.stem: p for p in list(PREPARED_METADATA_PATH.rglob("*.json"))}
+    metadata_name_map = {p.stem: p for p in list(PARSED_METADATA_PATH.rglob("*.json"))}
+    for p in PARSED_METADATA_PATH.rglob("*.json"):
+        display_to_original_map[p.stem] = p.stem
+else:
+    # For SmURFed tests, map the SmURFed name back to original testname
+    metadata_name_map = {}
+    for p in PREPARED_METADATA_PATH.rglob("*.json"):
+        with open(p, 'r') as f:
+            metadata = json.load(f)
+        # Check if SmURF is not empty
+        smurf_value = metadata.get('SmURF', None)
+        if smurf_value:  # Only include SmURFed tests
+            metadata_name_map[p.stem] = p
+            # Map the SmURFed testname back to the original testname
+            original_testname = metadata.get('Original Testname', p.stem)
+            display_to_original_map[p.stem] = original_testname
 
 avg_tests = []
 for test_name, test_path in metadata_name_map.items():
-    if 'Average'  in test_name:
+    if 'Average' in test_name:
         avg_tests.append(test_name)
 for avg in avg_tests:
     del metadata_name_map[avg]
+
 # Get the metadata for each test
 test_metadata = []
 for metadata_path in metadata_name_map.values():
@@ -90,8 +108,10 @@ if test_metadata != []:
     with col3:
         if st.button("Select All Displayed", use_container_width=True):
             for test in metadata_df.index.tolist():
-                if test not in st.session_state.test_queue:
-                    st.session_state.test_queue.append(test)
+                # Map to original name if needed
+                original_test = display_to_original_map.get(test, test)
+                if original_test not in st.session_state.test_queue:
+                    st.session_state.test_queue.append(original_test)
             st.rerun()
     with col4:
         if st.button("Clear Entire Queue", use_container_width=True):
@@ -149,11 +169,13 @@ if test_metadata != []:
     new_queue = []
     for test_name in edited_df.index:
         if edited_df.loc[test_name, "Add to Queue"]:
-            new_queue.append(test_name)
+            # Map to original name if needed (for SmURFed tests)
+            original_test = display_to_original_map.get(test_name, test_name)
+            new_queue.append(original_test)
     
     # Also keep any queued tests that aren't currently displayed (from previous searches)
     for test in st.session_state.test_queue:
-        if test not in edited_df.index and test not in new_queue:
+        if test not in new_queue:
             new_queue.append(test)
     
     # Update session state if changed
@@ -174,7 +196,7 @@ if test_metadata != []:
     start_idx, end_idx = None, None
     for i, line in enumerate(lines):
         if line.strip() == section_title:
-            start_idx = i +1
+            start_idx = i + 1
             break
 
     if start_idx is not None:
