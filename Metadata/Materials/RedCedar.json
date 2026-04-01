@@ -1,0 +1,124 @@
+{
+    "Common Names": "Western Red Cedar",
+    "Material ID": "RedCedar",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": "The Hardwood Store of NC, Inc",
+    "Date Acquired": null,
+    "Description": {
+        "Color": "Tan to reddish-brown color",
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": null
+    },
+    "Categories": {
+        "Synthetic/ Natural/ Vegetation": "Vegetation",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null,
+    "TGA": {
+        "Experiments": [],
+        "Mass at Degradation Onset (%)": null,
+        "Uncertainty in Mass at Degradation Onset (%)": null,
+        "Degradation Onset Temperature (K)": null,
+        "Uncertainty in Degradation Onset Temperature (K)": null,
+        "Peak Normalized Mass Loss Rate": null,
+        "Uncertainty in Peak Normalized Mass Loss Rate": null,
+        "Peak Mass Loss Temperature (K)": null,
+        "Uncertainty in Peak Mass Loss Temperature (K)": null,
+        "Residue Mass (%)": null,
+        "Uncertainty in Residue Mass (%)": null
+    },
+    "DSC": {
+        "Experiments": [],
+        "Onset Temperature (K)": null,
+        "Uncertainty in Onset Temperature (K)": null,
+        "Peak Temperature (K)": null,
+        "Uncertainty in Peak Temperature (K)": null,
+        "Peak Heat Flow (W/g)": null,
+        "Uncertainty in Peak Heat Flow (W/g)": null,
+        "All Endothermic Heat Flow": null
+    },
+    "MCC": {
+        "Experiments": [],
+        "Peak HRR (W/g)": null,
+        "Uncertainty in Peak HRR (W/g)": null,
+        "Peak HRR Temperature (K)": null,
+        "Uncertainty in Peak HRR Temperature (K)": null,
+        "Onset Temperature (K)": null,
+        "Uncertainty in Onset Temperature (K)": null,
+        "Endset Temperature (K)": null,
+        "Uncertainty in Endset Temperature (K)": null,
+        "Heat Of Combustion (J/g)": null,
+        "Uncertainty in Heat Of Combustion (J/g)": null,
+        "Heat Release Capacity (J/gK)": null,
+        "Uncertainty in Heat Release Capacity (J/gK)": null,
+        "Fire Growth Capacity (-)": null,
+        "Uncertainty in Fire Growth Capacity (-)": null,
+        "Residue Yield (%)": null,
+        "Uncertainty in Residue Yield (%)": null
+    },
+    "Flash": {
+        "Experiments-CHNS": [],
+        "Experiments-O": [],
+        "Weight % Carbon (%)": null,
+        "Uncertainty in Weight % Carbon (%)": null,
+        "Weight % Hydrogen (%)": null,
+        "Uncertainty in Weight % Hydrogen (%)": null,
+        "Weight % Nitrogen (%)": null,
+        "Uncertainty in Weight % Nitrogen (%)": null,
+        "Weight % Sulfur (%)": null,
+        "Uncertainty in Weight % Sulfur (%)": null,
+        "Weight % Oxygen (%)": null,
+        "Uncertainty in Weight % Oxygen (%)": null
+    },
+    "MWA": {
+        "Experiments": [],
+        "Average Pyrolyzate Molecular Weight (g/mol)": null,
+        "Uncertainty in Average Pyrolyzate Molecular Weight (g/mol)": null,
+        "Temperature Where MWA is Calculated (K)": null,
+        "Uncertainty in Temperature Where MWA is Calculated (K)": null
+    },
+    "Density": {
+        "Experiments": [],
+        "Density (g/m^3)": null,
+        "Uncertainty in Density (g/m^3)": null
+    },
+    "CAPA II": {
+        "Experiments": []
+    },
+    "Gasification": {
+        "Experiments": []
+    },
+    "Cone Calorimeter": {
+        "Experiments": []
+    }
+}
