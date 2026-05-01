@@ -507,6 +507,9 @@ def parse_metadata(input,test_name):
                     print(colorize(f'{oldname} was deemed bad on {metadata_json["Bad Data"]}. Skipping Preparsing','purple'))
                     return 'Bad'
     for line in input:
+        # Preprocess line to remove excessive whitespace after '='
+        line = re.sub(r'=\s*', '= ', line)  # Replace '=' followed by whitespace with '= '
+        line = re.sub(r'\s*=', '=', line) # Remove whitespace before "="
         # finds all space blocks separating potential metadata values
         # assumes metadata blocks are separated by at least 3 whitespaces
         match_whitespace = re.search("\\s{3,}", line)
@@ -535,6 +538,7 @@ def parse_metadata(input,test_name):
     # metadata = list of metadata blocks as str
     #print(metadata)
 
+    
     ############ finding metadata fields ############
     expected_keys = [
     "Material ID",
@@ -572,6 +576,7 @@ def parse_metadata(input,test_name):
     "Surface Area (m2)",
     "Grid",
     "Edge Frame",
+    "Ignition Source",
     "Separation (mm)",
     "Test Start Time (s)",
     "Test End Time (s)",
@@ -614,53 +619,83 @@ def parse_metadata(input,test_name):
     "t_flameout (s)","t_flameout Outlier",
     'Comments', 'Data Corrections'
         ]
-
     for key in expected_keys:
         metadata_json.setdefault(key, None)
-    
+
     metadata_json["Comments"] = []
-    metadata_json["Specimen Number"] = str(test_name).split("_")[0].split("t")[-1] # just the number
-    metadata_json["Material ID"] = None
+    prev_item = None
     for item in metadata:
         if metadata.index(item) == 0:
-            name = item.split("(", 1)[0].strip()
-            metadata_json["Material Name"] = name
-        if "Heat Flux (kW/m2)" not in metadata_json:
-            match = None
-            if "KW/M2" in item:
-                match = re.search(r'(\d+\s*KW/M2)', item)
-                if match:
-                    substring = match.group(1)
-                else:
-                    # Alternative: get all characters (digits, possibly units and spaces) just before KW/M2
-                    match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
-                    substring = match.group(1) if match else None
-                metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
+            metadata_json["Institution"] = item
+        elif "IRRADIANCE" in item:
+            metadata_json["Heat Flux (kW/m2)"] = get_number(item,"int")
+        elif "TEST" in prev_item and not metadata_json.get("Material Name"):
+            metadata_json["Material Name"] = item    
         elif "HOR" in item:
             metadata_json["Orientation"] = "HORIZONTAL"
         elif "VERT" in item:
             metadata_json["Orientation"] = "VERTICAL"
-        elif "MO" in item:
-            metadata_json["Sample Mass (g)"]= get_number(item,"flt")
-        elif "MF" in item:
-            metadata_json["Residual Mass (g)"] = get_number(item,"flt")
-        elif "TIGN" in item.replace(" ", ""):
+        elif "CALIBRATION" in item:
+            metadata_json["C Factor"] = get_number(item[3:],"flt")
+        elif "SPARK IGN" in item and "HOLDER" in item and ("Mask" in item or "Grid" in item):
+            metadata_json["Ignition Source"] = "Spark Igniter"
+            metadata_json['Edge Frame'] = True
+            metadata_json["Grid"] = True
+        elif "SPARK IGN" in item and ("HOLDER" in item or "FRAME" in item):
+            metadata_json["Ignition Source"] = "Spark Igniter"  
+            metadata_json['Edge Frame'] = True
+        elif "NO SPARK" in item:
+            metadata_json["Ignition Source"] = "No Source"  
+        elif "NO GRID" in item or "NO MASK" in item:
+            metadata_json["Grid"] = False
+        elif "SPARK IGN" in item or "SPARKER" in item:
+            metadata_json["Ignition Source"] = "Spark Igniter"
+        elif "GRID" in item or "MASK" in item:
+            metadata_json["Grid"] = True
+        elif "W/OPILOT" in item.replace(" ", ""):
+            metadata_json["Ignition Source"] = "No Source"
+        elif "PILOT" in item:
+            metadata_json["Ignition Source"] = "Pilot Flame"
+        elif "INITIAL MASS" in item and "FRACTION" not in item:
+            metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
+        elif "FINAL MASS" in item and "FRACTION" not in item:
+            metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
+        elif "AREA OF SAMPLE" in item and not metadata_json.get("Surface Area (m2)"):
+            metadata_json["Surface Area (m2)"] = get_number(item,"flt")
+            if metadata_json['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+                metadata_json['Edge Frame'] = False
+        elif "SOOT AVERAGE" in item:
+            metadata_json["Y_Soot (g/g)"] = get_number(item,"flt")
+        elif item.find("CONVERSION FACTOR") == 0:
+            hoc_o2_kJkg = get_number(item,"int")
+            hoc = hoc_o2_kJkg / 1000
+            metadata_json["Heat of Combustion O2 (MJ/kg)"] = hoc
+        elif "TIME TO IGNITION" in item:
             metadata_json["t_ignition (s)"] = get_number(item,"int")
-        elif re.search(r'\s*\d+\s+(([A-Z]{3})|([A-Z]{4}))\s+\d{2}', item) is not None:
-            metadata_json["Test Date"] = str(item).strip()
-        if "PAGE" not in item and "---" not in item:
-            metadata_json["Comments"].append(item) 
+        elif "TEST" in item:
+            match = re.search(r'TEST\s+(\d{4})', item)
+            if match:
+                metadata_json["Specimen Number"] = int(match.group(1))
+        elif "INITIAL WEIGHT" in item and not metadata_json.get("Sample Mass (g)"):
+            metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
+        elif re.search(r'\d+\s+[A-Z]{3}\s+\d{4}', item) is not None:
+            metadata_json["Test Date"] = item
         
+        metadata_json["Comments"].append(item)
+        prev_item = item
 
     metadata_json['Original Testname'] = test_name
     metadata_json['Instrument'] = "NBS Cone Calorimeter"
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    metadata_json["Original Source"] = "Box/md_B"
+    metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
-
+    if metadata['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+        metadata_json['Edge Frame'] = False
+    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+        metadata_json['Edge Frame'] = True
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
-        f.write(json.dumps(metadata_json, indent=4))
+        f.write(json.dumps(metadata_json, indent=4)) 
     print(colorize(f"Generated {meta_path}", "blue"))
     return None
     

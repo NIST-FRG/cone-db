@@ -624,6 +624,10 @@ def parse_metadata(input,test_name):
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
+    if metadata['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+        metadata_json['Edge Frame'] = False
+    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+        metadata_json['Edge Frame'] = True
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4)) 

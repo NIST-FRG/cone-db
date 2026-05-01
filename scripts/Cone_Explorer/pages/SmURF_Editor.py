@@ -818,6 +818,7 @@ def export_metadata(edited_df, original_metadata):
     
     material_id = metadata.get("Material ID")    
     
+    # Build base filename parts
     filename_parts = [
         material_id,
         "Cone",
@@ -828,8 +829,19 @@ def export_metadata(edited_df, original_metadata):
         st.warning(f"Export Aborted: Unrecognized Orientation: {metadata['Orientation']}. Please specify an orientation containing 'vert' or 'hor'")
         return
 
+    # Build optional extras string
+    optional_extras = build_optional_extras_string(metadata)
+    
+    # Check for missing optional parameters
+    missing_params = get_missing_optional_params(metadata)
+    
+    # Add optional extras if any exist
+    if optional_extras:
+        filename_parts.append(optional_extras)
+    
+    # Add replicate
     if metadata.get("Replicate") is not None and metadata.get("Replicate") != "":
-        filename_parts.insert(4, f"R{metadata['Replicate']}")
+        filename_parts.append(f"R{metadata['Replicate']}")
 
     new_filename = "_".join(filename_parts) + ".json"
     old_filename = metadata["Original Testname"] + '.json'
@@ -841,6 +853,30 @@ def export_metadata(edited_df, original_metadata):
         if oldname2 != metadata["Original Testname"]:
             st.warning(f"Export Aborted: A test with the filename {new_filename} already exists in the prepared folder. Please adjust the Material ID or Replicate number to create a unique filename.")
             return
+    
+    # Warn about missing optional parameters and require confirmation
+    if missing_params:
+        missing_str = ", ".join(missing_params)
+        if "confirm_export_missing" not in st.session_state:
+            st.session_state.confirm_export_missing = False
+        
+        st.warning(f"Missing optional parameters: {missing_str}. Are you sure you want to export?")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Yes, Export Anyway"):
+                st.session_state.confirm_export_missing = True
+                st.rerun()
+        with col2:
+            if st.button("Cancel"):
+                st.session_state.confirm_export_missing = False
+                return
+        
+        if not st.session_state.confirm_export_missing:
+            return
+        
+        # Reset confirmation state after use
+        st.session_state.confirm_export_missing = False
     
     metadata['Testname'] = "_".join(filename_parts)
     metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -888,6 +924,97 @@ def export_metadata(edited_df, original_metadata):
         st.session_state.test_queue.remove(selected_test)
     
     st.success(f"Data and Metadata for {new_filename} Exported Successfully")
+
+
+def get_thickness_string(metadata):
+    """
+    Get the thickness string for the testname.
+    Returns format like '12mm' or '12p5mm' for decimals.
+    Returns None if thickness is not available.
+    """
+    thickness = metadata.get("Thickness (mm)")
+    
+    if thickness is None:
+        return None
+    
+    # Convert to int if it's a whole number, otherwise format with 'p' for decimal
+    if isinstance(thickness, float):
+        if thickness.is_integer():
+            return f"{int(thickness)}mm"
+        else:
+            # Replace decimal point with 'p'
+            thickness_str = str(thickness).replace(".", "p")
+            return f"{thickness_str}mm"
+    else:
+        return f"{thickness}mm"
+
+
+def build_optional_extras_string(metadata):
+    """
+    Build the optional extras string for the testname based on
+    Thickness, Ignition Source, Edge Frame, and Grid values.
+    
+    Format: thickness-igniter-frame-grid (only include non-None values)
+    Example: 12mm-Spk-nF-nG
+    """
+    parts = []
+    
+    # Thickness
+    thickness_str = get_thickness_string(metadata)
+    if thickness_str:
+        parts.append(thickness_str)
+    
+    # Ignition Source mapping
+    ignition_source = metadata.get("Ignition Source")
+    if ignition_source == "Spark Igniter":
+        parts.append("Spk")
+    elif ignition_source == "Pilot Flame":
+        parts.append("Pilot")
+    elif ignition_source == "No Source":
+        parts.append("nIgn")
+    # If None, skip
+    
+    # Edge Frame mapping
+    edge_frame = metadata.get("Edge Frame")
+    if edge_frame is True:
+        parts.append("F")
+    elif edge_frame is False:
+        parts.append("nF")
+    # If None, skip
+    
+    # Grid mapping
+    grid = metadata.get("Grid")
+    if grid is True:
+        parts.append("G")
+    elif grid is False:
+        parts.append("nG")
+    # If None, skip
+    
+    if parts:
+        return "-".join(parts)
+    return None
+
+
+def get_missing_optional_params(metadata):
+    """
+    Check for missing optional parameters and return a list of missing ones.
+    """
+    missing = []
+    
+    if metadata.get("Thickness (mm)") is None:
+        missing.append("Thickness (mm)")
+    
+    if metadata.get("Ignition Source") is None:
+        missing.append("Ignition Source")
+    
+    if metadata.get("Edge Frame") is None:
+        missing.append("Edge Frame")
+    
+    if metadata.get("Grid") is None:
+        missing.append("Grid")
+    
+    return missing
+# endregion
 
 
 st.sidebar.button("Export Data and Metadata", on_click=lambda: export_metadata(edited_df, ogmeta), use_container_width=True)
