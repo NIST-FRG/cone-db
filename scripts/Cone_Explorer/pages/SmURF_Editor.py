@@ -757,32 +757,83 @@ st.button("Delete files", on_click=delete_files, use_container_width=True)
 
 
 # region export_metadata
-def export_metadata(edited_df, original_metadata):
+
+def round_thickness_to_half_mm(thickness_str):
+    """
+    Round thickness to nearest 0.5mm and format for filename.
+    Input: '12p3' or '12p75' or '12'
+    Output: '12p5' or '13' or '12'
+    """
+    try:
+        # Convert 'p' to '.' for calculation
+        numeric_value = float(thickness_str.replace('p', '.'))
+        
+        # Round to nearest 0.5
+        rounded = round(numeric_value * 2) / 2
+        
+        # Format for filename
+        if rounded == int(rounded):
+            return str(int(rounded))
+        else:
+            return str(rounded).replace('.', 'p')
+    except (ValueError, AttributeError):
+        return thickness_str
+
+
+def round_thickness_in_string(text):
+    """
+    Find thickness pattern in string (e.g., '12p3mm' or '25mm') and round to nearest 0.5mm.
+    Returns the modified string.
+    """
+    import re
+    
+    # Pattern to match thickness: number with optional decimal (using 'p') followed by 'mm'
+    # Examples: 12mm, 12p5mm, 12p25mm, 12p375mm
+    pattern = r'(\d+(?:p\d+)?)mm'
+    
+    def replace_thickness(match):
+        old_thickness = match.group(1)
+        new_thickness = round_thickness_to_half_mm(old_thickness)
+        return f'{new_thickness}mm'
+    
+    return re.sub(pattern, replace_thickness, text)
+
+
+@st.dialog("Confirm Export")
+def export_dialog(edited_df, original_metadata):
+    """Dialog that handles the entire export process."""
+    
+    # Run validation first
     row, error = restore_types(edited_df, original_metadata)
     if error:
+        st.error("Validation error. Close this dialog and fix the issues.")
         return
+    
     with open(test_selection, 'r') as f:
         metadata = json.load(f)
 
+    # Check for differences
     for key in metadata:
         v1 = metadata.get(key)
         v2 = row.get(key)
         if v1 != v2:
-            st.warning(f"Export Aborted: Difference detected for key '{key}'.\nOriginal: {v1}\nEdited: {v2}. Please save or reload the metadata prior to export")
+            st.error(f"Difference detected for key '{key}'.\nOriginal: {v1}\nEdited: {v2}.\n\nPlease save or reload the metadata prior to export.")
             return
     
+    # Validate required fields
     if metadata.get("Material ID") is None or metadata.get("Material ID") in ["nan", ""]:
-        st.warning(f"Export Aborted: Please enter a valid Material ID")
+        st.error("Please enter a valid Material ID")
         return
     
     if (metadata.get("Heat Flux (kW/m2)") is None) or metadata.get("Heat Flux (kW/m2)") == "Not found":
-        st.warning(f"Export Aborted: Please enter a Heat Flux")
+        st.error("Please enter a Heat Flux")
         return
     
     ogform = metadata["Original Source"]
     folder = ogform.split("/")[0]
     ogform_path = normalize_path(ogform)
     
+    # Parse date
     date = metadata["Test Date"]
     dt_obj = None
     if isinstance(date, datetime):
@@ -797,16 +848,18 @@ def export_metadata(edited_df, original_metadata):
                 continue
 
     if dt_obj is None:
-        st.warning(f"Export Aborted: Unrecognized date format: {date}.")
+        st.error(f"Unrecognized date format: {date}")
         return
+    
     try:
         metadata['Replicate'] = int(metadata.get('Replicate')) 
-    except TypeError:
-        st.warning(f"Export Aborted: Please enter an integer Replicate number.")
+    except (TypeError, ValueError):
+        st.error("Please enter an integer Replicate number")
         return
     
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
     
+    # Set up paths
     parsed_path = PARSED_METADATA_PATH / ogform_path
     prepared_path = PREPARED_METADATA_PATH / folder
     prepared_data_path = PREPARED_DATA_PATH / folder
@@ -818,113 +871,157 @@ def export_metadata(edited_df, original_metadata):
     
     material_id = metadata.get("Material ID")    
     
-    # Build base filename parts
+    # Build filename parts
     filename_parts = [
         material_id,
         "Cone",
         f"{int(metadata['Heat Flux (kW/m2)'])}kW",
         "vert" if "VERT" in metadata["Orientation"].upper() else "hor" if "HOR" in metadata["Orientation"].upper() else "unkn",
     ]
+    
     if "unkn" in filename_parts[3]:
-        st.warning(f"Export Aborted: Unrecognized Orientation: {metadata['Orientation']}. Please specify an orientation containing 'vert' or 'hor'")
+        st.error(f"Unrecognized Orientation: {metadata['Orientation']}. Please specify an orientation containing 'vert' or 'hor'")
         return
 
     # Build optional extras string
     optional_extras = build_optional_extras_string(metadata)
-    
-    # Check for missing optional parameters
     missing_params = get_missing_optional_params(metadata)
     
-    # Add optional extras if any exist
     if optional_extras:
-        filename_parts.append(optional_extras)
+        # Round thickness in optional extras before adding to filename
+        optional_extras_rounded = round_thickness_in_string(optional_extras)
+        filename_parts.append(optional_extras_rounded)
     
-    # Add replicate
     if metadata.get("Replicate") is not None and metadata.get("Replicate") != "":
         filename_parts.append(f"R{metadata['Replicate']}")
 
     new_filename = "_".join(filename_parts) + ".json"
     old_filename = metadata["Original Testname"] + '.json'
     
+    # Check for existing file
     prep_save = prepared_path / new_filename
     if prep_save.exists():
         existing_json = json.load(open(prep_save))
         oldname2 = existing_json.get("Original Testname")
         if oldname2 != metadata["Original Testname"]:
-            st.warning(f"Export Aborted: A test with the filename {new_filename} already exists in the prepared folder. Please adjust the Material ID or Replicate number to create a unique filename.")
+            st.error(f"A test with the filename {new_filename} already exists. Please adjust the Material ID or Replicate number.")
             return
     
-    # Warn about missing optional parameters and require confirmation
+    # Check if thickness was rounded (for display purposes)
+    thickness_rounded = False
+    original_extras = build_optional_extras_string(metadata)
+    if original_extras:
+        rounded_extras = round_thickness_in_string(original_extras)
+        if original_extras != rounded_extras:
+            thickness_rounded = True
+    
+    # Show export summary
+    st.subheader("Export Summary")
+    st.write(f"**New filename:** {new_filename}")
+    st.write(f"**Material ID:** {material_id}")
+    st.write(f"**Heat Flux:** {metadata['Heat Flux (kW/m2)']} kW/m²")
+    st.write(f"**Replicate:** {metadata['Replicate']}")
+    
+    if thickness_rounded:
+        st.info(f"ℹ️ Thickness rounded to nearest 0.5mm: {original_extras} → {rounded_extras}")
+    
     if missing_params:
-        missing_str = ", ".join(missing_params)
-        if "confirm_export_missing" not in st.session_state:
-            st.session_state.confirm_export_missing = False
-        
-        st.warning(f"Missing optional parameters: {missing_str}. Are you sure you want to export?")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Yes, Export Anyway"):
-                st.session_state.confirm_export_missing = True
+        st.warning(f"⚠️ Missing optional parameters: {', '.join(missing_params)}")
+    else:
+        st.success("✓ All optional parameters present")
+    
+    st.divider()
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("✓ Confirm Export", type="primary", use_container_width=True):
+            # Perform the export
+            try:
+                # Build testname with rounded thickness
+                testname_parts = [
+                    material_id,
+                    "Cone",
+                    f"{int(metadata['Heat Flux (kW/m2)'])}kW",
+                    "vert" if "VERT" in metadata["Orientation"].upper() else "hor",
+                ]
+                
+                if optional_extras:
+                    optional_extras_rounded = round_thickness_in_string(optional_extras)
+                    testname_parts.append(optional_extras_rounded)
+                
+                if metadata.get("Replicate") is not None and metadata.get("Replicate") != "":
+                    testname_parts.append(f"R{metadata['Replicate']}")
+                
+                metadata['Testname'] = "_".join(testname_parts)
+                metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                with open(prepared_path / new_filename, "w") as f:
+                    json.dump(metadata, f, indent=4)
+                with open(parsed_path / old_filename, "w") as f:
+                    json.dump(metadata, f, indent=4)
+                with open(INPUT_DATA_PATH / old_filename, "w") as f:
+                    json.dump(metadata, f, indent=4)
+
+                data = pd.read_csv(data_selection)
+
+                if "HRRPUA (kW/m2)" in data.columns and metadata.get("Surface Area (m2)"):
+                    data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * metadata["Surface Area (m2)"]
+                    data.drop("HRRPUA (kW/m2)", inplace=True, axis=1)
+                if "MassPUA (g/m2)" in data.columns and metadata.get("Surface Area (m2)"):
+                    data["Mass (g)"] = data["MassPUA (g/m2)"] * metadata["Surface Area (m2)"]
+                    data.drop("MassPUA (g/m2)", inplace=True, axis=1)
+                elif "Mass LossPUA (g/m2)" in data.columns and metadata.get("Surface Area (m2)"):
+                    data["Mass Loss (g)"] = data["Mass LossPUA (g/m2)"] * metadata["Surface Area (m2)"]
+                    data.drop("Mass LossPUA (g/m2)", inplace=True, axis=1)
+                elif "MLRPUA (g/s-m2)" in data.columns and metadata.get("Surface Area (m2)"):
+                    data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * metadata["Surface Area (m2)"]
+                    data.drop("MLRPUA (g/s-m2)", inplace=True, axis=1)
+                if "Mass Loss (g)" in data.columns and metadata.get("Sample Mass (g)"):
+                    data["Mass (g)"] = metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
+                    data.drop("Mass Loss (g)", inplace=True, axis=1)
+                
+                max_column_order = [
+                    "Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)", "T Duct (K)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)",
+                    "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
+                    "HRRPUA (kW/m2)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
+                ]
+                
+                reordered_data = pd.DataFrame()
+                for c in max_column_order:
+                    if c in data.columns:
+                        reordered_data[c] = data[c]
+                reordered_data.dropna(how='all', inplace=True)
+                
+                csv_filename = new_filename.replace(".json", ".csv")
+                reordered_data.to_csv(prepared_data_path / csv_filename, index=False)
+                
+                if "test_queue" in st.session_state and selected_test in st.session_state.test_queue:
+                    st.session_state.test_queue.remove(selected_test)
+                
+                st.session_state.export_success = new_filename
                 st.rerun()
-        with col2:
-            if st.button("Cancel"):
-                st.session_state.confirm_export_missing = False
-                return
-        
-        if not st.session_state.confirm_export_missing:
-            return
-        
-        # Reset confirmation state after use
-        st.session_state.confirm_export_missing = False
+                
+            except Exception as e:
+                st.error(f"Export failed: {e}")
     
-    metadata['Testname'] = "_".join(filename_parts)
-    metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    with open(prepared_path / new_filename, "w") as f:
-        json.dump(metadata, f, indent=4)
-    with open(parsed_path / old_filename, "w") as f:
-        json.dump(metadata, f, indent=4)
-    with open(INPUT_DATA_PATH / old_filename, "w") as f:
-        json.dump(metadata, f, indent=4)
+    with col2:
+        if st.button("✗ Cancel", use_container_width=True):
+            st.rerun()
 
-    data = pd.read_csv(data_selection)
 
-    if "HRRPUA (kW/m2)" in data.columns and metadata["Surface Area (m2)"]:
-        data["HRR (kW)"] = data["HRRPUA (kW/m2)"] * metadata["Surface Area (m2)"]
-        data.drop("HRRPUA (kW/m2)", inplace=True, axis=1)
-    if "MassPUA (g/m2)" in data.columns and metadata["Surface Area (m2)"]:
-        data["Mass (g)"] = data["MassPUA (g/m2)"] * metadata["Surface Area (m2)"]
-        data.drop("MassPUA (g/m2)", inplace=True, axis=1)
-    elif "Mass LossPUA (g/m2)" in data.columns and metadata["Surface Area (m2)"]:
-        data["Mass Loss (g)"] = data["Mass LossPUA (g/m2)"] * metadata["Surface Area (m2)"]
-        data.drop("Mass LossPUA (g/m2)", inplace=True, axis=1)
-    elif "MLRPUA (g/s-m2)" in data.columns and metadata["Surface Area (m2)"]:
-        data["MLR (g/s)"] = data["MLRPUA (g/s-m2)"] * metadata["Surface Area (m2)"]
-        data.drop("MLRPUA (g/s-m2)", inplace=True, axis=1)
-    if "Mass Loss (g)" in data.columns and metadata["Sample Mass (g)"]:
-        data["Mass (g)"] = metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
-        data.drop("Mass Loss (g)", inplace=True, axis=1)
+def export_metadata(edited_df, original_metadata):
+    """Main export function - just opens the dialog."""
     
-    max_column_order = [
-        "Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)", "T Duct (K)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)",
-        "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
-        "HRRPUA (kW/m2)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
-    ]
+    # Check for success message from previous export
+    if "export_success" in st.session_state and st.session_state.export_success:
+        st.success(f"Data and Metadata for {st.session_state.export_success} Exported Successfully")
+        st.session_state.export_success = None
     
-    reordered_data = pd.DataFrame()
-    for c in max_column_order:
-        if c in data.columns:
-            reordered_data[c] = data[c]
-    reordered_data.dropna(how='all', inplace=True)
-    csv_filename = new_filename.replace(".json", ".csv")
-    reordered_data.to_csv(prepared_data_path / csv_filename, index=False)
-    
-    if "test_queue" in st.session_state and selected_test in st.session_state.test_queue:
-        st.session_state.test_queue.remove(selected_test)
-    
-    st.success(f"Data and Metadata for {new_filename} Exported Successfully")
+    # Open the export dialog
+    export_dialog(edited_df, original_metadata)
 
+# endregion
 
 def get_thickness_string(metadata):
     """
