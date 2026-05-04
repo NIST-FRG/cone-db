@@ -511,6 +511,7 @@ def parse_metadata(input,test_name):
     "Surface Area (m2)",
     "Grid",
     "Edge Frame",
+    "Ignition Source",
     "Separation (mm)",
     "Test Start Time (s)",
     "Test End Time (s)",
@@ -571,13 +572,33 @@ def parse_metadata(input,test_name):
             metadata_json["Orientation"] = "VERTICAL"
         elif "CALIBRATION" in item:
             metadata_json["C Factor"] = get_number(item[3:],"flt")
+        elif "SPARK IGN" in item and "HOLDER" in item and ("Mask" in item or "Grid" in item):
+            metadata_json["Ignition Source"] = "Spark Igniter"
+            metadata_json['Edge Frame'] = True
+            metadata_json["Grid"] = True
+        elif "SPARK IGN" in item and ("HOLDER" in item or "FRAME" in item):
+            metadata_json["Ignition Source"] = "Spark Igniter"  
+            metadata_json['Edge Frame'] = True
+        elif "NO SPARK" in item:
+            metadata_json["Ignition Source"] = "No Source"  
+        elif "NO GRID" in item or "NO MASK" in item:
+            metadata_json["Grid"] = False
+        elif "SPARK IGN" in item or "SPARKER" in item:
+            metadata_json["Ignition Source"] = "Spark Igniter"
+        elif "GRID" in item or "MASK" in item:
+            metadata_json["Grid"] = True
+        elif "W/OPILOT" in item.replace(" ", ""):
+            metadata_json["Ignition Source"] = "No Source"
+        elif "PILOT" in item:
+            metadata_json["Ignition Source"] = "Pilot Flame"
         elif "INITIAL MASS" in item and "FRACTION" not in item:
             metadata_json["Sample Mass (g)"] = get_number(item[3:],"flt")
         elif "FINAL MASS" in item and "FRACTION" not in item:
             metadata_json["Residual Mass (g)"] = get_number(item[3:],"flt")
         elif "AREA OF SAMPLE" in item and not metadata_json.get("Surface Area (m2)"):
-            #print('area')
             metadata_json["Surface Area (m2)"] = get_number(item,"flt")
+            if metadata_json['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+                metadata_json['Edge Frame'] = False
         elif "SOOT AVERAGE" in item:
             metadata_json["Y_Soot (g/g)"] = get_number(item,"flt")
         elif item.find("CONVERSION FACTOR") == 0:
@@ -603,6 +624,10 @@ def parse_metadata(input,test_name):
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
+    if metadata['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+        metadata_json['Edge Frame'] = False
+    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+        metadata_json['Edge Frame'] = True
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4)) 

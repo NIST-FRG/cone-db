@@ -399,7 +399,7 @@ def parse_data(data_df,test,file_name):
             data_df.columns.values[i] = "HRRPUA (kW/m2)"
         elif "SUM Q" in column:
             data_df.columns.values[i] = "THRPUA (MJ/m2)"
-        elif "MASS" in column:
+        elif "MASS" in column and "LOSS" not in column:
             data_df.columns.values[i] = "Mass (g)"
         elif "M" in column and "LOSS" in column:
             data_df.columns.values[i] = "MLR (g/s)"
@@ -553,6 +553,7 @@ def parse_metadata(input,test_name):
     "Surface Area (m2)",
     "Grid",
     "Edge Frame",
+    "Ignition Source",
     "Separation (mm)",
     "Test Start Time (s)",
     "Test End Time (s)",
@@ -617,6 +618,8 @@ def parse_metadata(input,test_name):
                     match = re.search(r'([^\s]+(?:\s*KW/M2))', item)
                     substring = match.group(1) if match else None
                 metadata_json["Heat Flux (kW/m2)"] = get_number(substring, "int")
+        if "Frame" in item or "HOLDER" in item:
+            metadata_json["Edge Frame"] = True
         elif "HOR" in item:
             metadata_json["Orientation"] = "HORIZONTAL"
         elif "VERT" in item:
@@ -638,6 +641,10 @@ def parse_metadata(input,test_name):
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata_json["Original Source"] = "Box/md_B"
     metadata_json['Data Corrections'] =[]
+    if metadata['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+        metadata_json['Edge Frame'] = False
+    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+        metadata_json['Edge Frame'] = True
 
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:

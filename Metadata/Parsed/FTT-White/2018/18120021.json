@@ -33,6 +33,7 @@
     "Surface Area (m2)": 0.00884,
     "Grid": false,
     "Edge Frame": true,
+    "Ignition Source": "Spark Igniter",
     "Separation (mm)": 25.0,
     "Test Start Time (s)": 64.0,
     "Test End Time (s)": null,

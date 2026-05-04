@@ -61,21 +61,9 @@ def parse_dir(input_dir):
         f.write(json.dumps(logfile, indent=4))
     print(f"✅ parse_FTT-{color}.json created.")
     
-    # read all CSV files in directory
-    paths = Path(input_dir).glob("**/*.CSV")
-    
-
-    # ignore the reduced data files (can be recalculated later from raw data)
-    paths = filter(lambda x: not x.stem.endswith("_red"), list(paths))
-    # also remove scaled, stdev, or Output, etc. files since those are MIDAS format most likely
-    paths = list(
-        filter(
-            lambda x: not x.stem.endswith(
-                ("scaled", "stdev", "Output", "raw", "Post", "PrelimReport")
-            ),
-            list(paths),
-        )
-    )
+    paths = [x for x in Path(input_dir).glob("**/*.CSV") 
+            if not x.stem.endswith(("_red", "scaled", "stdev", "Output", "raw", "Post", "PrelimReport" ))
+            and "Calib" not in x.parts and "Troubleshoot" not in x.parts]
 
     total_files = len(paths)
 
@@ -134,10 +122,6 @@ def parse_file(file_path, output, meta):
     RawMod = os.path.getmtime(file_path)
     RawMod = datetime.fromtimestamp(RawMod).strftime('%Y-%m-%d %H:%M:%S')
     data, metadata = parse_data(df, metadata)
-
-    #Final mass into the metadata : MAY NEED TO ADJUST THIS SINCE SOME TESTS GO NEGATIVE
-    metadata["Residual Mass (g)"] = data['Mass (g)'].iloc[-1]
-
 
     # If there's less than 20 data points, just skip the file
     if len(data) < 20:
@@ -217,6 +201,7 @@ def parse_metadata(df,file_path, meta):
     "Surface Area (m2)",
     "Grid",
     "Edge Frame",
+    "Ignition Source",
     "Separation (mm)",
     "Test Start Time (s)",
     "Test End Time (s)",
@@ -379,6 +364,8 @@ def parse_data(df, metadata):
     data = df[df.columns[2:]]
     mass_shift = data.loc[0, "Mass (g)"] - metadata["Sample Mass (g)"]
     data.loc[:, "Mass (g)"] - mass_shift
+    #Final mass into the metadata : MAY NEED TO ADJUST THIS SINCE SOME TESTS GO NEGATIVE
+    metadata["Residual Mass (g)"] = data['Mass (g)'].iloc[-1]
     # convert O2, CO2, and CO into vol fr
     data.loc[:, "O2 (%)"] /= 100
     data.loc[:, "CO2 (%)"] /= 100

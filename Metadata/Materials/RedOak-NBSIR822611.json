@@ -1,0 +1,48 @@
+{
+    "Common Names": "Red Oak",
+    "Material ID": "RedOak-NBSIR822611",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Square",
+        "Finish": null,
+        "Form": "Solid",
+        "Thickness": "18.26 mm",
+        "Notes": "Conditioned at 50% R.H. and 23°C; density of 778 kg/m³"
+    },
+    "Categories": {
+        "Synthetic/ Natural/ Vegetation": "natural",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

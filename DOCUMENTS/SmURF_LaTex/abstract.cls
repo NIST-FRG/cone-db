@@ -27,6 +27,66 @@
 \renewcommand{\rmdefault}{ptm}
 \renewcommand{\sfdefault}{phv}
 
+% ============================================
+% TABULARX CONFIGURATION
+% ============================================
+
+% New column types for tabularx
+% L - left-aligned X column
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+% R - right-aligned X column
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+% C - centered X column
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+% Numeric columns (right-aligned, fixed width)
+\newcolumntype{N}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% Set default table font size
+\AtBeginEnvironment{tabularx}{\small}
+
+% Increase row height for better readability
+\renewcommand{\arraystretch}{1.2}
+
+% Default tabularx width
+\newlength{\defaulttablewidth}
+\setlength{\defaulttablewidth}{\textwidth}
+
+% Custom tabularx environment with booktabs style
+\newenvironment{datatable}[2][\textwidth]{%
+    \begin{table}[htbp]
+    \centering
+    \caption{#2}
+    \small
+    \begin{tabularx}{#1}%
+}{%
+    \end{tabularx}
+    \end{table}
+}
+
+% Custom tabularx environment without float (for use in multicol, etc.)
+\newenvironment{datatable*}[1][\textwidth]{%
+    \centering
+    \small
+    \begin{tabularx}{#1}%
+}{%
+    \end{tabularx}
+    \vspace{1em}
+}
+
+% Command for table header row (bold)
+\newcommand{\tableheader}[1]{\textbf{#1}}
+
+% Command for unit formatting in headers
+\newcommand{\unithead}[2]{\textbf{#1} (#2)}
+
+% Command for subscript unit headers (e.g., t_ign)
+\newcommand{\subunithead}[3]{\textbf{$#1_{\text{#2}}$} (#3)}
+
+% ============================================
+% END TABULARX CONFIGURATION
+% ============================================
+
 % Storage for keywords
 \newcommand{\@keywords}{}
 \newcommand{\keywords}[1]{\renewcommand{\@keywords}{#1}}
