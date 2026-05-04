@@ -577,6 +577,15 @@ def load_metadata(show_bar=False):
     if "Material ID" not in metadata:
         metadata["Material ID"] = None
     
+    # Insert "Ignition Source" after "Edge Frame" if it doesn't exist
+    if "Ignition Source" not in metadata:
+        ordered_metadata = {}
+        for key, value in metadata.items():
+            ordered_metadata[key] = value
+            if key == "Edge Frame":
+                ordered_metadata["Ignition Source"] = None
+        metadata = ordered_metadata
+    
     properties = []
     values = []
     
@@ -603,12 +612,13 @@ def restore_types(edited_df, original_metadata):
     error = False
     
     for key in edited_metadata:
+
         original_val = original_metadata.get(key)
         edited_val = edited_metadata.get(key)
         orig_type = type(original_val)
-
+        
         if original_val is None:
-            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"]:
+            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"] or edited_val.strip().lower() in ["none", "null", "nan", ""]:
                 restored[key] = None
             elif key in ["Sample Mass (g)", "Residual Mass (g)", "Thickness (mm)", "C Factor", "Surface Area (m2)", "Seperation (mm)", 
                          "Heat of Combustion O2 (MJ/kg)", "OD Correction Factor", "Duct Diameter (m)", "Ambient Temperature (°C)", 
@@ -627,33 +637,53 @@ def restore_types(edited_df, original_metadata):
                     st.error(f"Input Error: Value for {key} must be convertible to an integer. Please change this field or press **Reload** to remove input.")
                     error = True
                     break
+            elif key in ["Grid","Edge Frame"]:
+                    if isinstance(edited_val, bool):
+                        restored[key] = edited_val
+                    elif str(edited_val).lower() in ['true', '1']:
+                        restored[key] = True
+                    elif str(edited_val).lower() in ['false', '0']:
+                        restored[key] = False
+                    else:
+                        st.error(f"Input Error: Value for {key} must be convertible to a boolean. Please change this field or press **Reload** to remove input.")
+                        error = True
+                        break
             else:
                 restored[key] = edited_val
         elif orig_type is int:
-            try:
-                restored[key] = int(edited_val)
-            except Exception:
-                st.error(f"Input Error: Value for {key} must be convertible to an integer. Please change this field or press **Reload** to remove input.")
-                error = True
-                break
-        elif orig_type is float:
-            try:
-                restored[key] = float(edited_val)
-            except Exception:
-                st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
-                error = True
-                break
-        elif orig_type is bool:
-            if isinstance(edited_val, bool):
-                restored[key] = edited_val
-            elif str(edited_val).lower() in ['true', '1']:
-                restored[key] = True
-            elif str(edited_val).lower() in ['false', '0']:
-                restored[key] = False
+            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"] or edited_val.strip().lower() in ["none", "null", "nan", ""]:
+                restored[key] = None
             else:
-                st.error(f"Input Error: Value for {key} must be convertible to a boolean. Please change this field or press **Reload** to remove input.")
-                error = True
-                break
+                try:
+                    restored[key] = int(edited_val)
+                except Exception:
+                    st.error(f"Input Error: Value for {key} must be convertible to an integer. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
+        elif orig_type is float:
+            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"] or edited_val.strip().lower() in ["none", "null", "nan", ""]:
+                restored[key] = None
+            else:
+                try:
+                    restored[key] = float(edited_val)
+                except Exception:
+                    st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
+        elif orig_type is bool:
+            if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"] or edited_val.strip().lower() in ["none", "null", "nan", ""]:
+                restored[key] = None
+            else:           
+                if isinstance(edited_val, bool):
+                    restored[key] = edited_val
+                elif str(edited_val).lower() in ['true', '1']:
+                    restored[key] = True
+                elif str(edited_val).lower() in ['false', '0']:
+                    restored[key] = False
+                else:
+                    st.error(f"Input Error: Value for {key} must be convertible to a boolean. Please change this field or press **Reload** to remove input.")
+                    error = True
+                    break
         elif orig_type is list:
             if isinstance(edited_val, list):
                 restored[key] = edited_val
@@ -757,7 +787,6 @@ st.button("Delete files", on_click=delete_files, use_container_width=True)
 
 
 # region export_metadata
-
 def round_thickness_to_half_mm(thickness_str):
     """
     Round thickness to nearest 0.5mm and format for filename.
@@ -811,6 +840,7 @@ def export_dialog(edited_df, original_metadata):
     
     with open(test_selection, 'r') as f:
         metadata = json.load(f)
+    print(metadata["Surface Area (m2)"], metadata["Edge Frame"])
 
     # Check for differences
     for key in metadata:
@@ -858,6 +888,18 @@ def export_dialog(edited_df, original_metadata):
         return
     
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
+    print(metadata['Surface Area (m2)'], metadata['Edge Frame'])
+    # Infer Edge Frame and Surface Area from each other
+    if metadata.get('Surface Area (m2)') == 0.01 and metadata.get("Edge Frame") is None:
+        metadata['Edge Frame'] = False
+    elif metadata.get("Edge Frame") is None and metadata.get('Surface Area (m2)') is not None:
+        if metadata['Surface Area (m2)'] <= 0.009 and metadata['Surface Area (m2)'] > 0.008:
+            metadata['Edge Frame'] = True
+    
+    if metadata.get("Edge Frame") is True and metadata.get('Surface Area (m2)') is None:
+        metadata['Surface Area (m2)'] = 0.0088
+    elif metadata.get("Edge Frame") is False and metadata.get('Surface Area (m2)') is None:
+        metadata['Surface Area (m2)'] = 0.01
     
     # Set up paths
     parsed_path = PARSED_METADATA_PATH / ogform_path
@@ -883,7 +925,7 @@ def export_dialog(edited_df, original_metadata):
         st.error(f"Unrecognized Orientation: {metadata['Orientation']}. Please specify an orientation containing 'vert' or 'hor'")
         return
 
-    # Build optional extras string
+    # Build optional extras string (now with correct Edge Frame value)
     optional_extras = build_optional_extras_string(metadata)
     missing_params = get_missing_optional_params(metadata)
     
@@ -955,6 +997,19 @@ def export_dialog(edited_df, original_metadata):
                 
                 metadata['Testname'] = "_".join(testname_parts)
                 metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                metadata['Published'] = True
+
+                # Extract report from Material ID (everything after last "-")
+                report = material_id.split("-")[-1] if "-" in material_id else material_id
+
+                # Rebuild metadata with Publications after Published
+                ordered_metadata = {}
+                for key, value in metadata.items():
+                    ordered_metadata[key] = value
+                    if key == 'Published':
+                        ordered_metadata['Publications'] = [report]
+
+                metadata = ordered_metadata
                 
                 with open(prepared_path / new_filename, "w") as f:
                     json.dump(metadata, f, indent=4)
@@ -1001,7 +1056,7 @@ def export_dialog(edited_df, original_metadata):
                 
                 st.session_state.export_success = new_filename
                 st.rerun()
-                
+                    
             except Exception as e:
                 st.error(f"Export failed: {e}")
     
