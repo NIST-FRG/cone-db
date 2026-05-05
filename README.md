@@ -1,6 +1,6 @@
 # cone-db
 
-Repository of NIST Cone Calorimeter Data
+Repository of NIST Cone Calorimeter Data (README IS CURRENTLY OUT OF DATE, PLEASE REFER TO THE WIKI)
 
 # Getting started
 
