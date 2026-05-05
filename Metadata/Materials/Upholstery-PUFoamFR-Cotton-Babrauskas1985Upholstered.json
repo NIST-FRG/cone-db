@@ -1,0 +1,55 @@
+{
+    "Common Names": null,
+    "Material ID": "Upholstery-PUFoamFR-Cotton-Babrauskas1985Upholstered",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": "F24",
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": "Composite",
+        "Thickness": "50 mm",
+        "Notes": null
+    },
+    "Categories": {
+        "NFIRS": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": "Upholstery FRPolyurethaneFoam",
+            "Cover 1": "Cotton",
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
