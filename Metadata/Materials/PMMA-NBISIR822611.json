@@ -1,0 +1,49 @@
+{
+    "Common Names": "PMMA",
+    "Material ID": "PMMA-NBISIR822611",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": "Black",
+        "Shape": "Square",
+        "Finish": null,
+        "Form": "Solid",
+        "Thickness": "25.4 mm",
+        "Notes": "Density of 1184 kg/m³. The PMMA used was black to minimize diathermanous heating effects. Chemical formula referenced as nC5H8O2"
+    },
+    "Categories": {
+        "NFIRS": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
