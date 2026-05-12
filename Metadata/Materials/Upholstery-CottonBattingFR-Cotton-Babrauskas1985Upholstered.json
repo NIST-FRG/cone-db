@@ -1,5 +1,5 @@
 {
-    "Common Names": null,
+    "Common Names": "Fire Retardant Upholstered Chair Cushion",
     "Material ID": "Upholstery-CottonBattingFR-Cotton-Babrauskas1985Upholstered",
     "CAS Number": null,
     "Trade Name": null,
@@ -12,18 +12,18 @@
         "Color": null,
         "Shape": null,
         "Finish": null,
-        "Form": "Composite",
+        "Form": null,
         "Thickness": "50 mm",
         "Notes": null
     },
     "Categories": {
-        "NFIRS": null,
-        "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": null,
+        "Copolymer/ Homopolymer/ Composite": null,
         "Thermoset/ Thermoplastic": null,
         "Composite Layers": {
-            "Core": "Upholstery FRCottonBatting",
-            "Cover 1": "Cotton",
+            "Core": "Fire Retardant Cotton Batting",
+            "Cover 1": "Haitian Cotton Fabric",
             "Cover 2": null,
             "Backing 1": null,
             "Backing 2": null

@@ -1,5 +1,5 @@
 {
-    "Common Names": null,
+    "Common Names": "Upholstered Chair Cushion",
     "Material ID": "Upholstery-PUFoam-Cotton-Babrauskas1985UpholsteredV2",
     "CAS Number": null,
     "Trade Name": null,
@@ -12,19 +12,19 @@
         "Color": null,
         "Shape": null,
         "Finish": null,
-        "Form": "Composite",
+        "Form":null,
         "Thickness": "50 mm",
         "Notes": null
     },
     "Categories": {
-        "NFIRS": null,
-        "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": null,
+        "Copolymer/ Homopolymer/ Composite": null,
         "Thermoset/ Thermoplastic": null,
         "Composite Layers": {
-            "Core": "Upholstery PolyurethaneFoam",
-            "Cover 1": "Cotton",
-            "Cover 2": null,
+            "Core": "Polyurethane Foam",
+            "Cover 1": "Polyester Batting",
+            "Cover 2": "Cotton Corduroy Fabric",
             "Backing 1": null,
             "Backing 2": null
         },

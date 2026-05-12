@@ -1,5 +1,5 @@
 {
-    "Common Names": null,
+    "Common Names": "Fire Retardant Upholstered Chair Cushion",
     "Material ID": "Upholstery-PUFoamFR-Polyolefin-Babrauskas1985Upholstered",
     "CAS Number": null,
     "Trade Name": null,
@@ -12,18 +12,18 @@
         "Color": null,
         "Shape": null,
         "Finish": null,
-        "Form": "Composite",
+        "Form": null,
         "Thickness": "50 mm",
         "Notes": null
     },
     "Categories": {
-        "NFIRS": null,
-        "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": null,
+        "Copolymer/ Homopolymer/ Composite": null,
         "Thermoset/ Thermoplastic": null,
         "Composite Layers": {
-            "Core": "Upholstery FRPolyurethaneFoam",
-            "Cover 1": "Polyolefin",
+            "Core": "Fire Retardant Polyurethane Foam",
+            "Cover 1": "Polyolefin Fabric",
             "Cover 2": null,
             "Backing 1": null,
             "Backing 2": null
