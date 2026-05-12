@@ -27,7 +27,10 @@
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
     "Pass Review": null,
-    "Published": null,
+    "Published": true,
+    "Publications": [
+        "NBSIR883733"
+    ],
     "Heat Flux (kW/m2)": 35,
     "Orientation": "HORIZONTAL",
     "C Factor": null,

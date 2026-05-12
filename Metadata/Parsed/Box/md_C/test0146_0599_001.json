@@ -27,7 +27,10 @@
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
     "Pass Review": null,
-    "Published": null,
+    "Published": true,
+    "Publications": [
+        "Babrauskas1985Upholstered"
+    ],
     "Heat Flux (kW/m2)": 50,
     "Orientation": "HORIZONTAL",
     "C Factor": null,
