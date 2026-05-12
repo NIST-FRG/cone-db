@@ -840,7 +840,6 @@ def export_dialog(edited_df, original_metadata):
     
     with open(test_selection, 'r') as f:
         metadata = json.load(f)
-    print(metadata["Surface Area (m2)"], metadata["Edge Frame"])
 
     # Check for differences
     for key in metadata:
@@ -888,7 +887,6 @@ def export_dialog(edited_df, original_metadata):
         return
     
     metadata['Test Date'] = dt_obj.strftime("%Y-%m-%d")
-    print(metadata['Surface Area (m2)'], metadata['Edge Frame'])
     # Infer Edge Frame and Surface Area from each other
     if metadata.get('Surface Area (m2)') == 0.01 and metadata.get("Edge Frame") is None:
         metadata['Edge Frame'] = False
@@ -1001,6 +999,9 @@ def export_dialog(edited_df, original_metadata):
 
                 # Extract report from Material ID (everything after last "-")
                 report = material_id.split("-")[-1] if "-" in material_id else material_id
+                version = re.search(r"V\d+$", report, re.IGNORECASE)
+                if version:
+                    report = report[:version.start()]  # Remove version from report name
 
                 # Rebuild metadata with Publications after Published
                 ordered_metadata = {}
