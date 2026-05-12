@@ -27,7 +27,10 @@
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
     "Pass Review": null,
-    "Published": null,
+    "Published": true,
+    "Publications": [
+        "ADA168251"
+    ],
     "Heat Flux (kW/m2)": 75,
     "Orientation": "VERTICAL",
     "C Factor": 0.0319,

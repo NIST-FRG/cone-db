@@ -27,7 +27,10 @@
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
     "Pass Review": null,
-    "Published": null,
+    "Published": true,
+    "Publications": [
+        "NISTIR884003"
+    ],
     "Heat Flux (kW/m2)": 25,
     "Orientation": "HORIZONTAL",
     "C Factor": 0.0447703732299,
