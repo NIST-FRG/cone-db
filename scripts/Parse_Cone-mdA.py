@@ -83,6 +83,7 @@ def parse_dir(input_dir):
                     with open(LOG_FILE, "w", encoding="utf-8") as f:
                         f.write(json.dumps(logfile, indent=4))
                     files_skipped += 1
+                    parse_data(path) #still parse data to generate a csv file if missing, but skip metadata clearing and just log that there is newer data that has not been parsed yet
                     continue
 
                 #IF PREPARSED NEWER THAN PARSED, REGENERATE DATA, CLEAR METADATA PROCESSING STAGES
