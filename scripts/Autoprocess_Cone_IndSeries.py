@@ -534,7 +534,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
                                 'stdy_HRR': "Steady Burning HRRPUA (kW/m2)",
                                 'peak_HRR': "Peak HRRPUA (kW/m2)",
                                 'THR': "Total Heat Release (MJ/m2)",
-                                'HoC': "Average HoC (MJ/kg)",
+                                'HoC': "Effective Heat of Combustion (kJ/g)",
                                 'ext_area': "Average Specific Extinction Area (m2/kg)",
                                 'pre_smoke': "Smoke Production Pre-ignition (m2/m2)",
                                 'post_smoke': "Smoke Production Post-ignition (m2/m2)",

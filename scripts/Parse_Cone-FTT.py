@@ -231,7 +231,7 @@ def parse_metadata(df,file_path, meta):
     'Steady Burning HRRPUA (kW/m2)', 'Steady Burning HRRPUA Outlier',
     'Peak HRRPUA (kW/m2)', 'Peak HRRPUA Outlier',
     'Total Heat Release (MJ/m2)', 'Total Heat Release Outlier',
-    'Average HoC (MJ/kg)', 'Average HoC Outlier',
+    'Effective Heat Of Combustion (kJ/g)', 'Effective Heat Of Combustion Outlier',
     'Average Specific Extinction Area (m2/kg)', 'Average Specific Extinction Area Outlier',
     'Smoke Production Pre-ignition (m2/m2)','Smoke Production Pre-ignition Outlier',
     'Smoke Production Post-ignition (m2/m2)','Smoke Production Post-ignition Outlier',

@@ -186,6 +186,11 @@ def parse_metadata(input_meta, output_meta):
             ("Replicate" if k == "Specimen Number" else k): (None if k == "Specimen Number" else v)
             for k, v in metadata.items()
         }
+    if "Average HoC (MJ/kg)" in metadata:
+        metadata = {
+            ("Effective Heat Of Combustion (kJ/g)" if k == "Average HoC (MJ/kg)" else "Effective Heat Of Combustion Outlier" if k == "Average HoC Outlier" else k): (None if k == "Average HoC (MJ/kg)" or k == "Average HoC Outlier" else v)
+            for k, v in metadata.items()
+        }
     with open(output_meta, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata, indent=4))
     print(colorize(f"Generated {output_meta.name}", "green"))
