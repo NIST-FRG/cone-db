@@ -1,9 +1,9 @@
 {
-    "Common Names": "Phenolic Fiberglass aircraft panel",
-    "Material ID": "Composite-PhenolicFiberglass-ADA16825",
+    "Common Names": "Epoxy Kevlar aircraft panel",
+    "Material ID": "Composite-EpoxyKevlar-ADA168251",
     "CAS Number": null,
     "Trade Name": null,
-    "Model Number": "070583",
+    "Model Number": "051683",
     "Manufacturer": null,
     "Country of Origin": null,
     "Distributor / Harvesting Site": null,
@@ -14,20 +14,14 @@
         "Finish": null,
         "Form": null,
         "Thickness": null,
-        "Notes": "Phenolic glass facings, face and back 1 ply 7781 style woven fiberglass impregnated with a modified phenolic resin, and co-cured to 1/8 cell Nomex honeycomb. One surface to be covered with 2 mil white Tedlar."
+        "Notes": "Epoxy Kevlar facings, face and back 1 ply 285 style woven Kevlar impregnated with epoxy resin fire retardant, and co-cured to 1/8 cell Nomex honeycomb. One surface to be covered with 2 mil white Tedlar."
     },
     "Categories": {
         "NFIRS": null,
-        "Synthetic/ Natural/ Vegetation": null,
-        "Copolymer/ Homopolymer/ Composite": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite":"Composite",
         "Thermoset/ Thermoplastic": null,
-        "Composite Layers": {
-            "Core": null,
-            "Cover 1": null,
-            "Cover 2": null,
-            "Backing 1": null,
-            "Backing 2": null
-        },
+        "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
                 "Name": null,

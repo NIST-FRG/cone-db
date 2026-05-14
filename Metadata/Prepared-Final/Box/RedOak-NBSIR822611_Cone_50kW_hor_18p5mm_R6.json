@@ -1,16 +1,16 @@
 {
     "Material ID": "RedOak-NBSIR822611",
     "Material Name": "| RED OAK  ",
-    "Sample Mass (g)": 151.2,
+    "Sample Mass (g)": 165.14,
     "Residual Mass (g)": null,
-    "Replicate": 2,
-    "Original Testname": "test0180_0593_001",
-    "Testname": "RedOak-NBSIR822611_Cone_50kW_hor_R2",
-    "Thickness (mm)": null,
+    "Replicate": 6,
+    "Original Testname": "test0188_0592_001",
+    "Testname": "RedOak-NBSIR822611_Cone_50kW_hor_18p5mm_R6",
+    "Thickness (mm)": 18.5,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1982-09-28",
+    "Test Date": "1982-09-29",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -22,7 +22,7 @@
     "Parsed": "2026-03-04 17:00:25",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-04-02 10:10:50",
+    "SmURF": "2026-04-02 10:15:55",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -103,7 +103,7 @@
     "t_flameout (s)": null,
     "t_flameout Outlier": null,
     "Comments": [
-        "| RED OAK   HORIZONTAL   5.0W/CM2   151.2s   40% FAN   9/28/82-180 (CAL.CONST. 125057) |"
+        "| RED OAK   HORIZONTAL   5.0W/CM2   165.14   80% FAN   9/29/82-188 (CAL.CONST. 123551) |"
     ],
     "Data Corrections": []
 }
