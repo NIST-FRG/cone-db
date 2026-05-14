@@ -18,16 +18,10 @@
     },
     "Categories": {
         "NFIRS": null,
-        "Synthetic/ Natural/ Vegetation": null,
-        "Copolymer/ Homopolymer/ Composite": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
         "Thermoset/ Thermoplastic": null,
-        "Composite Layers": {
-            "Core": null,
-            "Cover 1": null,
-            "Cover 2": null,
-            "Backing 1": null,
-            "Backing 2": null
-        },
+        "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
                 "Name": null,

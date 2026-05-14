@@ -1,12 +1,12 @@
 {
     "Material ID": "RedOak-NBSIR822611",
-    "Material Name": "| RED OAK  ",
-    "Sample Mass (g)": 165.14,
+    "Material Name": "RED OAK",
+    "Sample Mass (g)": 166.84,
     "Residual Mass (g)": null,
-    "Replicate": 6,
-    "Original Testname": "test0188_0592_001",
-    "Testname": "RedOak-NBSIR822611_Cone_50kW_hor_R6",
-    "Thickness (mm)": null,
+    "Replicate": 5,
+    "Original Testname": "test0190_0591_001",
+    "Testname": "RedOak-NBSIR822611_Cone_50kW_hor_18p5mm_R5",
+    "Thickness (mm)": 18.5,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -18,11 +18,11 @@
     "Institution": null,
     "Report Name": "NBSIR 82-2611: Development of the Cone Calorimeter - A Bench Scale Heat Release Rate Apparatus Based on Oxygen Consumption",
     "Original Source": "Box/md_C",
-    "Preparsed": "2026-02-06 15:46:17",
-    "Parsed": "2026-03-04 17:00:25",
+    "Preparsed": "2026-02-06 15:46:16",
+    "Parsed": "2026-03-04 17:00:24",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-04-02 10:15:55",
+    "SmURF": "2026-04-02 10:14:58",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -103,7 +103,7 @@
     "t_flameout (s)": null,
     "t_flameout Outlier": null,
     "Comments": [
-        "| RED OAK   HORIZONTAL   5.0W/CM2   165.14   80% FAN   9/29/82-188 (CAL.CONST. 123551) |"
+        "RED OAK HORIZONTAL 5.0W/CM2 166.84 100% FAN 9/29/82-190 (CAL.CONST. 12355"
     ],
     "Data Corrections": []
 }
