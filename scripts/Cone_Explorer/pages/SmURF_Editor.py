@@ -528,7 +528,15 @@ if test_selection:
             )
 
             if cutoff_start != -1 or cutoff_end != -1:
-                test_metadata["Data Corrections"].append(f"{date}: Data from {cutoff_start}s to {cutoff_end}s was removed")
+                if cutoff_start <0:
+                    lowerbound = 0
+                else:
+                    lowerbound = cutoff_start
+                if cutoff_end > data_copy['Time (s)'].max():
+                    upperbound = data_copy['Time (s)'].max()
+                else:
+                    upperbound = cutoff_end
+                test_metadata["Data Corrections"].append(f"{date}: Data from {lowerbound}s to {upperbound}s was removed")
                 test_metadata['Manually Prepared'] = date
                 with open(test_selection, "w") as f:
                     json.dump(test_metadata, f, indent=4)

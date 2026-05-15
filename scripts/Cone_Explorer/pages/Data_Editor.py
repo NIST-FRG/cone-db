@@ -366,10 +366,6 @@ if material_selection:
         ######################################################################################################################################################################
 
         ############################################### Generate Plot #########################################################                 
-            
-            
-            
-            
             normalize = st.checkbox("Normalize Y-Axis Data by Surface Area (m2)")
             additional = st.checkbox("View Additional Calculated Properties")
             if not normalize and not additional:
@@ -499,7 +495,15 @@ if material_selection:
                     #adjust metadata
                     with open(metadata_name_map[test_selection], 'r') as f:
                         metadata = json.load(f)
-                    test_metadata["Data Corrections"].append(f"{date}: Data from {cutoff_start}s to {cutoff_end}s was removed")
+                    if cutoff_start < 0:
+                        lowerbound = 0
+                    else:
+                        lowerbound = cutoff_start
+                    if cutoff_end > data_copy['Time (s)'].max():
+                        upperbound = data_copy['Time (s)'].max()
+                    else:
+                        upperbound = cutoff_end
+                    test_metadata["Data Corrections"].append(f"{date}: Data from {lowerbound}s to {upperbound}s was removed")
                     test_metadata['Manually Prepared'] = date
                     with open(metadata_name_map[test_selection], "w") as f:
                         json.dump(test_metadata, f, indent=4)
