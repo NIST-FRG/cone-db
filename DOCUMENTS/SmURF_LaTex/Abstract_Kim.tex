@@ -16,91 +16,137 @@
     isbn=false,
     date=year
 ]{biblatex}
-\addbibresource{abstract.bib}
+\addbibresource{References.bib}
 
 % For email linking
 \usepackage{hyperref}
+\usepackage{float}
 
 \title{ENFP 429 Final Paper}
 
 \author{Ian Kim}
-
-\keywords{}
+\keywords{Cone Calorimeter, SmURF, Heat Release Rate, Parsed, Pre-Parsed, Red Oak, PMMA, Upholstery}
 \begin{document}
 \maketitle
 \section{Abstract}
-The accurate measurement of the volume, heat release, and toxic gas yield of a fire is a keystone in the fire protection and NIST research industry. This semester in ENFP 429 NIST research class, I looked through cone calorimetry data. a bench-scale instrument developed by NIST's Fire Research Division in 1982 to address this issue. The cone calorimeter works by exposing a sample material placed beneath a cone-shaped radiant heater to an external heat flux. Combustion products are then collected through an instrumented exhaust system, and HRR is calculated from the oxygen consumed during burning, based on the principle that heat release is directly proportional to oxygen consumption. 
-The significance of this measurement, mainly the material’s heat release rate, allows researchers to find the critical heat flux for specific materials. By calculating the Thermal Response Parameter (TRP), researchers can correlate the time to ignition to the incident radiant heat flux and surface heat losses using the relationship.
-t_ign = [ TRP / (q_r - q_loss) ]²
-From this, researchers can determine exactly what heat flux can be applied to a material without it igniting. Ultimately, these results are instrumental in resolving debates surrounding building fires and help drive innovations in the fire protection industry.
+The quantitative analysis of material flammability is a keystone to advancing fire protection engineering designs, set building codes, and informing evidence-based safety standards. The cone calorimeter was developed by the National Institute of Standards and Technology (NIST) Fire Research Division in 1982 \cite{babrauskas1982development} . This system provides a standardized bench-scale methodology for measuring various heat transfer parameters, including heat release rate (HRR), toxic gas yield, and Mass Loss Rate (MLR) under a controlled radiant heat flux.
 
-\maketitle
-\section{Disscussion: Systematic Review of User Files (SmURF)}
+This semester, as part of the NIST Material Flammability Research Division. I reviewed reports on cone calorimetry data from various materials at different orientations and heat fluxes. To analyze the ignition response and thermal evolution. Primarily concentrated on the HRR and critical heat flux; such data inform the broader NIST initiative. To make cone calorimeter data into a single publicly available database for flammability records by combining over the last 40 years.
 
-The reports I Smurfed this semester looked at Red Oak, PMMA, and Upholstery as tested materials. Specifically, in NBSIR 82-2611, Development of the Cone Calorimeter, A Bench-Scale Heat Release Rate Apparatus Based on Oxygen Consumption by Vytenis Babrauskas, looked at solid materials, PMMA and Red Oak. These solid materials were systematically tested under varying external irradiances: 25, 50, and 75 kW/m² and in both horizontal and vertical orientations to observe varying heat release profiles and charring behaviors. In this report, I forked, cloned, and successfully SmURFed 15 PMMA tests and 18 Red Oak tests. The report by Babrauskas was one of the earliest tests created and therefore did not reference a specific number of tests, but through reverse engineering, based on when the data was created, Ryan and I were able to SmURFed all the tests for this report. 
-The next report I looked at was "Prediction of Upholstered Chair Heat Release Rates from Bench-Scale Measurements" by Vytenis Babrauskas and John F. Krasny. Of the approximately 63 expected bench-scale cone calorimeter experiments outlined in the original study, 44 test files have been successfully located and SmURFed. These recovered files capture horizontal orientations across 25, 30, 40, and 50 kW/m² heat fluxes for various upholstery composites, specifically testing combinations of fire-retardant (FR) and non-FR polyurethane foam or cotton batting paired with cotton or polyolefin upholstery fabrics.
-The next report I looked at was "Prediction of Upholstered Chair Heat Release Rates from Bench-Scale Measurements" by Vytenis Babrauskas and John F. Krasny. Of the approximately 63 expected bench-scale cone calorimeter experiments outlined in the original study, 44 test files have been successfully located and processed. These recovered files capture horizontal orientations across 25, 30, 40, and 50 kW/m² heat fluxes for various upholstery composites, specifically testing combinations of fire-retardant (FR) and non-FR polyurethane foam or cotton batting paired with cotton or polyolefin upholstery fabrics.
 
-The bulk of the successfully processed data belongs to upholstery specimen F25 (Standard PU Foam with a Polyolefin cover), with 12 complete files across multiple replicates and heat fluxes. Other well-documented upholstery assemblies now include F21 (9 files), F24 (6 files), and F27 (5 files), as well as the initial datasets for F22 and F23. Currently, there are no processed files listed for specimens F28 or FB. Additionally, several files represent the portion of data that requires further troubleshooting or remains incomplete in the repository. For instance, a significant cluster of tests under the FC upholstery configuration (including replicates for 25, 30, and 40 kW/m² heat fluxes) is currently marked for re-evaluation, and several replicates for F27 (tests 0169 through 0198) have yet to be fully integrated into the finalized dataset.
+\section{Introduction:}
+The Material Flammability Research Project represents a multifaceted effort to understand how materials behave under fire conditions. The project is centered on the development and application of the cone calorimeter. This enables the quantitative prediction of material flammability behavior such as ignition, steady burning, and fire growth.. Upon which fire protection engineers, building code officials, material scientists, and computational modelers can rely when making consequential decisions about fire safety. 
+
+To support this mission, this semester in ENFP 429 research class, I have been engaged in three primary research areas. The first is Data Archaeology, which involves the review and archiving of historical measurement data. This involved recovering decades of experimental work that would otherwise remain fragmented, inaccessible, or lost. The second is Data Analysis, which focuses on the Systematic User Review of Files (SmURF). The full SmURF workflow is described in detail in the Methodology section. The third area, to which the author did not contribute, is the Development of Computational Tools. This encompasses the creation and application of automated pipelines to process, parse, analyze, and quantify the measurement data. Together, these three areas form a cohesive effort to transform raw experimental data into scientifically defensible knowledge for the fire protection community.
+
+With over four decades of cone calorimeter research and data, the primary goal of this research is to make this data accessible. This is done with the implementation of data into a centralized GitHub repository. Then taken from this repository to a publicly available Graphical User Interface (GUI) at flammability.el.nist.gov/cone. This platform enables users to search for materials and their parameters. Such as HRR and Mass Loss Rate, and compare datasets. Another benefit of this interface is the derived material properties, such as heats of combustion and fire growth parameters. This data can be uploaded to material input files directly compatible with the Fire Dynamics Simulator (FDS). To create more accurate bench-scale experimental data with large-scale computational fire modeling.
+
+
+
+\section{Methodology:}
+The methodology used in this research followed the standardized SmURF workflow. This required the development of a rigorous data processing pipeline. Which involved organizing each test into two distinct stages: Parsed and Prepared-Final. Parsed data is pulled directly from legacy and external data files. The process began with pulling raw, legacy test data into a local repository using Python. This served as the primary mechanism for ingesting parsed data files from external and historical sources. These files, representing decades of cone calorimeter tests collected across numerous institutions and research efforts.  In which naming and formatting were often inconsistent across institutions. 
+
+Raw data was made available locally to the Cone Explorer and the SmURF Editor was obtained by using VS Code. In SmuURF Editor the systematic reviewing began. The data was first analyzed per the experimental data and specifically using the HRR per unit area over time. To being able to spot and remedy clear anomalies like single-point spikes or physically irregular trends. Conservative judgement was applied throughout this process; data were corrected only when errors were unambiguous. To preserve the integrity of the original measurements wherever possible. The associated metadata for each test was reviewed and finished. This involved checking and fixing known names of materials, dates of tests, heat flux conditions, and orientation of samples. Besides cross-referencing with the published source or the NIST report to fill the blank attributes, and ensure that there was proper linkage between each test and its source. 
+
+After each test was processed and reviewed, the final data and metadata was exported to the Prepared-Final stage from Parsed stage. It was implemented using the SmURF Editor’s export function in SmURF editor. Files were converted to the correct renaming convention:
+
+\begin{equation}
+GeneralCategory-CoreMaterial-Covermaterial-barrier-ReportID
+\end{equation}
+
+The export produced a uniform CSV file and a JSON metadata file for each test. Then a set of tests were locally processed and exported to the NIST GitHub repository where they were committed and pushed along after a batch. For each test, we version controlled three files and submitted them in a pull request. The Prepared-Final CSV file, the Prepared-Final JSON metadata file, and the updated Parsed JSON metadata file. These pull requests were reviewed and merged by a repository administrator, formalizing the authors work as part of the Material Flammability Database.
+
+
+\section{Reports:}
+The reports I Smurfed this semester looked at Red Oak, PMMA, and Upholstery as tested materials. Specifically, in NBSIR 82-2611, Development of the Cone Calorimeter, A Bench-Scale Heat Release Rate Apparatus Based on Oxygen Consumption by Vytenis Babrauskas, looked at solid materials, PMMA and Red Oak. These solid materials were systematically tested under varying external irradiances: 25, 50, and 75 kW/m² and in both horizontal and vertical orientations to observe varying heat release profiles and charring behaviors. In this report, I forked, cloned, and successfully SmURFed 15 PMMA tests and 18 Red Oak tests. The report by Babrauskas was one of the earliest tests created and therefore did not reference a specific list of tests for Red Oak or PMMA, however did mention that sixteen tests were conducted for PMMA. Therefore, I am missing one PMMA test. Although there was no specification for Red Oak tests I was able to process 33 total test associated with this report:
+
+\begin{itemize}
+	\item \textbf{PMMA} (NBSIR822611) --- 15 tests
+	\item \textbf{Red Oak} (NBSIR822611) --- 18 tests
+\end{itemize}
+
+\noindent\textbf{Total: 33 tests processed}
+
+The next report I looked at was "Prediction of Upholstered Chair Heat Release Rates from Bench-Scale Measurements" by Vytenis Babrauskas and John F. Krasny. These recovered files capture a full scale test and horizontal orientations across 25, 30, 40, and 50 kW/m² heat fluxes for various upholstery composites. Therefore assuming 5 tests per material in this report. However I successfully uploaded 61 files which is greater than the expected 55 total tests. This discrepancy is likely due to duplicate exports, repeated experimental runs, and additional data files associated with individual experiments that were not explicitly separated in the original publication. These tests included testing combinations of fire-retardant (FR) and non-FR polyurethane foam or cotton batting paired with cotton or polyolefin upholstery fabrics. All in the horizontal orientation. Overall I was able to process 61 total test associated with this report:
+
+\begin{itemize}
+	\item \textbf{F21, F26} (FR Polyurethane Foam, Polyolefin cover) --- 10 tests
+	\item \textbf{F22} (FR Cotton Batting, Cotton cover) --- 3 tests
+	\item \textbf{F23} (FR Cotton Batting, Polyolefin cover) --- 3 tests
+	\item \textbf{F24} (FR Polyurethane Foam, Cotton cover) --- 9 tests
+	\item \textbf{F25} (Polyurethane Foam, Polyolefin cover) --- 16 tests
+	\item \textbf{F27} (Standard PU Foam, Cotton cover) --- 10 tests
+	\item \textbf{FA} (Cotton Batting, Polyolefin cover) --- 1 test
+	\item \textbf{FC} (Cotton Batting, Cotton cover) --- 9 tests
+	\item \textbf{F28, FB} (Polyurethane Foam, Cotton cover) --- no tests processed
+\end{itemize}
+
+\noindent\textbf{Total: 61 tests processed}
 
 \pagebreak
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \caption{Combustion Test Results}
     \label{tab:combustion_results}
-    \begin{tabularx}{\textwidth}{|L|c|c|c|}
+    \begin{tabularx}{\textwidth}{|L|c|c|c|c|c|}
     	\hline
-    	\tableheader{Series Name} & \subunithead{t}{ign}{s} & \subunithead{t}{flameout}{s} & \unithead{Residue Yield}{\%} \\
+    	\tableheader{Series Name} & \tableheader{Material ID} & \tableheader{Orientation} & \subunithead{t}{ign}{s} & \subunithead{t}{flameout}{s} & \unithead{Residue Yield}{\%} \\
     	\hline
-    	PMMA (25 kW/m$^2$) & $\approx$ 200 & $\approx$ 1780 & $\approx$ 0 \\
+    	PMMA (25 kW/m$^2$) & PMMA-NBSIR822611 & Horizontal & $\approx$ 200 & $\approx$ 1780 & $\approx$ 0 \\
     	\hline
-    	PMMA (50 kW/m$^2$) & $\approx$ 30 & $\approx$ 1150 & $\approx$ 0 \\
+    	PMMA (50 kW/m$^2$) & PMMA-NBSIR822611 & Horizontal & $\approx$ 30 & $\approx$ 1150 & $\approx$ 0 \\
     	\hline
-    	PMMA (75 kW/m$^2$) & $\approx$ 15 & $\approx$ 900 & $\approx$ 0 \\
+    	PMMA (75 kW/m$^2$) & RedOak-NBSIR822611 & Horizontal & $\approx$ 15 & $\approx$ 900 & $\approx$ 0 \\
     	\hline
-    	Red Oak (25 kW/m$^2$) & $\approx$ 250 & $>$ 1800 & $\approx$ 20 \\
+    	Red Oak (25 kW/m$^2$) & RedOak-NBSIR822611 & Horizontal & $\approx$ 250 & $>$ 1800 & $\approx$ 20 \\
     	\hline
-    	Red Oak (50 kW/m$^2$) & $\approx$ 20 & $\approx$ 1050 & $\approx$ 20 \\
+    	Red Oak (50 kW/m$^2$) & RedOak-NBSIR822611 & Horizontal & $\approx$ 20 & $\approx$ 1050 & $\approx$ 20 \\
     	\hline
-    	Red Oak (75 kW/m$^2$) & $\approx$ 10 & $\approx$ 780 & $\approx$ 20 \\
+    	Red Oak (75 kW/m$^2$) & RedOak-NBSIR822611 & Horizontal & $\approx$ 10 & $\approx$ 780 & $\approx$ 20 \\
     	\hline
-        F21 (25 kW/m$^2$, Average) & 34.5 & 229.5 & 13.9 \\
-        \hline
-        F21 (40 kW/m$^2$, R1) & 15 & 186 & 20.7 \\
-        \hline
-        F22 (25 kW/m$^2$, R1) & 51 & 444 & 24.9 \\
-        \hline
-        F22 (30 kW/m$^2$, R1) & 33 & 417 & 24.8 \\
-        \hline
-        F23 (25 kW/m$^2$, R1) & 27 & 624 & 32.6 \\
-        \hline
-        F23 (40 kW/m$^2$, R1) & 15 & 405 & 25.1 \\
-        \hline
-        F24 (25 kW/m$^2$, Average) & 40.5 & 445.5 & 8.8 \\
-        \hline
-        F24 (40 kW/m$^2$, R1) & 18 & 330 & 1.6 \\
-        \hline
-        F25 (25 kW/m$^2$, Average) & 20.0 & 204 & 25.3 \\
-        \hline
-        F25 (40 kW/m$^2$, R1) & 12 & 180 & 31.4 \\
-        \hline
-    	F27 (25 kW/m$^2$, Average) & 40.5 & 310.5 & 12.0 \\
-        \hline
-        F27 (40 kW/m$^2$, R1) & 24 & 297 & 10.6 \\
-        \hline
-        FC (25 kW/m$^2$, R1) & 45 & 111 & 52.6 \\
-        \hline
-        FC ()50 kW/m$^2$, R1) & 15 & 354 & 28.1 \\
-        \hline
+    	F21 (25 kW/m$^2$, Average) & Upholstery-PUFoamFR-Polyolefin & Horizontal & 34.5 & 229.5 & 13.9 \\
+    	\hline
+    	F21 (40 kW/m$^2$, R1) & Upholstery-PUFoamFR-Polyolefin & Horizontal & 15 & 186 & 20.7 \\
+    	\hline
+    	F22 (25 kW/m$^2$, R1) & Upholstery-CottonBattingFR-Cotton & Horizontal & 51 & 444 & 24.9 \\
+    	\hline
+    	F22 (30 kW/m$^2$, R1) & Upholstery-CottonBattingFR-Cotton & Horizontal & 33 & 417 & 24.8 \\
+    	\hline
+    	F23 (25 kW/m$^2$, R1) & Upholstery-CottonBattingFR-Polyolefin & Horizontal & 27 & 624 & 32.6 \\
+    	\hline
+    	F23 (40 kW/m$^2$, R1) & Upholstery-CottonBattingFR-Polyolefin & Horizontal & 15 & 405 & 25.1 \\
+    	\hline
+    	F24 (25 kW/m$^2$, Average) & Upholstery-PUFoamFR-Cotton & Horizontal & 40.5 & 445.5 & 8.8 \\
+    	\hline
+    	F24 (40 kW/m$^2$, R1) & Upholstery-PUFoamFR-Cotton & Horizontal & 18 & 330 & 1.6 \\
+    	\hline
+    	F25 (25 kW/m$^2$, Average) & Upholstery-PUFoam-Polyolefin & Horizontal & 20.0 & 204 & 25.3 \\
+    	\hline
+    	F25 (40 kW/m$^2$, R1) & Upholstery-PUFoam-Polyolefin & Horizontal & 12 & 180 & 31.4 \\
+    	\hline
+    	F27 (25 kW/m$^2$, Average) & Upholstery-PUFoam-Cotton & Horizontal & 40.5 & 310.5 & 12.0 \\
+    	\hline
+    	F27 (40 kW/m$^2$, R1) & Upholstery-PUFoam-Cotton & Horizontal & 24 & 297 & 10.6 \\
+    	\hline
+    	FC (25 kW/m$^2$, R1) & Upholstery-CottonBatting-Cotton & Horizontal & 45 & 111 & 52.6 \\
+    	\hline
+    	FC (50 kW/m$^2$, R1) & Upholstery-CottonBatting-Cotton & Horizontal & 15 & 354 & 28.1 \\
+    	\hline
+		FC (50 kW/m$^2$, R1) & Upholstery-CottonBatting-Cotton & Horizontal & 15 & 354 & 28.1 \\
+		\hline
+	
+
     \end{tabularx}
 \end{table}
 
-\cite{babrauskas1982development}
-\cite{babrauskas1985prediction}
+The data presented in this table was sourced from three materials tested under cone calorimeter conditions at varying irradiance levels. The PMMA data was extracted from Figure 28, which displays horizontal PMMA rate of heat release at several irradiances (25, 50, and 75 kW/m²). The red oak data was similarly extracted from Figure 30, showing horizontal red oak rate of heat release at the same irradiance levels. Both of these figures are sourced from Babrauskas (1982), the foundational paper describing the development of the cone calorimeter at the National Bureau of Standards.
 
-\section{References}
-\printbibliography[heading=none]
+The upholstery data was obtained through analysis of CSV files collected from cone calorimeter tests conducted at 25 kW/m² and 40 kW/m². Time to ignition was determined as the point at which the heat release rate (HRR) first exceeded 0.5 kW, indicating the onset of sustained flaming combustion. Time to flameout was identified at the end of the burning curve as the point where the HRR dropped back below 0.5 kW, signifying the cessation of flaming. The residual yield for each upholstery specimen was determined by examining the mass loss data throughout the test, allowing for calculation of the proportion of the original specimen mass remaining after combustion was complete.
+
+\pagebreak
+\printbibliography
 
 
+\end{document}
 \end{document}
