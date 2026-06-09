@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """C-Factor Calibration Calculator based on ASTM E1354."""
 
 import sys
@@ -9,11 +10,14 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from math import sqrt
 from pathlib import Path
+import math
+from datetime import datetime, timedelta
+import os
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]  # .../Scripts
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 from Cone_Explorer.const import (
-    SCRIPT_DIR
+    SCRIPT_DIR, CALIB_DATA
 )
 
 
@@ -24,18 +28,109 @@ st.markdown("Based on **ASTM E1354 Appendix A1.4**")
 
 
 # --- Constants ---
-DELTA_HC_METHANE = 50.01  # MJ/kg - Heat of combustion of methane, from user guide to cone and nbsir82-2602
+DELTA_HC_METHANE = 50.01  # MJ/kg - Heat of combustion of methane
 E_DEFAULT = 12.54  # MJ/kg - ΔHc/r_0 for methane
+
+# Clausius-Clapeyron constants for water
+P_REF = 101325  # Pa - Reference pressure (1 atm)
+T_REF = 373.15  # K - Reference temperature (boiling point)
+DELTA_H_VAP = 40.7e3  # J/mol - Heat of vaporization of water
+R_GAS = 8.314  # J/(mol·K) - Universal gas constant
 
 
 # --- Helper Functions ---
 
+def find_calib_folder(base_path, instrument_name):
+    """Find the Calib subfolder for an instrument, handling case sensitivity."""
+    instrument_folder = base_path / instrument_name
+    
+    for calib_name in ["Calib", "calib", "CALIB"]:
+        calib_path = instrument_folder / calib_name
+        try:
+            if calib_path.exists():
+                return calib_path
+        except:
+            pass
+        try:
+            if os.path.exists(str(calib_path)):
+                return calib_path
+        except:
+            pass
+    
+    try:
+        if instrument_folder.exists():
+            for item in instrument_folder.iterdir():
+                if item.is_dir() and item.name.lower() == "calib":
+                    return item
+    except:
+        pass
+    
+    try:
+        for item_name in os.listdir(str(instrument_folder)):
+            item_path = instrument_folder / item_name
+            if os.path.isdir(str(item_path)) and item_name.lower() == "calib":
+                return item_path
+    except:
+        pass
+    
+    return None
+
+
+def find_file_in_folder(folder_path, target_name, case_insensitive=True):
+    """Find a file in a folder."""
+    target_lower = target_name.lower() if case_insensitive else target_name
+    
+    direct_path = folder_path / target_name
+    try:
+        if direct_path.exists():
+            return direct_path
+    except:
+        pass
+    
+    try:
+        if os.path.exists(str(direct_path)):
+            return direct_path
+    except:
+        pass
+    
+    try:
+        for item in folder_path.iterdir():
+            item_name = item.name
+            compare_name = item_name.lower() if case_insensitive else item_name
+            if compare_name == target_lower:
+                return item
+    except:
+        pass
+    
+    try:
+        for item_name in os.listdir(str(folder_path)):
+            compare_name = item_name.lower() if case_insensitive else item_name
+            if compare_name == target_lower:
+                return folder_path / item_name
+    except:
+        pass
+    
+    return None
+
+
 def calculate_X_H2O(amb_temp_C, rel_humid_pct, amb_pressure_Pa):
     """Calculate water vapor mole fraction from ambient conditions."""
-    p_sat_water = 6.1078 * 10**((7.5 * amb_temp_C) / (237.3 + amb_temp_C)) * 100
+    T_K = amb_temp_C + 273.15
+    cc_const = DELTA_H_VAP / R_GAS
+    cc_offset = cc_const / T_REF
+    p_sat_water = P_REF * math.exp(cc_offset - cc_const / T_K)
+    
     p_h2o = (rel_humid_pct / 100) * p_sat_water
     X_H2O = p_h2o / amb_pressure_Pa
     return X_H2O
+
+
+def get_psat_water(temp_C):
+    """Calculate saturation pressure of water using Clausius-Clapeyron equation."""
+    T_K = temp_C + 273.15
+    cc_const = DELTA_H_VAP / R_GAS
+    cc_offset = cc_const / T_REF
+    return P_REF * math.exp(cc_offset - cc_const / T_K)
 
 
 def slpm_to_kg_s_methane(slpm):
@@ -111,6 +206,79 @@ def calculate_c_factor_for_row(row, X_O2_0, X_CO2_0, X_O2_amb, E, methane_col):
         return np.nan
 
 
+def parse_c_logs(file_path):
+    """
+    Parse C-Logs.CSV file which has a simple CSV format:
+    date,time,c-factor,filepath
+    
+    Returns a DataFrame with columns: Date, Time, C-Factor, Filepath, DateTime
+    """
+    records = []
+    
+    content = None
+    for encoding in ['cp1252', 'utf-8', 'latin-1', 'iso-8859-1']:
+        try:
+            with open(file_path, 'r', encoding=encoding) as f:
+                content = f.read()
+            break
+        except Exception:
+            continue
+    
+    if content is None:
+        with open(file_path, 'rb') as f:
+            content = f.read().decode('cp1252', errors='ignore')
+    
+    lines = content.strip().split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        parts = line.split(',')
+        
+        if len(parts) >= 4:
+            try:
+                date_str = parts[0].strip()
+                time_str = parts[1].strip()
+                c_factor = float(parts[2].strip())
+                filepath = parts[3].strip()
+                
+                filename = filepath.replace('\\', '/').split('/')[-1]
+                
+                records.append({
+                    'Date': date_str,
+                    'Time': time_str,
+                    'C-Factor': c_factor,
+                    'Filepath': filename
+                })
+            except (ValueError, IndexError):
+                continue
+    
+    df = pd.DataFrame(records)
+    
+    if len(df) == 0:
+        return df
+    
+    def parse_date(date_str):
+        for fmt in ['%d/%m/%Y', '%m/%d/%Y', '%d/%m/%y', '%m/%d/%y', '%Y-%m-%d']:
+            try:
+                return pd.to_datetime(date_str, format=fmt)
+            except:
+                continue
+        try:
+            return pd.to_datetime(date_str, dayfirst=True)
+        except:
+            return pd.NaT
+    
+    df['DateTime'] = df['Date'].apply(parse_date)
+    df = df.dropna(subset=['C-Factor', 'DateTime'])
+    df = df.sort_values('DateTime')
+    df = df.drop_duplicates(subset=['Filepath'], keep='last')
+    
+    return df
+
+
 def parse_ftt_file(file_path=None, file_content=None, encoding='cp1252'):
     """Parse FTT cone calorimeter CSV file."""
     if file_path is not None:
@@ -168,74 +336,613 @@ def reset_adjustments():
         del st.session_state[key]
 
 
+def extract_calibration_parameters(file_path, calib_folder, default_cal_start=305, default_cal_end=420):
+    """
+    Extract calibration region average parameters from a single test file.
+    Returns a dictionary of parameters or None if file cannot be processed.
+    """
+    try:
+        full_path = find_file_in_folder(calib_folder, file_path, case_insensitive=True)
+        if full_path is None:
+            return None
+        
+        metadata, data = parse_ftt_file(file_path=full_path, encoding='cp1252')
+        
+        # Rename time column if needed
+        time_col = data.columns[0]
+        if time_col != 'Time (s)':
+            data = data.rename(columns={time_col: 'Time (s)'})
+        
+        # Find methane column
+        methane_col = None
+        for col in data.columns:
+            if 'methane' in col.lower() and 'mfm' in col.lower():
+                methane_col = col
+                break
+        if not methane_col:
+            for col in data.columns:
+                if 'ch4' in col.lower() or 'methane' in col.lower():
+                    methane_col = col
+                    break
+        
+        # Get burner timing from metadata
+        burner_on_s = int(get_number(metadata, 'Burner on (s)', 65) or 65)
+        burner_off_s = int(get_number(metadata, 'Burner off (s)', 425) or 425)
+        
+        # Calculate calibration region
+        cal_start = burner_on_s + 240
+        cal_end = burner_off_s - 5
+        
+        # Get baseline region
+        baseline_start = 10
+        baseline_end = burner_on_s - 5
+        
+        # Filter data for regions
+        baseline_mask = (data['Time (s)'] >= baseline_start) & (data['Time (s)'] <= baseline_end)
+        calibration_mask = (data['Time (s)'] >= cal_start) & (data['Time (s)'] <= cal_end)
+        
+        baseline_df = data[baseline_mask]
+        cal_df = data[calibration_mask]
+        
+        if len(cal_df) == 0 or len(baseline_df) == 0:
+            return None
+        
+        # Extract ambient conditions
+        amb_temp_C = get_number(metadata, 'Ambient temperature (°C)', 20.0)
+        if amb_temp_C is None:
+            amb_temp_C = get_number(metadata, 'Ambient temperature', 20.0) or 20.0
+        amb_pressure_Pa = get_number(metadata, 'Barometric pressure (Pa)', 101325.0) or 101325.0
+        rel_humid_pct = get_number(metadata, 'Relative humidity (%)', 50.0) or 50.0
+        
+        # Calculate baseline (initial) values
+        X_O2_0 = baseline_df['O2 (%)'].mean() / 100 if 'O2 (%)' in baseline_df.columns else 0.2095
+        X_CO2_0 = baseline_df['CO2 (%)'].mean() / 100 if 'CO2 (%)' in baseline_df.columns else 0.0004
+        X_CO_0 = baseline_df['CO (%)'].mean() / 100 if 'CO (%)' in baseline_df.columns else 0.0
+        
+        # Calculate calibration averages
+        params = {
+            'File': file_path,
+            'Date': get_string(metadata, 'Date of test'),
+            'Amb Temp (°C)': amb_temp_C,
+            'Pressure (Pa)': amb_pressure_Pa,
+            'RH (%)': rel_humid_pct,
+            # Initial (baseline) volume fractions
+            'X_O2_0 (%)': X_O2_0 * 100,
+            'X_CO2_0 (%)': X_CO2_0 * 100,
+            'X_CO_0 (%)': X_CO_0 * 100,
+            # Calibration region values
+            'O2 (%)': cal_df['O2 (%)'].mean() if 'O2 (%)' in cal_df.columns else None,
+            'CO2 (%)': cal_df['CO2 (%)'].mean() if 'CO2 (%)' in cal_df.columns else None,
+            'CO (%)': cal_df['CO (%)'].mean() if 'CO (%)' in cal_df.columns else None,
+            'Stack TC (K)': cal_df['Stack TC (K)'].mean() if 'Stack TC (K)' in cal_df.columns else None,
+            'DPT (Pa)': cal_df['DPT (Pa)'].mean() if 'DPT (Pa)' in cal_df.columns else None,
+            'Target HRR (kW)': get_number(metadata, 'HRR level (kW)'),
+            'Burner On (s)': burner_on_s,
+            'Burner Off (s)': burner_off_s,
+            'Cal Start (s)': cal_start,
+            'Cal End (s)': cal_end,
+            'N Points': len(cal_df),
+        }
+        
+        # Add methane data if available
+        if methane_col and methane_col in cal_df.columns:
+            methane_slpm = cal_df[methane_col].mean()
+            m_dot_kg_s = slpm_to_kg_s_methane(methane_slpm)
+            hrr_kw = calculate_hrr_methane(m_dot_kg_s) * 1000
+            params['CH4 (SLPM)'] = methane_slpm
+            params['ṁ_CH4 (kg/s)'] = m_dot_kg_s
+            params['HRR (kW)'] = hrr_kw
+        
+        # Calculate phi
+        if params['O2 (%)'] and params['CO2 (%)'] and params['CO (%)']:
+            X_O2 = params['O2 (%)'] / 100
+            X_CO2 = params['CO2 (%)'] / 100
+            X_CO = params['CO (%)'] / 100
+            phi = calculate_odf(X_O2, X_CO2, X_CO, X_O2_0, X_CO2_0)
+            params['φ (ODF)'] = phi
+        
+        # Get file C-factor values
+        params['File C-Factor (Mean)'] = get_number(metadata, 'Mean C-factor')
+        params['File C-Factor (ISO)'] = get_number(metadata, 'ISO 5660-1 C-factor')
+        
+        return params
+        
+    except Exception as e:
+        return None
+
 # --- Main App ---
 
-st.header("📁 Load Calibration Data")
+# Initialize session state
+if 'selected_instrument' not in st.session_state:
+    st.session_state.selected_instrument = None
+if 'selected_file' not in st.session_state:
+    st.session_state.selected_file = None
+if 'c_logs_df' not in st.session_state:
+    st.session_state.c_logs_df = None
+if 'excluded_points' not in st.session_state:
+    st.session_state.excluded_points = set()
+if 'all_test_params' not in st.session_state:
+    st.session_state.all_test_params = None
 
-uploaded_file = st.file_uploader(
-    "Upload calibration file (.CSV)",
-    type=['csv', 'CSV'],
-    help="Upload the FTT cone calorimeter calibration data file"
-)
 
-st.markdown("**Or** enter file path directly:")
-file_path = st.text_input(
-    "File path",
-    placeholder=r"C:\CC5\CALIB\C2410010.CSV",
-    help="Full path to the calibration file"
-)
+# --- Step 1: Instrument Selection ---
+st.header("📁 Select Instrument")
 
-data_loaded = False
-metadata = {}
-data = None
-
-if 'current_file' not in st.session_state:
-    st.session_state.current_file = None
-
-# Then in the file loading sections:
-if uploaded_file is not None:
+# Get available instrument folders
+instrument_folders = []
+if CALIB_DATA.exists() or os.path.exists(str(CALIB_DATA)):
     try:
-        file_bytes = uploaded_file.read()
-        file_content = file_bytes.decode('cp1252')
-        metadata, data = parse_ftt_file(file_content=file_content)
-        data_loaded = True
-        
-        # Only clear if file changed
-        if st.session_state.current_file != uploaded_file.name:
-            st.session_state.current_file = uploaded_file.name
-            st.cache_data.clear()
-            reset_adjustments()
-        shortname = Path(uploaded_file.name).name
-        st.success(f"✅ Loaded: {shortname} ({len(data)} data points)")
-    except Exception as e:
-        st.error(f"Error reading file: {e}")
-        import traceback
-        st.code(traceback.format_exc())
+        for folder in CALIB_DATA.iterdir():
+            if folder.is_dir():
+                calib_subfolder = find_calib_folder(CALIB_DATA, folder.name)
+                if calib_subfolder is not None:
+                    instrument_folders.append(folder.name)
+    except Exception:
+        try:
+            for folder_name in os.listdir(str(CALIB_DATA)):
+                folder_path = CALIB_DATA / folder_name
+                if os.path.isdir(str(folder_path)):
+                    calib_subfolder = find_calib_folder(CALIB_DATA, folder_name)
+                    if calib_subfolder is not None:
+                        instrument_folders.append(folder_name)
+        except Exception:
+            pass
 
-elif file_path:
+if not instrument_folders:
+    st.error(f"No instrument folders found in {CALIB_DATA}")
+    st.info("Expected folder structure: CALIB_DATA/[Instrument]/Calib/")
+    st.stop()
+
+col1, col2 = st.columns([2, 1])
+with col1:
+    selected_instrument = st.selectbox(
+        "Select Instrument",
+        options=instrument_folders,
+        index=instrument_folders.index(st.session_state.selected_instrument) if st.session_state.selected_instrument in instrument_folders else 0,
+        help="Select the cone calorimeter instrument"
+    )
+
+if selected_instrument != st.session_state.selected_instrument:
+    st.session_state.selected_instrument = selected_instrument
+    st.session_state.selected_file = None
+    st.session_state.c_logs_df = None
+    st.session_state.excluded_points = set()
+    st.session_state.all_test_params = None
+    reset_adjustments()
+
+# --- Step 2: Load C-Logs and Display History ---
+if selected_instrument:
+    calib_folder = find_calib_folder(CALIB_DATA, selected_instrument)
+    
+    if calib_folder is None:
+        st.error(f"Calib folder not found for {selected_instrument}")
+        st.stop()
+    
+    c_logs_path = find_file_in_folder(calib_folder, "C-Logs.CSV", case_insensitive=True)
+    
+    if c_logs_path is None:
+        st.error(f"C-Logs.CSV not found in {calib_folder}")
+        st.stop()
+    
+    # Load C-Logs
+    if st.session_state.c_logs_df is None:
+        try:
+            st.session_state.c_logs_df = parse_c_logs(c_logs_path)
+        except Exception as e:
+            st.error(f"Error loading C-Logs.CSV: {e}")
+            st.stop()
+    
+    c_logs_df = st.session_state.c_logs_df.copy()
+    
+    if len(c_logs_df) == 0:
+        st.warning("No valid calibration records found in C-Logs.CSV")
+        st.stop()
+    
+    st.success(f"✅ Loaded {len(c_logs_df)} calibration records from {selected_instrument}")
+    
+    # --- Date Range Selection ---
+    st.header("📅 Date Range & Point Selection")
+    
+    min_date = c_logs_df['DateTime'].min().date()
+    max_date = c_logs_df['DateTime'].max().date()
+    
+    col1, col2, col3 = st.columns([1, 1, 1])
+    
+    with col1:
+        date_range_start = st.date_input(
+            "Start Date",
+            value=min_date,
+            min_value=min_date,
+            max_value=max_date,
+            key="date_range_start"
+        )
+    
+    with col2:
+        date_range_end = st.date_input(
+            "End Date",
+            value=max_date,
+            min_value=min_date,
+            max_value=max_date,
+            key="date_range_end"
+        )
+    
+    with col3:
+        preset = st.selectbox(
+            "Quick Presets",
+            options=["Custom", "Last 30 days", "Last 90 days", "Last 6 months", "Last year", "All time"],
+            index=0,
+            key="date_preset"
+        )
+        
+        if preset != "Custom":
+            if preset == "Last 30 days":
+                date_range_start = max_date - timedelta(days=30)
+            elif preset == "Last 90 days":
+                date_range_start = max_date - timedelta(days=90)
+            elif preset == "Last 6 months":
+                date_range_start = max_date - timedelta(days=180)
+            elif preset == "Last year":
+                date_range_start = max_date - timedelta(days=365)
+            elif preset == "All time":
+                date_range_start = min_date
+            date_range_end = max_date
+    
+    # Filter by date range
+    date_mask = (c_logs_df['DateTime'].dt.date >= date_range_start) & (c_logs_df['DateTime'].dt.date <= date_range_end)
+    c_logs_filtered = c_logs_df[date_mask].copy()
+    
+    c_logs_filtered = c_logs_filtered.reset_index(drop=True)
+    c_logs_filtered['PointID'] = c_logs_filtered['Filepath']
+    
+    c_logs_filtered['Included'] = ~c_logs_filtered['PointID'].isin(st.session_state.excluded_points)
+    
+    included_df = c_logs_filtered[c_logs_filtered['Included']]
+    
+    if len(included_df) > 0:
+        c_mean = included_df['C-Factor'].mean()
+        c_std = included_df['C-Factor'].std()
+        c_min = included_df['C-Factor'].min()
+        c_max = included_df['C-Factor'].max()
+    else:
+        c_mean = c_std = c_min = c_max = 0
+    
+    # --- Plot C-Factor History ---
+    st.header("📈 C-Factor History")
+    
+    fig = go.Figure()
+    
+    included_plot = c_logs_filtered[c_logs_filtered['Included']]
+    if len(included_plot) > 0:
+        fig.add_trace(go.Scatter(
+            x=included_plot['DateTime'],
+            y=included_plot['C-Factor'],
+            mode='lines+markers',
+            name='Included',
+            line=dict(color='blue', width=1),
+            marker=dict(size=10, color='blue', symbol='circle'),
+            hovertemplate=(
+                '<b>Date:</b> %{x|%Y-%m-%d}<br>'
+                '<b>C-Factor:</b> %{y:.6f}<br>'
+                '<b>File:</b> %{customdata}<br>'
+                '<b>Status:</b> Included<extra></extra>'
+            ),
+            customdata=included_plot['Filepath']
+        ))
+    
+    excluded_plot = c_logs_filtered[~c_logs_filtered['Included']]
+    if len(excluded_plot) > 0:
+        fig.add_trace(go.Scatter(
+            x=excluded_plot['DateTime'],
+            y=excluded_plot['C-Factor'],
+            mode='markers',
+            name='Excluded',
+            marker=dict(size=10, color='red', symbol='x'),
+            hovertemplate=(
+                '<b>Date:</b> %{x|%Y-%m-%d}<br>'
+                '<b>C-Factor:</b> %{y:.6f}<br>'
+                '<b>File:</b> %{customdata}<br>'
+                '<b>Status:</b> EXCLUDED<extra></extra>'
+            ),
+            customdata=excluded_plot['Filepath']
+        ))
+
+    fig.update_layout(
+        title=f"C-Factor History - {selected_instrument} ({date_range_start} to {date_range_end})",
+        xaxis_title="Date",
+        yaxis_title="C-Factor",
+        height=450,
+        hovermode='closest',
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("Mean C-Factor", f"{c_mean:.6f}")
+    with col2:
+        st.metric("Std Dev", f"{c_std:.6f}")
+    with col3:
+        st.metric("Min", f"{c_min:.6f}")
+    with col4:
+        st.metric("Max", f"{c_max:.6f}")
+    with col5:
+        st.metric("Points", f"{len(included_df)}/{len(c_logs_filtered)}")
+    
+    # --- Point Selection Interface ---
+    st.subheader("🎯 Overview of Calibrations")
+    
+    col1, col2 = st.columns([3, 1])
+    
+    with col2:
+        st.markdown("**Quick Actions**")
+        if st.button("✅ Include All", use_container_width=True):
+            st.session_state.excluded_points = set()
+            st.rerun()
+        
+        if st.button("❌ Exclude All", use_container_width=True):
+            st.session_state.excluded_points = set(c_logs_filtered['PointID'].tolist())
+            st.rerun()
+        
+        if st.button("🔄 Exclude Outliers (>2σ)", use_container_width=True):
+            if len(included_df) > 0:
+                outlier_mask = (c_logs_filtered['C-Factor'] > c_mean + 2*c_std) | (c_logs_filtered['C-Factor'] < c_mean - 2*c_std)
+                outlier_ids = c_logs_filtered[outlier_mask]['PointID'].tolist()
+                st.session_state.excluded_points.update(outlier_ids)
+                st.rerun()
+        
+        if st.button("🔄 Exclude Outliers (>3σ)", use_container_width=True):
+            if len(included_df) > 0:
+                outlier_mask = (c_logs_filtered['C-Factor'] > c_mean + 3*c_std) | (c_logs_filtered['C-Factor'] < c_mean - 3*c_std)
+                outlier_ids = c_logs_filtered[outlier_mask]['PointID'].tolist()
+                st.session_state.excluded_points.update(outlier_ids)
+                st.rerun()
+    
+    with col1:
+        display_df = c_logs_filtered[['DateTime', 'C-Factor', 'Filepath', 'Included']].copy()
+        display_df['DateTime'] = display_df['DateTime'].dt.strftime('%Y-%m-%d %H:%M')
+        display_df = display_df.rename(columns={
+            'DateTime': 'Date/Time',
+            'C-Factor': 'C-Factor',
+            'Filepath': 'File',
+            'Included': '✓ Include'
+        })
+        
+        edited_df = st.data_editor(
+            display_df,
+            column_config={
+                "Date/Time": st.column_config.TextColumn("Date/Time", disabled=True),
+                "C-Factor": st.column_config.NumberColumn("C-Factor", format="%.6f", disabled=True),
+                "File": st.column_config.TextColumn("File", disabled=True),
+                "✓ Include": st.column_config.CheckboxColumn("✓ Include", default=True)
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=300
+        )
+        
+        new_excluded = set()
+        for idx, row in edited_df.iterrows():
+            if not row['✓ Include']:
+                point_id = c_logs_filtered.iloc[idx]['PointID']
+                new_excluded.add(point_id)
+        
+        if new_excluded != st.session_state.excluded_points:
+            st.session_state.excluded_points = new_excluded
+            st.rerun()
+    
+    st.divider()
+    
+   # --- All Tests Parameter Summary ---
+    st.header("📊 Parameters Used for Calibration")
+    
+    with st.expander("View/Load Calibration Parameters for All Tests in Date Range", expanded=False):
+        
+        col1, col2 = st.columns([1, 3])
+        
+        with col1:
+            if st.button("🔄 Load/Refresh All Test Data", use_container_width=True):
+                with st.spinner("Loading calibration data from all test files..."):
+                    all_params = []
+                    progress_bar = st.progress(0)
+                    
+                    files_to_process = c_logs_filtered['Filepath'].tolist()
+                    total_files = len(files_to_process)
+                    
+                    for i, filepath in enumerate(files_to_process):
+                        params = extract_calibration_parameters(filepath, calib_folder)
+                        if params:
+                            # Add C-Factor from C-Logs
+                            c_logs_row = c_logs_filtered[c_logs_filtered['Filepath'] == filepath]
+                            if len(c_logs_row) > 0:
+                                params['C-Logs C-Factor'] = c_logs_row.iloc[0]['C-Factor']
+                                params['DateTime'] = c_logs_row.iloc[0]['DateTime']
+                                params['Included'] = c_logs_row.iloc[0]['Included']
+                            all_params.append(params)
+                        
+                        progress_bar.progress((i + 1) / total_files)
+                    
+                    if all_params:
+                        st.session_state.all_test_params = pd.DataFrame(all_params)
+                    else:
+                        st.session_state.all_test_params = pd.DataFrame()
+                    
+                    progress_bar.empty()
+                
+                st.success(f"Loaded data from {len(all_params)} of {total_files} files")
+                st.rerun()
+        
+        with col2:
+            if st.session_state.all_test_params is not None and len(st.session_state.all_test_params) > 0:
+                st.caption(f"Data loaded for {len(st.session_state.all_test_params)} tests")
+            else:
+                st.caption("Click 'Load/Refresh' to extract parameters from all test files")
+        
+        if st.session_state.all_test_params is not None and len(st.session_state.all_test_params) > 0:
+            params_df = st.session_state.all_test_params.copy()
+            
+            # Column selection
+            available_cols = params_df.columns.tolist()
+            default_cols = ['File', 'DateTime', 'C-Logs C-Factor', 'O2 (%)', 'CO2 (%)', 'CO (%)', 
+                           'Stack TC (K)', 'DPT (Pa)', 'CH4 (SLPM)', 'ṁ_CH4 (kg/s)', 'HRR (kW)', 'Included']
+            default_cols = [c for c in default_cols if c in available_cols]
+            
+            selected_cols = st.multiselect(
+                "Select columns to display",
+                options=available_cols,
+                default=default_cols,
+                key="param_cols_select"
+            )
+            
+            if selected_cols:
+                display_params_df = params_df[selected_cols].copy()
+                
+                # Format datetime if present
+                if 'DateTime' in display_params_df.columns:
+                    display_params_df['DateTime'] = pd.to_datetime(display_params_df['DateTime']).dt.strftime('%Y-%m-%d %H:%M')
+                
+                # Format mass flow rate in scientific notation (3 sig figs)
+                if 'ṁ_CH4 (kg/s)' in display_params_df.columns:
+                    display_params_df['ṁ_CH4 (kg/s)'] = display_params_df['ṁ_CH4 (kg/s)'].apply(
+                        lambda x: f"{x:.3e}" if pd.notna(x) else "N/A"
+                    )
+                
+                # Sort by datetime
+                if 'DateTime' in display_params_df.columns:
+                    display_params_df = display_params_df.sort_values('DateTime', ascending=False)
+                
+                st.dataframe(
+                    display_params_df,
+                    use_container_width=True,
+                    hide_index=True,
+                    height=400
+                )
+                
+                # Statistics for included tests only
+                st.subheader("📈 Statistics (Included Tests Only)")
+                
+                included_params = params_df[params_df['Included'] == True] if 'Included' in params_df.columns else params_df
+                
+                numeric_cols = ['C-Logs C-Factor', 'X_O2_0 (%)', 'X_CO2_0 (%)', 'X_CO_0 (%)',
+                               'O2 (%)', 'CO2 (%)', 'CO (%)', 'Stack TC (K)', 'DPT (Pa)', 
+                               'CH4 (SLPM)', 'ṁ_CH4 (kg/s)', 'HRR (kW)', 'φ (ODF)', 
+                               'Amb Temp (°C)', 'Pressure (Pa)', 'RH (%)']
+                numeric_cols = [c for c in numeric_cols if c in included_params.columns]
+                
+                if numeric_cols:
+                    stats_data = []
+                    for col in numeric_cols:
+                        col_data = included_params[col].dropna()
+                        if len(col_data) > 0:
+                            stats_data.append({
+                                'Parameter': col,
+                                'Mean': col_data.mean(),
+                                'Std Dev': col_data.std(),
+                                'Min': col_data.min(),
+                                'Max': col_data.max(),
+                                'N': len(col_data)
+                            })
+                    
+                    if stats_data:
+                        stats_df = pd.DataFrame(stats_data)
+                        
+                        # Unified formatting function
+                        def format_value(val, param):
+                            if pd.isna(val):
+                                return "N/A"
+                            # C-Factor: 6 decimal places
+                            if 'C-Factor' in param:
+                                return f"{val:.6f}"
+                            # Mass flow rate: scientific notation, 3 sig figs
+                            elif 'ṁ_CH4' in param:
+                                return f"{val:.3e}"
+                            # Gas concentrations: 4 decimal places
+                            elif param in ['O2 (%)', 'CO2 (%)', 'CO (%)', 'X_O2_0 (%)', 'X_CO2_0 (%)', 'X_CO_0 (%)']:
+                                return f"{val:.4f}"
+                            # ODF: 4 decimal places
+                            elif 'φ' in param or 'ODF' in param:
+                                return f"{val:.4f}"
+                            # Temperature, pressure: 1 decimal place
+                            elif param in ['Stack TC (K)', 'DPT (Pa)', 'Pressure (Pa)', 'Amb Temp (°C)', 'RH (%)']:
+                                return f"{val:.1f}"
+                            # HRR and flow rates: 3 decimal places
+                            elif param in ['HRR (kW)', 'CH4 (SLPM)']:
+                                return f"{val:.3f}"
+                            # Default: 3 decimal places
+                            else:
+                                return f"{val:.3f}"
+                        
+                        for col in ['Mean', 'Std Dev', 'Min', 'Max']:
+                            stats_df[col] = stats_df.apply(
+                                lambda row: format_value(row[col], row['Parameter']), axis=1
+                            )
+                        
+                        st.dataframe(stats_df, use_container_width=True, hide_index=True)
+                
+                # Download buttons
+                col1, col2 = st.columns(2)
+                with col1:
+                    csv_data = params_df.to_csv(index=False)
+                    st.download_button(
+                        label="📥 Download All Parameters (CSV)",
+                        data=csv_data,
+                        file_name=f"calibration_parameters_{selected_instrument}.csv",
+                        mime="text/csv"
+                    )
+                with col2:
+                    if len(included_params) > 0:
+                        csv_data_included = included_params.to_csv(index=False)
+                        st.download_button(
+                            label="📥 Download Included Only (CSV)",
+                            data=csv_data_included,
+                            file_name=f"calibration_parameters_{selected_instrument}_included.csv",
+                            mime="text/csv"
+                        )
+    st.divider()
+    
+    # --- Step 3: Select Calibration File ---
+    st.header("📂 Single Calibration Detailed Analysis")
+    
+    c_logs_filtered['SelectLabel'] = c_logs_filtered.apply(
+        lambda row: f"{'❌ ' if not row['Included'] else ''}{row['DateTime'].strftime('%Y-%m-%d')} | C={row['C-Factor']:.6f} | {row['Filepath']}",
+        axis=1
+    )
+    
+    selection_df = c_logs_filtered.sort_values('DateTime', ascending=False)
+    
+    selected_label = st.selectbox(
+        "Select a calibration test to analyze",
+        options=selection_df['SelectLabel'].tolist(),
+        index=0,
+        help="Select a calibration from the history to view details"
+    )
+    
+    selected_row = selection_df[selection_df['SelectLabel'] == selected_label].iloc[0]
+    selected_filepath = selected_row['Filepath']
+    
+    file_path = find_file_in_folder(calib_folder, selected_filepath, case_insensitive=True)
+    
+    if file_path is None:
+        st.error(f"Calibration file not found: {selected_filepath}")
+        st.info(f"Looking in: {calib_folder}")
+        st.stop()
+    
+    if str(file_path) != st.session_state.selected_file:
+        st.session_state.selected_file = str(file_path)
+        reset_adjustments()
+
+    st.divider()
+    
+    # --- Load and Process Selected File ---
     try:
         metadata, data = parse_ftt_file(file_path=file_path, encoding='cp1252')
-        data_loaded = True
-        shortname = Path(file_path).name
+        shortname = file_path.name
         st.success(f"✅ Loaded: {shortname} ({len(data)} data points)")
-
-        # Only clear if file changed
-        if st.session_state.current_file != file_path:
-            st.session_state.current_file = file_path
-            st.cache_data.clear()
-            reset_adjustments()
-        
-        st.success(f"✅ Loaded: {shortname} ({len(data)} data points)")
-    except FileNotFoundError:
-        st.error(f"File not found: {file_path}")
     except Exception as e:
         st.error(f"Error reading file: {e}")
-        import traceback
-        st.code(traceback.format_exc())
+        st.stop()
 
-
-if data_loaded and data is not None and len(data) > 0:
-    
     # --- Prepare data and extract defaults ---
     time_col = data.columns[0]
     if time_col != 'Time (s)':
@@ -252,12 +959,12 @@ if data_loaded and data is not None and len(data) > 0:
                 methane_col = col
                 break
     
-    # Get burner timing from metadata (fixed, not adjustable)
     burner_on_s = int(get_number(metadata, 'Burner on (s)', 65) or 65)
     burner_off_s = int(get_number(metadata, 'Burner off (s)', 425) or 425)
     
-    # Get default values from metadata
     default_amb_temp = get_number(metadata, 'Ambient temperature (°C)', 20.0)
+    if default_amb_temp is None:
+        default_amb_temp = get_number(metadata, 'Ambient temperature', 20.0)
     default_amb_press = get_number(metadata, 'Barometric pressure (Pa)', 101325.0)
     default_rel_humid = get_number(metadata, 'Relative humidity (%)', 50.0)
     default_o2_delay = int(get_number(metadata, 'O2 delay time (s)', 0) or 0)
@@ -276,13 +983,11 @@ if data_loaded and data is not None and len(data) > 0:
         
         st.caption("Modify parameters to see how they affect the calculated C-factor.")
         
-        # Track all adjustments
         adjustments = {
             'parameters': {},
             'columns': {}
         }
         
-        # --- Steady State Region Selection ---
         st.subheader("📊 Steady State Regions")
         
         st.markdown("**Baseline Period**")
@@ -301,7 +1006,7 @@ if data_loaded and data is not None and len(data) > 0:
         default_cal_end = burner_off_s - 5
         cal_start = st.number_input(
             "Start (s)", min_value=0, max_value=time_max,
-            value=default_cal_start, step=1,
+            value=min(default_cal_start, time_max), step=1,
             key="region_cal_start"
         )
         cal_end = st.number_input(
@@ -312,7 +1017,6 @@ if data_loaded and data is not None and len(data) > 0:
         
         st.divider()
         
-        # --- Parameter Adjustments (Static Values) ---
         st.subheader("📌 Static Parameters")
         
         st.markdown("**Ambient Conditions**")
@@ -336,7 +1040,6 @@ if data_loaded and data is not None and len(data) > 0:
             key="param_rel_humid"
         )
         
-        # Track changes
         if default_amb_temp and amb_temp_C != default_amb_temp:
             adjustments['parameters']['Ambient Temp (°C)'] = {'file': default_amb_temp, 'current': amb_temp_C}
         if default_amb_press and amb_pressure_Pa != default_amb_press:
@@ -384,15 +1087,14 @@ if data_loaded and data is not None and len(data) > 0:
         )
         
         if o2_delay != default_o2_delay:
-            adjustments['parameters']['O2 Delay (s)'] = {'file': default_o2_delay, 'current': o2_delay}
+            adjustments['parameters']['O₂ Delay (s)'] = {'file': default_o2_delay, 'current': o2_delay}
         if co2_delay != default_co2_delay:
-            adjustments['parameters']['CO2 Delay (s)'] = {'file': default_co2_delay, 'current': co2_delay}
+            adjustments['parameters']['CO₂ Delay (s)'] = {'file': default_co2_delay, 'current': co2_delay}
         if co_delay != default_co_delay:
             adjustments['parameters']['CO Delay (s)'] = {'file': default_co_delay, 'current': co_delay}
         
         st.divider()
         
-        # --- Column Adjustments (Scale & Shift) ---
         st.subheader("📊 Column Adjustments")
         st.caption("Value = (Original × Scale) + Shift")
         
@@ -427,7 +1129,6 @@ if data_loaded and data is not None and len(data) > 0:
                 if scale != 1.0 or shift != 0.0:
                     adjustments['columns'][col_key] = {'scale': scale, 'shift': shift}
         
-        # Check if any adjustments are active
         any_adjustments = len(adjustments['parameters']) > 0 or len(adjustments['columns']) > 0
         
         if any_adjustments:
@@ -444,19 +1145,17 @@ if data_loaded and data is not None and len(data) > 0:
                 for col, adj in adjustments['columns'].items():
                     st.caption(f"{col}: ×{adj['scale']:.4f}, +{adj['shift']:.4f}")
     
-    # --- Calculate derived values (after sidebar, before main content) ---
+    # --- Calculate derived values ---
     X_H2O_initial = calculate_X_H2O(amb_temp_C, rel_humid_pct, amb_pressure_Pa)
     
     # --- Apply Adjustments to Data ---
     data_adjusted = data.copy()
     
-    # Apply column scale and shift
     for col_key in col_keys:
         if col_key in adjustments['columns']:
             adj = adjustments['columns'][col_key]
             data_adjusted[col_key] = (data_adjusted[col_key] * adj['scale']) + adj['shift']
     
-    # Calculate HRR from Methane
     if methane_col:
         data_adjusted['m_dot_CH4 (kg/s)'] = data_adjusted[methane_col].apply(
             lambda x: slpm_to_kg_s_methane(x) if pd.notna(x) else np.nan
@@ -466,7 +1165,6 @@ if data_loaded and data is not None and len(data) > 0:
         )
         data_adjusted['HRR_CH4 (kW)'] = data_adjusted['HRR_CH4 (MW)'] * 1000
     
-    # Apply delay time corrections
     data_corrected = data_adjusted.copy()
     
     if o2_delay > 0 and 'O2 (%)' in data_corrected.columns:
@@ -480,14 +1178,12 @@ if data_loaded and data is not None and len(data) > 0:
     if max_delay > 0:
         data_corrected = data_corrected.iloc[:-max_delay]
     
-    # Create masks
     baseline_mask = (data_corrected['Time (s)'] >= baseline_start) & (data_corrected['Time (s)'] <= baseline_end)
     calibration_mask = (data_corrected['Time (s)'] >= cal_start) & (data_corrected['Time (s)'] <= cal_end)
     
     n_baseline = baseline_mask.sum()
     n_calibration = calibration_mask.sum()
     
-    # Calculate Baseline Averages
     baseline_df = data_corrected[baseline_mask]
     cal_df = data_corrected[calibration_mask]
     
@@ -502,7 +1198,6 @@ if data_loaded and data is not None and len(data) > 0:
         X_CO_0 = 0.0
         X_O2_amb = (1 - X_H2O_initial) * X_O2_0
     
-    # Calculate Time-Series C-Factor
     if methane_col:
         data_corrected['C-Factor'] = data_corrected.apply(
             lambda row: calculate_c_factor_for_row(row, X_O2_0, X_CO2_0, X_O2_amb, E_value, methane_col),
@@ -510,16 +1205,6 @@ if data_loaded and data is not None and len(data) > 0:
         )
         cal_df = data_corrected[calibration_mask]
         baseline_df = data_corrected[baseline_mask]
-    
-    # ==================== MAIN CONTENT ====================
-    
-    st.divider()
-    
-    with st.expander("🔍 Debug: View raw column names"):
-        st.write("**Metadata keys:**")
-        st.write(list(metadata.keys()))
-        st.write("**Data columns:**")
-        st.write(list(data.columns))
     
     # --- Display Metadata ---
     st.header("📋 Test Metadata")
@@ -550,7 +1235,6 @@ if data_loaded and data is not None and len(data) > 0:
     
     st.divider()
     
-    # --- Methane column status ---
     if not methane_col:
         st.error("⚠️ Methane MFM column not found!")
     
@@ -635,10 +1319,10 @@ if data_loaded and data is not None and len(data) > 0:
             if col_name == 'C-Factor':
                 c_factor_cal_data = cal_df['C-Factor'].dropna()
                 if len(c_factor_cal_data) > 0:
-                    c_min = c_factor_cal_data.min()
-                    c_max = c_factor_cal_data.max()
-                    c_range = c_max - c_min if c_max != c_min else 0.001
-                    fig.update_yaxes(range=[c_min - 0.1 * c_range, c_max + 0.1 * c_range], row=row, col=col)
+                    c_min_plot = c_factor_cal_data.min()
+                    c_max_plot = c_factor_cal_data.max()
+                    c_range = c_max_plot - c_min_plot if c_max_plot != c_min_plot else 0.001
+                    fig.update_yaxes(range=[c_min_plot - 0.1 * c_range, c_max_plot + 0.1 * c_range], row=row, col=col)
         
         fig.update_layout(height=300 * n_rows, showlegend=False, title_text="Calibration Data")
         st.plotly_chart(fig, use_container_width=True)
@@ -705,7 +1389,6 @@ if data_loaded and data is not None and len(data) > 0:
         with col2:
             st.subheader(f"Calibration ({n_calibration} points)")
             
-            # Build calibration stats including methane
             cal_params = ['X_O₂', 'X_CO₂', 'X_CO', 'T_e (K)', 'ΔP (Pa)']
             cal_means = [
                 f"{X_O2_cal:.6f}", 
@@ -722,7 +1405,6 @@ if data_loaded and data is not None and len(data) > 0:
                 f"{cal_df['DPT (Pa)'].std():.2f}" if 'DPT (Pa)' in cal_df.columns else "N/A"
             ]
             
-            # Add methane rows
             if methane_slpm_cal is not None:
                 cal_params.extend(['───', 'CH₄ (SLPM)', 'ṁ_CH₄ (kg/s)', 'q̇_CH₄ (kW)', 'Target (kW)'])
                 cal_means.extend([
@@ -765,16 +1447,17 @@ if data_loaded and data is not None and len(data) > 0:
             
             c_factor_series = cal_df['C-Factor'].dropna() if 'C-Factor' in cal_df.columns else pd.Series()
             c_factor_mean = c_factor_series.mean() if len(c_factor_series) > 0 else None
-            c_factor_std = c_factor_series.std() if len(c_factor_series) > 0 else None
+            c_factor_std_val = c_factor_series.std() if len(c_factor_series) > 0 else None
             c_factor_count = len(c_factor_series)
-            
-            co_correction_iso = 0.172 * (1 - phi_iso) * (X_CO_cal / X_O2_cal) if X_O2_cal > 0 else 0
-            bracket_term_iso = (phi_iso - co_correction_iso) / (1 - phi_iso + 1.105 * phi_iso)
-            flow_term_iso = sqrt(delta_P_cal / T_e_cal)
             
             ref_c_previous = get_number(metadata, 'Initial C-factor (SI units)')
             ref_c_mean = get_number(metadata, 'Mean C-factor')
             ref_c_iso = get_number(metadata, 'ISO 5660-1 C-factor')
+            
+            c_logs_c_factor = selected_row['C-Factor']
+            
+            historical_c_mean = c_mean if len(included_df) > 0 else None
+            historical_c_std = c_std if len(included_df) > 0 else None
             
             def calc_diff(calc_val, ref_val):
                 if calc_val and ref_val and ref_val != 0:
@@ -790,14 +1473,18 @@ if data_loaded and data is not None and len(data) > 0:
                           value=f"{c_factor_iso:.6f}" if c_factor_iso else "N/A")
                 
                 iso_comparison = pd.DataFrame({
-                    'Comparison': ['vs File ISO', 'vs File Previous'],
-                    'File Value': [
+                    'Comparison': ['vs C-Logs', 'vs File ISO', 'vs File Previous', 'vs Historical Mean'],
+                    'Reference Value': [
+                        f"{c_logs_c_factor:.6f}" if c_logs_c_factor else "N/A",
                         f"{ref_c_iso:.6f}" if ref_c_iso else "N/A",
-                        f"{ref_c_previous:.6f}" if ref_c_previous else "N/A"
+                        f"{ref_c_previous:.6f}" if ref_c_previous else "N/A",
+                        f"{historical_c_mean:.6f} (±{historical_c_std:.6f})" if historical_c_mean else "N/A"
                     ],
                     'Difference': [
+                        calc_diff(c_factor_iso, c_logs_c_factor),
                         calc_diff(c_factor_iso, ref_c_iso),
-                        calc_diff(c_factor_iso, ref_c_previous)
+                        calc_diff(c_factor_iso, ref_c_previous),
+                        calc_diff(c_factor_iso, historical_c_mean)
                     ]
                 })
                 st.dataframe(iso_comparison, use_container_width=True, hide_index=True)
@@ -807,123 +1494,154 @@ if data_loaded and data is not None and len(data) > 0:
                 st.caption("Calculate C at each point, then average")
                 st.metric(label="C-Factor (Mean)",
                           value=f"{c_factor_mean:.6f}" if c_factor_mean else "N/A",
-                          delta=f"σ = {c_factor_std:.6f}" if c_factor_std else None)
+                          delta=f"σ = {c_factor_std_val:.6f}" if c_factor_std_val else None)
                 if c_factor_count:
                     st.caption(f"Based on {c_factor_count} points")
                 
                 mean_comparison = pd.DataFrame({
-                    'Comparison': ['vs File Mean', 'vs File Previous'],
-                    'File Value': [
+                    'Comparison': ['vs C-Logs', 'vs File Mean', 'vs File Previous', 'vs Historical Mean'],
+                    'Reference Value': [
+                        f"{c_logs_c_factor:.6f}" if c_logs_c_factor else "N/A",
                         f"{ref_c_mean:.6f}" if ref_c_mean else "N/A",
-                        f"{ref_c_previous:.6f}" if ref_c_previous else "N/A"
+                        f"{ref_c_previous:.6f}" if ref_c_previous else "N/A",
+                        f"{historical_c_mean:.6f} (±{historical_c_std:.6f})" if historical_c_mean else "N/A"
                     ],
                     'Difference': [
+                        calc_diff(c_factor_mean, c_logs_c_factor),
                         calc_diff(c_factor_mean, ref_c_mean),
-                        calc_diff(c_factor_mean, ref_c_previous)
+                        calc_diff(c_factor_mean, ref_c_previous),
+                        calc_diff(c_factor_mean, historical_c_mean)
                     ]
                 })
                 st.dataframe(mean_comparison, use_container_width=True, hide_index=True)
             
-
-            with st.expander("🧮 View Equations Used", expanded=False):
-                st.markdown("### ASTM E1354 A1.4 Equations")
-                st.markdown(r"""
-                **C-Factor:**
-                $$C = \frac{\dot{q}}{1.10 \cdot E \cdot X_{O_2}^{amb} \cdot \sqrt{\frac{\Delta P}{T_e}} \cdot \frac{\phi - 0.172(1-\phi)\frac{X_{CO}}{X_{O_2}}}{1 - \phi + 1.105\phi}}$$
-                
-                **Where:**
-                - $\dot{q} = \dot{m}_{CH_4} \cdot \Delta H_c$ (HRR from methane)
-                - $X_{O_2}^{amb} = (1 - X_{H_2O}^0) \cdot X_{O_2}^0$
-                - $\phi = \frac{X_{O_2}^0(1 - X_{CO_2} - X_{CO}) - X_{O_2}(1 - X_{CO_2}^0)}{X_{O_2}^0(1 - X_{CO_2} - X_{CO} - X_{O_2})}$
-                """)
-            
             st.divider()
             
-            # --- Export Results ---
-            st.header("💾 Export Results")
+            # --- View Equations & Calculation Breakdown ---
+            with st.expander("📐 View Equations & Calculation Breakdown"):
+                st.markdown("### Step-by-Step C-Factor Calculation (ISO Method)")
+                
+                st.markdown("---")
+                st.markdown("#### 1. Water Vapor Mole Fraction")
+                st.markdown("""
+                Using Clausius-Clapeyron equation for saturation pressure:
+                
+                $$P_{sat} = P_{ref} \\cdot \\exp\\left(\\frac{\\Delta H_{vap}}{R}\\left(\\frac{1}{T_{ref}} - \\frac{1}{T}\\right)\\right)$$
+                """)
+                
+                T_K = amb_temp_C + 273.15
+                cc_const = DELTA_H_VAP / R_GAS
+                cc_offset = cc_const / T_REF
+                p_sat_calc = P_REF * math.exp(cc_offset - cc_const / T_K)
+                
+                st.latex(f"P_{{sat}} = {P_REF} \\cdot \\exp\\left(\\frac{{{DELTA_H_VAP:.0f}}}{{{R_GAS:.3f}}}\\left(\\frac{{1}}{{{T_REF:.2f}}} - \\frac{{1}}{{{T_K:.2f}}}\\right)\\right) = {p_sat_calc:.2f} \\text{{ Pa}}")
+                
+                st.markdown("Water vapor mole fraction:")
+                st.latex(f"X_{{H_2O}} = \\frac{{RH \\cdot P_{{sat}}}}{{P_{{amb}}}} = \\frac{{{rel_humid_pct:.1f}\\% \\cdot {p_sat_calc:.2f}}}{{{amb_pressure_Pa:.0f}}} = {X_H2O_initial:.6f}")
+                
+                st.markdown("---")
+                st.markdown("#### 2. Ambient Oxygen Mole Fraction")
+                st.latex(f"X_{{O_2}}^{{amb}} = (1 - X_{{H_2O}}) \\cdot X_{{O_2}}^0 = (1 - {X_H2O_initial:.6f}) \\cdot {X_O2_0:.6f} = {X_O2_amb:.6f}")
+                
+                st.markdown("---")
+                st.markdown("#### 3. Oxygen Depletion Factor (φ)")
+                st.markdown("""
+                $$\\phi = \\frac{X_{O_2}^0 (1 - X_{CO_2} - X_{CO}) - X_{O_2}(1 - X_{CO_2}^0)}{X_{O_2}^0 (1 - X_{CO_2} - X_{CO} - X_{O_2})}$$
+                """)
+                
+                phi_num = X_O2_0 * (1 - X_CO2_cal - X_CO_cal) - X_O2_cal * (1 - X_CO2_0)
+                phi_den = X_O2_0 * (1 - X_CO2_cal - X_CO_cal - X_O2_cal)
+                
+                st.latex(f"\\phi = \\frac{{{X_O2_0:.6f} \\cdot (1 - {X_CO2_cal:.6f} - {X_CO_cal:.8f}) - {X_O2_cal:.6f} \\cdot (1 - {X_CO2_0:.6f})}}{{{X_O2_0:.6f} \\cdot (1 - {X_CO2_cal:.6f} - {X_CO_cal:.8f} - {X_O2_cal:.6f})}}")
+                st.latex(f"\\phi = \\frac{{{phi_num:.8f}}}{{{phi_den:.8f}}} = {phi_iso:.6f}")
+                
+                st.markdown("---")
+                st.markdown("#### 4. Heat Release Rate from Methane")
+                st.markdown("""
+                $$\\dot{q}_{CH_4} = \\dot{m}_{CH_4} \\cdot \\Delta H_c^{CH_4}$$
+                """)
+                st.latex(f"\\dot{{q}}_{{CH_4}} = {m_dot_CH4_kg_s:.6e} \\text{{ kg/s}} \\cdot {DELTA_HC_METHANE} \\text{{ MJ/kg}} = {q_dot_CH4_MW:.6f} \\text{{ MW}}")
+                
+                st.markdown("---")
+                st.markdown("#### 5. C-Factor Calculation")
+                st.markdown("""
+                Rearranging the HRR equation:
+                
+                $$C = \\frac{\\dot{q}}{1.10 \\cdot E \\cdot X_{O_2}^{amb} \\cdot \\sqrt{\\frac{\\Delta P}{T_e}} \\cdot \\frac{\\phi - 0.172(1-\\phi)\\frac{X_{CO}}{X_{O_2}}}{1 - \\phi + 1.105\\phi}}$$
+                """)
+                
+                # Calculate intermediate terms
+                flow_term = sqrt(delta_P_cal / T_e_cal)
+                co_correction = 0.172 * (1 - phi_iso) * (X_CO_cal / X_O2_cal) if X_O2_cal > 0 else 0
+                bracket_num = phi_iso - co_correction
+                bracket_den = 1 - phi_iso + 1.105 * phi_iso
+                bracket_term = bracket_num / bracket_den
+                
+                st.markdown("**Intermediate calculations:**")
+                st.latex(f"\\sqrt{{\\frac{{\\Delta P}}{{T_e}}}} = \\sqrt{{\\frac{{{delta_P_cal:.2f}}}{{{T_e_cal:.1f}}}}} = {flow_term:.6f}")
+                st.latex(f"\\text{{CO correction}} = 0.172 \\cdot (1 - {phi_iso:.6f}) \\cdot \\frac{{{X_CO_cal:.8f}}}{{{X_O2_cal:.6f}}} = {co_correction:.8f}")
+                st.latex(f"\\text{{Bracket term}} = \\frac{{{phi_iso:.6f} - {co_correction:.8f}}}{{1 - {phi_iso:.6f} + 1.105 \\cdot {phi_iso:.6f}}} = \\frac{{{bracket_num:.6f}}}{{{bracket_den:.6f}}} = {bracket_term:.6f}")
+                
+                st.markdown("**Final calculation:**")
+                denominator = 1.10 * E_value * X_O2_amb * flow_term * bracket_term
+                st.latex(f"C = \\frac{{{q_dot_CH4_MW:.6f}}}{{1.10 \\cdot {E_value} \\cdot {X_O2_amb:.6f} \\cdot {flow_term:.6f} \\cdot {bracket_term:.6f}}}")
+                st.latex(f"C = \\frac{{{q_dot_CH4_MW:.6f}}}{{{denominator:.6f}}} = \\boxed{{{c_factor_iso:.6f}}}")
+                
+                st.markdown("---")
+                st.markdown("#### Summary of Values Used")
+                
+                summary_col1, summary_col2 = st.columns(2)
+                with summary_col1:
+                    st.markdown("**Baseline Values:**")
+                    st.text(f"X_O2_0 = {X_O2_0:.6f}")
+                    st.text(f"X_CO2_0 = {X_CO2_0:.6f}")
+                    
+                    st.markdown("**Calibration Values:**")
+                    st.text(f"X_O2 = {X_O2_cal:.6f}")
+                    st.text(f"X_CO2 = {X_CO2_cal:.6f}")
+                    st.text(f"X_CO = {X_CO_cal:.8f}")
+                    st.text(f"T_e = {T_e_cal:.1f} K")
+                    st.text(f"ΔP = {delta_P_cal:.2f} Pa")
+                
+                with summary_col2:
+                    st.markdown("**Ambient Conditions:**")
+                    st.text(f"T_amb = {amb_temp_C:.1f} °C")
+                    st.text(f"P_amb = {amb_pressure_Pa:.0f} Pa")
+                    st.text(f"RH = {rel_humid_pct:.1f} %")
+                    st.text(f"P_sat = {p_sat_calc:.2f} Pa")
+                    st.text(f"X_H2O = {X_H2O_initial:.6f}")
+                    st.text(f"X_O2_amb = {X_O2_amb:.6f}")
+                    
+                    st.markdown("**Constants:**")
+                    st.text(f"E = {E_value} MJ/kg")
+                    st.text(f"ΔHc_CH4 = {DELTA_HC_METHANE} MJ/kg")
             
-            adj_summary = ""
-            if any_adjustments:
-                adj_summary = "\nADJUSTMENTS APPLIED:\n"
-                for param, vals in adjustments['parameters'].items():
-                    adj_summary += f"  {param}: {vals['file']} → {vals['current']}\n"
-                for col, adj in adjustments['columns'].items():
-                    adj_summary += f"  {col}: Scale={adj['scale']:.4f}, Shift={adj['shift']:.4f}\n"
-            
-            summary = f"""C-Factor Calibration Summary (ASTM E1354 A1.4)
-{'='*60}
+            st.divider()
 
-Test: {get_string(metadata, 'Filename')}
-Date: {get_string(metadata, 'Date of test')}
-{adj_summary}
-RESULTS:
-  C-Factor (ISO):  {f"{c_factor_iso:.6f}" if c_factor_iso else 'N/A'}
-  C-Factor (Mean): {f"{c_factor_mean:.6f}" if c_factor_mean else 'N/A'} (σ = {f"{c_factor_std:.6f}" if c_factor_std else 'N/A'})
-
-FILE VALUES:
-  Previous: {ref_c_previous}
-  Mean:     {ref_c_mean}
-  ISO:      {ref_c_iso}
-
-PARAMETERS:
-  Ambient: {amb_temp_C}°C, {amb_pressure_Pa} Pa, {rel_humid_pct}% RH
-  E: {E_value} MJ/kg
-  Delays: O2={o2_delay}s, CO2={co2_delay}s, CO={co_delay}s
-
-REGIONS:
-  Baseline:    {baseline_start}-{baseline_end}s ({n_baseline} pts)
-  Calibration: {cal_start}-{cal_end}s ({n_calibration} pts)
-
-CALIBRATION AVERAGES:
-  CH4: {f"{methane_slpm_cal:.4f}" if methane_slpm_cal else "N/A"} SLPM → {f"{q_dot_CH4_kW:.3f}" if q_dot_CH4_kW else "N/A"} kW
-  X_O2: {X_O2_cal:.6f}, X_CO2: {X_CO2_cal:.6f}, X_CO: {X_CO_cal:.8f}
-  T_e: {T_e_cal:.1f} K, ΔP: {delta_P_cal:.2f} Pa
-  φ: {f"{phi_iso:.6f}" if phi_iso else "N/A"}, X_O2^amb: {X_O2_amb:.6f}
-"""
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                st.download_button(label="📥 Download Summary (TXT)", data=summary,
-                                   file_name="c_factor_summary.txt", mime="text/plain")
-            with col2:
-                import json
-                export_json = {
-                    "file": get_string(metadata, 'Filename'),
-                    "adjustments": adjustments if any_adjustments else None,
-                    "results": {"iso": c_factor_iso, "mean": c_factor_mean, "std": c_factor_std},
-                    "file_values": {"previous": ref_c_previous, "mean": ref_c_mean, "iso": ref_c_iso}
-                }
-                st.download_button(label="📥 Download Summary (JSON)",
-                                   data=json.dumps(export_json, indent=2, default=str),
-                                   file_name=f"c_factor_summary_{shortname.replace('.ftt', '')}.json", mime="application/json")
-
-else:
-    st.info("👆 Please upload a calibration file or enter a file path to begin.")
-    
-    # Show empty sidebar message when no data loaded
-    with st.sidebar:
-        st.info("Load a calibration file to access adjustment controls.")
-
-st.divider()
 st.markdown("#### Notes")
 readme = SCRIPT_DIR / "README.md"
 section_title = "### CFactor Check"
 
-with open(readme, "r", encoding="utf-8") as f:
-    lines = f.readlines()
+try:
+    with open(readme, "r", encoding="utf-8") as f:
+        lines = f.readlines()
 
-start_idx, end_idx = None, None
-for i, line in enumerate(lines):
-    if line.strip() == section_title:
-        start_idx = i + 1
-        break
-
-if start_idx is not None:
-    for j in range(start_idx + 1, len(lines)):
-        if lines[j].startswith("### ") or lines[j].startswith("## "):
-            end_idx = j
+    start_idx, end_idx = None, None
+    for i, line in enumerate(lines):
+        if line.strip() == section_title:
+            start_idx = i + 1
             break
-    if end_idx is None:
-        end_idx = len(lines)
-    subsection = "".join(lines[start_idx:end_idx])
-    st.markdown(subsection)
+
+    if start_idx is not None:
+        for j in range(start_idx + 1, len(lines)):
+            if lines[j].startswith("### ") or lines[j].startswith("## "):
+                end_idx = j
+                break
+        if end_idx is None:
+            end_idx = len(lines)
+        subsection = "".join(lines[start_idx:end_idx])
+        st.markdown(subsection)
+except FileNotFoundError:
+    st.caption("README.md not found")
+except Exception as e:
+    st.caption(f"Could not load notes: {e}")

@@ -36,41 +36,73 @@ The general workflow for SmURFing is as follows:
 ### CFactor Check
 
 #### Overview
-This page allows you to load in an FTT Calibration file and view/adjust the data to visualize the impact on the C-Factor.
-It is meant to be used internally to troubleshoot issues arising in our calibrations.
+This page has two major functionalities. The first is to review the historical record of calibration tests performed on both FTT Cone Calorimeters at NIST. The second is to view and adjust the data from a single calibration to visualize the impactg on the C-Factor.
+This page is meant to be used internal to troubleshoot issues arising during calibration
 
-##### Load Calibration Data
-Data files can be loaded in either through a drag and drop function, or by entering the file path from your computer.
+#### Historical Data Review
+##### Instrument Selection
+Select which cone to view calibration data from. FTT-White refers to the Dual Cone System, while FTT-Black refers to the iCone.
+All calibration data from that apparatus is loaded in for review.
 
+##### Date Range & Point Selection
+Filter calibration history by date range using either manual date inputs or quick presets (Last 30 days, Last 90 days, Last 6 months, Last year, All time). Individual calibration points can be included or excluded from statistical analysis using the interactive data editor. Quick actions allow you to include all, exclude all, or automatically exclude outliers beyond 2σ or 3σ from the mean.
+
+##### C-Factor History and Overview of Calibrations
+An interactive plot displays all calibration C-Factors over time. Included points appear as blue circles connected by lines, while excluded points appear as red X markers. Hover over any point to see its date, C-Factor value, and source file. Summary statistics (mean, standard deviation, min, max, and point count) are displayed below the plot. The "Overview of Calibrations" table displays all calibration tests in table format.
+
+##### Parameters Used for Calibration
+Expand this section to load and view calibration parameters extracted from all test files in the selected date range. Extracted parameters include:
+
+Ambient conditions (temperature, pressure, relative humidity)
+Initial (baseline) volume fractions (X_O2_0, X_CO2_0, X_CO_0)
+Calibration region averages (O2, CO2, CO, stack temperature, differential pressure)
+Methane flow rate (SLPM and kg/s in scientific notation)
+Calculated HRR and oxygen depletion factor (φ)
+File-reported C-Factor values
+Statistics for all numeric parameters are computed for included tests only. Parameters can be exported as CSV files (all tests or included only).
+
+#### Single Calibration Detailed Analysis
+Select an individual calibration to review and modify in detail.
 ##### Test Metadata
 This section pulls out the metadata from the calibration file. Key values are always dsiplayed, but the "View all metadata" expander displays all values.
 
-#### Sidebar Adjustments
+##### Sidebar Adjustments
 The sidebar acts as the main control panel for this page, as it allows you to directly modify all inputs used to calculate the C-Factor. For example, if you have gotten a C-Factor that is lower than you expected and you believe the reason may be the methane flow meter, you can tweak the Methane MFM signal (see `Column Adjustments`) to determine if that could be the cause. Click the "Reset to Defaults" button to reload the original data from the file.
 
-##### Steady State Region Selection
+###### Steady State Region Selection
 Here, both the start and end times of the baseline (used for initial conditions) and calibration (period over which C-Factor is calculated) regions can be modified. By default, baseline is set from 10s to 5s before the burner is activated, and the calibration period is set from 240s after burner activation to 5s before the burner is turned off.
 
-##### Static Parameters
+###### Static Parameters
 Here, the static inputs (ambient conditions, ΔHc/r₀ for methane, and delay times) used in calculating C-Factor can be modified. Default values are pulled from the calirbation files.
 
-##### Column Adjustments
+###### Column Adjustments
 Here, the input data columns (Mole percents of gasses, differential oriface pressure. stack temperature, and volumetric methane flow rate) can be tuned. Each signal can be scaled (multiplied by a factor) and shifted (tared up or down by a single value).
 
-#### Data Preview
+##### Data Preview
 Select either "Baseline" or "Calibration" to directly view the two regions of data used in calculating the C-Factor. All input data columns, along with HRR of methane (calculated from the methane flow rate and ΔHc of methane) and time resolved C factor can be viewed.
 
-#### Time Series Data
+##### Time Series Data
 This section allows you to visualize HRR, Oxygen (%), Oriface Pressure, and Time Resolved C-Factor. The blue shaded region on each graph represents the baseline, while the green represents the calibration region. The green and red dashed lines are the burner on and off points repsectively.
 
-#### Steady State Averages
+##### Steady State Averages
 Two tables show the average value and standard deviation of the input data columns for both the baseline and calibration regions. Additionaly, methane flow and heat release averages are shown for the calibration region. This section can be used as a quick reference for key values.
 
-#### Calculated C-Factors
+##### Calculated C-Factors
 This section outputs the C-Factor calculated following any adjustments to the base data. C-Factor is calculated in two ways. Following ISO 5660-1, all signals are averaged across the calibration region, and those averages are used to calculate a single C-Factor. The mean method specifies calculating a time resolved C-Factor, and taking the average of this value across the calibration region. In this case, baseline values (ex:$X_{O_2}^0$) are still averaged across the baseline region. Values computed in this editor are compared to their counterpart values from the FTT computer, as well as to the accepted C-Factor of the previous calibration (usually a mean value). Here you can see how adjsutments to paramters shift your C-Factor relative to the original values used.
-Click the `View Equations Used` expander to see how C-Factor is calculated. These equations stem from Appendix 1.4 of ASTM E1354.
 
-#### Export Results
+##### View Equations and Calculation Breakdown
+Click the expander below the calculated C-Factors to see a step-by-step walkthrough of the ISO method calculation with actual values from the selected test substituted into each equation. This includes:
+
+Water vapor mole fraction calculation via Clausius-Clapeyron
+Ambient oxygen mole fraction with humidity correction
+Oxygen depletion factor (φ) with full numerator/denominator breakdown
+Heat release rate from methane mass flow
+C-Factor calculation with all intermediate terms (flow term, CO correction, bracket term)
+Summary table of all values used
+
+This equation uses the ISO method of calculating the average of each input parameter for the C-Factor equation, the finding a single value. In the ASTM/mean method, these calculations are performed at every time step, and the reported C-Factor is the average among all C-Factors within the calibration region.
+
+##### Export Results
 A summary file containing any adjustments made, calcuated C-Factors, parameters used, timing of baseline and calibration regions, and averaged intermediate values used in the calculation can be exported either as a .txt or .json file.
 
 ### Compare Tests

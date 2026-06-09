@@ -11,3 +11,4 @@ PARSED_DATA_PATH = PROJECT_ROOT / "Exp-Data_Parsed"
 PARSED_METADATA_PATH = PROJECT_ROOT / "Metadata"/ "Parsed"
 PREPARED_DATA_PATH = PROJECT_ROOT / "Exp-Data_Prepared-Final"
 PREPARED_METADATA_PATH = PROJECT_ROOT / "Metadata"/ "Prepared-Final"
+CALIB_DATA = Path("\\\\elwood\\733\\internal\\Material-Flam-DB\\Cone")
