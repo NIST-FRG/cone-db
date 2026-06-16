@@ -1,8 +1,9 @@
 {
-    "python.defaultInterpreterPath": "C:*****Root\\To\\ConeDB****\\cone-db\\venv\\bin\\python",
+    "python.defaultInterpreterPath": "*****Root\\To\\ConeDB****\\cone-db\\venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
-    "git.ignoreLimitWarning": true,
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "git.ignoreLimitWarning": true
 }
