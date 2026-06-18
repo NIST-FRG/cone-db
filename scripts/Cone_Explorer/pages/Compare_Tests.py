@@ -425,7 +425,7 @@ try:
         if not normalize and not additional:
             options = [
                 'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-                "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+                "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)", "T Duct (K)"
                 
             ]
             default_value = 'HRR (kW)'

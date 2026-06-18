@@ -973,6 +973,10 @@ def export_dialog(edited_df, original_metadata):
     if thickness_rounded:
         st.info(f"ℹ️ Thickness rounded to nearest 0.5mm: {original_extras} → {rounded_extras}")
     
+    if not metadata.get("Report Name"):
+        st.warning("⚠️ No Report Name provided, this test will not be marked as Published")
+    else:
+        st.success(f"✓ Report Name provided, test will be connected to {metadata['Report Name']}")
     if missing_params:
         st.warning(f"⚠️ Missing optional parameters: {', '.join(missing_params)}")
     else:
@@ -1003,7 +1007,8 @@ def export_dialog(edited_df, original_metadata):
                 
                 metadata['Testname'] = "_".join(testname_parts)
                 metadata['SmURF'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                metadata['Published'] = True
+                if metadata.get("Report Name") is not None and metadata.get("Report Name") != "":
+                    metadata['Published'] = True
 
                 # Extract report from Material ID (everything after last "-")
                 report = material_id.split("-")[-1] if "-" in material_id else material_id
@@ -1015,7 +1020,7 @@ def export_dialog(edited_df, original_metadata):
                 ordered_metadata = {}
                 for key, value in metadata.items():
                     ordered_metadata[key] = value
-                    if key == 'Published':
+                    if key == 'Published' and metadata.get('Published') is True:
                         ordered_metadata['Publications'] = [report]
 
                 metadata = ordered_metadata
