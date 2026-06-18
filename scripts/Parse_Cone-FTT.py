@@ -62,9 +62,8 @@ def parse_dir(input_dir):
     print(f"✅ parse_FTT-{color}.json created.")
     
     paths = [x for x in Path(input_dir).glob("**/*.CSV") 
-            if not x.stem.endswith(("_red", "scaled", "stdev", "Output", "raw", "Post", "PrelimReport" ))
-            and "Calib" not in x.parts and "Troubleshoot" not in x.parts]
-
+            if not any(suffix in x.stem for suffix in ("_red", "scaled", "stdev", "Output", "raw", "Post", "PrelimReport"))
+            and "Calib" not in x.parts]
     total_files = len(paths)
 
     print(colorize(f"Found {len(paths)} files to parse", "purple"))
@@ -128,25 +127,27 @@ def parse_file(file_path, output, meta):
         print(colorize(f"Skipping {file_path} because it has less than 20 seconds of data", "yellow"))
         return
 
-    test_year = parser.parse(metadata["Test Date"]).year
+    test_date = parser.parse(metadata["Test Date"])
+    test_year = test_date.year
 
-    # Determine output path
-    Path(output/ str(test_year)).mkdir(parents=True, exist_ok=True)
-    Path(meta/ str(test_year)).mkdir(parents=True, exist_ok=True)
-    data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"
-    metadata_output_path = Path(meta) / str(test_year) / f"{Path(file_path).stem}.json"
-    if os.path.exists(metadata_output_path):
-        with open(metadata_output_path, "r") as f:
-            existing_meta = json.load(f)
-        if existing_meta["Parsed"] > RawMod:
-            print(colorize(f"Metadata for {file_path.stem} already exists and is up to date.", 'yellow'))
-            data.to_csv(data_output_path, index=False)
-            return
+    # Determine output path, only legacy files are being parsed on the cone-db, new data should be parsed on Matflam-DB
+    if test_date < datetime(2026, 6, 4):
+        Path(output/ str(test_year)).mkdir(parents=True, exist_ok=True)
+        Path(meta/ str(test_year)).mkdir(parents=True, exist_ok=True)
+        data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"
+        metadata_output_path = Path(meta) / str(test_year) / f"{Path(file_path).stem}.json"
+        if os.path.exists(metadata_output_path):
+            with open(metadata_output_path, "r") as f:
+                existing_meta = json.load(f)
+            if existing_meta["Parsed"] > RawMod:
+                print(colorize(f"Metadata for {file_path.stem} already exists and is up to date.", 'yellow'))
+                data.to_csv(data_output_path, index=False)
+                return
 
-    with open(metadata_output_path, "w+") as f:
-        json.dump(metadata, f, indent=4)
+        with open(metadata_output_path, "w+") as f:
+            json.dump(metadata, f, indent=4)
 
-    data.to_csv(data_output_path, index=False)
+        data.to_csv(data_output_path, index=False)
 
 #region parse_metadata
 def parse_metadata(df,file_path, meta):
