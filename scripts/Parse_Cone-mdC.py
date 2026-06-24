@@ -10,7 +10,7 @@ import numpy as np
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
+INPUT_DIR = "\\\\firedata\\FLAMMABILITY_DATA\\DATA\\Cone\\Box-PreParsed\\md_C"
 OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "md_C"
 OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "md_C"
 LOG_FILE = PROJECT_ROOT / "parse_md_C_log.json"
