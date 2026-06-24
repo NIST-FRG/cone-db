@@ -182,8 +182,10 @@ def get_tests(file_contents):
     for i in range(len(file_contents)):
         line = str(file_contents[i]).upper().strip()
         
-        # Pattern: anything (###) at end of line = test number and allow for versions of same test number
         test_match = re.search(r"\((\d{3,4}[a-zA-Z]?)\)\s*$", line)
+        if test_match is None:
+            # Add parentheses to create capture group
+            test_match = re.search(r"TEST\s+(\d{4})", line)
         
         if test_match is not None:
             raw = test_match.group(1)
@@ -689,10 +691,11 @@ def parse_metadata(input,test_name):
     metadata_json['Preparsed'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     metadata_json["Original Source"] = "Box/md_A"
     metadata_json['Data Corrections'] =[]
-    if metadata_json['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
-        metadata_json['Edge Frame'] = False
-    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
-        metadata_json['Edge Frame'] = True
+    if metadata_json['Surface Area (m2)'] is not None:
+        if metadata_json['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
+            metadata_json['Edge Frame'] = False
+        elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+            metadata_json['Edge Frame'] = True
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4)) 
