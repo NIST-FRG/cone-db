@@ -142,7 +142,6 @@ if st.button("Import Data To Explorer"):
         new_file = INPUT_DATA_PATH / file.name
 
         parsed_csv_file = file.with_suffix(".csv").name
-        print(parsed_csv_file)
         prepared_csv_file = prepared_name + ".csv" if prepared_name else None
         if prepared_csv_file:
             src_csv_path = PREPARED_DATA_PATH / folder /prepared_csv_file
@@ -1010,11 +1009,15 @@ def export_dialog(edited_df, original_metadata):
                 if metadata.get("Report Name") is not None and metadata.get("Report Name") != "":
                     metadata['Published'] = True
 
-                # Extract report from Material ID (everything after last "-")
-                report = material_id.split("-")[-1] if "-" in material_id else material_id
-                version = re.search(r"V\d+$", report, re.IGNORECASE)
-                if version:
-                    report = report[:version.start()]  # Remove version from report name
+                # Extract report id from report name 
+                if metadata.get("Report Name") and ":" in metadata["Report Name"]:
+                    report = metadata["Report Name"].split(":")[0]  # Take part before colon
+                    report = report.strip()  # Remove leading/trailing whitespace
+                    report = report.replace("-", "")  # Remove hyphens
+                elif metadata.get("Report Name") and ":" not in metadata["Report Name"]:
+                    st.error(f"No Report ID found in Report Name: {metadata['Report Name']}. Please ensure the format is 'ReportID: Report Title'.")
+                    return
+
 
                 # Rebuild metadata with Publications after Published
                 ordered_metadata = {}
