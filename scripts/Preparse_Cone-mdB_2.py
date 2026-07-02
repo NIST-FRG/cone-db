@@ -760,7 +760,7 @@ def parse_metadata(input,test_name):
     "t_flameout (s)","t_flameout Outlier",
     'Comments', 'Data Corrections'
         ]
-
+    metadata_json = {}
     for key in expected_keys:
         metadata_json.setdefault(key, None)
     
