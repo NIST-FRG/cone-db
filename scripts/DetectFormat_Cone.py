@@ -9,11 +9,11 @@ import shutil
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "Unsorted"
-OUTPUT_DIR_A = PROJECT_ROOT / "data" / "raw" / "Box" / "md_A"
-OUTPUT_DIR_B = PROJECT_ROOT / "data" / "raw" / "Box" / "md_B"
-OUTPUT_DIR_C = PROJECT_ROOT / "data" / "raw" / "Box" / "md_C"
-LOG_FILE = PROJECT_ROOT / "detect_log.json"
+INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "Unsorted_new"
+OUTPUT_DIR_A = PROJECT_ROOT / "data" / "raw" / "Box" / "md_A_new"
+OUTPUT_DIR_B = PROJECT_ROOT / "data" / "raw" / "Box" / "md_B_new"
+OUTPUT_DIR_C = PROJECT_ROOT / "data" / "raw" / "Box" / "md_C_new"
+LOG_FILE = PROJECT_ROOT / "detect_log_new.json"
 
 
 #region detect_dir
@@ -108,9 +108,6 @@ def reset_dir(dir_path):
 
 #region main
 if __name__ == "__main__":
-    reset_dir(OUTPUT_DIR_A)
-    reset_dir(OUTPUT_DIR_B)
-    reset_dir(OUTPUT_DIR_C)
     # write new log file at every run
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:

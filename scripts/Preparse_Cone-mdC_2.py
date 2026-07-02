@@ -682,6 +682,7 @@ def parse_metadata(input,test_name):
     'Comments', 'Data Corrections'
         ]
 
+    metadata_json = {}
     for key in expected_keys:
         metadata_json.setdefault(key, None)
     metadata_json["Comments"] = comments
@@ -734,8 +735,9 @@ def parse_metadata(input,test_name):
     metadata_json['Data Corrections'] =[]
     if metadata_json['Surface Area (m2)'] == 0.01 and metadata_json["Edge Frame"] is None:
         metadata_json['Edge Frame'] = False
-    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
-        metadata_json['Edge Frame'] = True
+    elif metadata_json["Edge Frame"] is None and metadata_json['Surface Area (m2)'] is not None:
+        if metadata_json['Surface Area (m2)'] <= 0.009 and metadata_json['Surface Area (m2)'] > 0.008:
+            metadata_json['Edge Frame'] = True
     #update respective test metadata file
     with open(meta_path, "w", encoding="utf-8") as f:
         f.write(json.dumps(metadata_json, indent=4)) 
