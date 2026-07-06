@@ -1,0 +1,40 @@
+\documentclass{abstract}
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    doi=true,
+    sorting=none,
+    sortcites=true,
+    maxbibnames=2,
+    minbibnames=1,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    giveninits=true,
+    isbn=false,
+    date=year
+]{biblatex}
+\addbibresource{abstract.bib}
+
+% For email linking
+\usepackage{hyperref}
+
+\title{TITLE HERE}
+
+\author{YOUR NAME HERE}
+
+\keywords{}
+\begin{document}
+\maketitle
+\section{Abstract}
+Text of abstract goes here
+
+Example citation \cite{babrauskas1982development, brown1988cone,emil1989flammability}
+
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
