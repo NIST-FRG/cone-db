@@ -336,7 +336,7 @@ def get_data(data):
                 elif "HCL" in col_upper:
                     new_name = "HCl (kg/kg)"
                 elif "EX" in col_upper and "AREA" in col_upper:
-                    new_name = "Extinction Area (m2/g)"
+                    new_name = "Extinction Area (m2/kg)"
                 elif "EPSILON" in col_upper:
                     if "Epsilon One (kg/kg)" not in new_columns:
                         new_name = "Epsilon One (kg/kg)"
