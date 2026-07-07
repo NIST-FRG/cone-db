@@ -1,11 +1,11 @@
 {
-    "Material ID": "Upholstery-PUFoam-NBSMonograph173",
+    "Material ID": "PUFoam-NBSMonograph173",
     "Material Name": "NON-CA FOAM",
     "Sample Mass (g)": 8.5,
     "Residual Mass (g)": null,
     "Replicate": 1,
     "Original Testname": "test0463_0939_001",
-    "Testname": "Upholstery-PUFoam-NBSMonograph173_Cone_25kW_hor_50mm-Spk-nF-nG_R1",
+    "Testname": "PUFoam-NBSMonograph173_Cone_25kW_hor_50mm-Spk-nF-nG_R1",
     "Thickness (mm)": 50.0,
     "Sample Description": null,
     "Specimen Prep": null,
