@@ -1,0 +1,42 @@
+\documentclass{abstract}
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    doi=true,
+    sorting=none,
+    sortcites=true,
+    maxbibnames=2,
+    minbibnames=1,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    giveninits=true,
+    isbn=false,
+    date=year
+]{biblatex}
+\addbibresource{abstract.bib}
+
+% For email linking
+\usepackage{hyperref}
+
+\title{NIST (National Institute of Standards and Technology) Abstract}
+
+\author{Krystal Nkoronye}
+
+\keywords{Cone Calorimeter, Systematic User Review of Files, Heat Release Rate}
+\begin{document}
+\maketitle
+\section{Abstract}
+Cone calorimetry is a method used to measure different combustion characteristics of materials, such as heat flux, mass loss, and smoke production. This method utilizes a cone calorimeter to study how various materials behave when exposed to fire. Although the National Institute of Standards and Technology (NIST) and its predecessor, the National Bureau of Standards (NBS), have conducted cone calorimeter testing for decades, much of the resulting data remains available only in paper records. This project aims to contribute to the ongoing effort of digitizing and categorizing these historical datasets, allowing for the creation of a searchable database. Additionally, this database will facilitate researchers and engineers’ access to information detailing how certain materials act when exposed to fire, allowing for further advancements in materials research and risk assessment. My primary responsibility is performing the Systematic User Review of Files (SmURFing) method, which consists of verifying AI-generated data and metadata files against scanned reports, correcting any errors, and updating the metadata on the database. I primarily focused on materials from the NBSIR 88-3733 paper, paying specific attention to quantities such as heat flux, time to ignition, heat release rate (HRR), thickness, grid, orientation, and creating material IDs unique to each test. I am currently gaining experience with GitHub version control, LaTeX documentation, and cone calorimetry. By improving the accuracy and consistency of digitized records, this work supports the preservation of historical fire testing data and enhances its accessibility for future materials research and fire safety applications.
+
+
+
+Citation \cite{}
+
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
