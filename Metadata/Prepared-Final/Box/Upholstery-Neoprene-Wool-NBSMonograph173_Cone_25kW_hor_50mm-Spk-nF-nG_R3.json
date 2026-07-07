@@ -1,16 +1,16 @@
 {
-    "Material ID": "PUFoam-NBSMonograph173",
-    "Material Name": "NON-CA FOAM",
-    "Sample Mass (g)": 8.3,
+    "Material ID": "Upholstery-Neoprene-Wool-NBSMonograph173",
+    "Material Name": "WOOL/NEOPRENE",
+    "Sample Mass (g)": 71.6,
     "Residual Mass (g)": null,
-    "Replicate": 2,
-    "Original Testname": "test0464_0940_001",
-    "Testname": "PUFoam-NBSMonograph173_Cone_25kW_hor_50mm-Spk-nF-nG_R2",
+    "Replicate": 3,
+    "Original Testname": "test0336_0897_001",
+    "Testname": "Upholstery-Neoprene-Wool-NBSMonograph173_Cone_25kW_hor_50mm-Spk-nF-nG_R3",
     "Thickness (mm)": 50.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1983-06-08",
+    "Test Date": "1983-02-18",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -18,11 +18,11 @@
     "Institution": null,
     "Report Name": "NBSMonograph173: Fire Behavior of Upholstered Furniture",
     "Original Source": "Box/md_C",
-    "Preparsed": "2026-05-01 11:20:12",
-    "Parsed": "2026-06-25 12:26:08",
+    "Preparsed": "2026-05-01 11:20:09",
+    "Parsed": "2026-06-25 12:25:39",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-07-07 10:54:35",
+    "SmURF": "2026-07-07 14:47:42",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -103,7 +103,8 @@
     "t_flameout (s)": null,
     "t_flameout Outlier": null,
     "Comments": [
-        "# NON-CA FOAM HORIZONTAL 25KW/M2 8.3a 6/8/83-464 (CAL.CONST. 67281.)"
+        "WOOL/NEOPRENE HORIZONTAL 25KW/M2 71.6s TORCH IGNITION 2/18/83-336 (CAL.CON",
+        "157183."
     ],
     "Data Corrections": []
 }
