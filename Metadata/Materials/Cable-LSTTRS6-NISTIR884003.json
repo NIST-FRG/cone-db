@@ -1,0 +1,55 @@
+{
+    "Common Names": "LSTTRS-6 Cable",
+    "Material ID": "Cable-LSTTRS6-NISTIR884003",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylindrical",
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": null
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire, Cable Insulation",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": "Thermoset",
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
