@@ -1,26 +1,26 @@
 {
-    "Common Names": "LSMDU6 Cable",
-    "Material ID": "Cable-LSMDU6-NISTIR884003",
+    "Common Names": "Navy PLT 6 MNW-44 Cable",
+    "Material ID": "Cable-PLT6MNW44-NISTIR884003",
     "CAS Number": null,
     "Trade Name": null,
-    "Model Number": "LSMDU6",
-    "Manufacturer": "Allied Wire & Cable",
-    "Country of Origin": "USA",
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
     "Distributor / Harvesting Site": null,
     "Date Acquired": null,
     "Description": {
         "Color": null,
-        "Shape": "Cylindrical",
+        "Shape": "Round cable",
         "Finish": null,
-        "Form": null,
-        "Thickness": null,
-        "Notes": null
+        "Form": "Cable",
+        "Thickness": "20 mm diameter",
+        "Notes": "Navy cable consisting of five 100 mm cable sections. Sample comments indicate 'SPL PVC.' Tested horizontally in the NBS Cone Calorimeter"
     },
     "Categories": {
-        "NFIRS": "Electrical Wire",
+        "NFIRS": "Electrical Wire, Cable Insulation",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "composite",
-        "Thermoset/ Thermoplastic": "thermoset",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
         "Composite Layers": null,
         "Additives": {
             "Plasticizers": {

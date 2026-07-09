@@ -1,9 +1,9 @@
 {
-    "Common Names": "2XSAW14 Cable",
-    "Material ID": "Cable-2XSAW14-NISTIR884003",
+    "Common Names": "LSMDU6 Cable",
+    "Material ID": "Cable-LSMDU6-NISTIR884003",
     "CAS Number": null,
     "Trade Name": null,
-    "Model Number": null,
+    "Model Number": "LSMDU6",
     "Manufacturer": null,
     "Country of Origin": null,
     "Distributor / Harvesting Site": null,
@@ -13,11 +13,11 @@
         "Shape": "Cylindrical",
         "Finish": null,
         "Form": "Cable",
-        "Thickness": "17 mm",
+        "Thickness": "24 mm",
         "Notes": null
     },
     "Categories": {
-        "NFIRS": "Electrical Wire, Cable Insulation",
+        "NFIRS": "Electrical Wire",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
         "Copolymer/ Homopolymer/ Composite": "Composite",
         "Thermoset/ Thermoplastic": null,
