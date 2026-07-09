@@ -17,10 +17,10 @@
         "Notes": "Navy cable consisting of five 100 mm cable sections. Sample comments indicate 'SPL PVC.' Tested horizontally in the NBS Cone Calorimeter"
     },
     "Categories": {
-        "NFIRS": "Electrical cable",
+        "NFIRS": "Electrical Wire, Cable Insulation",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
         "Copolymer/ Homopolymer/ Composite": "Composite",
-        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Thermoset/ Thermoplastic": null,
         "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
