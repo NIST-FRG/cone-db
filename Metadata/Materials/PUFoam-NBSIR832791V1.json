@@ -3,7 +3,7 @@
     "Material ID": "PUFoam-NBSIR832791V1",
     "CAS Number": null,
     "Trade Name": null,
-    "Model Number": "FPU #11-14",
+    "Model Number": "FPU #11",
     "Manufacturer": null,
     "Country of Origin": null,
     "Distributor / Harvesting Site": null,
@@ -14,10 +14,10 @@
         "Finish": null,
         "Form": null,
         "Thickness": "50 mm",
-        "Notes": "One sample of each formulation contained a fire retardant"
+        "Notes": ""
     },
     "Categories": {
-        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "NFIRS": "Plastic",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
         "Copolymer/ Homopolymer/ Composite": "Copolymer",
         "Thermoset/ Thermoplastic": "Thermoset",
