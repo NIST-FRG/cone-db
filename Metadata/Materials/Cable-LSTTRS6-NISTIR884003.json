@@ -13,14 +13,14 @@
         "Shape": "Cylindrical",
         "Finish": null,
         "Form": null,
-        "Thickness": null,
+        "Thickness": "22 MM",
         "Notes": null
     },
     "Categories": {
         "NFIRS": "Electrical Wire, Cable Insulation",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
         "Copolymer/ Homopolymer/ Composite": "Composite",
-        "Thermoset/ Thermoplastic": "Thermoset",
+        "Thermoset/ Thermoplastic": null,
         "Composite Layers": {
             "Core": null,
             "Cover 1": null,
