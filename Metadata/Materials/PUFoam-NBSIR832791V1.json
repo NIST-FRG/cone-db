@@ -1,0 +1,49 @@
+{
+    "Common Names": "Flexible Polyurethane Foam",
+    "Material ID": "PUFoam-NBSIR832791V1",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": "FPU #11-15",
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": "50 mm",
+        "Notes": "One sample of each formulation contained a fire retardant"
+    },
+    "Categories": {
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Copolymer",
+        "Thermoset/ Thermoplastic": "Thermoset",
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
