@@ -1,0 +1,49 @@
+{
+    "Common Names": "LSMDU6 Cable",
+    "Material ID": "Cable-LSMDU6-NISTIR884003",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": "LSMDU6",
+    "Manufacturer": "Allied Wire & Cable",
+    "Country of Origin": "USA",
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylindrical",
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": null
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "composite",
+        "Thermoset/ Thermoplastic": "thermoset",
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
