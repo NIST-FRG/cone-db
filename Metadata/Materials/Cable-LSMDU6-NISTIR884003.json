@@ -4,23 +4,23 @@
     "CAS Number": null,
     "Trade Name": null,
     "Model Number": "LSMDU6",
-    "Manufacturer": "Allied Wire & Cable",
-    "Country of Origin": "USA",
+    "Manufacturer": null,
+    "Country of Origin": null,
     "Distributor / Harvesting Site": null,
     "Date Acquired": null,
     "Description": {
         "Color": null,
         "Shape": "Cylindrical",
         "Finish": null,
-        "Form": null,
-        "Thickness": null,
+        "Form": "Cable",
+        "Thickness": "24 mm",
         "Notes": null
     },
     "Categories": {
         "NFIRS": "Electrical Wire",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "composite",
-        "Thermoset/ Thermoplastic": "thermoset",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
         "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
