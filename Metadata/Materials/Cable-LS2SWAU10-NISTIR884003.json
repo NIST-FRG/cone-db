@@ -1,0 +1,49 @@
+{
+    "Common Names": "LS2SWAU10 Cable",
+    "Material ID": "Cable-LS2SWAU10-NISTIR884003",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylindrical",
+        "Finish": null,
+        "Form": "Cable",
+        "Thickness": "20 mm",
+        "Notes": null
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire, Cable Insulation",
+        "Synthetic/ Natural/ Vegetation":  null,
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": "Thermoset",
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
