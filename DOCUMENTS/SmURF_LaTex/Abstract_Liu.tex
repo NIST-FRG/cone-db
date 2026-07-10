@@ -1,0 +1,41 @@
+\documentclass{abstract}
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    doi=true,
+    sorting=none,
+    sortcites=true,
+    maxbibnames=2,
+    minbibnames=1,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    giveninits=true,
+    isbn=false,
+    date=year
+]{biblatex}
+\addbibresource{abstract.bib}
+
+% For email linking
+\usepackage{hyperref}
+
+\title{SHIP 2026 Paper }
+
+\author{Andrew Liu}
+
+\keywords{Cone Calorimeter, Cone Database, Fire Research}
+\begin{document}
+\maketitle
+\section{Abstract}
+
+Ever since its invention in 1982, the cone calorimeter has been an indispensable tool in the field of fire research. The National Institute of Standards and Technology (NIST), formerly known as the National Bureau of Standards (NBS), invented the cone calorimeter to determine the heat release rate of a burning material by measuring the amount of oxygen it consumes. Heat release rate is crucial for determining a material's flammability and burning characteristics and is used in a variety of real-world applications, such as material design, fire investigations, and fire modeling. Since the 1980s, thousands of tests have been run on the NIST cone calorimeter. Data from these tests are largely unorganized and spread out across a variety of platforms; some sit in old file cabinets, some are scanned PDFs, and others are in the Material Flammability Database (MFD). The MFD is a massive digital archival project that seeks to gather all data from experiments conducted on the cone calorimeter. A process called Systematic User Review of Files (SmURFing) was developed to expedite the addition of data into the MFD. The process first involves parsing scanned data from old tests, making necessary fixes, assigning each material from the tests a unique material ID, and integrating them into the MFD, attaching additional metadata to link each test to a specific NIST/NBS report.
+
+
+
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
