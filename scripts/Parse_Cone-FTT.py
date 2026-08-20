@@ -143,7 +143,9 @@ def parse_file(file_path, output, meta):
                 print(colorize(f"Metadata for {file_path.stem} already exists and is up to date.", 'yellow'))
                 data.to_csv(data_output_path, index=False)
                 return
-
+            if existing_meta['Bad Data']:
+                print(colorize(f"{file_path.stem} has been marked as Bad Data. Skipping Parsing", 'yellow'))
+                return
         with open(metadata_output_path, "w+") as f:
             json.dump(metadata, f, indent=4)
 
