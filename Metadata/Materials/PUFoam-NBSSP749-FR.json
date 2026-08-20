@@ -1,0 +1,53 @@
+{
+    "Common Names": "Fire Retardant Flexible Polyurethane Foam",
+    "Material ID": "PUFoam-NBSSP749-FR",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": "64kg/m3"
+    },
+    "Categories": {
+        "NFIRS": "Plastic",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Copolymer",
+        "Thermoset/ Thermoplastic": "Thermoset",
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant1": {
+                "Name": "Alumina Trihydrate",
+                "Weight %": 35
+            },
+            "Flame Retardant2": {
+                "Name": "Organic Brominated Compound",
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

@@ -1,9 +1,9 @@
 {
-    "Common Names": null,
-    "Material ID": "Upholstery-PUFoam-Cotton-Babrauskas1985UpholsteredV1",
+    "Common Names": "Polyvinyl Chloride",
+    "Material ID": "PVC",
     "CAS Number": null,
     "Trade Name": null,
-    "Model Number": "F27",
+    "Model Number": null,
     "Manufacturer": null,
     "Country of Origin": null,
     "Distributor / Harvesting Site": null,
@@ -12,22 +12,16 @@
         "Color": null,
         "Shape": null,
         "Finish": null,
-        "Form": "Composite",
-        "Thickness": "50 mm",
+        "Form": null,
+        "Thickness": null,
         "Notes": null
     },
     "Categories": {
-        "NFIRS": null,
+        "NFIRS": "Plastic",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "Composite",
-        "Thermoset/ Thermoplastic": null,
-        "Composite Layers": {
-            "Core": "Upholstery PolyurethaneFoam",
-            "Cover 1": "Cotton",
-            "Cover 2": null,
-            "Backing 1": null,
-            "Backing 2": null
-        },
+        "Copolymer/ Homopolymer/ Composite": "Homopolymer",
+        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
                 "Name": null,

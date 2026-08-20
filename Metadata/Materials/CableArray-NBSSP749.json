@@ -1,0 +1,49 @@
+{
+    "Common Names": "Cable Array",
+    "Material ID": "CableArray-NBSSP749",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylinder",
+        "Finish": null,
+        "Form": "Jacketed Cable of 5 insulated wires",
+        "Thickness": "12.7mm",
+        "Notes": "Wire insulation made of crosslinked ethylene vinyl acetate copolymer, with clay (18.9 parts per 100 resin), antioxidant (2 parts), processing aid (1 part), and catalyst (1.5 parts)"
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire, Cable Insulation",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers":null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

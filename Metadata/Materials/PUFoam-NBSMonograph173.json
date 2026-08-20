@@ -1,6 +1,6 @@
 {
-    "Common Names": "PMMA",
-    "Material ID": "PMMA-NBISIR822611",
+    "Common Names": "Polyurethane Foam",
+    "Material ID": "PUFoam-NBSMonograph173",
     "CAS Number": null,
     "Trade Name": null,
     "Model Number": null,
@@ -9,18 +9,18 @@
     "Distributor / Harvesting Site": null,
     "Date Acquired": null,
     "Description": {
-        "Color": "Black",
-        "Shape": "Square",
+        "Color": null,
+        "Shape": null,
         "Finish": null,
-        "Form": "Solid",
-        "Thickness": "25.4 mm",
-        "Notes": "Density of 1184 kg/m³. The PMMA used was black to minimize diathermanous heating effects. Chemical formula referenced as nC5H8O2"
+        "Form": null,
+        "Thickness": null,
+        "Notes": null
     },
     "Categories": {
-        "NFIRS": null,
+        "NFIRS": "Plastic",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": null,
-        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Copolymer/ Homopolymer/ Composite": "Copolymer",
+        "Thermoset/ Thermoplastic": "Thermoset",
         "Composite Layers": null,
         "Additives": {
             "Plasticizers": {

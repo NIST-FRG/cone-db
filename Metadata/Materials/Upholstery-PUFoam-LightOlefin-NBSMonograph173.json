@@ -1,0 +1,55 @@
+{
+    "Common Names": "Upholstered Chair Cushion",
+    "Material ID": "Upholstery-PUFoam-LightOlefin-NBSMonograph173",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": null
+    },
+    "Categories": {
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": null,
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": "PUFoam-NBSMonograph173",
+            "Cover 1": "Lightweight Olefin Fabric",
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

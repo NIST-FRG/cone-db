@@ -1,0 +1,49 @@
+{
+    "Common Names": "Laminated Circuit Board",
+    "Material ID": "Composite-PolyesterGF-NBSSP749-FR",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": "Sheets",
+        "Thickness": "6.4mm",
+        "Notes":  "38% polyester resin, 18% glass fibers, 44% CaCO3 filler"
+    },
+    "Categories": {
+        "NFIRS": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers":null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
