@@ -1,0 +1,57 @@
+{
+    "Common Names": "Fire Retardant Laminated Circuit Board",
+    "Material ID": "Composite-PolyesterGF-NBSSP749-FR",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": "Sheets",
+        "Thickness": "6.4mm",
+        "Notes":  "39% polyester resin, 18% glass fibers"
+    },
+    "Categories": {
+        "NFIRS": null,
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers":null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant1": {
+                "Name": "Decabromodiphenyl oxide",
+                "Weight %": 10
+            },
+            "Flame Retardant2": {
+                "Name": "Antimony trioxide",
+                "Weight %": 3
+            },
+            "Flame Retardant3": {
+                "Name": "Alumina trihydrate",
+                "Weight %": 30
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

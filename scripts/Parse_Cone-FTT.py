@@ -131,7 +131,7 @@ def parse_file(file_path, output, meta):
     test_year = test_date.year
 
     # Determine output path, only legacy files are being parsed on the cone-db, new data should be parsed on Matflam-DB
-    if test_date < datetime(2026, 6, 4):
+    if test_date < datetime(2026, 9, 9):
         Path(output/ str(test_year)).mkdir(parents=True, exist_ok=True)
         Path(meta/ str(test_year)).mkdir(parents=True, exist_ok=True)
         data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"

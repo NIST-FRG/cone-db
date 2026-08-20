@@ -89,7 +89,7 @@ def determine_all_operations(file_groups, cone_db, matl_flam):
         mat_id = group["mat_id"]
         
         dest_metadata = matl_flam / "Metadata" / "Cone" / folder / f"{testname}.json"
-        dest_material = matl_flam / "Metadata" / "Materialsy" / f"{mat_id}.json"
+        dest_material = matl_flam / "Metadata" / "Materials" / f"{mat_id}.json"
         source_material = cone_db / "Metadata" / "Materials" / f"{mat_id}.json"
         dest_parsed = matl_flam / "Exp-Data_Parsed" / "Cone" / folder / f"{testname}.csv"
         dest_prepared = matl_flam / "Exp-Data_Prepared-Final" / "Cone" / folder / f"{testname}.csv"
