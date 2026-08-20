@@ -53,6 +53,11 @@ def parse_dir(input_dir):
                     files_skipped += 1
                     continue
                 else:
+                    #If marked as bad data, do nothing
+                    if metadata.get("Bad Data", None):
+                        print(colorize(f'{path.stem} has been marked as Bad Data. Skipping Parsing','yellow'))
+                        files_skipped += 1
+                        continue
                     #Data file missing, just generate thes csv
                     try:
                         files_parsed += 1

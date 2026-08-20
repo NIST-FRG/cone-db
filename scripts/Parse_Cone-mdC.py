@@ -39,7 +39,6 @@ def parse_dir(input_dir):
         output_data = Path(str(path).replace(str(INPUT_DIR), str(OUTPUT_DIR_CSV)))
         if output_meta.exists():
             #IF DOESNT EXIST, CONTINUES. IF DOES, CHECK DATES
-            
             #IF PREPARSED NEWER THAN PARSED, GENERATE CSV AND CLEAR PROCESSING STAGES OF METADATA
             #ADD LOGGING OF THESE ACTIONS TO FRONT OF DATA CORRECTIONS LIST SAYING TO DOUBLE CHECK
             #FOR NOW, KEEP ALL OTHER STUFF FILLED IN
@@ -54,6 +53,11 @@ def parse_dir(input_dir):
                     files_skipped += 1
                     continue
                 else:
+                    #If marked as bad data, do nothing
+                    if metadata.get("Bad Data", None):
+                        print(colorize(f'{path.stem} has been marked as Bad Data. Skipping Parsing','yellow'))
+                        files_skipped += 1
+                        continue
                     #Data file missing, just generate thes csv
                     try:
                         files_parsed += 1

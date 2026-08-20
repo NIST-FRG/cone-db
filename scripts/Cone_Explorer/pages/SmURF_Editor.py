@@ -758,6 +758,10 @@ def revert_to_parsed():
 def delete_files():
     active_file = metadata_path_map[selected_test]
     metadata = json.load(open(active_file))
+    SmURF = metadata.get("SmURF")
+    if SmURF:
+        st.error(f"⚠️ {selected_test} has already been SmURFed and cannot be deleted")
+        return
     ogform = metadata["Original Source"]
     ogform_path = normalize_path(ogform)
     parsed_path = PARSED_METADATA_PATH / ogform_path
