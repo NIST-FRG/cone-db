@@ -258,8 +258,6 @@ def parse_metadata(input_meta, output_meta):
         f.write(json.dumps(metadata, indent=4))
     print(colorize(f"Generated {output_meta.name}", "green"))
 
-    print(colorize(f"Generated {output_meta.name}", "green"))
-
 def clear_metadata(input_meta, output_meta, preparsed_date):
     #right now input meta is not being used, but if we want to copy new things over keep as an input
     with open(output_meta, "r") as f:
