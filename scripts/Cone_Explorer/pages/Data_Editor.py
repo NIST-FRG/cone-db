@@ -401,10 +401,11 @@ if material_selection:
                 )
             elif not normalize and additional:
                 options = [
-                    'Mass Loss (g)',
-                "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO (kg/kg)", "O2 Consumption (g/s)", "H2O (kg/kg)",
-                "HCl (kg/kg)", "H'carbs (kg/kg)",
-                "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+                    'Mass Loss (g)', 'HoC (MJ/kg)',
+                    "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (Vol fr)",
+                    "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)",
+                    "HCl (kg/kg)", "H'carbs (kg/kg)",
+                    "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
                 ]
                 default_value = 'Mass Loss (g)'
                 default_index = options.index(default_value) if default_value in options else 0
@@ -416,9 +417,10 @@ if material_selection:
             else:
                 options = [
                     'Mass LossPUA (g/m2)',
-                "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO (kg/kg)", "O2 ConsumptionPUA (g/s-m2)", "H2O (kg/kg)",
-                "HCl (kg/kg)", "H'carbs (kg/kg)",
-                "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+                    "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)","H2O (Vol fr)",
+                    "HCl (Vol fr)", "H'carbs (Vol fr)", "H2O (kg/kg)",
+                    "HCl (kg/kg)", "H'carbs (kg/kg)",
+                    "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
                 ]
                 default_value = 'Mass LossPUA (g/m2)'
                 default_index = options.index(default_value) if default_value in options else 0
