@@ -158,7 +158,7 @@ def parse_data(file_path):
     df["CO (Vol fr)"] = None
     df['K Smoke (1/m)'] = None
     df['T Duct (K)'] = None
-    df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
+    #df["MLR (kg/s)"] = df["MLR (g/s)"]/1000
     #Derive ksmoke using MLR, V-Duct, and Specific extinction area on fuel pyrolyzate basis (sigma f not sigma s), dont ppull out
     #df["K Smoke (1/m)"] = (df["MLR (kg/s)"]* df["Extinction Area (m2/kg)"])/df["V Duct (m3/s)"]
     df["HRR (kW)"] = None

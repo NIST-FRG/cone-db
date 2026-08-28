@@ -88,6 +88,7 @@ def detect_file(file_path):
         })
 
     # copy file to detected format directory    
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     shutil.copy(file_path, OUTPUT_DIR / file_path.name)
 
     with open(LOG_FILE, "w", encoding="utf-8") as f:
