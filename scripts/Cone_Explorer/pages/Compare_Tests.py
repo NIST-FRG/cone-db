@@ -238,7 +238,8 @@ try:
                                     'Smoke Production (m2/s)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)',
                                     'Mass LossPUA (g/m2)', "CO2 ProductionPUA (g/s-m2)", "CO ProductionPUA (g/s-m2)",
                                     "O2 ConsumptionPUA (g/s-m2)", "Soot ProductionPUA (g/s-m2)",
-                                    'Smoke ProductionPUA ((m2/s)/m2)'
+                                    'Smoke ProductionPUA ((m2/s)/m2)',"H2O (Vol fr)",
+                                    "HCl (Vol fr)", "H'carbs (Vol fr)", "HoC (MJ/kg)"
                                 ]:
                     if column not in data.columns:
                         data[column] = None 
@@ -333,8 +334,14 @@ try:
                     data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
                 else:
                     data['Rho_Air (kg/m3)'] = None
-                data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
+                    
+                if "V Duct (m3/s)" not in data.columns:
+                    data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
                 
+                if data['K Smoke (1/m)'].isna().all():
+                    if 'Extinction Area (m2/kg)' in data.columns:
+                        data['MLR (kg/s)'] = data['MLR (g/s)'] / 1000
+                        data['K Smoke (1/m)'] =  (data["MLR (kg/s)"]* data["Extinction Area (m2/kg)"])/data["V Duct (m3/s)"]
                 if 'Extinction Area (m2/kg)' not in data.columns:
                     data["Extinction Area (m2/kg)"] = np.divide(
                         (data['V Duct (m3/s)'].astype(float) * data['K Smoke (1/m)'].astype(float)).values,
@@ -342,9 +349,18 @@ try:
                         out=np.zeros(data.shape[0], dtype=float),
                         where=(data['MLR (g/s)'].astype(float).values != 0)
                     )
+
+                if 'Smoke Production (m2/s)' not in data.columns:
+                    data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+                data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
+                data['Soot Production (g/s)'] = 1 / 8.7 * data['Smoke Production (m2/s)']
+                data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
+                data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
+                
                 #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
                 #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
-                data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+                if 'Smoke Production (m2/s)' not in data.columns:
+                    data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
                 data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
                 data['Soot Production (g/s)'] = 1/8.7 * data['Smoke Production (m2/s)']
                 data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
@@ -355,7 +371,7 @@ try:
                 W_CO2 = 44.01
                 W_CO = 28.01
                 W_O2 = 32
-                if X_O2_i: #FTT Data and Hopefully other good data (ie Netzch)
+                if X_CO2_i: #FTT Data and Hopefully other good data (ie Netzch), not box/babrauskas
                     #Production and yields calculated by following FCD user guide
                     data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
                     data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
@@ -407,8 +423,8 @@ try:
 
 
                 #Remaining gasses if they don't exist
-                for gas in ["CO2 (kg/kg)", "CO (kg/kg)","H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
-                    if gas not in data.columns:
+                for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "H2O (Vol fr)",
+                        "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)"]:
                         data[gas] = None
                 test_data.append(data)
     ######################################################################################################################################################
@@ -447,10 +463,11 @@ try:
             )
         elif not normalize and additional:
             options = [
-                'Mass Loss (g)',
-            "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (kg/kg)",
-            "HCl (kg/kg)", "H'carbs (kg/kg)",
-            "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+                'Mass Loss (g)', 'HoC (MJ/kg)',
+                "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (Vol fr)",
+                "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)",
+                "HCl (kg/kg)", "H'carbs (kg/kg)",
+                "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
             ]
             default_value = 'Mass Loss (g)'
             default_index = options.index(default_value) if default_value in options else 0
@@ -462,9 +479,10 @@ try:
         else:
             options = [
                 'Mass LossPUA (g/m2)',
-            "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)", "H2O (kg/kg)",
-            "HCl (kg/kg)", "H'carbs (kg/kg)",
-            "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)","MFR (kg/s)",'V Duct (m3/s)'
+                "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)","H2O (Vol fr)",
+                "HCl (Vol fr)", "H'carbs (Vol fr)", "H2O (kg/kg)",
+                "HCl (kg/kg)", "H'carbs (kg/kg)",
+                "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
             ]
             default_value = 'Mass LossPUA (g/m2)'
             default_index = options.index(default_value) if default_value in options else 0
