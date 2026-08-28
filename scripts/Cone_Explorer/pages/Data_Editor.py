@@ -284,8 +284,14 @@ if material_selection:
                 data['Rho_Air (kg/m3)'] = ((amb_pressure/1000) * W_air)  / (8.314 * data['T Duct (K)'])
             else:
                 data['Rho_Air (kg/m3)'] = None
-            data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
+                    
+            if "V Duct (m3/s)" not in data.columns:
+                data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
             
+            if data['K Smoke (1/m)'].isna().all():
+                if 'Extinction Area (m2/kg)' in data.columns:
+                    data['MLR (kg/s)'] = data['MLR (g/s)'] / 1000
+                    data['K Smoke (1/m)'] =  (data["MLR (kg/s)"]* data["Extinction Area (m2/kg)"])/data["V Duct (m3/s)"]
             if 'Extinction Area (m2/kg)' not in data.columns:
                 data["Extinction Area (m2/kg)"] = np.divide(
                     (data['V Duct (m3/s)'].astype(float) * data['K Smoke (1/m)'].astype(float)).values,
@@ -293,20 +299,20 @@ if material_selection:
                     out=np.zeros(data.shape[0], dtype=float),
                     where=(data['MLR (g/s)'].astype(float).values != 0)
                 )
-            #Finding Soot  production based on FCD User Guide- but bring area into eq so have Vduct
-            #Says to use smoke production sigmas = 8.7m2/g, not sigmaf
-            data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+
+            if 'Smoke Production (m2/s)' not in data.columns:
+                data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
             data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
-            data['Soot Production (g/s)'] = 1/8.7 * data['Smoke Production (m2/s)']
+            data['Soot Production (g/s)'] = 1 / 8.7 * data['Smoke Production (m2/s)']
             data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
             data["HoC (MJ/kg)"] = data["HRRPUA (kW/m2)"] / data["MLRPUA (g/s-m2)"]
-
+            
 
             ## Gas Production and Yield
             W_CO2 = 44.01
             W_CO = 28.01
             W_O2 = 32
-            if X_O2_i: #FTT Data and Hopefully other good data (ie Netzch)
+            if X_CO2_i: #FTT Data and Hopefully other good data (ie Netzch)
                 #Production and yields calculated by following FCD user guide
                 data['CO2 Production (g/s)'] = (W_CO2/W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] *1000
                 data['CO Production (g/s)'] = (W_CO/W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] *1000
@@ -358,8 +364,8 @@ if material_selection:
 
 
             #Remaining gasses if they don't exist
-            for gas in ["CO2 (kg/kg)", "CO (kg/kg)","H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
-                if gas not in data.columns:
+            for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "H2O (Vol fr)",
+                    "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)"]:
                     data[gas] = None
             test_data = data.copy()
 
@@ -371,7 +377,7 @@ if material_selection:
             if not normalize and not additional:
                 options = [
                     'HRR (kW)','Mass (g)', "MLR (g/s)",  "THR (MJ)", 
-                    "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+                    "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)","T Duct (K)"
                     
                 ]
                 default_value = 'HRR (kW)'
@@ -384,7 +390,7 @@ if material_selection:
             elif normalize and not additional:
                 options = [
                     'HRRPUA (kW/m2)','MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-                "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+                "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)", "T Duct (K)"
                 ] 
                 default_value = 'HRRPUA (kW/m2)'
                 default_index = options.index(default_value) if default_value in options else 0

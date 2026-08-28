@@ -353,8 +353,14 @@ if test_selection:
         data['Rho_Air (kg/m3)'] = ((amb_pressure / 1000) * W_air) / (8.314 * data['T Duct (K)'])
     else:
         data['Rho_Air (kg/m3)'] = None
-    data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
+
+    if "V Duct (m3/s)" not in data.columns:
+        data["V Duct (m3/s)"] = data['MFR (kg/s)'] / data["Rho_Air (kg/m3)"]
     
+    if data['K Smoke (1/m)'].isna().all():
+        if 'Extinction Area (m2/kg)' in data.columns:
+            data['MLR (kg/s)'] = data['MLR (g/s)'] / 1000
+            data['K Smoke (1/m)'] =  (data["MLR (kg/s)"]* data["Extinction Area (m2/kg)"])/data["V Duct (m3/s)"]
     if 'Extinction Area (m2/kg)' not in data.columns:
         data["Extinction Area (m2/kg)"] = np.divide(
             (data['V Duct (m3/s)'].astype(float) * data['K Smoke (1/m)'].astype(float)).values,
@@ -362,8 +368,9 @@ if test_selection:
             out=np.zeros(data.shape[0], dtype=float),
             where=(data['MLR (g/s)'].astype(float).values != 0)
         )
-    
-    data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
+
+    if 'Smoke Production (m2/s)' not in data.columns:
+        data['Smoke Production (m2/s)'] = data["K Smoke (1/m)"] * data['V Duct (m3/s)']
     data['Smoke ProductionPUA ((m2/s)/m2)'] = data['Smoke Production (m2/s)'] / surf_area if surf_area is not None else None
     data['Soot Production (g/s)'] = 1 / 8.7 * data['Smoke Production (m2/s)']
     data['Soot ProductionPUA (g/s-m2)'] = data['Soot Production (g/s)'] / surf_area if surf_area is not None else None
@@ -372,7 +379,7 @@ if test_selection:
     W_CO2 = 44.01
     W_CO = 28.01
     W_O2 = 32
-    if X_O2_i:
+    if X_CO2_i: # Just FTT files where we have initials for everything and an MFR
         data['CO2 Production (g/s)'] = (W_CO2 / W_air) * (data['CO2 (Vol fr)'] - X_CO2_i) * data['MFR (kg/s)'] * 1000
         data['CO Production (g/s)'] = (W_CO / W_air) * (data['CO (Vol fr)'] - X_CO_i) * data['MFR (kg/s)'] * 1000
         data['O2 Consumption (g/s)'] = (W_O2 / W_air) * (X_O2_i - data['O2 (Vol fr)']) * data['MFR (kg/s)'] * 1000
@@ -412,7 +419,8 @@ if test_selection:
     data['Smoke'] = data['Smoke Production (m2/s)'] * data['dt']
     data['Total Smoke'] = data['Smoke'].cumsum()
 
-    for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)"]:
+    for gas in ["CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "HCl (kg/kg)", "H'carbs (kg/kg)", "H2O (Vol fr)",
+            "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)"]:
         if gas not in data.columns:
             data[gas] = None
     test_data = data.copy()
@@ -423,7 +431,7 @@ if test_selection:
     if not normalize and not additional:
         options = [
             'HRR (kW)', 'Mass (g)', "MLR (g/s)", "THR (MJ)", 
-            "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+            "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)", "T Duct (K)"
         ]
         default_value = 'HRR (kW)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -435,7 +443,7 @@ if test_selection:
     elif normalize and not additional:
         options = [
             'HRRPUA (kW/m2)', 'MassPUA (g/m2)', "MLRPUA (g/s-m2)", "THRPUA (MJ/m2)", 
-            "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)"
+            "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)", "K Smoke (1/m)","T Duct (K)"
         ] 
         default_value = 'HRRPUA (kW/m2)'
         default_index = options.index(default_value) if default_value in options else 0
@@ -446,8 +454,9 @@ if test_selection:
         )
     elif not normalize and additional:
         options = [
-            'Mass Loss (g)',
-            "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (kg/kg)",
+            'Mass Loss (g)', 'HoC (MJ/kg)',
+            "CO2 Production (g/s)", 'CO2 (kg/kg)', "CO Production (g/s)", "CO2 (kg/kg)", "O2 Consumption (g/s)", "H2O (Vol fr)",
+            "HCl (Vol fr)", "H'carbs (Vol fr)","H2O (kg/kg)",
             "HCl (kg/kg)", "H'carbs (kg/kg)",
             "Soot Production (g/s)", 'Smoke Production (m2/s)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
         ]
@@ -461,7 +470,8 @@ if test_selection:
     else:
         options = [
             'Mass LossPUA (g/m2)',
-            "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)", "H2O (kg/kg)",
+            "CO2 ProductionPUA (g/s-m2)", 'CO2 (kg/kg)', "CO ProductionPUA (g/s-m2)", "CO2 (kg/kg)", "O2 ConsumptionPUA (g/s-m2)","H2O (Vol fr)",
+            "HCl (Vol fr)", "H'carbs (Vol fr)", "H2O (kg/kg)",
             "HCl (kg/kg)", "H'carbs (kg/kg)",
             "Soot ProductionPUA (g/s-m2)", 'Smoke ProductionPUA ((m2/s)/m2)', "Extinction Area (m2/kg)", "MFR (kg/s)", 'V Duct (m3/s)'
         ]
@@ -1056,11 +1066,30 @@ def export_dialog(edited_df, original_metadata):
                 if "Mass Loss (g)" in data.columns and metadata.get("Sample Mass (g)"):
                     data["Mass (g)"] = metadata["Sample Mass (g)"] - data["Mass Loss (g)"]  
                     data.drop("Mass Loss (g)", inplace=True, axis=1)
+                if "Extinction Area (m2/kg)" in data.columns and "V Duct (m3/s)" in data.columns:
+                        if "MLR (g/s)" not in data.columns:
+                            dm_dt = safe_savgol_filter(
+                            data["Mass (g)"].values,
+                            window_length=int(0.08*len(data)) if len(data) >= 50 else 3,  # Adjust window length based on data size, minimum of 3
+                            polyorder=2,
+                            deriv=1,
+                            delta=data['Time (s)'].diff().median(),
+                              )# Parameters for savgol filter based on Staggs paper
+                            data['MLR (g/s)'] = (-1)*dm_dt
+
+                        data['MLR (kg/s)'] = data['MLR (g/s)'] / 1000
+                        data['K Smoke (1/m)'] =  (data["MLR (kg/s)"]* data["Extinction Area (m2/kg)"])/data["V Duct (m3/s)"]
+                        if not data['K Smoke (1/m)'].isnull().all():
+                            data.drop("Extinction Area (m2/kg)" ,inplace=True, axis=1)
+                elif "Smoke Production (m2/s)" in data.columns and "V Duct (m3/s)" in data.columns:
+                    data['K Smoke (1/m)'] = data['Smoke Production (m2/s)'] / data['V Duct (m3/s)']
+                    data.drop('Smoke Production (m2/s)' ,inplace=True, axis=1)
+
                 
                 max_column_order = [
                     "Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)", "T Duct (K)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)",
-                    "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
-                    "HRRPUA (kW/m2)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
+                    "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Smoke Production", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
+                    "HRRPUA (kW/m2)", "H2O (Vol fr)", "H'Carbs (Vol fr)", "HCl (Vol fr)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
                 ]
                 
                 reordered_data = pd.DataFrame()

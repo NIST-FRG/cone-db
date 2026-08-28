@@ -134,8 +134,12 @@ def parse_file(file_path, output, meta):
     if test_date < datetime(2026, 9, 9):
         Path(output/ str(test_year)).mkdir(parents=True, exist_ok=True)
         Path(meta/ str(test_year)).mkdir(parents=True, exist_ok=True)
-        data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"
-        metadata_output_path = Path(meta) / str(test_year) / f"{Path(file_path).stem}.json"
+        if "Black" in str(output): # Add i_ to all raw file names on black cone to distinguish from white cone of same name
+            data_output_path = Path(output) / str(test_year) /f"i_{Path(file_path).stem}.csv"
+            metadata_output_path = Path(meta) / str(test_year) / f"i_{Path(file_path).stem}.json" 
+        else:
+            data_output_path = Path(output) / str(test_year) /f"{Path(file_path).stem}.csv"
+            metadata_output_path = Path(meta) / str(test_year) / f"{Path(file_path).stem}.json"
         if os.path.exists(metadata_output_path):
             with open(metadata_output_path, "r") as f:
                 existing_meta = json.load(f)

@@ -102,9 +102,6 @@ Summary table of all values used
 
 This equation uses the ISO method of calculating the average of each input parameter for the C-Factor equation, the finding a single value. In the ASTM/mean method, these calculations are performed at every time step, and the reported C-Factor is the average among all C-Factors within the calibration region.
 
-##### Export Results
-A summary file containing any adjustments made, calcuated C-Factors, parameters used, timing of baseline and calibration regions, and averaged intermediate values used in the calculation can be exported either as a .txt or .json file.
-
 ### Compare Tests
 
 ##### Overview
