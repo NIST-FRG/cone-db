@@ -18,7 +18,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB
 
 INPUT_DIR = PROJECT_ROOT / "data" / "raw" / "Box" / "md_C_new"### WILL BE FIREDATA IN BOX SUBFOLDER, (firedata/flammabilitydata/cone/Box/md_B)
 OUTPUT_DIR = PROJECT_ROOT / "data" / "preparsed" / "Box" / "md_C"
-LOG_FILE = PROJECT_ROOT / "preparse_md_C_log_2.json"
+LOG_FILE = PROJECT_ROOT / "preparse_md_C_2_log.json"
 
 
 #region parse_dir
@@ -41,18 +41,19 @@ def parse_dir(input_dir):
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
+            out_path = Path(str(path).replace('md_C', 'md_C_preparsed'))
         elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
-            out_path = Path(str(path).replace('md_C', 'md_C_bad'))
+            #out_path = Path(str(path).replace('md_C', 'md_C_bad'))
         else:
             print(colorize(f'{pct}% of tests in {path} parsed succesfully\n', 'yellow'))
             files_parsed_partial += 1
-            out_path = Path(str(path).replace('md_C', 'md_C_partial'))
+            #out_path = Path(str(path).replace('md_C', 'md_C_partial'))
 
         ## If output path is set, ensure the directory exists and move
-        #if out_path:
-        #    out_path.parent.mkdir(parents=True, exist_ok=True)
-        #    shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
  
@@ -281,10 +282,31 @@ def get_tests(lines):
         Detect if a line contains metadata:
         - If "date-number" (e.g. 9/30/82-198): return (date, number)
         - If just "date" (e.g. 9/30/82): return (date, "unk#")
+        - If test format (e.g. "DOUG. FUR HORIZONTAL 50 KW/M2 T825"): return ("no_date", test_number)
         - Else, return None
         """
-        match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{1,4})(?:-(\d{1,4}))?', line)
-        return match
+        # First try date format
+        match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{1,4})(?:[-\s]+(\d{1,4}[A-Za-z]?))?', line)
+        if match:
+            return match
+        
+        # Try test format (e.g., T825)
+        test_match = re.search(r'T(\d+)', line, re.IGNORECASE)
+        if test_match:
+            # Create a match-like structure for consistency
+            # Return a simple object or tuple that has group() method behavior
+            class TestMatch:
+                def __init__(self, test_num):
+                    self.test_num = test_num
+                def group(self, n):
+                    if n == 1:
+                        return "no_date"
+                    elif n == 2:
+                        return self.test_num
+                    return None
+            return TestMatch(test_match.group(1))
+        
+        return None
     def is_table_header_line(line):
         return line.replace(" ", "").startswith("|TIME") and not any(
             bad in line.upper() for bad in ('INDEX', 'VALUE', 'COLUMN', "YEAR", "PRESSURE", "WIND", "TEMPERATURE"))
@@ -362,6 +384,7 @@ def get_tests(lines):
                 pass
                  
         else:
+            line = line.replace("*", "") #remove asteriks from data
             if addtocurrent:
                 current_test_lines.append(line)
             else:
@@ -526,6 +549,8 @@ def parse_data(data_df,test,file_name):
                 data_df.columns.values[i] = "Mass (kg)"
             else:
                 data_df.columns.values[i] = "MLR (g/s)"
+        elif "M LOSS" in column or "M-LOSS" in column:
+            data_df.columns.values[i] = "MLR (g/s)"
         elif "COMB" in column or "EFFECTIVE" in column or "HEAT OF" in column:
             data_df.columns.values[i] = "HT Comb (MJ/kg)"
         elif "CO2" in column or "C02" in column:
@@ -551,9 +576,19 @@ def parse_data(data_df,test,file_name):
         raise Exception(f"Test does not start at 0 seconds, please review markdown and pdf")
     increments = np.diff(times)
     expected_step = np.median(increments)
-    #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
-    continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
+    # steps continuous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous_mask = (increments >= expected_step * 0.1) & (increments <= expected_step * 5)
+    continuous = np.all(continuous_mask)
+
     if not continuous:
+        discontinuities = np.where(~continuous_mask)[0]
+        print(f"Expected step size (median): {expected_step}")
+        print(f"\nDiscontinuities found at {len(discontinuities)} location(s):")
+        for idx in discontinuities:
+            print(f"  Between times[{idx}] and times[{idx+1}]: "
+                f"{times[idx]:.2f} -> {times[idx+1]:.2f} "
+                f"(increment: {increments[idx]:.2f}, "
+                f"ratio to expected: {increments[idx]/expected_step:.2f}x)")
         raise Exception("Test does not have continuous time data, please review markdown and pdf")
     for c in data_df.columns:
         data = data_df[c].loc[:data_df[c].last_valid_index()].values
@@ -698,8 +733,11 @@ def parse_metadata(input,test_name):
         metadata_json["Material Name"] = metadata[:orient_idx-1]
     
     date_testnum =re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:-(\d{1,4}))?', metadata)
-    dateidx = date_testnum.start()
+    dateidx = None
+    slash_idx = None
+    mass = None
     if date_testnum:     
+        dateidx = date_testnum.start()
         metadata_json["Test Date"] = date_testnum.group(1)        
         specnum =  date_testnum.group(2)             
         metadata_json['Specimen Number'] = specnum
@@ -715,8 +753,9 @@ def parse_metadata(input,test_name):
     elif "0FLUX" or "NOEXTERNALFLUX" in metadata.replace(" ", ""):
         slash_idx = metadata.find("UX")
         metadata_json["Heat Flux (kW/m2)"] = 0
-    potential_mass_str =  metadata[slash_idx +4: dateidx]
-    mass = get_number(potential_mass_str, "flt")
+    if dateidx and slash_idx:
+        potential_mass_str =  metadata[slash_idx +4: dateidx]
+        mass = get_number(potential_mass_str, "flt")
     if "FRAME" in metadata:
         metadata_json["Edge Frame"] = True
     if "GRID" in metadata:
@@ -777,5 +816,5 @@ if __name__ == "__main__":
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
-    print("✅ preparse_md_C_log.json created.")
+    print("✅ preparse_md_C_2_log.json created.")
     parse_dir(INPUT_DIR)

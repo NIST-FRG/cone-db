@@ -55,11 +55,11 @@ def parse_dir(input_dir):
             #out_path = Path(str(path).replace('md_B', 'md_B_bad'))
             #out_path.parent.mkdir(parents=True, exist_ok=True)
             #shutil.move(path, out_path)
-            continue
         out_path = False
         if pct == 100:
             print(colorize(f"Parsed {path} successfully\n", "green"))
             files_parsed_fully += 1
+            out_path = Path(str(path).replace('md_B', 'md_B_preparsed'))
         elif pct == 0 or pct == None:
             print(colorize(f"{path} could not be parsed", "red"))
             #out_path = Path(str(path).replace('md_B', 'md_B_bad'))
@@ -69,9 +69,9 @@ def parse_dir(input_dir):
             #out_path = Path(str(path).replace('md_B', 'md_B_partial'))
 
         # If output path is set, ensure the directory exists and copy
-        #if out_path:
-         #   out_path.parent.mkdir(parents=True, exist_ok=True)
-          #  shutil.move(path, out_path)
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, out_path)
     print(colorize(f"Files pre-parsed fully: {files_parsed_fully}/{files_parsed} ({((files_parsed_fully)/files_parsed) * 100}%)", "blue"))
     print(colorize(f"Files pre-parsed partially: {files_parsed_partial}/{files_parsed} ({((files_parsed_partial)/files_parsed) * 100}%)", "blue"))
     
@@ -863,5 +863,5 @@ if __name__ == "__main__":
     logfile = {}
     with open(LOG_FILE, "w", encoding="utf-8") as f:
         f.write(json.dumps(logfile, indent=4))
-    print("✅ preparse_md_B_log.json created.")
+    print("✅ preparse_md_B_2_log.json created.")
     parse_dir(INPUT_DIR)

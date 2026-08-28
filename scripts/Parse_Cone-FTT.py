@@ -26,12 +26,12 @@ if len(args) > 2:
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
 
-INPUT_DIR1 = PROJECT_ROOT / "data" / "raw" / "FTTCone" / "FTT-White"
+INPUT_DIR1 = r"\\elwood\733\internal\Material-Flam-DB\Cone\FTT-White"
 OUTPUT_DIR1 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-White"
 META_DIR1 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-White"
 LOG_FILE1 = PROJECT_ROOT/ "parse_FTT-White_log.json"
 
-INPUT_DIR2 = PROJECT_ROOT / "data" / "raw" / "FTTCone" / "FTT-Black"
+INPUT_DIR2 = r"\\elwood\733\internal\Material-Flam-DB\Cone\FTT-Black"
 OUTPUT_DIR2 = PROJECT_ROOT / "Exp-Data_Parsed" / "FTT-Black"
 META_DIR2 = PROJECT_ROOT / "Metadata" / "Parsed" / "FTT-Black"
 LOG_FILE2 = PROJECT_ROOT / "parse_FTT-Black_log.json"
