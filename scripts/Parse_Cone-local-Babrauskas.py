@@ -9,8 +9,7 @@ import numpy as np
 
 SCRIPT_DIR = Path(__file__).resolve().parent         # .../coneDB/scripts
 PROJECT_ROOT = SCRIPT_DIR.parent             # .../coneDB 
-
-INPUT_DIR = r"\\elwood\733\internal\Material-Flam-DB\Cone\Box-PreParsed\Babrauskas"
+INPUT_DIR = PROJECT_ROOT / 'data' / "preparsed" / "Box" / "Babrauskas"
 OUTPUT_DIR_CSV = PROJECT_ROOT / "Exp-Data_Parsed"  / "Box" / "Babrauskas"
 OUTPUT_META = PROJECT_ROOT / "Metadata" / "Parsed" / "Box" / "Babrauskas"
 LOG_FILE = PROJECT_ROOT / "parse_Babrauskas_log.json"
@@ -268,6 +267,7 @@ def parse_data(file_path):
         if c in data.columns:
             reordered_data[c] = data[c]
     reordered_data.dropna(how='all', inplace=True)               
+
 
     OUTPUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
     data_output_path = OUTPUT_DIR_CSV / str(file_path.name)
