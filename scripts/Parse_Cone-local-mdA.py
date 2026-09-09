@@ -178,6 +178,10 @@ def parse_data(file_path):
     df["CO (Vol fr)"] = None
     df["MFR (kg/s)"] = None
     df['T Duct (K)'] = None
+    if "Extinction Area (m2/kg)" not in df.columns:
+        df['Extinction Area (m2/kg)'] = None
+    if "HRRPUA (kW/m2)" not in df.columns:
+        df['HRRPUA (kW/m2)'] = None
     if "K Smoke (1/m)" not in df.columns:
         df["K Smoke (1/m)"] = None
     else:
