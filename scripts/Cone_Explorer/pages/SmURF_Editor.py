@@ -889,7 +889,7 @@ def export_dialog(edited_df, original_metadata):
     if isinstance(date, datetime):
         dt_obj = date
     else:
-        formats = ["%d %b %Y", "%d %b %y", "%m/%d/%y", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%dT%H:%M:%S"]
+        formats = ["%d %b %Y", "%d %b %y", "%m/%d/%y", "%m/%d/%Y", "%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%d-%m-%Y"]
         for fmt in formats:
             try:
                 dt_obj = datetime.strptime(str(date), fmt)
@@ -1027,7 +1027,9 @@ def export_dialog(edited_df, original_metadata):
                 if metadata.get("Report Name") and ":" in metadata["Report Name"]:
                     report = metadata["Report Name"].split(":")[0]  # Take part before colon
                     report = report.strip()  # Remove leading/trailing whitespace
+                    report = report.replace(" ", "")  # Remove spaces
                     report = report.replace("-", "")  # Remove hyphens
+                    print(f"REPORT {report}")
                 elif metadata.get("Report Name") and ":" not in metadata["Report Name"]:
                     st.error(f"No Report ID found in Report Name: {metadata['Report Name']}. Please ensure the format is 'ReportID: Report Title'.")
                     return
