@@ -1090,7 +1090,7 @@ def export_dialog(edited_df, original_metadata):
                 
                 max_column_order = [
                     "Time (s)", "Mass (g)", "HRR (kW)", "MFR (kg/s)", "T Duct (K)", "O2 (Vol fr)", "CO2 (Vol fr)", "CO (Vol fr)",
-                    "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Smoke Production", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
+                    "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Smoke Production (m2/s)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
                     "HRRPUA (kW/m2)", "H2O (Vol fr)", "H'Carbs (Vol fr)", "HCl (Vol fr)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
                 ]
                 
