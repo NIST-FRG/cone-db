@@ -107,10 +107,23 @@ def safe_savgol_filter(
 st.write("Select the test status you would like to view")
 test_types = ['SmURFed', "Parsed Versions (All)"]
 selected_type = st.selectbox("Choose SmURF status", test_types)
+
+
 if selected_type == "Parsed Versions (All)":
     # Get the paths to all the test metadata files
     metadata_name_map = {p.stem: p for p in list(PARSED_METADATA_PATH.rglob("*.json"))}
     test_name_map = {p.stem: p for p in list(PARSED_DATA_PATH.rglob("*.csv"))}
+    use_queue_only = st.checkbox(
+                'Show Queued Tests Only', 
+                value=False,
+                disabled=len(st.session_state.test_queue) == 0,
+                help="Select tests on the Metadata Search page to populate the queue"
+            )
+    if use_queue_only and st.session_state.test_queue:
+        queued_tests = [test for test in st.session_state.test_queue if test in metadata_name_map]
+        metadata_name_map = {test: metadata_name_map[test] for test in queued_tests}
+        test_name_map = {test: test_name_map[test] for test in queued_tests if test in test_name_map}
+
     test_selection = st.multiselect(
         "Select a test to view and edit:",
         options=test_name_map.keys(),
@@ -210,7 +223,6 @@ else:
             test_selection_map = {k: metadata_name_map[k] for k in test_selection}
         except NameError:
             test_selection_map = None
-
 
 
 ##########################################################################################################
@@ -559,31 +571,29 @@ try:
 except (NameError, KeyError):
     st.info("Please select at least one test to compare.")
 
-    st.divider()
-    st.markdown("#### Notes")
-    readme = SCRIPT_DIR / "README.md"
-    section_title = "### Compare Tests"
+st.divider()
+st.markdown("#### Notes")
+readme = SCRIPT_DIR / "README.md"
+section_title = "### Compare Tests"
 
-    # Read the README file
-    with open(readme, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+# Read the README file
+with open(readme, "r", encoding="utf-8") as f:
+    lines = f.readlines()
 
-    # Find start and end indices for the subsection
-    start_idx, end_idx = None, None
-    for i, line in enumerate(lines):
-        if line.strip() == section_title:
-            start_idx = i +1
+# Find start and end indices for the subsection
+start_idx, end_idx = None, None
+for i, line in enumerate(lines):
+    if line.strip() == section_title:
+        start_idx = i +1
+        break
+
+if start_idx is not None:
+    for j in range(start_idx + 1, len(lines)):
+        if lines[j].startswith("### ") or lines[j].startswith("## "):
+            end_idx = j
             break
-
-    if start_idx is not None:
-        for j in range(start_idx + 1, len(lines)):
-            if lines[j].startswith("### ") or lines[j].startswith("## "):
-                end_idx = j
-                break
-        # If no further section, use end of file
-        if end_idx is None:
-            end_idx = len(lines)
-        subsection = "".join(lines[start_idx:end_idx])
-        st.markdown(subsection)
-
-    st.sidebar.markdown("#### Delete files")
+    # If no further section, use end of file
+    if end_idx is None:
+        end_idx = len(lines)
+    subsection = "".join(lines[start_idx:end_idx])
+    st.markdown(subsection)
