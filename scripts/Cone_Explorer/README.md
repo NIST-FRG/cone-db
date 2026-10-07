@@ -110,8 +110,19 @@ Grants the user the ability to view and compare the data from multiple tests.
 ##### Filter Options
 `Choose SmURF Status` allows you to view either pre-SmURFed/parsed tests or post-SmURFed/prepared final tests.
 
+Choosing `SmURFed` allows you to filter by test date: 
+    Select `Filter Tests By Date` to select a date range of tests; start and end date must be in the format **YYYY-MM-DD**. 
+
+Choosing `Parsed Versions (All)` allows you to only view tests queued for SmURFing:
+    Select `Show Queued Tests Only` to filter out all non-queued tests from the dropdown.
+
 ##### Selecting Tests to View
-Type out the specimen number or name of the test(s) you would like to view and/or select them from the dropdown list
+`SmURFed`:
+    Type out the material you wish to view, followed by the version of that material if more than one exist.
+    Select the specific tests you would like to view, or click one of the three checkboxes.
+
+`Parsed Versions (All)`:
+    Type out the specimen number or name of the test(s) you would like to view and/or select them from the dropdown list
 
 ##### Data Plotting Options
 Cone data can be viewed with an x axis of time (s) or incident energy (time*EHF, MJ/m2). The base Y-axis data include heat release rate (kW) sample mass (g), mass loss rate (g/s), total heat release (MJ), gaseous species volume fractions (O2, CO2, CO), and k-smoke (1/m). There is also an option to view additional parameters. These include sample mass loss (g), production/consumption rates (g/s) and instaneous yields (kg/kg) of those same gaseoues species,soot (g/s) and smoke (m2/s) production rates, specific extinction area (m2/kg), mass flow rate through the duct (kg/s), and volumetric flow rate through the duct. Some legacy data also includees instantaneous yields of H2O, HCl, and hydrocarbons (H'carbs). All heat release, mass, and production/conumption rate data can be normalized by the exposed area of the sample.

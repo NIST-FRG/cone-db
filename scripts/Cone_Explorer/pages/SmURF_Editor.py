@@ -236,7 +236,8 @@ if n_tests > 0:
 else:
     st.warning("No tests found.")
     st.stop()
-
+def sync_idx_from_select():
+    st.session_state.test_idx = test_names.index(st.session_state.test_selectbox)
 st.sidebar.markdown("### Navigate Tests")
 prev_btn = st.sidebar.button("⬅️ Previous", disabled=st.session_state.test_idx == 0)
 next_btn = st.sidebar.button("Next ➡️", disabled=st.session_state.test_idx == n_tests - 1)
@@ -246,15 +247,15 @@ if prev_btn:
 if next_btn:
     st.session_state.test_idx = min(n_tests - 1, st.session_state.test_idx + 1)
 
+# Force the selectbox's internal state to match test_idx before it renders
+st.session_state.test_selectbox = test_names[st.session_state.test_idx]
+
 selected_test = st.selectbox(
     "Select a test to view/edit",
     options=test_names,
-    index=st.session_state.test_idx,
     key="test_selectbox",
+    on_change=sync_idx_from_select,
 )
-
-if selected_test != test_names[st.session_state.test_idx]:
-    st.session_state.test_idx = test_names.index(selected_test)
 
 test_selection = metadata_path_map[selected_test]
 data_selection = data_path_map[selected_test]
