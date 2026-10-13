@@ -174,7 +174,10 @@ if st.button("Import Data To Explorer"):
             shutil.copy(src_csv_path, new_file.with_suffix(".csv"))
             shutil.copy(file, new_file)
         else:
-            st.sidebar.warning(f"CSV file for {file.stem} not found in either prepared or parsed data folders. Please run {parse_script} to generate the csv file for this test.")
+            if smurf:
+                st.sidebar.warning(f"{prepared_name} ({file.stem}) is marked as SmURFed, but the CSV file is missing. Please ensure the CSV file is present in the prepared data folder.")
+            else:
+             st.sidebar.warning(f"CSV file for {file.stem} is not found in the parsed data folder. Please run {parse_script} to generate the csv file for this test.")
             continue
     st.success("Data and Metadata imported successfully")
 
