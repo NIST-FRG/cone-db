@@ -634,21 +634,23 @@ def restore_types(edited_df, original_metadata):
         original_val = original_metadata.get(key)
         edited_val = edited_metadata.get(key)
         orig_type = type(original_val)
+        if key == "Heat Flux (kW/m2)":
+            orig_type = float
         
         if original_val is None:
             if edited_val in ["", None, "None", "null", "NaN", "Nan", "nan"] or edited_val.strip().lower() in ["none", "null", "nan", ""]:
                 restored[key] = None
-            elif key in ["Sample Mass (g)", "Residual Mass (g)", "Thickness (mm)", "C Factor", "Surface Area (m2)", "Seperation (mm)", 
+            elif key in ["Heat Flux (kW/m2)","Sample Mass (g)", "Residual Mass (g)", "Thickness (mm)", "C Factor", "Surface Area (m2)", "Seperation (mm)", 
                          "Heat of Combustion O2 (MJ/kg)", "OD Correction Factor", "Duct Diameter (m)", "Ambient Temperature (°C)", 
-                         "Barometric Pressure (Pa)", "Relative Humidity (%)"]:
+                         "Barometric Pressure (Pa)", "Relative Humidity (%)","t_ignition (s)", "t_flameout (s)"]:
                 try:
                     restored[key] = float(edited_val)
                 except Exception:
                     st.error(f"Input Error: Value for {key} must be convertible to a float. Please change this field or press **Reload** to remove input.")
                     error = True
                     break
-            elif key in ["Replicate", "Heat Flux (kW/m2)", "Test Start Time (s)", "Test End Time (s)",
-                         "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)", "t_ign (s)"]:
+            elif key in ["Replicate", "Test Start Time (s)", "Test End Time (s)",
+                         "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)"]:
                 try:
                     restored[key] = int(edited_val)
                 except Exception:
@@ -932,12 +934,19 @@ def export_dialog(edited_df, original_metadata):
         prepared_data_path.mkdir(parents=True, exist_ok=True)
     
     material_id = metadata.get("Material ID")    
-    
+
+    heatflux = str(metadata.get("Heat Flux (kW/m2)"))
+    try:
+        heatflux = int(heatflux)
+    except (TypeError, ValueError):
+        heatflux = heatflux.replace(".", "p").replace(" ", "")
+
+    print(f"Heat Flux: {heatflux}")
     # Build filename parts
     filename_parts = [
         material_id,
         "Cone",
-        f"{int(metadata['Heat Flux (kW/m2)'])}kW",
+        f"{heatflux}kW",
         "vert" if "VERT" in metadata["Orientation"].upper() else "hor" if "HOR" in metadata["Orientation"].upper() else "unkn",
     ]
     
@@ -1008,7 +1017,7 @@ def export_dialog(edited_df, original_metadata):
                 testname_parts = [
                     material_id,
                     "Cone",
-                    f"{int(metadata['Heat Flux (kW/m2)'])}kW",
+                    f"{heatflux}kW",
                     "vert" if "VERT" in metadata["Orientation"].upper() else "hor",
                 ]
                 
