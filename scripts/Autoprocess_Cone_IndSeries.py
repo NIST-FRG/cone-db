@@ -108,7 +108,8 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
     paths = list(data_dir.rglob(f"{series_name}_[rR]*.csv"))
     print(paths)
     badpaths = []
-    Flux = int(re.search(r'(\d+)', str(series_name).split('_')[1]).group(1))
+    fluxstring =str(series_name).split('_')[2].replace('kW','').replace('p','.')
+    Flux = float(fluxstring)
     Folder = paths[0].parent
     metadata_folder = Path(str(Folder).replace("Exp-Data_Prepared-Final", "Metadata/Prepared-Final"))
     Dataframes_Whole = []
@@ -152,6 +153,7 @@ def average_cone_series(series_name: str, data_dir: Path, metadata_dir: Path, ma
         X_CO_i = data.get("X_CO Initial")
         rel_humid = data.get('Relative Humidity (%)')
         amb_temp = data.get("Ambient Temperature (°C)")
+        print(f"Ambient Temperature: {amb_temp}")
         amb_pressure = data.get("Barometric Pressure (Pa)")
         rep.append(replicate_number)  # Append to the list
         masses.append(sample_mass)
