@@ -1,0 +1,39 @@
+\documentclass{abstract}
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    doi=true,
+    sorting=none,
+    sortcites=true,
+    maxbibnames=2,
+    minbibnames=1,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    giveninits=true,
+    isbn=false,
+    date=year
+]{biblatex}
+\addbibresource{abstract.bib}
+
+% For email linking
+\usepackage{hyperref}
+
+\title{ENFP 429 NIST Abstract, Fall 2026}
+
+\author{Nathan Lagana}
+
+\keywords{Cone Calorimeter, SmURF, Heat Release Rate, Electrical Cables, Fire Retardants, Data Parsing}
+\begin{document}
+\maketitle
+\section{Abstract}
+The cone calorimeter, developed at the National Bureau of Standards (NBS, now NIST) in the early 1980s \cite{babrauskas1982development}, is a standard bench-scale test for how materials burn. A specimen is exposed to a set radiant heat flux, and its heat release rate is measured using oxygen consumption calorimetry, alongside its mass loss, smoke production, and combustion gas yields. NIST's Material Flammability Database collects over four decades of these measurements so that engineers, modelers, and scientists can search them, compare materials, and use them as inputs to fire models such as the Fire Dynamics Simulator. Much of the older data, however, originally existed only as physical printouts in technical reports. The printouts have been scanned, converted to text, and parsed into data and metadata files, but each test still has to be reviewed by hand before it can be released. Each one must be matched to the report it came from, checked for results that make physical sense, and given complete, consistent metadata. This semester I am doing that review, called SmURFing (Systematic User Review of Files), on legacy NBS/NIST cone calorimeter reports.
+
+My work so far has focused on NISTIR~88-4003 \cite{emil1989flammability}, which is a study of eight Navy shipboard electrical cables tested at 25 to 100~kW/m$^2$ in horizontal and vertical orientations. Each specimen was a row of short cable pieces in a non-standard 94~$\times$~94~mm holder, so the results reflect a thin polymer jacket over a copper core rather than a uniform slab of material. I have reviewed and submitted 16 tests across six of the eight cables, matching each test to the report by cable code, heat flux, orientation, and test number. In the process, I renumbered replicates so they follow test order, found that a PVC-jacketed cable had been numbered as replicates of a different, polyolefin-jacketed cable (it is now its own series), and flagged a block of tests whose printed dates read 1900, which has since been corrected. I then checked the surrounding test numbers and confirmed that every test from this report in the database now has a reviewed record, 116 in total, pending final review of my last submissions. My second assigned report, NBS~SP~749 \cite{babrauskas1988fire}, compares five common products (television cabinets, business machine housings, upholstered chairs, electrical cable, and circuit boards), each made with and without fire retardants and tested horizontally at 10, 30, and 100~kW/m$^2$. Reviewing its tests is my next step in the SmURF process. Later this semester I will also begin updating one of the group's parsing scripts to read data from Atlas cone calorimeters, which would bring a large set of wood and composite tests into the same review process.
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
