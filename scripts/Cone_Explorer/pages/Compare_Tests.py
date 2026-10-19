@@ -103,7 +103,9 @@ def safe_savgol_filter(
         result[nan_mask] = np.nan
         return result
 ################### Get test files, select by material, then material id, then test #################
-
+if "test_queue" not in st.session_state:
+    st.session_state.test_queue = []
+    
 st.write("Select the test status you would like to view")
 test_types = ['SmURFed', "Parsed Versions (All)"]
 selected_type = st.selectbox("Choose SmURF status", test_types)
