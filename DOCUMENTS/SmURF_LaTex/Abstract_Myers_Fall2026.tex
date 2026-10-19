@@ -1,0 +1,58 @@
+\documentclass{abstract}
+
+% Bibliography
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    doi=true,
+    sorting=none,
+    sortcites=true,
+    maxbibnames=2,
+    minbibnames=1,
+    maxcitenames=2,
+    mincitenames=1,
+    citestyle=numeric-comp,
+    giveninits=true,
+    isbn=false,
+    date=year
+]{biblatex}
+\addbibresource{abstract.bib}
+
+% For email linking
+\usepackage{hyperref}
+
+\title{ENFP 429 Abstrat Fall 2026}
+
+\author{Jacob Myers}
+
+\keywords{Cone Calorimeter, ignition, upholstery}
+\begin{document}
+\maketitle
+\section{Abstract}
+All materials have different properties when it comes to how they burn. Properties like how long it takes a material to ignite, how long it burns for when it does, and how much energy it puts off can all vary, sometimes drastically, between materials. These properties impact other qualities of an eventual fire, like how quickly it can spread and lead to flashover. It is important to product designers and engineers to understand the differences between these properties when they choose the materials to use in the construction of a product or building. One way that we test for these materials is with a cone calorimeter.
+
+In a cone calorimeter, a known small mass of material is placed under a cone shaped heating device. This cone shape ensures that heating of the material is consistent over the material's surface. The cone emits a known quantity of energy into the material, known as the heat flux. From here, the time to the ignition of the material (t\_ign) is measured. Once ignition has occurred, the calorimeter measures various other properties of the material. The most notable of these properties is the heat release rate (HRR), or the rate at which energy is emitted from the burning material. The HRR is determined by a method known as oxygen consumption calorimetry. The consumption of oxygen in a combustion reaction requires a constant and known amount of energy per gram, known as its heat of combustion. By measuring the amount of oxygen in the air entering the calorimeter and the air exiting it, we can determine how much oxygen was consumed and use the heat of combustion to determine how much energy would have been needed for this consumption. Measuring the makeup of the gas going in and out of the ignition also allows us to test for the production of products such as soot and CO. Other properties like mass yield can be measured as well.
+
+Government agencies like NIST and its precursor the National Bureau of Standards have been performing these cone calorimetry tests on a variety of materials for decades. The main goal of the Cone Calorimetry Database project on which I am working is creation of a database that digitally houses these decades of tests, many of which were previously stored physically in boxes in a storage room, and allows people to search for desired materials. The goal is that any scientist or engineer can quickly and easily find the data that NIST and the NBS have spent so long collecting.
+
+The initial step of this process is digitization, converting the physical test files into a digital format. This is done with an AI tool known as LlamaAI, which produces a digital copy of the file. This file is then parsed into two smaller files. One of these files is known as the data file, and it contains the data collected from the cone calorimetry test, like the HRR or soot production. The other is called the metadata file, and it contains the conditions of the test, like the starting mass of the material or the heat flux. Following this comes a process known as the Systematic User Review of Files, or "SmURFing." SmURFing is a process that uses a specially designed data editor to check the data and metadata files against the original scanned file to check for mistakes that have been made in transcription and fix them. The SmURFing process also involves the creation of a Material ID, a specific name that identifies a specific material from a specific test. This name is what will allow the material to be found by users. It is also crucial that a Material Metadata file is made, a file that contains infomation on the materials that we use, like whether it's organic or synthetic and where it's produced.
+
+My primary role in this project/class is in the SmURFing of files. I receive a report that corresponds to numerous tests, and I find and compare those tests to the original file in order to check for mistakes. I then fix mistakes as needed, and add available additional information that was missed before, and add a Material ID. Following that, I upload the files to the NIST repository for a final check by NIST employees. My materials of interest this semester have consisted of some composites, but mostly of fabrics and plastics used in upholstery.
+
+My SmURFing activities this semester began with ADA168251 \cite{ADA168251}. This is a file that contains tests on numerous composites being tested for use as airplane panels. I completed the SmURFing of many of these files last semester, but some were missed and so I needed to go back and finish them. This required comparing the test data to similar tests found in the report, as the specific test numbers of the uncompleted tests are not found in the report itself. 
+
+The most notable data from this report was the t\_ign and heat release rate. This report also explicitly had edge protection for its tests, as edge burning is not a concern for these materials in their use case as airplane panels.
+
+My main focus on this semester has been on ASTMSTP882 \cite{babrauskas1985upholstery} and NBS Monograph 173 \cite{NBSMonograph173}. Both of these reports deal with materials used in upholstery, namely fabrics and plastics. The monograph does contain information from some of the tests originally mentioned in ASTMSTP882, which has required careful consideration when attributing tests.
+
+These files posed more of a challenge compared to the tests I SmURFed previously. There were very few test numbers mentioned in the reports, so determining which tests were actually matched with those reports required comparing the data obtained from the parsing stage with the details of the tests in the reports. There were some tests that seemed to match very closely to tests found in ASTMSTP882 but were part of tests with heat fluxes not mentioned in that report. I discussed this with the NIST employees who are managing my work, and we decided that we would include them for now as they seemed to contain relevant data.
+
+There is also less information than previous tests that I have SmURFed. The primary data that we have focused on with these tests was checking for initial and final mass, area of the tested material piece, and the heat flux. 
+
+On top of skills in SmURFing and analyzing the cone calorimetry data, I have learned other relevant information. I have learned in more detail how a cone calorimeter functions, and the process through which oxygen consumption calorimetry is performed and the data calculated. I have also gotten practice with the git workflow and management of files. Furthermore, I am further practicing the use of LaTeX for the construction of a document.
+
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
