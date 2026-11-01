@@ -1,6 +1,6 @@
 {
     "Material ID": "Upholstery-NBSSP749",
-    "Material Name": "Sample T No Cover",
+    "Material Name": "Sample T With Cover",
     "Sample Mass (g)": 22.3,
     "Residual Mass (g)": 2.08,
     "Replicate": 3,
@@ -236,5 +236,7 @@
         "PAGE 1 OF 4",
         "PAGE 4 OF 4"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-01: Material Name corrected Sample T No Cover -> Sample T With Cover per printout (FLEX FOAM SAMPLE T WITH FABRIC COVER; FOAM WT 14.1 G + FABRIC WT 8.2 G, TOTAL SAMPLE WT 22.3 G)"
+    ]
 }
