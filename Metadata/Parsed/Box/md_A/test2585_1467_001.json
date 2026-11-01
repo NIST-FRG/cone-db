@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 978,
+    "t_ignition (s)": 33,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -171,5 +171,7 @@
         "# FLEX FOAM SAMPLES W/FAB COVER 30 KW/M2 HOR TEST 1 2585",
         "PAGE 4 OF"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-01: t_ignition corrected 978 -> 33 per printout (TIME TO IGNITION= 33.1 S, IGNITIONTIME= 33 S); 978 was the MASS RATIO AVERAGE"
+    ]
 }
