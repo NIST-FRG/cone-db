@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 494,
+    "t_ignition (s)": 14,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -196,5 +196,7 @@
         "PAGE 1 OF 2",
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-01: t_ignition corrected 494 -> 14 per printout (TIME TO IGNITION= 13.8 S); 494 was the MASS RATIO AVERAGE"
+    ]
 }
