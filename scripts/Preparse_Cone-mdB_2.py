@@ -105,6 +105,7 @@ def parse_file(file_path):
     # separating tests within the file
     try: 
         tests = get_tests(lines)
+        input("Press Enter to continue...")
         numtests = len(tests)
         parsed = 0
     except Exception as e:
@@ -203,80 +204,6 @@ def get_tests(file_contents):
 
 ####### separate metadata from test data #######
 #region get_data - MODIFIED FOR NEW FORMAT
-def get_data(data):
-    """
-    Separates metadata from tabular data.
-    New format has multiple markdown tables stacked vertically.
-    We need to identify each table separately and merge them horizontally.
-    """
-    dataStart = -1
-    metadata = []
-    table_blocks = []  # List of separate table blocks
-    current_table = []
-    
-    for i, line in enumerate(data):
-        line_upper = str(line).upper().strip()
-        
-        # Check if this is a table header row (contains TIME and |)
-        if "TIME" in line_upper and "|" in line and "MAX" not in line_upper and "PARAMETER" not in line_upper:
-            if dataStart == -1:
-                dataStart = i
-            # If we have a previous table, save it
-            if current_table:
-                table_blocks.append(current_table)
-                current_table = []
-            # Start new table
-            current_table.append(line)
-        elif dataStart != -1:
-            # We're in the data section
-            current_table.append(line)
-        else:
-            # Metadata
-            metadata.append(line)
-    
-    # Don't forget the last table
-    if current_table:
-        table_blocks.append(current_table)
-    
-    print(colorize(f"Found {len(table_blocks)} table blocks", "cyan"))
-    
-    # Process each table block separately
-    dfs = []
-    for idx, table_block in enumerate(table_blocks):
-        print(colorize(f"Processing table block {idx + 1}...", "yellow"))
-        
-        # Filter out markdown formatting rows
-        filtered_table = []
-        for line in table_block:
-            # Skip separator rows (lines with only |, -, and spaces)
-            if line.strip().replace('-', '').replace('|', '').replace(' ', '') == '':
-                continue
-            # Skip empty lines
-            if not line.strip():
-                continue
-            filtered_table.append(line)
-        
-        # Convert to pandas DataFrame
-        try:
-            pd_format_test_data = StringIO("\n".join(filtered_table))
-            block_df = pd.read_csv(pd_format_test_data, sep="|")
-            # Remove leading/trailing empty columns (from | delimiters)
-            block_df = block_df.iloc[:, 1:-1]
-            dfs.append(block_df)
-            print(colorize(f"Table {idx + 1}: {block_df.shape[0]} rows, {block_df.shape[1]} columns", "blue"))
-        except Exception as e:
-            print(colorize(f"Error parsing table block {idx + 1}: {e}", "red"))
-            raise
-    
-    # Merge all tables horizontally (by row index)
-    if dfs:
-        test_data_df = pd.concat(dfs, axis=1)
-    else:
-        raise Exception("No tables found in data")
-    
-    print(colorize(f"Final merged table: {test_data_df.shape[0]} rows, {test_data_df.shape[1]} columns", "green"))
-    
-    return test_data_df, metadata
 
 # outputting dataframe to csv file
 #region get_data - MODIFIED FOR NEW FORMAT
@@ -287,259 +214,389 @@ def get_data(data):
     Merges duplicate columns by taking the first non-NaN value.
     Summary tables go into metadata.
     """
-    dataStart = -1
-    metadata = []
-    table_blocks = []
-    current_table = []
-    in_summary_table = False
-    
-    for i, line in enumerate(data):
-        line_upper = str(line).upper().strip()
-        
-        # Check if this is a table header (has TIME and pipe separator)
-        if "TIME" in line_upper and "|" in line:
-            # Check if this is a summary table
-            if any(keyword in line_upper for keyword in [
-                "MAX", "PARAMETER", "YIELD", "PEAK", "AVERAGE", 
-                "IGNITION", "TOTAL HEAT RELEASE", "MASS WEIGHTED"
-            ]):
-                # This is a summary table - add to metadata
-                in_summary_table = True
-                metadata.append(line)
-                continue
-            else:
-                # This is a time-series data table
-                in_summary_table = False
-                if dataStart == -1:
-                    dataStart = i
-                if current_table:
-                    table_blocks.append(current_table)
-                    current_table = []
-                current_table.append(line)
-        elif in_summary_table:
-            # Continue capturing summary table lines as metadata
-            if "|" in line or line.strip().startswith("*"):
-                metadata.append(line)
-            else:
-                in_summary_table = False
-                metadata.append(line)
-        elif dataStart != -1 and not in_summary_table:
-            current_table.append(line)
+
+    # -------------------------------------------------------------------------
+    # Helper: normalize a raw column name string to a standard output name
+    # Raises Exception on unrecognised column
+    # -------------------------------------------------------------------------
+    def normalize_column(col: str, table_idx: int) -> str:
+        col_upper = col.upper().strip()
+
+        if not col_upper:
+            raise Exception(f"Empty column name in table {table_idx + 1}")
+
+        if "TIME" in col_upper:
+            return "Time (s)"
+        elif "DOT" in col_upper:
+            return "HRRPUA (kW/m2)"
+        elif "SUM Q" in col_upper or "SLM Q" in col_upper:
+            return "THRPUA (MJ/m2)"
+        elif "MASS" in col_upper and "LOSS" not in col_upper:
+            return "Mass (g)"
+        elif "LOSS" in col_upper:
+            return "MLR (g/s)"
+        elif "AIR" in col_upper:
+            return "MFR (kg/s)"
+        elif ("COM" in col_upper or "CON" in col_upper):
+            return "HT Comb (MJ/kg)"
+        # CO2 before CO
+        elif "CO2" in col_upper or "CO₂" in col_upper or "C02" in col_upper:
+            return "CO2 (kg/kg)"
+        # H2O before other H patterns
+        elif "H2O" in col_upper or "H₂O" in col_upper or "H20" in col_upper:
+            return "H2O (kg/kg)"
+        # CO after CO2 ruled out
+        elif ("CO" in col_upper or "C0" in col_upper) and not any(
+            x in col_upper for x in ["2", "H", "S", "M", "CARB", "CARS", "CARD"]
+        ):
+            return "CO (kg/kg)"
+        elif any(x in col_upper for x in ["CARB", "CARS", "CARD", "CARE", 'CAR3', "CAR8"]):
+            return "H'carbs (kg/kg)"
+        elif "HCL" in col_upper:
+            return "HCl (kg/kg)"
+        elif "M-DUCT" in col_upper and "M3" not in col_upper:
+            return "MFR (kg/s)"
+        elif "M-DUCT" in col_upper and "M3" in col_upper:
+            return "V Duct (m3/s)"
+        elif "V-DUCT" in col_upper:
+            return "V Duct (m3/s)"
+        elif any(x in col_upper for x in ["SOOT", "SCOT", "SOCT", 'SCCT']) :
+            return "Soot (kg/kg)"
+        elif "AREA" in col_upper and ("SUM" not in col_upper and "SLM" not in col_upper):
+            return "Extinction Area (m2/kg)"
+        elif ("AREA" in col_upper and ("SUM" in col_upper or "SLM" in col_upper)) or (
+            "TOTALSMOKE" in col_upper.replace(" ", "")
+        ):
+            return "Total Smoke (m2/kg)"
+        elif "SAMPTEMP" in col_upper.replace(" ", ""):
+            return "Sample Temperature (Deg C)"
         else:
-            metadata.append(line)
-    
-    if current_table:
-        table_blocks.append(current_table)
-    
+            raise Exception(
+                f'Unrecognised column in table {table_idx + 1}: '
+                f'"{col}" (normalized: "{col_upper}")'
+            )
+
+    # -------------------------------------------------------------------------
+    # Step 1: Split raw lines into metadata lines and table blocks
+    # Uses the block-aware markdown parser so Format A/B/C all work correctly
+    # -------------------------------------------------------------------------
+    metadata = []
+    table_blocks = []       # list of list[str]  (raw markdown lines per block)
+    current_block = []
+    in_table = False
+    in_summary_table = False
+
+    SUMMARY_KEYWORDS = {
+        "MAX", "PARAMETER", "YIELD", "PEAK", "AVERAGE",
+        "IGNITION", "TOTAL HEAT RELEASE", "MASS WEIGHTED", "DESCRIPTION",
+        'UNIT'
+    }
+
+    for line in data:
+        stripped = line.strip()
+        is_pipe_line = stripped.startswith("|")
+
+        if is_pipe_line:
+            line_upper = stripped.upper()
+
+            if "TIME" in line_upper:
+                is_summary = any(kw in line_upper for kw in SUMMARY_KEYWORDS)
+
+                if is_summary:
+                    if current_block:
+                        table_blocks.append(current_block)
+                        current_block = []
+                    in_table = False
+                    in_summary_table = True
+                    metadata.append(line)
+                else:
+                    if current_block:
+                        table_blocks.append(current_block)
+                    current_block = [line]
+                    in_table = True
+                    in_summary_table = False
+
+            elif in_summary_table:
+                metadata.append(line)
+
+            elif in_table:
+                current_block.append(line)
+
+            else:
+                metadata.append(line)
+
+        else:
+            # Non-pipe line
+            if in_summary_table:
+                in_summary_table = False
+
+            if in_table:
+                if not stripped:
+                    # Blank line — do NOT close block yet.
+                    # Look ahead: if any of the next few lines is a pipe line,
+                    # keep the block open. Only close if we hit real non-pipe content.
+                    current_block.append(line)   # keep blank line in block (parser will ignore it)
+                else:
+                    # Real non-pipe non-blank content — close block
+                    table_blocks.append(current_block)
+                    current_block = []
+                    in_table = False
+                    metadata.append(line)
+            else:
+                metadata.append(line)
+
+    # Flush last open block
+    if current_block:
+        table_blocks.append(current_block)
+
     print(colorize(f"Found {len(table_blocks)} time-series table blocks", "cyan"))
     print(colorize(f"Captured {len(metadata)} metadata lines", "cyan"))
-    
-    # Process each table block separately
-    dfs = []
-    for idx, table_block in enumerate(table_blocks):
-        print(colorize(f"Processing table block {idx + 1}...", "yellow"))
-        
-        filtered_table = []
-        for line in table_block:
-            if line.strip().replace('-', '').replace('|', '').replace(' ', '') == '':
+
+    # -------------------------------------------------------------------------
+    # Step 2: Parse each table block using the format-aware cell parser
+    # -------------------------------------------------------------------------
+    def parse_block_to_df(block_lines: list, table_idx: int) -> pd.DataFrame:
+        """
+        Convert a list of raw markdown lines (one table block) to a DataFrame.
+
+        Handles all known formats including:
+        - Units row separated from header by blank line
+        - Separator row appearing after first data row instead of after headers
+        - Format A: units merged in header
+        - Format B: units row before separator
+        - Format C: units row after separator
+        """
+
+        def _is_separator(line):
+            cells = [c.strip() for c in line.strip().strip('|').split('|')]
+            non_empty = [c for c in cells if c]
+            return bool(non_empty) and all(
+                re.fullmatch(r':?-+:?', c) for c in non_empty
+            )
+
+        def _is_units_only(line):
+            cells = [c.strip() for c in line.strip().strip('|').split('|')]
+            non_empty = [c for c in cells if c]
+            return bool(non_empty) and all(
+                re.fullmatch(r'\(.*\)', c) for c in non_empty
+            )
+
+        def _is_data_row(line):
+            """A data row has at least one cell that is numeric."""
+            cells = [c.strip() for c in line.strip().strip('|').split('|')]
+            non_empty = [c for c in cells if c]
+            return any(re.fullmatch(r'[+-]?\d+\.?\d*([eE][+-]?\d+)?', c)
+                    for c in non_empty)
+
+        def _parse_row(line):
+            return [c.strip() for c in line.strip().strip('|').split('|')]
+
+        # Strip blank lines but remember which lines are pipe lines
+        lines = [l for l in block_lines if l.strip()]
+
+        if not lines:
+            return pd.DataFrame()
+
+        # -------------------------------------------------------------------------
+        # Scan from the top, collecting structural rows until we hit real data.
+        # Structural rows = header, units, separator (in any order, any gaps).
+        # The first numeric row marks the start of data.
+        # -------------------------------------------------------------------------
+        header_line  = None
+        units_line   = None
+        data_start   = None
+
+        for i, line in enumerate(lines):
+            if not line.strip().startswith('|'):
                 continue
-            if not line.strip():
+            if _is_separator(line):
+                continue  # skip separators wherever they appear
+            if _is_units_only(line):
+                units_line = line
                 continue
-            filtered_table.append(line)
-        
-        # Skip if table is too small
-        if len(filtered_table) < 3:
-            print(colorize(f"Skipping table block {idx + 1}: too few rows", "yellow"))
-            continue
-        
-        try:
-            pd_format_test_data = StringIO("\n".join(filtered_table))
-            block_df = pd.read_csv(pd_format_test_data, sep="|")
-            block_df = block_df.iloc[:, 1:-1]
-            
-            # Skip tables with empty or whitespace-only column names
-            if any(col.strip() == '' for col in block_df.columns):
-                print(colorize(f"Skipping table block {idx + 1}: contains empty columns (moving to metadata)", "yellow"))
-                metadata.extend(filtered_table)
-                continue
-            
-            # Normalize column names with tracking for duplicates
-            new_columns = []
-            
-            for col in block_df.columns:
-                col_upper = col.upper().strip()
-                
-                # Skip empty columns
-                if not col_upper:
-                    print(colorize(f"Skipping empty column in table {idx + 1}", "yellow"))
-                    continue
-                
-                new_name = None
-                
-                if "TIME" in col_upper:
-                    new_name = "Time (s)"
-                elif "DOT" in col_upper:
-                    new_name = "HRRPUA (kW/m2)"
-                elif "SUM Q" in col_upper:
-                    new_name = "THRPUA (MJ/m2)"
-                elif "MASS" in col_upper and "LOSS" not in col_upper:
-                    new_name = "Mass (g)"
-                elif "M" in col_upper and "LOSS" in col_upper:
-                    new_name = "MLR (g/s)"
-                elif "AIR" in col_upper:
-                    new_name = "MFR (kg/s)"
-                elif "H" in col_upper and ("COM" in col_upper or "CON" in col_upper):
-                    new_name = "HT Comb (MJ/kg)"
-                # CHECK CO2 FIRST (before CO)
-                elif "CO2" in col_upper or "CO₂" in col_upper or "C02" in col_upper:
-                    new_name = "CO2 (kg/kg)"
-                # CHECK H2O BEFORE OTHER H2 patterns
-                elif "H2O" in col_upper or "H₂O" in col_upper or "H20" in col_upper:
-                    new_name = "H2O (kg/kg)"
-                # NOW CHECK CO (after CO2 is ruled out)
-                elif ("CO" in col_upper or "C0" in col_upper) and not any(x in col_upper for x in ["2", "H", "S", "M", "CARB", "CARS", "CARD"]):
-                    new_name = "CO (kg/kg)"
-                elif "CARB" in col_upper or "CARS" in col_upper or "CARD" in col_upper:
-                    new_name = "H'carbs (kg/kg)"
-                elif "HCL" in col_upper:
-                    new_name = "HCl (kg/kg)"
-                elif "M-DUCT" in col_upper:
-                    if "MFR (kg/s)" not in new_columns:
-                        new_name = "MFR (kg/s)"
-                    else:
-                        new_name = "V Duct (m3/s)"
-                elif "V-DUCT" in col_upper:
-                    new_name = "V Duct (m3/s)"
-                elif "SOOT" in col_upper:
-                    new_name = "Soot (kg/kg)"
-                elif "AREA" in col_upper and "SUM" not in col_upper:
-                    new_name = "Extinction Area (m2/kg)"
-                elif ("AREA" in col_upper and "SUM" in col_upper) or ("TOTALSMOKE" in str(col_upper.replace(" ", ""))):
-                    new_name = "Total Smoke (m2/kg)"
-                elif "SAMPTEMP" in str(col_upper.replace(" ", "")):
-                    new_name = "Sample Temperature (Deg C)"
+            if _is_data_row(line):
+                data_start = i
+                break
+            # Must be a header row (has text, not units-only, not separator, not data)
+            header_line = line
+
+        if header_line is None or data_start is None:
+            print(colorize(
+                f"Table {table_idx + 1}: could not identify header or data rows, skipping",
+                "yellow"
+            ))
+            return pd.DataFrame()
+
+        # -------------------------------------------------------------------------
+        # Build column names
+        # -------------------------------------------------------------------------
+        header_cells = _parse_row(header_line)
+
+        if units_line is not None:
+            units_cells = _parse_row(units_line)
+            merged = []
+            for h, u in zip(header_cells, units_cells):
+                if u and not h.endswith(u):
+                    merged.append(f"{h} {u}".strip())
                 else:
-                    # Throw error for illegal columns
-                    msg = f'Illegal Column Detected in table {idx + 1}: "{col}" (normalized: "{col_upper}")'
-                    raise Exception(msg)
-                
-                # Track duplicates with temporary suffix for merging later
-                if new_name and new_name in new_columns:
-                    counter = 2
-                    temp_name = f"{new_name}__dup{counter}"
-                    while temp_name in new_columns:
-                        counter += 1
-                        temp_name = f"{new_name}__dup{counter}"
-                    new_columns.append(temp_name)
-                    print(colorize(f"Warning: Duplicate column '{new_name}' found as '{col}' in table {idx + 1}, will merge", "yellow"))
-                elif new_name:
-                    new_columns.append(new_name)
-            
-            # If no valid columns found, skip
-            if not new_columns:
-                print(colorize(f"Table {idx + 1} has no valid columns. Moving to metadata.", "yellow"))
-                metadata.extend(filtered_table)
+                    merged.append(h)
+            header_cells = merged
+
+        # -------------------------------------------------------------------------
+        # Collect data rows — skip separators, skip non-pipe lines
+        # -------------------------------------------------------------------------
+        data_rows = []
+        for line in lines[data_start:]:
+            if not line.strip().startswith('|'):
                 continue
-            
-            block_df.columns = new_columns
-            
-            # **CONVERT TIME COLUMN TO NUMERIC FIRST**
-            if "Time (s)" in block_df.columns:
-                block_df["Time (s)"] = pd.to_numeric(block_df["Time (s)"], errors='coerce')
-            
-            # Merge duplicate columns within this table
-            block_df = merge_duplicate_columns(block_df)
-            
-            # **ENSURE TIME IS NUMERIC AFTER MERGE TOO**
-            if "Time (s)" in block_df.columns:
-                block_df["Time (s)"] = pd.to_numeric(block_df["Time (s)"], errors='coerce')
-            
-            dfs.append(block_df)
-            print(colorize(f"Table {idx + 1}: {block_df.shape[0]} rows, {block_df.shape[1]} columns", "blue"))
-            print(colorize(f"Columns: {list(block_df.columns)}", "cyan"))
-            
-        except Exception as e:
-            # Re-raise the exception to stop processing
-            print(colorize(f"Error parsing table block {idx + 1}: {e}", "red"))
-            raise
-    
+            if _is_separator(line):
+                continue
+            cells = _parse_row(line)
+            while len(cells) < len(header_cells):
+                cells.append('')
+            cells = cells[:len(header_cells)]
+            data_rows.append(cells)
+
+        if not data_rows:
+            return pd.DataFrame(columns=header_cells)
+
+        df = pd.DataFrame(data_rows, columns=header_cells)
+
+        for col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        return df
+
+    # -------------------------------------------------------------------------
+    # Step 3: Parse blocks, normalise column names, handle duplicates
+    # -------------------------------------------------------------------------
+    dfs = []
+
+    for idx, block in enumerate(table_blocks):
+        print(colorize(f"Processing table block {idx + 1}...", "yellow"))
+
+        raw_df = parse_block_to_df(block, idx)
+
+        if raw_df.empty:
+            print(colorize(f"Table {idx + 1}: empty after parsing, skipping", "yellow"))
+            metadata.extend(block)
+            continue
+
+        # Normalize column names
+        new_columns = []
+        for raw_col in raw_df.columns:
+            norm = normalize_column(raw_col, idx)   # raises on unknown column
+
+            # Deduplicate within this table
+            if norm in new_columns:
+                counter = 2
+                candidate = f"{norm}__dup{counter}"
+                while candidate in new_columns:
+                    counter += 1
+                    candidate = f"{norm}__dup{counter}"
+                print(colorize(
+                    f"Warning: duplicate '{norm}' in table {idx + 1}, "
+                    f"stored as '{candidate}' for merging", "yellow"
+                ))
+                new_columns.append(candidate)
+            else:
+                new_columns.append(norm)
+
+        raw_df.columns = new_columns
+
+        # Merge intra-table duplicate columns
+        raw_df = merge_duplicate_columns(raw_df)
+
+        # Ensure Time is float
+        if "Time (s)" in raw_df.columns:
+            raw_df["Time (s)"] = pd.to_numeric(raw_df["Time (s)"], errors='coerce')
+
+        dfs.append(raw_df)
+        print(colorize(
+            f"Table {idx + 1}: {raw_df.shape[0]} rows, {raw_df.shape[1]} cols | "
+            f"{list(raw_df.columns)}", "blue"
+        ))
+
     if not dfs:
         raise Exception("No valid time-series tables found in data")
-    
-    # **VERIFY ALL TIME COLUMNS ARE NUMERIC BEFORE GROUPING**
-    for idx, df in enumerate(dfs):
-        if "Time (s)" in df.columns:
-            if df["Time (s)"].dtype != 'float64':
-                print(colorize(f"Warning: Converting Time column in table {idx + 1} from {df['Time (s)'].dtype} to float64", "yellow"))
-                dfs[idx]["Time (s)"] = pd.to_numeric(dfs[idx]["Time (s)"], errors='coerce')
-    
-    # Group tables by column set
-    column_groups = {}
-    for idx, df in enumerate(dfs):
-        col_key = tuple(sorted(df.columns))
+
+    # -------------------------------------------------------------------------
+    # Step 4: Group tables by column set, concatenate vertically within groups
+    # Use insertion-order tuple (not sorted) so column order is preserved
+    # -------------------------------------------------------------------------
+    column_groups: dict[tuple, list[pd.DataFrame]] = {}
+
+    for df in dfs:
+        col_key = tuple(df.columns)          # preserve order
         if col_key not in column_groups:
             column_groups[col_key] = []
-        column_groups[col_key].append((idx, df))
-    
+        column_groups[col_key].append(df)
+
     print(colorize(f"Grouped into {len(column_groups)} column groups", "cyan"))
-    
-    # Concatenate within each group (drop header rows from continuation tables)
+
     merged_groups = []
     for group_idx, (col_key, group) in enumerate(column_groups.items()):
-        print(colorize(f"Merging column group {group_idx + 1} ({len(group)} tables)...", "yellow"))
-        
-        # Start with first table in group
-        merged_group = group[0][1].copy()
-        
-        # Concatenate remaining tables in group vertically (drop first row which is header)
-        for table_idx in range(1, len(group)):
-            table = group[table_idx][1].copy()
-            table = table.iloc[1:].reset_index(drop=True)  # Drop header row
-            merged_group = pd.concat([merged_group, table], axis=0, ignore_index=True)
-        
+        print(colorize(
+            f"Concatenating group {group_idx + 1} "
+            f"({len(group)} table(s), cols={list(col_key)})...", "yellow"
+        ))
+        # Simple vertical concat — no row dropping needed because parse_block_to_df
+        # never includes header/units/separator rows in data_rows
+        merged_group = pd.concat(group, axis=0, ignore_index=True)
         merged_groups.append(merged_group)
-        print(colorize(f"Group {group_idx + 1}: {merged_group.shape[0]} rows, {merged_group.shape[1]} columns", "green"))
-    
-    # Merge between groups horizontally by TIME
+        print(colorize(
+            f"Group {group_idx + 1}: {merged_group.shape[0]} rows, "
+            f"{merged_group.shape[1]} cols", "green"
+        ))
+
+    # -------------------------------------------------------------------------
+    # Step 5: Merge groups horizontally on TIME (outer join)
+    # -------------------------------------------------------------------------
     print(colorize(f"Merging {len(merged_groups)} groups horizontally by TIME...", "yellow"))
-    
-    test_data_df = merged_groups[0].copy()
-    
+
+    result = merged_groups[0].copy()
+
     for group_idx in range(1, len(merged_groups)):
-        group_df = merged_groups[group_idx].copy()
-        
-        # **ENSURE BOTH TIME COLUMNS ARE NUMERIC BEFORE MERGE**
-        if "Time (s)" in test_data_df.columns:
-            test_data_df["Time (s)"] = pd.to_numeric(test_data_df["Time (s)"], errors='coerce')
-        if "Time (s)" in group_df.columns:
-            group_df["Time (s)"] = pd.to_numeric(group_df["Time (s)"], errors='coerce')
-        
-        # Get non-TIME columns from group_df
-        group_data_cols = [c for c in group_df.columns if c != "Time (s)"]
-        
-        # Check for conflicts
-        conflicting_cols = set(test_data_df.columns) & set(group_data_cols)
-        if conflicting_cols:
-            print(colorize(f"Warning: Merging duplicate columns across groups: {conflicting_cols}", "yellow"))
-        
-        # Merge on TIME
-        test_data_df = pd.merge(
-            test_data_df,
-            group_df[["Time (s)"] + group_data_cols],
+        right = merged_groups[group_idx].copy()
+
+        # Columns in right that aren't TIME
+        right_data_cols = [c for c in right.columns if c != "Time (s)"]
+
+        # Warn on conflicts (will get __crossgroup suffix from merge)
+        conflicts = set(result.columns) & set(right_data_cols)
+        if conflicts:
+            print(colorize(
+                f"Warning: cross-group duplicate columns will be merged: {conflicts}",
+                "yellow"
+            ))
+
+        result = pd.merge(
+            result,
+            right[["Time (s)"] + right_data_cols],
             on="Time (s)",
             how="outer",
             suffixes=('', '__crossgroup')
         )
-        
-        print(colorize(f"After merging group {group_idx + 1}: {test_data_df.shape[0]} rows, {test_data_df.shape[1]} columns", "green"))
+
+        print(colorize(
+            f"After merging group {group_idx + 1}: "
+            f"{result.shape[0]} rows, {result.shape[1]} cols", "green"
+        ))
+
+    # Final deduplication pass (handles __crossgroup suffixed columns)
+    result = merge_duplicate_columns(result)
+
+    # Sort by time
+    if "Time (s)" in result.columns:
+        result = result.sort_values("Time (s)").reset_index(drop=True)
+
+    print(colorize(
+        f"Final: {result.shape[0]} rows, {result.shape[1]} cols | "
+        f"{list(result.columns)}", "green"
+    ))
+
+    return result, metadata
     
-    # Final merge of any cross-group duplicates
-    test_data_df = merge_duplicate_columns(test_data_df)
-    
-    print(colorize(f"Final merged table: {test_data_df.shape[0]} rows, {test_data_df.shape[1]} columns", "green"))
-    print(colorize(f"Final columns: {list(test_data_df.columns)}", "green"))
-    
-    return test_data_df, metadata
 
 
 def merge_duplicate_columns(df):
@@ -609,8 +666,18 @@ def parse_data(data_df, test, file_name):
     increments = np.diff(times)
     expected_step = np.median(increments)
     #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous_mask = (increments >= expected_step * 0.1) & (increments <= expected_step * 5)
+    continuous = np.all(continuous_mask)
     continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
     if not continuous:
+        discontinuities = np.where(~continuous_mask)[0]
+        print(f"Expected step size (median): {expected_step}")
+        print(f"\nDiscontinuities found at {len(discontinuities)} location(s):")
+        for idx in discontinuities:
+            print(f"  Between times[{idx}] and times[{idx+1}]: "
+                f"{times[idx]:.2f} -> {times[idx+1]:.2f} "
+                f"(increment: {increments[idx]:.2f}, "
+                f"ratio to expected: {increments[idx]/expected_step:.2f}x)")
         raise Exception("Test does not have continuous time data, please review markdown and pdf")
     for c in data_df.columns:
         data = data_df[c].loc[:data_df[c].last_valid_index()].values

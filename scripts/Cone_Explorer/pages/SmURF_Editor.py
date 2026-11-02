@@ -939,10 +939,13 @@ def export_dialog(edited_df, original_metadata):
     material_id = metadata.get("Material ID")    
 
     heatflux = str(metadata.get("Heat Flux (kW/m2)"))
+    if ".0" in heatflux:
+        heatflux = heatflux.split(".0", 1)[0]
     try:
         heatflux = int(heatflux)
     except (TypeError, ValueError):
         heatflux = heatflux.replace(".", "p").replace(" ", "")
+        
 
     print(f"Heat Flux: {heatflux}")
     # Build filename parts

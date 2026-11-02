@@ -87,6 +87,7 @@ def parse_file(file_path):
     # separating tests within the file
     try: 
         tests = get_tests(lines)
+        input("Press Enter to continue...")
         numtests = len(tests)
         parsed = 0
     except Exception as e:
