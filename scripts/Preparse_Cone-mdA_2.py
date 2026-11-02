@@ -105,6 +105,7 @@ def parse_file(file_path):
     # separating tests within the file
     try: 
         tests = get_tests(lines)
+        input("Press Enter to continue...")
         numtests = len(tests)
         parsed = 0
     except Exception as e:
@@ -227,7 +228,7 @@ def get_data(data):
             # Check if this is a summary table
             if any(keyword in line_upper for keyword in [
                 "MAX", "PARAMETER", "YIELD", "PEAK", "AVERAGE", 
-                "IGNITION", "TOTAL HEAT RELEASE", "MASS WEIGHTED"
+                "IGNITION", "TOTAL HEAT RELEASE", "MASS WEIGHTED", "="
             ]):
                 # This is a summary table - add to metadata
                 in_summary_table = True
@@ -351,6 +352,7 @@ def get_data(data):
                 else:
                     # Throw error for illegal columns
                     msg = f'Illegal Column Detected in table {idx + 1}: "{col}" (normalized: "{col_upper}")'
+                    #print(new_columns)
                     raise Exception(msg)
                 
                 # Track duplicates with temporary suffix for merging later
@@ -391,6 +393,7 @@ def get_data(data):
         except Exception as e:
             # Re-raise the exception to stop processing
             print(colorize(f"Error parsing table block {idx + 1}: {e}", "red"))
+            print("\n".join(filtered_table))
             raise
     
     if not dfs:
@@ -530,6 +533,7 @@ def parse_data(data_df, test, file_name):
         return pd.to_numeric(col_cleaned, errors='coerce')
     
     data_df = data_df.apply(clean_cells)
+    data_df = data_df.dropna(how = 'all')
     last_time = data_df['Time (s)'].last_valid_index()
     times =data_df['Time (s)'].loc[:last_time].values
     start_0 = np.isclose(times[0], 0)
@@ -538,12 +542,23 @@ def parse_data(data_df, test, file_name):
     increments = np.diff(times)
     expected_step = np.median(increments)
     #steps continous equal continue changing by the same amount appx (allow for single skip ie times 2) or slight less
+    continuous_mask = (increments >= expected_step * 0.1) & (increments <= expected_step * 5)
+    continuous = np.all(continuous_mask)
     continuous = np.all((increments >= expected_step *.1) & (increments <= expected_step *5))
     if not continuous:
+        discontinuities = np.where(~continuous_mask)[0]
+        print(f"Expected step size (median): {expected_step}")
+        print(f"\nDiscontinuities found at {len(discontinuities)} location(s):")
+        for idx in discontinuities:
+            print(f"  Between times[{idx}] and times[{idx+1}]: "
+                f"{times[idx]:.2f} -> {times[idx+1]:.2f} "
+                f"(increment: {increments[idx]:.2f}, "
+                f"ratio to expected: {increments[idx]/expected_step:.2f}x)")
         raise Exception("Test does not have continuous time data, please review markdown and pdf")
     for c in data_df.columns:
         data = data_df[c].loc[:data_df[c].last_valid_index()].values
         if len(data) > len(times) and not np.all(np.isnan(data)):
+            print(data_df)
             raise Exception(f"Column {c} exceeds the length of time in the test, please review markdown and pdf")
     # Generate test filename
     test_name = test.casefold().replace(" ", "")

@@ -430,7 +430,7 @@ def process_data(data, metadata):
     o2_delay = int(metadata["O2 Delay Time (s)"] or 0)
     co2_delay = int(metadata["CO2 Delay Time (s)"] or 0)
     co_delay = int(metadata["CO Delay Time (s)"] or 0)
-    area = metadata["Surface Area (m2)"] or .0001 
+    area = metadata["Surface Area (m2)"] or .01 
     c_factor = metadata["C Factor"]
     e = metadata["Heat of Combustion O2 (MJ/kg)"]
     duct_length = float(metadata["Duct Diameter (m)"]) or 0.114 
