@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 11,
+    "t_ignition (s)": 12,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -188,5 +188,7 @@
         "| SOOT COLLECTED ON FILTER= | .01929 GRAMS |",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 11 -> 12 per printout (TIME TO IGNITION= 11.6; parser truncated)"
+    ]
 }
