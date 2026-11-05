@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 33,
+    "t_ignition (s)": 34,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -151,5 +151,7 @@
         "---",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 33 -> 34 per printout (TIME TO IGNITION= 33.6; parser truncated)"
+    ]
 }
