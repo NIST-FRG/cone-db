@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.0436,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 83,
+    "t_ignition (s)": 84,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -173,5 +173,8 @@
         "|",
         "|"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 83 -> 84 per printout (TIME TO IGNITION= 83.7; parser truncated)",
+        "2026-11-05: C Factor added 0.0436 per printout (CAL FACTOR .0436)"
+    ]
 }
