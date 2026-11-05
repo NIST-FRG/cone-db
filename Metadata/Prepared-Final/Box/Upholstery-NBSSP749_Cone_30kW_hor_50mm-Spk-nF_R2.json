@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04452,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -156,5 +156,7 @@
         "50 MM SAMPLE T W/FAB COVER 30 KW/M2 HOR TEST 2568 PAGE 1 OF 2",
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: C Factor added 0.04452 per printout (.04452 printed beside CAL FACTOR= in the pre-test comments)"
+    ]
 }
