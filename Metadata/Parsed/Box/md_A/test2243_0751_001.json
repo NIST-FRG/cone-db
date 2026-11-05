@@ -10,7 +10,7 @@
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1984-08-28",
+    "Test Date": "1986-08-28",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -162,5 +162,7 @@
         "| .1197  | .1614  | .0052",
         "| 0.0000 |"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Test Date corrected 1984-08-28 -> 1986-08-28. Printout reads 28 AUG 1984; the surrounding tests (e.g. 2242, 28 AUG 1986) are Aug 1986; year corrected."
+    ]
 }
