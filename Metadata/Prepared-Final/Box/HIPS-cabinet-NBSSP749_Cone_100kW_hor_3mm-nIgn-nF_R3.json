@@ -1,6 +1,6 @@
 {
     "Material ID": "HIPS-cabinet-NBSSP749",
-    "Material Name": ".123 IN SAMPLE H",
+    "Material Name": "Sample H",
     "Sample Mass (g)": 33.2,
     "Residual Mass (g)": 0.0,
     "Replicate": 3,
@@ -183,5 +183,7 @@
         "SOOT COLLECTED ON FILTER= .003441 GRAMS",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Material Name corrected \".123 IN SAMPLE H\" -> \"Sample H\" (printout code H; parser kept the header line)"
+    ]
 }
