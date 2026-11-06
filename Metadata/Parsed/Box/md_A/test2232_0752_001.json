@@ -17,7 +17,7 @@
     "Sponsor": null,
     "Institution": "NBS CONE CALORIMETER",
     "Report Name": "NBSSP749: Fire Hazard Comparison of Fire-Retarded and Non-Fire-Retarded Products",
-    "Original Source": "Box/Md_A",
+    "Original Source": "Box/md_A",
     "Preparsed": "2026-05-01 10:36:05",
     "Parsed": "2026-07-07 10:43:57",
     "Auto Prepared": null,
@@ -183,6 +183,7 @@
         "---"
     ],
     "Data Corrections": [
-        "2026-11-05: t_ignition (s) corrected 8 -> 9 per printout (TIME TO IGNITION= 8.89; parser truncated)"
+        "2026-11-05: t_ignition (s) corrected 8 -> 9 per printout (TIME TO IGNITION= 8.89; parser truncated)",
+        "2026-11-05: Original Source corrected \"Box/Md_A\" -> \"Box/md_A\" (path case fix)"
     ]
 }
