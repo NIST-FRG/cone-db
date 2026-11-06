@@ -3,9 +3,9 @@
     "Material Name": "Sample H",
     "Sample Mass (g)": 32.1,
     "Residual Mass (g)": 0.0,
-    "Replicate": 4,
+    "Replicate": 5,
     "Original Testname": "test2239_0751_001",
-    "Testname": "HIPS-cabinet-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R4",
+    "Testname": "HIPS-cabinet-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R5",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -153,6 +153,7 @@
         "---"
     ],
     "Data Corrections": [
-        "2026-11-05: t_ignition (s) corrected 15 -> 16 per printout (TIME TO IGNITION= 15.5 SEC; parser truncated; half second rounded half up, matching test2237)"
+        "2026-11-05: t_ignition (s) corrected 15 -> 16 per printout (TIME TO IGNITION= 15.5 SEC; parser truncated; half second rounded half up, matching test2237)",
+        "2026-11-06: Replicate changed R4 -> R5: TV H 100 kW replicates re-derived by test order with test2096 filed as R1, per Ryan 11/6."
     ]
 }
