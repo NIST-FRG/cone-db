@@ -5,8 +5,8 @@
     "Residual Mass (g)": 81.07,
     "Replicate": 2,
     "Original Testname": "test2588_2135_001",
-    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2",
-    "Thickness (mm)": 13.0,
+    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_100kW_hor_3mm-nIgn-nF_R2",
+    "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -239,5 +239,7 @@
         "HOR",
         "TEST 2588 PAGE 1 OF 4"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-06: Thickness (mm) corrected 13.0 -> 3.0 and testname changed to 3mm: wires are .130 IN DIA per printout."
+    ]
 }
