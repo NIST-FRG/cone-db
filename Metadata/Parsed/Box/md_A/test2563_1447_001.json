@@ -1,6 +1,6 @@
 {
     "Material ID": "CableArray-NBSSP749-FR-Wire",
-    "Material Name": "Sample K",
+    "Material Name": "Sample K Wires Only",
     "Sample Mass (g)": 106.2,
     "Residual Mass (g)": 84.38,
     "Replicate": 2,
@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04409,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -43,7 +43,7 @@
     "Test End Time (s)": null,
     "MLR EOT Mass (g/m2)": null,
     "End of test criterion": null,
-    "Heat of Combustion O2 (MJ/kg)": 0.006,
+    "Heat of Combustion O2 (MJ/kg)": 13.1,
     "OD Correction Factor": null,
     "Substrate": null,
     "Non-scrubbed": null,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 136,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -227,6 +227,10 @@
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
     "Data Corrections": [
-        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R2 renamed CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R2: printout shows coated wire stripped out of cable K, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R2 renamed CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R2: printout shows coated wire stripped out of cable K, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket).",
+        "2026-11-05: Material Name corrected \"Sample K\" -> \"Sample K Wires Only\" (printout: stripped cable, not a full cable)",
+        "2026-11-05: t_ignition (s) corrected None -> 136 per printout (IGNITION= 136 S; IGNITION TIME= 136; was blank)",
+        "2026-11-05: C Factor added 0.04409 per printout (.04409 printed in the pre-test comments, split from CAL FACTOR by OCR)",
+        "2026-11-05: Heat of Combustion O2 (MJ/kg) corrected 0.006 -> 13.1 per printout (13100 KJOULE/GRAM)"
     ]
 }
