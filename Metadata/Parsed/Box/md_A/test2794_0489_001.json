@@ -1,6 +1,6 @@
 {
     "Material ID": "CableArray-NBSSP749-FR-Jacket",
-    "Material Name": "SAMPLE K",
+    "Material Name": "Sample K Jacket Only",
     "Sample Mass (g)": 53.9,
     "Residual Mass (g)": 24.0,
     "Replicate": 1,
@@ -220,6 +220,7 @@
         "SOOT COLLECTED ON FILTER= 1.E-8 GRAMS"
     ],
     "Data Corrections": [
-        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R3 renamed CableArray-NBSSP749-FR-Jacket_Cone_30kW_hor_13mm-Spk-nF_R1: printout shows cable K cover only, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R3 renamed CableArray-NBSSP749-FR-Jacket_Cone_30kW_hor_13mm-Spk-nF_R1: printout shows cable K cover only, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket).",
+        "2026-11-05: Material Name corrected \"SAMPLE K\" -> \"Sample K Jacket Only\" (printout: CABLE COVER ONLY)"
     ]
 }
