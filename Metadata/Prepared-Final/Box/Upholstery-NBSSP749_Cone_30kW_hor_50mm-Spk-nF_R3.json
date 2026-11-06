@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04404,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 15,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -237,6 +237,8 @@
         "PAGE 4 OF 4"
     ],
     "Data Corrections": [
-        "2026-11-01: Material Name corrected Sample T No Cover -> Sample T With Cover per printout (FLEX FOAM SAMPLE T WITH FABRIC COVER; FOAM WT 14.1 G + FABRIC WT 8.2 G, TOTAL SAMPLE WT 22.3 G)"
+        "2026-11-01: Material Name corrected Sample T No Cover -> Sample T With Cover per printout (FLEX FOAM SAMPLE T WITH FABRIC COVER; FOAM WT 14.1 G + FABRIC WT 8.2 G, TOTAL SAMPLE WT 22.3 G)",
+        "2026-11-05: t_ignition (s) corrected None -> 15 per printout (TIME TO IGNITION OCR-split as \"TO 14.8\"; IGNITION TIME= 15; was blank)",
+        "2026-11-05: C Factor added 0.04404 per printout (.04404 printed beside CAL FACTOR in the pre-test comments)"
     ]
 }

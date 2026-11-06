@@ -2,7 +2,7 @@
     "Material ID": "HIPS-cabinet-NBSSP749-FR",
     "Material Name": "Sample G",
     "Sample Mass (g)": 38.9,
-    "Residual Mass (g)": null,
+    "Residual Mass (g)": 1.17,
     "Replicate": 2,
     "Original Testname": "test2199_0951_001",
     "Testname": "HIPS-cabinet-NBSSP749-FR_Cone_30kW_hor_3mm-Spk-nF_R2",
@@ -207,5 +207,7 @@
         "| .0003",
         "|"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Residual Mass (g) added 1.17 per printout (FINAL MASS= 1.17 G)"
+    ]
 }

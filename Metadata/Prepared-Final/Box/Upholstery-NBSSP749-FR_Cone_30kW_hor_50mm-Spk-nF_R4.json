@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04321,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -172,6 +172,7 @@
         "PAGE 4 OF"
     ],
     "Data Corrections": [
-        "2026-11-01: t_ignition corrected 978 -> 33 per printout (TIME TO IGNITION= 33.1 S, IGNITIONTIME= 33 S); 978 was the MASS RATIO AVERAGE"
+        "2026-11-01: t_ignition corrected 978 -> 33 per printout (TIME TO IGNITION= 33.1 S, IGNITIONTIME= 33 S); 978 was the MASS RATIO AVERAGE",
+        "2026-11-05: C Factor added 0.04321 per printout (.04321 printed beside CAL FACTOR in the pre-test comments)"
     ]
 }

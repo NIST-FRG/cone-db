@@ -10,7 +10,7 @@
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1987-06-17",
+    "Test Date": "1987-06-11",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04333,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 5,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -199,5 +199,9 @@
         "50 MM SAMPLE T W/ FABRIC 100 KW/M2 HOR TEST 2560 PAGE 1 OF 2",
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected None -> 5 per printout (TIME TO IGNITION= 4.72 S; IGNITION TIME= 5; was blank)",
+        "2026-11-05: C Factor added 0.04333 per printout (CAL FACTOR .04333)",
+        "2026-11-05: Test Date corrected 1987-06-17 -> 1987-06-11. No date printed on this test. Dated by CAL match (.04333, same as 2557, which prints 11 JUN 1987) and by its dated neighbors in test-number order (numbered before 2561, 12 JUN 1987), the placement Ryan approved for undated tests."
+    ]
 }

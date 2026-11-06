@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 10,
     "Orientation": "HORIZONTAL",
-    "C Factor": 0.044316,
+    "C Factor": null,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -112,5 +112,7 @@
         "NO IGNITION",
         ". 150 IN SAMPLE F (AL) 10 KW /M2 HOR. TEST 2126 8 JULY 86"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: C Factor removed: not printed on this test's printout (previously inferred from same-day tests)."
+    ]
 }

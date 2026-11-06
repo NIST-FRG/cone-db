@@ -1,6 +1,6 @@
 {
     "Material ID": "CableArray-NBSSP749-FR",
-    "Material Name": "Sample k",
+    "Material Name": "Sample K",
     "Sample Mass (g)": 170.6,
     "Residual Mass (g)": 109.97,
     "Replicate": 1,
@@ -161,5 +161,7 @@
         "PAGE 1 OF 8",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Material Name corrected \"Sample k\" -> \"Sample K\" (printout code K)"
+    ]
 }

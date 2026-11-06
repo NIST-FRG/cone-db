@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04404,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -225,5 +225,8 @@
         "50 MM FLEX FOAM SAMPLE T 100 KW/M2 HOR TEST 2578 PAGE 1 OF 2",
         "AND/OR BEFORE IGNITION TIME AND/OR NOT GOOD"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: C Factor added 0.04404 per printout (.04404 printed beside CAL FACTOR in the pre-test comments)",
+        "2026-11-05: t_ignition (s) left blank: printout has conflicting readings (IGNITION= .09 S and IGNITION TIME= 145) and Table 3 lists <1 s."
+    ]
 }
