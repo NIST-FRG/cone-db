@@ -194,6 +194,7 @@
         "PAGE 1 OF 6"
     ],
     "Data Corrections": [
-        "2026-11-06: No date printed (checked original PDF 0739). Placed by test order between test1582 (2 FEB 1986) and test2121 (7 JUL 1986); year certain, day approximate."
+        "2026-11-06: No date printed (checked original PDF 0739). Placed by test order between test1582 (2 FEB 1986) and test2121 (7 JUL 1986); year certain, day approximate.",
+        "2026-11-06: Data quality note: time history stops at 200 s (227 kW/m2). Rows from 205 to 225 s are all zero, also in the preparsed data, and nothing follows. The printout averages run to ignition + 240 s, so the test continued past the data. The printed peak (254.1 KW/M2 AT 160.0 SEC) is inside the data. Printed 16.5 % MASS PYROLYZED is well below the 30% of 2120, 2226 and 2227. Summary values are from the printout."
     ]
 }
