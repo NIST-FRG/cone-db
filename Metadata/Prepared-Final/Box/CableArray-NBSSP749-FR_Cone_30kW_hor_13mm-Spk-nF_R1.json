@@ -211,6 +211,6 @@
         "PAGE 1 OF 6"
     ],
     "Data Corrections": [
-        "2026-11-05: Data quality note: printout says \"TEST ABORTED WHEN BIG PIECE OF SAMPLE FELL OFF LOAD CELL\"."
+        "2026-11-05: Data quality note: printout says \"TEST ABORTED WHEN BIG PIECE OF SAMPLE FELL OFF LOAD CELL\". Test aborted at ~520 s, about 180 s after ignition, when a large piece of sample fell off the load cell; HRR was still 276 kW/m2. THR, mass loss and final mass are partial and not comparable to complete tests (THR 55 MJ/m2 vs 132-141 for 2216 and 2217). Peak HRR (431.3 kW/m2 at 475 s) occurred before the abort and is usable."
     ]
 }
