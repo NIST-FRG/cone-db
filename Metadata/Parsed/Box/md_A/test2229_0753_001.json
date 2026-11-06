@@ -22,7 +22,7 @@
     "Parsed": "2026-06-25 12:22:14",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-07-06 09:34:08",
+    "SmURF": "2026-11-06 00:01:26",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -34,7 +34,7 @@
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
     "C Factor": null,
-    "Surface Area (m2)": null,
+    "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
     "Ignition Source": "No Source",
@@ -159,6 +159,7 @@
     ],
     "Data Corrections": [
         "2026-11-05: t_ignition (s) corrected 42 -> 43 per printout (TIME TO IGNITION= 42.8 SEC; parser truncated)",
-        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R3 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R6: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series."
+        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R3 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R6: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series.",
+        "2026-11-06: Surface Area set to 0.01 (no AREA OF SAMPLE printed; SP 749 convention), so the CSV now has HRR (kW) and MLR (g/s) in place of HRRPUA (kW/m2) and MLRPUA (g/s-m2), matching the rest of the Sample L 100 kW series. Values are unchanged."
     ]
 }
