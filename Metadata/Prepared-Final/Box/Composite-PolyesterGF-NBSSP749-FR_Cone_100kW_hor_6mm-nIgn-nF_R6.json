@@ -3,9 +3,9 @@
     "Material Name": "Sample L",
     "Sample Mass (g)": 117.4,
     "Residual Mass (g)": 67.76,
-    "Replicate": 3,
+    "Replicate": 6,
     "Original Testname": "test2229_0753_001",
-    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R3",
+    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R6",
     "Thickness (mm)": 6.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -36,7 +36,7 @@
     "C Factor": null,
     "Surface Area (m2)": null,
     "Grid": null,
-    "Edge Frame": null,
+    "Edge Frame": false,
     "Ignition Source": "No Source",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 42,
+    "t_ignition (s)": 43,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -157,5 +157,8 @@
         "|--------------------------------------------------------------------------------------------------|",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 42 -> 43 per printout (TIME TO IGNITION= 42.8 SEC; parser truncated)",
+        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R3 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R6: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series."
+    ]
 }
