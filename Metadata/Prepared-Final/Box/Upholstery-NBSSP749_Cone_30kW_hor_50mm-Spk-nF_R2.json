@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 14,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -157,6 +157,7 @@
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
     "Data Corrections": [
-        "2026-11-05: C Factor added 0.04452 per printout (.04452 printed beside CAL FACTOR= in the pre-test comments)"
+        "2026-11-05: C Factor added 0.04452 per printout (.04452 printed beside CAL FACTOR= in the pre-test comments)",
+        "2026-11-05: t_ignition (s) corrected None -> 14 per printout (IGNITION= 13.5 S; was blank; half second rounded half up, matching test2237)"
     ]
 }
