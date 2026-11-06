@@ -226,6 +226,7 @@
         "AND/OR BEFORE IGNITION TIME AND/OR NOT GOOD"
     ],
     "Data Corrections": [
-        "2026-11-05: C Factor added 0.04404 per printout (.04404 printed beside CAL FACTOR in the pre-test comments)"
+        "2026-11-05: C Factor added 0.04404 per printout (.04404 printed beside CAL FACTOR in the pre-test comments)",
+        "2026-11-05: t_ignition (s) left blank: printout has conflicting readings (IGNITION= .09 S and IGNITION TIME= 145) and Table 3 lists <1 s."
     ]
 }
