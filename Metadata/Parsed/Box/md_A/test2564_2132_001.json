@@ -5,8 +5,8 @@
     "Residual Mass (g)": 83.64,
     "Replicate": 3,
     "Original Testname": "test2564_2132_001",
-    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R3",
-    "Thickness (mm)": 13.0,
+    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_3mm-Spk-nF_R3",
+    "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -243,6 +243,7 @@
     ],
     "Data Corrections": [
         "2026-11-05: Test Date 1987-06-12 not printed. Placed by dated neighbors: 2563 and 2565 both print 12 JUN 1987, and CAL .04409 is the 12 Jun value. The original PDF was not available to check.",
-        "2026-11-05: Sample Mass corrected per printout (INITIAL MASS= 105.80 G); parser had the MASS RATIO AVERAGE 494.29."
+        "2026-11-05: Sample Mass corrected per printout (INITIAL MASS= 105.80 G); parser had the MASS RATIO AVERAGE 494.29.",
+        "2026-11-06: Thickness (mm) corrected 13.0 -> 3.0 and testname changed to 3mm: wires are .130 IN DIA per printout."
     ]
 }
