@@ -1,11 +1,11 @@
 {
-    "Material ID": "CableArray-NBSSP749",
+    "Material ID": "CableArray-NBSSP749-Wire",
     "Material Name": "Sample D",
     "Sample Mass (g)": 101.4,
     "Residual Mass (g)": 78.41,
-    "Replicate": 4,
+    "Replicate": 2,
     "Original Testname": "test2586_1467_001",
-    "Testname": "CableArray-NBSSP749_Cone_100kW_hor_13mm-nIgn-nF_R4",
+    "Testname": "CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -161,5 +161,7 @@
         "PAGE",
         "***** \u2192 READING WAS OUT OF RANGE AT THESE TIME AND/OR BEFORE IGNITION TIME AND/OR NOT GOOD"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: CableArray-NBSSP749_Cone_100kW_hor_13mm-nIgn-nF_R4 renamed CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2: printout shows coated wires stripped from cable D, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+    ]
 }
