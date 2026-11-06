@@ -1,11 +1,11 @@
 {
-    "Material ID": "CableArray-NBSSP749-FR",
+    "Material ID": "CableArray-NBSSP749-FR-Jacket",
     "Material Name": "SAMPLE K",
     "Sample Mass (g)": 53.9,
     "Residual Mass (g)": 24.0,
-    "Replicate": 3,
+    "Replicate": 1,
     "Original Testname": "test2794_0489_001",
-    "Testname": "CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R3",
+    "Testname": "CableArray-NBSSP749-FR-Jacket_Cone_30kW_hor_13mm-Spk-nF_R1",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -219,5 +219,7 @@
         "11. TEOM WAS NOT USED.",
         "SOOT COLLECTED ON FILTER= 1.E-8 GRAMS"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R3 renamed CableArray-NBSSP749-FR-Jacket_Cone_30kW_hor_13mm-Spk-nF_R1: printout shows cable K cover only, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+    ]
 }
