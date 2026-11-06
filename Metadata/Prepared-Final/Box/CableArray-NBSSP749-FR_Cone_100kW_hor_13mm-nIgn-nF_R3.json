@@ -3,9 +3,9 @@
     "Material Name": "Sample k",
     "Sample Mass (g)": 170.6,
     "Residual Mass (g)": 109.97,
-    "Replicate": 1,
+    "Replicate": 3,
     "Original Testname": "test2242_0751_001",
-    "Testname": "CableArray-NBSSP749-FR_Cone_100kW_hor_13mm-nIgn-nF_R1",
+    "Testname": "CableArray-NBSSP749-FR_Cone_100kW_hor_13mm-nIgn-nF_R3",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -161,5 +161,7 @@
         "PAGE 1 OF 8",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Replicate changed R1 -> R3: 100 kW full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
+    ]
 }
