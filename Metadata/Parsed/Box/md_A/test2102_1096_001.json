@@ -3,14 +3,14 @@
     "Material Name": "Sample F",
     "Sample Mass (g)": 34.7,
     "Residual Mass (g)": 6.39,
-    "Replicate": 1,
+    "Replicate": 2,
     "Original Testname": "test2102_1096_001",
-    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R1",
+    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R2",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1986-08-20",
+    "Test Date": "1986-07-07",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -153,6 +153,8 @@
         "| 615.0 | 15.67 | 1.1284 | 0.0000 | .0303 | 0.0000 |"
     ],
     "Data Corrections": [
-        "2026-11-05: C Factor added 0.04399 per printout (CAL .04399)"
+        "2026-11-05: C Factor added 0.04399 per printout (CAL .04399)",
+        "2026-11-06: Replicate changed R1 -> R2: Sample F 100 kW replicates re-derived by test order with test2101 filed as R1, after test2225 was removed.",
+        "2026-11-06: Test Date corrected 1986-08-20 -> 1986-07-07. No date printed (checked original PDF 1096). Placed by test order between test1582 (2 FEB 1986) and test2121 (7 JUL 1986); year certain, day approximate."
     ]
 }

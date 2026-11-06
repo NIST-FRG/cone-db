@@ -3,9 +3,9 @@
     "Material Name": "Sample L",
     "Sample Mass (g)": 116.8,
     "Residual Mass (g)": 65.66,
-    "Replicate": 2,
+    "Replicate": 5,
     "Original Testname": "test2228_0753_001",
-    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R2",
+    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R5",
     "Thickness (mm)": 6.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -22,7 +22,7 @@
     "Parsed": "2026-06-25 12:22:14",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-07-06 09:30:02",
+    "SmURF": "2026-11-06 00:01:25",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -34,9 +34,9 @@
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
     "C Factor": null,
-    "Surface Area (m2)": null,
+    "Surface Area (m2)": 0.01,
     "Grid": null,
-    "Edge Frame": null,
+    "Edge Frame": false,
     "Ignition Source": "No Source",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -151,5 +151,8 @@
         "---",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R2 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R5: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series.",
+        "2026-11-06: Surface Area set to 0.01 (no AREA OF SAMPLE printed; SP 749 convention), so the CSV now has HRR (kW) and MLR (g/s) in place of HRRPUA (kW/m2) and MLRPUA (g/s-m2), matching the rest of the Sample L 100 kW series. Values are unchanged."
+    ]
 }

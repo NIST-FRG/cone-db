@@ -10,7 +10,7 @@
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1986-08-26",
+    "Test Date": "1986-07-07",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -148,6 +148,7 @@
         "---"
     ],
     "Data Corrections": [
-        "2026-11-05: t_ignition (s) corrected 29 -> 30 per printout (TIME TO IGNITION= 29.5 SEC; parser truncated; half second rounded half up, matching test2237)"
+        "2026-11-05: t_ignition (s) corrected 29 -> 30 per printout (TIME TO IGNITION= 29.5 SEC; parser truncated; half second rounded half up, matching test2237)",
+        "2026-11-05: Test Date corrected 1986-08-26 -> 1986-07-07. No date printed (checked original PDF 0738). Placed by test order between test1582 (2 FEB 1986) and test2121 (7 JUL 1986); year certain, day approximate."
     ]
 }

@@ -3,9 +3,9 @@
     "Material Name": "Sample D",
     "Sample Mass (g)": 166.0,
     "Residual Mass (g)": 111.52,
-    "Replicate": 2,
+    "Replicate": 4,
     "Original Testname": "test2542_1432_001",
-    "Testname": "CableArray-NBSSP749_Cone_30kW_hor_13mm-Spk-nF_R2",
+    "Testname": "CableArray-NBSSP749_Cone_30kW_hor_13mm-Spk-nF_R4",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -216,6 +216,7 @@
     ],
     "Data Corrections": [
         "2026-11-01: Test Date corrected 1987-06-17 -> 1987-06-02 per printout (TEST 2542 / 2 JUN 1987)",
-        "2026-11-05: C Factor added 0.04386 per printout (CAL FACTOR .04386)"
+        "2026-11-05: C Factor added 0.04386 per printout (CAL FACTOR .04386)",
+        "2026-11-05: Replicate changed R2 -> R4: full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }
