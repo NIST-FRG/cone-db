@@ -5,8 +5,8 @@
     "Residual Mass (g)": 81.12,
     "Replicate": 1,
     "Original Testname": "test2558_1442_001",
-    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_100kW_hor_13mm-nIgn-nF_R1",
-    "Thickness (mm)": 13.0,
+    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_100kW_hor_3mm-nIgn-nF_R1",
+    "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -259,6 +259,7 @@
         "2026-11-05: Material Name corrected \"Sample K\" -> \"Sample K Wires Only\" (printout: stripped cable, not a full cable)",
         "2026-11-05: t_ignition (s) corrected 15 -> 16 per printout (TIME TO IGNITION= 15.8 S; parser truncated)",
         "2026-11-05: C Factor added 0.04333 per printout (.04333 printed beside CAL FACTOR in the pre-test comments)",
-        "2026-11-05: Test Date corrected 1987-06-17 -> 1987-06-11. No date printed on this test. Dated by CAL match (.04333, same as 2557, which prints 11 JUN 1987, and 2559 and 2560) and by its dated neighbors in test-number order (numbered before 2561, 12 JUN 1987), the placement Ryan approved for undated tests."
+        "2026-11-05: Test Date corrected 1987-06-17 -> 1987-06-11. No date printed on this test. Dated by CAL match (.04333, same as 2557, which prints 11 JUN 1987, and 2559 and 2560) and by its dated neighbors in test-number order (numbered before 2561, 12 JUN 1987), the placement Ryan approved for undated tests.",
+        "2026-11-06: Thickness (mm) corrected 13.0 -> 3.0 and testname changed to 3mm: wires are .130 IN DIA per printout."
     ]
 }
