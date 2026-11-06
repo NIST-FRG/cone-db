@@ -3,9 +3,9 @@
     "Material Name": "Sample G",
     "Sample Mass (g)": 36.1,
     "Residual Mass (g)": 0.1,
-    "Replicate": 2,
+    "Replicate": 3,
     "Original Testname": "test2253_0749_001",
-    "Testname": "HIPS-cabinet-NBSSP749-FR_Cone_100kW_hor_3mm-nIgn-nF_R2",
+    "Testname": "HIPS-cabinet-NBSSP749-FR_Cone_100kW_hor_3mm-nIgn-nF_R3",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -209,5 +209,7 @@
         "PAGE 1 OF 2",
         "</PAGE_NUMBER>"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-06: Replicate changed R2 -> R3: TV G 100 kW replicates re-derived by test order with test2100 filed as R1, per Ryan 11/6."
+    ]
 }
