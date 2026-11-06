@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04386,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -216,6 +216,7 @@
     ],
     "Data Corrections": [
         "2026-11-01: Test Date corrected 1987-06-17 -> 1987-06-02 per printout (TEST 2542 / 2 JUN 1987)",
+        "2026-11-05: C Factor added 0.04386 per printout (CAL FACTOR .04386)",
         "2026-11-05: Replicate changed R2 -> R4: full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }

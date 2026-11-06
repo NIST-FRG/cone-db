@@ -1,6 +1,6 @@
 {
     "Material ID": "CableArray-NBSSP749-FR",
-    "Material Name": "Sample k",
+    "Material Name": "Sample K",
     "Sample Mass (g)": 170.6,
     "Residual Mass (g)": 109.97,
     "Replicate": 3,
@@ -162,6 +162,7 @@
         "---"
     ],
     "Data Corrections": [
+        "2026-11-05: Material Name corrected \"Sample k\" -> \"Sample K\" (printout code K)",
         "2026-11-05: Replicate changed R1 -> R3: 100 kW full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }

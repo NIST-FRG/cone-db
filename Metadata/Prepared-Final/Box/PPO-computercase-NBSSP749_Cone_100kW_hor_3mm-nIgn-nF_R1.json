@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04399,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -152,5 +152,7 @@
         "PAGE 1 OF 6",
         "| 615.0 | 15.67 | 1.1284 | 0.0000 | .0303 | 0.0000 |"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: C Factor added 0.04399 per printout (CAL .04399)"
+    ]
 }

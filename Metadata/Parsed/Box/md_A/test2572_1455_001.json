@@ -1,6 +1,6 @@
 {
     "Material ID": "PUFoam-NBSSP749",
-    "Material Name": "50 MM FLEX FOAM SAMPLE T 30 KW/M2 HOR TEST 2572",
+    "Material Name": "Sample T No Cover",
     "Sample Mass (g)": 14.3,
     "Residual Mass (g)": 1.54,
     "Replicate": 3,
@@ -10,7 +10,7 @@
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1987-06-17",
+    "Test Date": "1987-06-16",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04347,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 2,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -222,5 +222,10 @@
         "50 MM FLEX FOAM SAMPLE T 30 KW/M2 HOR TEST 2572 PAGE 1 OF 2",
         "AND/OR BEFORE IGNITION TIME AND/OR NOT GOOD"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Test Date corrected 1987-06-17 -> 1987-06-16 per printout (16 JUN 1987 TEST 2572; CAL .04347 is the 16 Jun value)",
+        "2026-11-05: t_ignition (s) corrected None -> 2 per printout (TIME TO 1.94 S; IGNITION TIME= 2; was blank)",
+        "2026-11-05: C Factor added 0.04347 per printout (.04347 printed beside CAL FACTOR in the pre-test comments)",
+        "2026-11-05: Material Name corrected header line -> \"Sample T No Cover\" (printout: 50 MM FLEX FOAM SAMPLE T, WITHOUT ANY COVER)"
+    ]
 }

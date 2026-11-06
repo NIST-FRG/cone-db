@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 30,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04362,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -218,6 +218,7 @@
         "| 1710.0 | 8.65 | 3.0051 | 6.6285 | 1.1894 | |"
     ],
     "Data Corrections": [
+        "2026-11-05: C Factor added 0.04362 per printout (CAL FACTOR .04362)",
         "2026-11-05: Replicate changed R3 -> R5: full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }

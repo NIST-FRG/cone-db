@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 9,
+    "t_ignition (s)": 10,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -152,6 +152,7 @@
         "---"
     ],
     "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 9 -> 10 per printout (TIME TO IGNITION= 9.9; parser truncated)",
         "2026-11-05: Replicate changed R1 -> R4: 100 kW full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }

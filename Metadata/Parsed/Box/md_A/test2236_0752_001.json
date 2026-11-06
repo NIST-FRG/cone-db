@@ -3,9 +3,9 @@
     "Material Name": "Sample F",
     "Sample Mass (g)": 37.9,
     "Residual Mass (g)": 2.9,
-    "Replicate": 3,
+    "Replicate": 2,
     "Original Testname": "test2236_0752_001",
-    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R3",
+    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R2",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 8,
+    "t_ignition (s)": 9,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -190,5 +190,7 @@
         "SOOT COLLECTED ON FILTER= .016439 GRAMS",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: t_ignition (s) corrected 8 -> 9 per printout (TIME TO IGNITION= 8.73; parser truncated)"
+    ]
 }
