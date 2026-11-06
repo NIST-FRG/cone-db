@@ -3,9 +3,9 @@
     "Material Name": "Sample L",
     "Sample Mass (g)": 116.8,
     "Residual Mass (g)": 65.66,
-    "Replicate": 2,
+    "Replicate": 5,
     "Original Testname": "test2228_0753_001",
-    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R2",
+    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R5",
     "Thickness (mm)": 6.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -36,7 +36,7 @@
     "C Factor": null,
     "Surface Area (m2)": null,
     "Grid": null,
-    "Edge Frame": null,
+    "Edge Frame": false,
     "Ignition Source": "No Source",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -151,5 +151,7 @@
         "---",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R2 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R5: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series."
+    ]
 }
