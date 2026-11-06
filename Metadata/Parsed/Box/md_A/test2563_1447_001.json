@@ -1,11 +1,11 @@
 {
-    "Material ID": "CableArray-NBSSP749-FR",
+    "Material ID": "CableArray-NBSSP749-FR-Wire",
     "Material Name": "Sample K",
     "Sample Mass (g)": 106.2,
     "Residual Mass (g)": 84.38,
     "Replicate": 2,
     "Original Testname": "test2563_1447_001",
-    "Testname": "CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R2",
+    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R2",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -226,5 +226,7 @@
         "PAGE 1 OF 6",
         "***** --> READING WAS OUT OF RANGE AT THESE TIME"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: CableArray-NBSSP749-FR_Cone_30kW_hor_13mm-Spk-nF_R2 renamed CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R2: printout shows coated wire stripped out of cable K, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+    ]
 }
