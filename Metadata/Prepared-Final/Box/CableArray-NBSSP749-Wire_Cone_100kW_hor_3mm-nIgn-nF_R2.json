@@ -5,8 +5,8 @@
     "Residual Mass (g)": 78.41,
     "Replicate": 2,
     "Original Testname": "test2586_1467_001",
-    "Testname": "CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2",
-    "Thickness (mm)": 13.0,
+    "Testname": "CableArray-NBSSP749-Wire_Cone_100kW_hor_3mm-nIgn-nF_R2",
+    "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -165,6 +165,7 @@
         "2026-11-05: CableArray-NBSSP749_Cone_100kW_hor_13mm-nIgn-nF_R4 renamed CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2: printout shows coated wires stripped from cable D, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket).",
         "2026-11-05: Material Name corrected \"Sample D\" -> \"Sample D Wires Only\" (printout: stripped cable, not a full cable)",
         "2026-11-05: t_ignition (s) corrected None -> 16 per printout (TIME TO IGNITION= 15.6 S; was blank)",
-        "2026-11-05: C Factor added 0.04321 per printout (CAL FACTOR .04321)"
+        "2026-11-05: C Factor added 0.04321 per printout (CAL FACTOR .04321)",
+        "2026-11-06: Thickness (mm) corrected 13.0 -> 3.0 and testname changed to 3mm: wires are .130 IN DIA per printout."
     ]
 }
