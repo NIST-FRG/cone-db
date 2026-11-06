@@ -5,8 +5,8 @@
     "Residual Mass (g)": 84.38,
     "Replicate": 2,
     "Original Testname": "test2563_1447_001",
-    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_13mm-Spk-nF_R2",
-    "Thickness (mm)": 13.0,
+    "Testname": "CableArray-NBSSP749-FR-Wire_Cone_30kW_hor_3mm-Spk-nF_R2",
+    "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
@@ -231,6 +231,7 @@
         "2026-11-05: Material Name corrected \"Sample K\" -> \"Sample K Wires Only\" (printout: stripped cable, not a full cable)",
         "2026-11-05: t_ignition (s) corrected None -> 136 per printout (IGNITION= 136 S; IGNITION TIME= 136; was blank)",
         "2026-11-05: C Factor added 0.04409 per printout (.04409 printed in the pre-test comments, split from CAL FACTOR by OCR)",
-        "2026-11-05: Heat of Combustion O2 (MJ/kg) corrected 0.006 -> 13.1 per printout (13100 KJOULE/GRAM)"
+        "2026-11-05: Heat of Combustion O2 (MJ/kg) corrected 0.006 -> 13.1 per printout (13100 KJOULE/GRAM)",
+        "2026-11-06: Thickness (mm) corrected 13.0 -> 3.0 and testname changed to 3mm: wires are .130 IN DIA per printout."
     ]
 }
