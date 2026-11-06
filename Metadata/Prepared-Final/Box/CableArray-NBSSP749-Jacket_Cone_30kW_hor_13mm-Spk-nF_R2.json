@@ -214,5 +214,7 @@
         "SOOT COLLECTED ON FILTER= 1.E-8 GRAMS",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-06: jacket thickness not printed; testname keeps the full-cable value"
+    ]
 }
