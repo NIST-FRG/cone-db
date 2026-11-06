@@ -3,9 +3,9 @@
     "Material Name": "Sample H",
     "Sample Mass (g)": 31.2,
     "Residual Mass (g)": 0.1,
-    "Replicate": 1,
+    "Replicate": 2,
     "Original Testname": "test2230_0753_001",
-    "Testname": "HIPS-cabinet-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R1",
+    "Testname": "HIPS-cabinet-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R2",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -182,5 +182,7 @@
         "| SOOT COLLECTED ON FILTER= | .014055 GRAMS |",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-06: Replicate changed R1 -> R2: TV H 100 kW replicates re-derived by test order with test2096 filed as R1, per Ryan 11/6."
+    ]
 }
