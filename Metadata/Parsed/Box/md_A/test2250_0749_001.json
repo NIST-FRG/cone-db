@@ -194,6 +194,7 @@
         "PAGE 1 OF 14"
     ],
     "Data Corrections": [
-        "2026-11-05: Y_Soot left blank: printout reads SOOT= 1.9604 G/S and \"LOST FIRST 30 SECONDS OF SOOT FILTER\"."
+        "2026-11-05: Y_Soot left blank: printout reads SOOT= 1.9604 G/S and \"LOST FIRST 30 SECONDS OF SOOT FILTER\".",
+        "2026-11-05: Data quality note: time history has no data from 255 to 505 s (also blank in the preparsed data). The gap covers ignition (366.5 S) and the printed peak (288.1 KW/M2 AT 495.0 SEC), so the CSV peak is lower and later than printed. Summary values are from the printout."
     ]
 }
