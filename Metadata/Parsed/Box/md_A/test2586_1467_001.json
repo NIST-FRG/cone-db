@@ -1,6 +1,6 @@
 {
     "Material ID": "CableArray-NBSSP749-Wire",
-    "Material Name": "Sample D",
+    "Material Name": "Sample D Wires Only",
     "Sample Mass (g)": 101.4,
     "Residual Mass (g)": 78.41,
     "Replicate": 2,
@@ -33,7 +33,7 @@
     ],
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
+    "C Factor": 0.04321,
     "Surface Area (m2)": 0.01,
     "Grid": null,
     "Edge Frame": false,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": null,
+    "t_ignition (s)": 16,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -162,6 +162,9 @@
         "***** \u2192 READING WAS OUT OF RANGE AT THESE TIME AND/OR BEFORE IGNITION TIME AND/OR NOT GOOD"
     ],
     "Data Corrections": [
-        "2026-11-05: CableArray-NBSSP749_Cone_100kW_hor_13mm-nIgn-nF_R4 renamed CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2: printout shows coated wires stripped from cable D, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket)."
+        "2026-11-05: CableArray-NBSSP749_Cone_100kW_hor_13mm-nIgn-nF_R4 renamed CableArray-NBSSP749-Wire_Cone_100kW_hor_13mm-nIgn-nF_R2: printout shows coated wires stripped from cable D, not a full cable. Material ID and replicate set per Ryan's 11/5 cable naming decision (-Wire / -Jacket).",
+        "2026-11-05: Material Name corrected \"Sample D\" -> \"Sample D Wires Only\" (printout: stripped cable, not a full cable)",
+        "2026-11-05: t_ignition (s) corrected None -> 16 per printout (TIME TO IGNITION= 15.6 S; was blank)",
+        "2026-11-05: C Factor added 0.04321 per printout (CAL FACTOR .04321)"
     ]
 }
