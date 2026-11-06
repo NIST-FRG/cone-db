@@ -295,5 +295,7 @@
         "PAGE 1 OF 2",
         "</PAGE_NUMBER>"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-06: Replicate changed R3 -> R4: Sample F 100 kW replicates re-derived by test order with test2101 filed as R1, after test2225 was removed."
+    ]
 }
