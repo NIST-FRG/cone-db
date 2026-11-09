@@ -1109,12 +1109,20 @@ def export_dialog(edited_df, original_metadata):
                     "K Smoke (1/m)", "V Duct (m3/s)", "Extinction Area (m2/kg)", "Smoke Production (m2/s)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
                     "HRRPUA (kW/m2)", "H2O (Vol fr)", "H'Carbs (Vol fr)", "HCl (Vol fr)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
                 ]
-                
+
+                extra_columns = ["V Duct (m3/s)", "Extinction Area (m2/kg)", "Smoke Production (m2/s)", "Mass Loss (g)", "Mass LossPUA (g/m2)", "MLR (g/s)", "MLRPUA (g/s-m2)",
+                    "HRRPUA (kW/m2)", "H2O (Vol fr)", "H'Carbs (Vol fr)", "HCl (Vol fr)", "CO2 (kg/kg)", "CO (kg/kg)", "H2O (kg/kg)", "H'carbs (kg/kg)", "HCl (kg/kg)"
+                ]
                 reordered_data = pd.DataFrame()
                 for c in max_column_order:
                     if c in data.columns:
                         reordered_data[c] = data[c]
                 reordered_data.dropna(how='all', inplace=True)
+
+                #Remove extra columns if they are all NaN
+                for c in extra_columns:
+                    if c in reordered_data.columns and reordered_data[c].isnull().all():
+                        reordered_data.drop(c, inplace=True, axis=1)
                 
                 csv_filename = new_filename.replace(".json", ".csv")
                 reordered_data.to_csv(prepared_data_path / csv_filename, index=False)
