@@ -3,9 +3,9 @@
     "Material Name": "Sample F",
     "Sample Mass (g)": 37.9,
     "Residual Mass (g)": 2.9,
-    "Replicate": 2,
+    "Replicate": 3,
     "Original Testname": "test2236_0752_001",
-    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R2",
+    "Testname": "PPO-computercase-NBSSP749_Cone_100kW_hor_3mm-nIgn-nF_R3",
     "Thickness (mm)": 3.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -191,6 +191,7 @@
         "---"
     ],
     "Data Corrections": [
-        "2026-11-05: t_ignition (s) corrected 8 -> 9 per printout (TIME TO IGNITION= 8.73; parser truncated)"
+        "2026-11-05: t_ignition (s) corrected 8 -> 9 per printout (TIME TO IGNITION= 8.73; parser truncated)",
+        "2026-11-06: Replicate changed R2 -> R3: Sample F 100 kW replicates re-derived by test order with test2101 filed as R1, after test2225 was removed."
     ]
 }

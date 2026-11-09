@@ -3,14 +3,14 @@
     "Material Name": "Sample L",
     "Sample Mass (g)": 117.2,
     "Residual Mass (g)": 66.41,
-    "Replicate": 4,
+    "Replicate": 1,
     "Original Testname": "test2103_0742_001",
-    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R1",
+    "Testname": "Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R1",
     "Thickness (mm)": 6.0,
     "Sample Description": null,
     "Specimen Prep": null,
     "Instrument": "NBS Cone Calorimeter",
-    "Test Date": "1986-08-24",
+    "Test Date": "1986-07-07",
     "Test Time": null,
     "Operator": null,
     "Director": null,
@@ -33,10 +33,10 @@
     ],
     "Heat Flux (kW/m2)": 100,
     "Orientation": "HORIZONTAL",
-    "C Factor": null,
-    "Surface Area (m2)": null,
+    "C Factor": 0.04399,
+    "Surface Area (m2)": 0.01,
     "Grid": null,
-    "Edge Frame": null,
+    "Edge Frame": false,
     "Ignition Source": "No Source",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": 82,
+    "t_ignition (s)": 83,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,
@@ -150,5 +150,11 @@
         "PAGE 1 OF 8",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-05: Test Date corrected 1986-08-24 -> 1986-07-07. No date printed (checked original PDF 0742). Placed by test order between test1582 (2 FEB 1986) and test2121 (7 JUL 1986); year certain, day approximate.",
+        "2026-11-05: C Factor added 0.04399 per printout (CAL .04399)",
+        "2026-11-05: t_ignition (s) corrected 82 -> 83 per printout (TIME TO IGNITION= 82.5 SEC; parser truncated, half second rounded half up)",
+        "2026-11-05: Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn_R1 renamed Composite-PolyesterGF-NBSSP749-FR_Cone_100kW_hor_6mm-nIgn-nF_R1: Edge Frame set False (-nF, SP 749 convention) and replicate set by test order within the Sample L 100 kW series.",
+        "2026-11-06: Surface Area set to 0.01 (no AREA OF SAMPLE printed; SP 749 convention), so the CSV now has HRR (kW) and MLR (g/s) in place of HRRPUA (kW/m2) and MLRPUA (g/s-m2), matching the rest of the Sample L 100 kW series. Values are unchanged: the layout was applied to the merged July data, not the current parse, whose OCR differs in 50 cells and blanks the rows at 255, 510 and 765 s."
+    ]
 }

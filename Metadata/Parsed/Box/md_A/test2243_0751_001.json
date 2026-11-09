@@ -3,9 +3,9 @@
     "Material Name": "Sample K",
     "Sample Mass (g)": 170.6,
     "Residual Mass (g)": 110.3,
-    "Replicate": 2,
+    "Replicate": 4,
     "Original Testname": "test2243_0751_001",
-    "Testname": "CableArray-NBSSP749-FR_Cone_100kW_hor_13mm-nIgn-nF_R2",
+    "Testname": "CableArray-NBSSP749-FR_Cone_100kW_hor_13mm-nIgn-nF_R4",
     "Thickness (mm)": 13.0,
     "Sample Description": null,
     "Specimen Prep": null,
@@ -163,6 +163,7 @@
         "| 0.0000 |"
     ],
     "Data Corrections": [
-        "2026-11-05: Test Date corrected 1984-08-28 -> 1986-08-28. Printout reads 28 AUG 1984; the surrounding tests (e.g. 2242, 28 AUG 1986) are Aug 1986; year corrected."
+        "2026-11-05: Test Date corrected 1984-08-28 -> 1986-08-28. Printout reads 28 AUG 1984; the surrounding tests (e.g. 2242, 28 AUG 1986) are Aug 1986; year corrected.",
+        "2026-11-05: Replicate changed R2 -> R4: 100 kW full cable replicates re-derived by test order within the series, per Ryan's 11/5 decision."
     ]
 }
