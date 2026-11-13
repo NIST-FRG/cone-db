@@ -5,7 +5,7 @@
     "Residual Mass (g)": 106.0,
     "Replicate": 2,
     "Original Testname": "test3096_0843_001",
-    "Testname": "Textile-NonwovenPolyester-NBSIR894065_Cone_30kW_vert_Spk-nF_R2",
+    "Testname": "Textile-NonwovenPolyester-NBSIR894065_Cone_30kW_vert_Spk-F_R2",
     "Thickness (mm)": null,
     "Sample Description": null,
     "Specimen Prep": "100x100 mm textile adhered to 12.7 mm gypsum wallboard with noncombustible adhesive; backs and edges foil-covered",
@@ -36,7 +36,7 @@
     "C Factor": 0.0453068649991,
     "Surface Area (m2)": 0.0089,
     "Grid": null,
-    "Edge Frame": false,
+    "Edge Frame": true,
     "Ignition Source": "Spark Igniter",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -190,6 +190,6 @@
     ],
     "Data Corrections": [
         "2026-11-13: Y_Soot left blank: printout says NO SOOT COLLECTED (SOOT COLLECTED ON FILTER= 1.E-6 GRAMS); printed SOOT AVERAGE= .0067827 G/G not used.",
-        "2026-11-13: Edge Frame set False (not stated on printout; printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2, which is used as the surface area)."
+        "2026-11-13: Edge Frame set True: printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2 (vertical holder retainer frame); .0089 M2 used as the surface area."
     ]
 }

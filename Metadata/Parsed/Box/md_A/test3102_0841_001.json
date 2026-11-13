@@ -5,7 +5,7 @@
     "Residual Mass (g)": 99.6,
     "Replicate": 1,
     "Original Testname": "test3102_0841_001",
-    "Testname": "Textile-NonwovenPolyester-NBSIR894065_Cone_50kW_vert_Spk-nF_R1",
+    "Testname": "Textile-NonwovenPolyester-NBSIR894065_Cone_50kW_vert_Spk-F_R1",
     "Thickness (mm)": null,
     "Sample Description": null,
     "Specimen Prep": "100x100 mm textile adhered to 12.7 mm gypsum wallboard with noncombustible adhesive; backs and edges foil-covered",
@@ -36,7 +36,7 @@
     "C Factor": 0.04591,
     "Surface Area (m2)": 0.0089,
     "Grid": null,
-    "Edge Frame": false,
+    "Edge Frame": true,
     "Ignition Source": "Spark Igniter",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -189,7 +189,7 @@
     "Data Corrections": [
         "2026-11-13: Y_Soot left blank: printout says NO SOOT COLLECTED (SOOT COLLECTED ON FILTER= 1.E-6 GRAMS); printed SOOT AVERAGE= .0025487 G/G not used.",
         "2026-11-13: t_ignition rounded from printed TIME TO IGNITION= 34.1 S.",
-        "2026-11-13: Edge Frame set False (not stated on printout; printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2, which is used as the surface area).",
+        "2026-11-13: Edge Frame set True: printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2 (vertical holder retainer frame); .0089 M2 used as the surface area.",
         "2026-11-13: Printout header is dated 5 AUG 1988 with CALIBRATION FACTOR .04591, the same date and factor as test3120 (5 AUG 1988), while neighbors 3101 (26 JUL 1988) and 3103 (27 JUL 1988) are earlier. Date and C Factor filed as printed; the test may have been rerun or re-reduced on 5 AUG. Replicate numbered by test number."
     ]
 }

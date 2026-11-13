@@ -5,7 +5,7 @@
     "Residual Mass (g)": 99.1,
     "Replicate": 1,
     "Original Testname": "test3087_0846_001",
-    "Testname": "Textile-TuftedAcrylicWool-NBSIR894065_Cone_30kW_vert_Spk-nF_R1",
+    "Testname": "Textile-TuftedAcrylicWool-NBSIR894065_Cone_30kW_vert_Spk-F_R1",
     "Thickness (mm)": null,
     "Sample Description": null,
     "Specimen Prep": "100x100 mm textile adhered to 12.7 mm gypsum wallboard with noncombustible adhesive; backs and edges foil-covered",
@@ -36,7 +36,7 @@
     "C Factor": 0.0455270257375,
     "Surface Area (m2)": 0.0089,
     "Grid": null,
-    "Edge Frame": false,
+    "Edge Frame": true,
     "Ignition Source": "Spark Igniter",
     "Separation (mm)": null,
     "Test Start Time (s)": null,
@@ -187,6 +187,6 @@
     "Data Corrections": [
         "2026-11-13: Y_Soot left blank: printout reads SOOT AVERAGE= .0020987 G/G, but SOOT COLLECTED ON FILTER= 1.E-6 GRAMS, the same placeholder as the tests marked NO SOOT COLLECTED in this series.",
         "2026-11-13: t_ignition rounded from printed TIME TO IGNITION= 80.8 S.",
-        "2026-11-13: Edge Frame set False (not stated on printout; printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2, which is used as the surface area)."
+        "2026-11-13: Edge Frame set True: printout gives HOLDER 94X95 MM and AREA OF SAMPLE= .0089 M2 (vertical holder retainer frame); .0089 M2 used as the surface area."
     ]
 }
