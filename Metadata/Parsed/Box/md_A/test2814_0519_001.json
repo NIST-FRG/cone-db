@@ -1,11 +1,11 @@
 {
-    "Material ID": "PUFoamMelamine-NISTIR4652",
+    "Material ID": "PUFoam-NISTIR4652-FR",
     "Material Name": "2 IN MELAMINE FOAM",
     "Sample Mass (g)": 24.2,
     "Residual Mass (g)": 5.4,
     "Replicate": 1,
     "Original Testname": "test2814_0519_001",
-    "Testname": "PUFoamMelamine-NISTIR4652_Cone_50kW_hor_50mm-Spk-nF_R1",
+    "Testname": "PUFoam-NISTIR4652-FR_Cone_50kW_hor_50mm-Spk-nF_R1",
     "Thickness (mm)": 50.0,
     "Sample Description": null,
     "Specimen Prep": null,
