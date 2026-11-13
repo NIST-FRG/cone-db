@@ -22,7 +22,7 @@
     "Parsed": "2026-10-31 16:26:28",
     "Auto Prepared": null,
     "Manually Prepared": null,
-    "SmURF": "2026-11-12 21:07:13",
+    "SmURF": "2026-11-12 21:25:26",
     "Bad Data": null,
     "Autoprocessed": null,
     "Manually Reviewed Series": null,
@@ -90,7 +90,7 @@
     "Smoke Production Post-ignition Outlier": null,
     "Smoke Production Total (m2/m2)": null,
     "Smoke Production Total Outlier": null,
-    "Y_Soot (g/g)": 0.13864,
+    "Y_Soot (g/g)": null,
     "Y_Soot Outlier": null,
     "Y_CO2 (g/g)": null,
     "Y_CO2 Outlier": null,
@@ -202,5 +202,7 @@
         "SOOT COLLECTED ON FILTER= | .000231 GRAMS |",
         "---"
     ],
-    "Data Corrections": []
+    "Data Corrections": [
+        "2026-11-12: Y_Soot left blank (printed SOOT AVERAGE= .13864 G/G). The soot data are internally inconsistent: SOOT COLLECTED ON FILTER= .000231 GRAMS is about 13x less than replicate test2784 (.002984 g), yet the printed yield is about 6x higher (2784: .022091 G/G)."
+    ]
 }
