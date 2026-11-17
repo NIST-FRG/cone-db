@@ -645,7 +645,7 @@ def restore_types(edited_df, original_metadata):
                 restored[key] = None
             elif key in ["Heat Flux (kW/m2)","Sample Mass (g)", "Residual Mass (g)", "Thickness (mm)", "C Factor", "Surface Area (m2)", "Seperation (mm)", 
                          "Heat of Combustion O2 (MJ/kg)", "OD Correction Factor", "Duct Diameter (m)", "Ambient Temperature (°C)", 
-                         "Barometric Pressure (Pa)", "Relative Humidity (%)","t_ignition (s)", "t_flameout (s)"]:
+                         "Barometric Pressure (Pa)", "Relative Humidity (%)"]:
                 try:
                     restored[key] = float(edited_val)
                 except Exception:
@@ -653,7 +653,7 @@ def restore_types(edited_df, original_metadata):
                     error = True
                     break
             elif key in ["Replicate", "Test Start Time (s)", "Test End Time (s)",
-                         "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)"]:
+                         "O2 Delay Time (s)", "CO2 Delay Time (s)", "CO Delay Tme (s)", "t_ignition (s)", "t_flameout (s)"]:
                 try:
                     restored[key] = int(edited_val)
                 except Exception:

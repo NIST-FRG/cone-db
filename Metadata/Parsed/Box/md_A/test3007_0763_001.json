@@ -100,7 +100,7 @@
     "Fire Growth Potential Outlier": null,
     "Ignition Energy (MJ/m2)": null,
     "Ignition Energy Outlier": null,
-    "t_flameout (s)": "2160",
+    "t_flameout (s)": 2160,
     "t_flameout Outlier": null,
     "Comments": [
         "NBS CONE CALORIMETER",
