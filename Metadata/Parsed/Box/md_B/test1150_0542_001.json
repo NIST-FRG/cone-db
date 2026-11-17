@@ -57,7 +57,7 @@
     "X_O2 Initial": null,
     "X_CO2 Initial": null,
     "X_CO Initial": null,
-    "t_ignition (s)": "57",
+    "t_ignition (s)": 57,
     "t_ignition Outlier": null,
     "m_ignition (g)": null,
     "m_ignition Outlier": null,

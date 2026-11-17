@@ -171,6 +171,11 @@ def parse_metadata(header_lines, file_path):
         match = re.search(re.escape(key) + r"[^:\n]*:\s*(-?\d+\.?\d*)", text)
         return float(match.group(1)) if match else None
 
+    def extract_int(key):
+        # allow a label suffix before colon, e.g. "C-Factor (Methane)   : 0.04454730"
+        match = re.search(re.escape(key) + r"[^:\n]*:\s*(-?\d+\.?\d*)", text)
+        return int(round(float(match.group(1)))) if match else None
+
     def extract_block(key):
         # value on same line as "key :" & any continuation lines below it
         for i, line in enumerate(lines):
@@ -215,12 +220,13 @@ def parse_metadata(header_lines, file_path):
     metadata["Instrument"] = "Atlas Cone Calorimeter"
 
     # test parameters
-    metadata["Test End Time (s)"] = extract_num("Test Length")
+    metadata["Test End Time (s)"] = extract_int("Test Length")
     # surface area stays in m2 (old script converted to cm2)
     metadata["Surface Area (m2)"] = extract_num("Sample Surface Area")
     heat_flux = extract_num("Radiant Heat Flux")
     # store whole-number fluxes as ints (65.0 -> 65) so explorer names files "65kW" not "65p0kW"
-    metadata["Heat Flux (kW/m2)"] = int(heat_flux) if heat_flux is not None and heat_flux.is_integer() else heat_flux
+    # good logic but going to revert back to float; the SmURF editor now generates the proper name with float flux
+    metadata["Heat Flux (kW/m2)"] = heat_flux
     orientation = extract_block("Sample Orientation")
     metadata["Orientation"] = orientation.upper() if orientation else None
     metadata["Sponsor"] = extract_block("Sponsor")
@@ -244,9 +250,9 @@ def parse_metadata(header_lines, file_path):
         metadata[key] = baseline / 100 if baseline is not None else None
 
     # test results
-    t_ign = extract_num("Time to Sustained Ignition")
+    t_ign = extract_int("Time to Sustained Ignition")
     # explorer only takes whole seconds, round instead of truncate
-    metadata["t_ignition (s)"] = int(round(t_ign)) if t_ign is not None else None
+    metadata["t_ignition (s)"] = t_ign if t_ign is not None else None
     metadata["Sample Mass (g)"] = extract_num("Entered Initial Specimen Mass")
     metadata["Residual Mass (g)"] = extract_num("Measured Final Specimen Mass")
 

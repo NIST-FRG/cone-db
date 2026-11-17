@@ -262,6 +262,11 @@ def parse_metadata(df,file_path, meta):
             return float(raw_metadata[key])
         except:
             return None
+    def get_int(key):
+        try:
+            return int(raw_metadata[key])
+        except:
+            return None
 
     def get_bool(key):
         if raw_metadata[key] == "Yes":
@@ -317,10 +322,10 @@ def parse_metadata(df,file_path, meta):
     metadata["Thickness (mm)"] = get_number("Thickness (mm)")
     metadata["Surface Area (m2)"] = get_number("Surface area (cm²)") * 0.0001
 
-    metadata["t_ignition (s)"] = get_number("Time to ignition (s)")
-    metadata["t_flameout (s)"] = get_number("Time to flameout (s)")
-    metadata["Test Start Time (s)"] = get_number("Test start time (s)")
-    metadata["Test End Time (s)"] = get_number("User EOT time (s)")
+    metadata["t_ignition (s)"] = get_int("Time to ignition (s)")
+    metadata["t_flameout (s)"] = get_int("Time to flameout (s)")
+    metadata["Test Start Time (s)"] = get_int("Test start time (s)")
+    metadata["Test End Time (s)"] = get_int("User EOT time (s)")
 
     metadata["MLR EOT Mass (g/m2)"] = get_number("MLR EOT mass (g/m²)")
     metadata["End of test criterion"] = get_number("End of test criterion")
@@ -338,9 +343,9 @@ def parse_metadata(df,file_path, meta):
     metadata["C Factor"] = get_number("C-factor (SI units)")
     metadata["Duct Diameter (m)"] = get_number("Duct diameter (m)")
 
-    metadata["O2 Delay Time (s)"] = get_number("O2 delay time (s)")
-    metadata["CO2 Delay Time (s)"] = get_number("CO2 delay time (s)")
-    metadata["CO Delay Time (s)"] = get_number("CO delay time (s)")
+    metadata["O2 Delay Time (s)"] = get_int("O2 delay time (s)")
+    metadata["CO2 Delay Time (s)"] = get_int("CO2 delay time (s)")
+    metadata["CO Delay Time (s)"] = get_int("CO delay time (s)")
 
     metadata["Ambient Temperature (°C)"] = get_number("Ambient temperature (°C)")
     metadata["Barometric Pressure (Pa)"] = get_number("Barometric pressure (Pa)")
