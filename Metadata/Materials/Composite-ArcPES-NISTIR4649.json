@@ -1,0 +1,55 @@
+{
+    "Common Names": "Acrylic-based Unsaturated Polyester Composite",
+    "Material ID": "Composite-ArcPES-NISTIR4649",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": "J. M. Huber Corporation/Solem Division",
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": "25% glass fibers, utilizes styrene. Alumina Trihydrate flame retardant provided by Aluminum Corportation of America"
+    },
+    "Categories": {
+        "NFIRS": "Plastic",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": "Alumina Trihydrate (ATH)",
+                "Weight %": 43
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
