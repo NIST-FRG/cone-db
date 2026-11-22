@@ -1,0 +1,55 @@
+{
+    "Common Names": "Cotton/Rayon Wall Covering Fabric, Loose Weave",
+    "Material ID": "Textile-WovenCottonRayon-NBSIR894065V2",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Sheet",
+        "Finish": null,
+        "Form": "Dobby woven fabric, loose complex weave with floating yarn",
+        "Thickness": null,
+        "Notes": "ATMI code C (loose complex weave with floating yarn). 55% cotton / 45% rayon, 0.40 kg/m2 (11.5 oz/yd2). Tested in the 1986 wall covering series. Tested in NISTIR 89-4065 (ATMI textile wall covering study), adhered to 12.7 mm gypsum wallboard with a noncombustible adhesive."
+    },
+    "Categories": {
+        "NFIRS": "Fabric, Fiber, Cotton, Blends, Rayon, Wool",
+        "Synthetic/ Natural/ Vegetation": "Natural",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

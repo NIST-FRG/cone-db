@@ -1,0 +1,55 @@
+{
+    "Common Names": "Polyester Plush Wall Covering Fabric",
+    "Material ID": "Textile-KnitPolyester-NBSIR894065",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Sheet",
+        "Finish": null,
+        "Form": "Knit plush fabric",
+        "Thickness": null,
+        "Notes": "ATMI code Q. 100% polyester, 0.43 kg/m2 (12.8 oz/yd2). ASTM E84 flame spread index 15. Tested in NISTIR 89-4065 (ATMI textile wall covering study), adhered to 12.7 mm gypsum wallboard with a noncombustible adhesive."
+    },
+    "Categories": {
+        "NFIRS": "Fabric, Fiber, Cotton, Blends, Rayon, Wool",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

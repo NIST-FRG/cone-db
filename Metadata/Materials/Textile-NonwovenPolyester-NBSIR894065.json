@@ -1,0 +1,55 @@
+{
+    "Common Names": "Needle Punched Polyester Wall Covering Fabric",
+    "Material ID": "Textile-NonwovenPolyester-NBSIR894065",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Sheet",
+        "Finish": null,
+        "Form": "Needle punched nonwoven fabric",
+        "Thickness": null,
+        "Notes": "ATMI code G. 100% polyester, 0.68 kg/m2 (20.0 oz/yd2). Tested in NISTIR 89-4065 (ATMI textile wall covering study), adhered to 12.7 mm gypsum wallboard with a noncombustible adhesive."
+    },
+    "Categories": {
+        "NFIRS": "Fabric, Fiber, Cotton, Blends, Rayon, Wool",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": "Thermoplastic",
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
