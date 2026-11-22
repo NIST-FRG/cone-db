@@ -1,0 +1,55 @@
+{
+    "Common Names": "Fire Retardant Cable Array Wires (Jacket Removed)",
+    "Material ID": "CableArray-NBSSP749-FR-Wire",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylinder",
+        "Finish": null,
+        "Form": "Insulated wires with the cable jacket removed",
+        "Thickness": "3mm",
+        "Notes": "NBS SP 749 Sample K, tested as wires only (jacket removed). Parent cable: CableArray-NBSSP749-FR. Wire insulation made of polyethylene cross-linked with ethylene vinyl acetate, with clay (28 parts), chlorinated cycloaliphatic fire retardant (38 parts), Sb2O3 (18.9 parts), antioxidant (2 parts), processing aid (1 part), and catalyst (1.5 parts)."
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire, Cable Insulation",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": null,
+            "Cover 1": null,
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": "Chlorinated cycloaliphatic + Sb2O3",
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
