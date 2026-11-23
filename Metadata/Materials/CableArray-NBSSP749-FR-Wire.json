@@ -19,15 +19,9 @@
     "Categories": {
         "NFIRS": "Electrical Wire, Cable Insulation",
         "Synthetic/ Natural/ Vegetation": "Synthetic",
-        "Copolymer/ Homopolymer/ Composite": "Composite",
+        "Copolymer/ Homopolymer/ Composite": null,
         "Thermoset/ Thermoplastic": null,
-        "Composite Layers": {
-            "Core": null,
-            "Cover 1": null,
-            "Cover 2": null,
-            "Backing 1": null,
-            "Backing 2": null
-        },
+        "Composite Layers": null,
         "Additives": {
             "Plasticizers": {
                 "Name": null,
