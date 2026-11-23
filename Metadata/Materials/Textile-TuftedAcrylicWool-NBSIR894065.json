@@ -1,0 +1,49 @@
+{
+    "Common Names": "Acrylic/Wool Tufted Wall Covering Fabric",
+    "Material ID": "Textile-TuftedAcrylicWool-NBSIR894065",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Sheet",
+        "Finish": null,
+        "Form": "Tufted fabric",
+        "Thickness": null,
+        "Notes": "ATMI code AA. 70% acrylic / 30% wool, pile weight 0.75 kg/m2 (22 oz/yd2), total weight 1.29 kg/m2 (38 oz/yd2). ASTM E84 flame spread index 25. Printouts list the blend as \"70% A / 30% N\"; report Table 1 lists wool. Tested in NISTIR 89-4065 (ATMI textile wall covering study), adhered to 12.7 mm gypsum wallboard with a noncombustible adhesive."
+    },
+    "Categories": {
+        "NFIRS": "Fabric, Fiber, Cotton, Blends, Rayon, Wool",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

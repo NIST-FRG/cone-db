@@ -1,0 +1,55 @@
+{
+    "Common Names": "Upholstered Composite, Nylon Fabric over Melamine-Treated Polyurethane Foam",
+    "Material ID": "Upholstery-PUFoamFR-Nylon-NISTIR4652",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": null,
+        "Finish": null,
+        "Form": null,
+        "Thickness": null,
+        "Notes": "Nylon fabric covering: green, 100% nylon, plain weave, 352 g/m2, 1.5 mm thick, acrylic backed with a Scotchgard surface finish. Fabric covering wrapped over the top and sides of a 100 x 100 x 50 mm foam block and stapled; sides and bottom wrapped in aluminum foil; tested horizontally. From NISTIR 4652."
+    },
+    "Categories": {
+        "NFIRS": "Upholstered Sofa, Chair, Vehicle Seats",
+        "Synthetic/ Natural/ Vegetation": null,
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": {
+            "Core": "PUFoam-NISTIR4652-FR",
+            "Cover 1": "Nylon Fabric",
+            "Cover 2": null,
+            "Backing 1": null,
+            "Backing 2": null
+        },
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

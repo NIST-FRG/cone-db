@@ -1,0 +1,49 @@
+{
+    "Common Names": "Wool/Nylon Flannel Wall Covering Fabric",
+    "Material ID": "Textile-WovenWoolNylon-NBSIR894065",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Sheet",
+        "Finish": null,
+        "Form": "Woven flannel fabric",
+        "Thickness": null,
+        "Notes": "ATMI code H. 85% wool / 15% nylon, 0.33 kg/m2 (9.6 oz/yd2). Tested in NISTIR 89-4065 (ATMI textile wall covering study), adhered to 12.7 mm gypsum wallboard with a noncombustible adhesive."
+    },
+    "Categories": {
+        "NFIRS": "Fabric, Fiber, Cotton, Blends, Rayon, Wool",
+        "Synthetic/ Natural/ Vegetation": "Natural",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}

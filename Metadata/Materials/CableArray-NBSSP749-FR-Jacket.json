@@ -1,0 +1,49 @@
+{
+    "Common Names": "Fire Retardant Cable Array Jacket (Wires Removed)",
+    "Material ID": "CableArray-NBSSP749-FR-Jacket",
+    "CAS Number": null,
+    "Trade Name": null,
+    "Model Number": null,
+    "Manufacturer": null,
+    "Country of Origin": null,
+    "Distributor / Harvesting Site": null,
+    "Date Acquired": null,
+    "Description": {
+        "Color": null,
+        "Shape": "Cylinder",
+        "Finish": null,
+        "Form": "Cable jacket with the wires removed",
+        "Thickness": null,
+        "Notes": "NBS SP 749 Sample K, outer cable jacket tested alone (\"cable cover only\"). Parent cable: CableArray-NBSSP749-FR. Jacket thickness not printed."
+    },
+    "Categories": {
+        "NFIRS": "Electrical Wire, Cable Insulation",
+        "Synthetic/ Natural/ Vegetation": "Synthetic",
+        "Copolymer/ Homopolymer/ Composite": null,
+        "Thermoset/ Thermoplastic": null,
+        "Composite Layers": null,
+        "Additives": {
+            "Plasticizers": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Flame Retardant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "Colorant": {
+                "Name": null,
+                "Weight %": null
+            },
+            "UV Stabilizer": {
+                "Name": null,
+                "Weight %": null
+            }
+        }
+    },
+    "Molecular Weight": null
+}
