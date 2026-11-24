@@ -561,7 +561,7 @@ def parse_metadata(input, test_name):
     metadata_json["Original Testname"] = test_name
     metadata_json["Instrument"] = "NBS Cone Calorimeter"
     metadata_json["Preparsed"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    metadata_json["Original Source"] = "Box/Morgan"
+    metadata_json["Original Source"] = "Box/Alex_Morgan"
     metadata_json["Comments"] = lines
     metadata_json["Data Corrections"] = []
 
